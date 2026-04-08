@@ -44,7 +44,7 @@ class DataProcessor:
 
         # 目標財務指標 mapping
         TARGET_ITEMS = {
-            "Revenue": ["營業收入", "營業收入合計", "Revenue"],
+            "Revenue": ["營業收入", "營業收入合計", "淨收益", "Revenue"],
             "GrossProfit": ["營業毛利（毛損）", "GrossProfit"],
             "OperatingIncome": ["營業利益（損失）", "OperatingIncome"],
             "NetIncome": [
