@@ -1,0 +1,29 @@
+[project]
+name = "stock-map"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "finmind>=1.9.2",
+    "pandas>=2.3.3",
+    "tqdm>=4.67.1",
+    "requests",
+    "beautifulsoup4",
+    "selenium>=4.36.0",
+    "webdriver-manager>=4.0.1",
+    "undetected-chromedriver>=3.5.0",
+    "python-dotenv>=1.2.1",
+    "jsonschema>=4.22.0",
+    "fastjsonschema>=2.19.1",
+    "yfinance>=1.1.0",
+    "tenacity>=8.2.3",
+    "playwright>=1.58.0",
+    "playwright-stealth>=2.0.3",
+]
+
+[tool.uv.workspace]
+members = [
+    "pdf_analysis",
+    "notebook_llm_analysis",
+]

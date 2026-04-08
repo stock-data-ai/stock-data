@@ -1,0 +1,45 @@
+name: Sync Topics from stock_map
+
+on:
+  repository_dispatch:
+    types: [topics-changed]
+  workflow_dispatch:
+
+concurrency:
+  group: data-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout stock-data
+        uses: actions/checkout@v6
+
+      - name: Fetch files from stock_map
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          BASE="https://api.github.com/repos/CHIJUI0128/stock_map/contents"
+          HEADERS=(-H "Authorization: token $PAT" -H "Accept: application/vnd.github.v3.raw")
+          REF="?ref=publish_cloudflare"
+
+          curl -fsSL "${HEADERS[@]}" "$BASE/src/data/layer0/topics.json$REF" \
+            -o src/data/layer0/topics.json
+
+          curl -fsSL "${HEADERS[@]}" "$BASE/src/data/layer3/company-topics/index.json$REF" \
+            -o src/data/layer3/company-topics/index.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer0/topics.json \
+                  src/data/layer3/company-topics/index.json
+          git diff --cached --quiet && { echo "無變化，略過 commit。"; exit 0; }
+          git commit -m "sync: 從 stock_map 同步設定檔 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push

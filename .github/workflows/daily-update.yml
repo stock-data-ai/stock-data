@@ -1,0 +1,57 @@
+name: Daily Update
+
+on:
+  schedule:
+    # Daily (Mon-Fri): Taiwan 22:00 (UTC 14:00)
+    - cron: '0 14 * * 1-5'    # UTC Mon-Fri 14:00 = TW Mon-Fri 22:00
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task identifier (for rerun chaining)'
+        required: false
+        default: 'daily'
+        type: string
+      rerun_round:
+        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
+        required: false
+        default: '0'
+        type: string
+      delay_minutes:
+        description: 'Minutes to wait before start (for API quota reset)'
+        required: false
+        default: '0'
+        type: string
+      batch:
+        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        required: false
+        default: '0'
+        type: string
+      force:
+        description: 'Force update even if already updated today'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: data-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  pipeline:
+    uses: ./.github/workflows/_reusable-data-job.yml
+    with:
+      commands_json: '[{"id":"marketcap","cli":"update-marketcap","label":"市值"},{"id":"institutional_investors","cli":"update-institutional-investors","label":"三大法人"}]'
+      artifact_prefix: daily
+      commit_message: "每日更新三大法人+市值數據"
+      caller_workflow: daily-update.yml
+      caller_task: daily
+      summary_title: "每日更新"
+      rerun_round: ${{ inputs.rerun_round || '0' }}
+      delay_minutes: ${{ inputs.delay_minutes || '0' }}
+      batch: ${{ inputs.batch || '0' }}
+      force: ${{ github.event_name == 'schedule' || inputs.force || false }}
+    secrets: inherit

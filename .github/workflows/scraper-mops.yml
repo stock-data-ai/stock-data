@@ -1,0 +1,35 @@
+name: MOPS Scraper
+
+on:
+  schedule:
+    # Daily (Mon-Fri): Taiwan 00:00 (UTC 16:00 前一天)
+    - cron: '0 16 * * 0-4'    # UTC Sun-Thu 16:00 = TW Mon-Fri 00:00
+  workflow_dispatch:
+
+jobs:
+  mops-scraper:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run MOPS Scraper
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_DATABASE_ID: ${{ secrets.CLOUDFLARE_DATABASE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: uv run python Web_Crawler/mops_scraper.py

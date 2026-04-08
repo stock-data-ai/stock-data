@@ -1,0 +1,413 @@
+name: Reusable Data Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      commands_json:
+        description: 'JSON array of commands, e.g. [{"id":"marketcap","cli":"update-marketcap","label":"市值"}]'
+        required: true
+        type: string
+      artifact_prefix:
+        description: 'Artifact name prefix, e.g. daily, weekly-saturday'
+        required: true
+        type: string
+      commit_message:
+        description: 'Commit message template (date and round will be appended)'
+        required: true
+        type: string
+      caller_workflow:
+        description: 'Workflow filename to trigger on rerun, e.g. daily-update.yml'
+        required: true
+        type: string
+      caller_task:
+        description: 'Task parameter value for rerun dispatch'
+        required: true
+        type: string
+      summary_title:
+        description: 'Title prefix for GitHub Summary'
+        required: true
+        type: string
+      rerun_round:
+        description: 'Rerun round (0=initial run)'
+        required: false
+        type: string
+        default: '0'
+      delay_minutes:
+        description: 'Minutes to wait before start (for API quota reset)'
+        required: false
+        type: string
+        default: '0'
+      batch:
+        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        required: false
+        type: string
+        default: '0'
+      force:
+        description: 'Force update even if already updated today'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  MAX_RERUN_ROUNDS: 4
+  RERUN_DELAY_MINUTES: 65
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          BATCH="${{ inputs.batch }}"
+          if [ "$BATCH" = "0" ]; then
+            echo 'matrix={"batch":[1,2,3,4]}' >> $GITHUB_OUTPUT
+          else
+            echo "matrix={\"batch\":[$BATCH]}" >> $GITHUB_OUTPUT
+          fi
+
+  run:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
+      fail-fast: false
+    permissions:
+      contents: write
+      actions: write
+    timeout-minutes: 120
+    env:
+      FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+
+    steps:
+      - name: Select token for this batch
+        run: |
+          IFS=',' read -ra TOKENS <<< "$FINMIND_API_TOKENS"
+          INDEX=$(( ${{ matrix.batch }} - 1 ))
+          echo "FINMIND_API_TOKENS=${TOKENS[$INDEX]}" >> $GITHUB_ENV
+          echo "Using token #${{ matrix.batch }} (${TOKENS[$INDEX]:0:5}...)"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Wait for API quota reset (chained runs only)
+        if: inputs.delay_minutes != '0' && inputs.delay_minutes != ''
+        run: |
+          DELAY="${{ inputs.delay_minutes }}"
+          echo "Batch ${{ matrix.batch }}: Waiting ${DELAY} minutes for API quota reset..."
+          sleep $((DELAY * 60))
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run data commands
+        run: |
+          COMMANDS='${{ inputs.commands_json }}'
+          ROUND="${{ inputs.rerun_round }}"
+          BATCH="${{ matrix.batch }}"
+          FORCE="${{ inputs.force }}"
+
+          FORCE_FLAG=""
+          if [ "$FORCE" = "true" ]; then
+            FORCE_FLAG="--force"
+          fi
+
+          echo "$COMMANDS" | jq -c '.[]' | while IFS= read -r row; do
+            ID=$(echo "$row" | jq -r '.id')
+            CLI=$(echo "$row" | jq -r '.cli')
+            LABEL=$(echo "$row" | jq -r '.label')
+
+            if [ -n "$ROUND" ] && [ "$ROUND" != "0" ]; then
+              echo "--- Batch ${BATCH}/4 — RERUN Round ${ROUND} for ${LABEL} ---"
+              uv run finance_tools/cli.py $CLI --rerun $FORCE_FLAG --batch ${BATCH}/4 || true
+            else
+              echo "--- Batch ${BATCH}/4 — Initial Run for ${LABEL} ---"
+              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/4 || true
+            fi
+          done
+
+      - name: Collect changed files for upload
+        if: always()
+        run: |
+          mkdir -p /tmp/batch-results/company-financials
+          # Only copy JSON files that were actually modified by this batch
+          cd src/data/layer3/company-financials
+          for f in *.json; do
+            # Detect both modified (tracked) and new (untracked) files
+            if ! git diff --quiet -- "$f" 2>/dev/null || ! git ls-files --error-unmatch "$f" >/dev/null 2>&1; then
+              cp "$f" /tmp/batch-results/company-financials/
+            fi
+          done
+          cd "$GITHUB_WORKSPACE"
+          # Copy rerun queue and quality report files
+          for f in finance_tools/rerun_queue_*_${{ matrix.batch }}.txt finance_tools/quality_report_*_${{ matrix.batch }}.txt; do
+            if [ -f "$f" ]; then
+              cp "$f" /tmp/batch-results/
+            fi
+          done
+          CHANGED=$(ls /tmp/batch-results/company-financials/ 2>/dev/null | wc -l)
+          echo "Batch ${{ matrix.batch }}: ${CHANGED} JSON files changed"
+
+      - name: Upload results as artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: batch-${{ matrix.batch }}-${{ inputs.artifact_prefix }}-results
+          path: /tmp/batch-results/
+          if-no-files-found: ignore
+          retention-days: 1
+
+  merge:
+    needs: run
+    if: always() && needs.run.result != 'skipped'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Save previous round failures
+        run: |
+          COMMANDS='${{ inputs.commands_json }}'
+          echo "$COMMANDS" | jq -c '.[]' | while IFS= read -r row; do
+            ID=$(echo "$row" | jq -r '.id')
+            COMBINED="finance_tools/rerun_queue_${ID}.txt"
+            if [ -f "$COMBINED" ] && [ -s "$COMBINED" ]; then
+              cp "$COMBINED" "/tmp/prev_failures_${ID}.txt"
+            else
+              touch "/tmp/prev_failures_${ID}.txt"
+            fi
+          done
+
+      - name: Download all batch artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: batch-*-${{ inputs.artifact_prefix }}-results
+          path: /tmp/all-batch-results
+          merge-multiple: true
+
+      - name: Apply batch results to repo
+        run: |
+          # Copy only the changed JSON files from artifacts (no stale overwrites)
+          if [ -d /tmp/all-batch-results/company-financials ]; then
+            COUNT=$(ls /tmp/all-batch-results/company-financials/*.json 2>/dev/null | wc -l)
+            echo "Applying ${COUNT} changed JSON files from batch artifacts"
+            cp /tmp/all-batch-results/company-financials/*.json src/data/layer3/company-financials/ 2>/dev/null || true
+          fi
+          # Copy rerun queue and quality report files
+          cp /tmp/all-batch-results/rerun_queue_*.txt finance_tools/ 2>/dev/null || true
+          cp /tmp/all-batch-results/quality_report_*.txt finance_tools/ 2>/dev/null || true
+
+      - name: Combine per-batch rerun files and filter permanent failures
+        run: |
+          COMMANDS='${{ inputs.commands_json }}'
+
+          echo "$COMMANDS" | jq -c '.[]' | while IFS= read -r row; do
+            ID=$(echo "$row" | jq -r '.id')
+            LABEL=$(echo "$row" | jq -r '.label')
+            COMBINED="finance_tools/rerun_queue_${ID}.txt"
+            QUALITY_COMBINED="finance_tools/quality_report_${ID}.txt"
+            PERMANENT="finance_tools/permanent_failures_${ID}.txt"
+
+            # Combine batch files (rerun queue)
+            rm -f "$COMBINED"
+            for i in 1 2 3 4; do
+              BATCH_FILE="finance_tools/rerun_queue_${ID}_${i}.txt"
+              if [ -f "$BATCH_FILE" ] && [ -s "$BATCH_FILE" ]; then
+                cat "$BATCH_FILE" >> "$COMBINED"
+                echo "${LABEL} Batch ${i}: $(wc -l < "$BATCH_FILE") companies failed"
+              fi
+              rm -f "$BATCH_FILE"
+            done
+
+            # Combine batch files (quality report)
+            rm -f "$QUALITY_COMBINED"
+            for i in 1 2 3 4; do
+              BATCH_QUALITY_FILE="finance_tools/quality_report_${ID}_${i}.txt"
+              if [ -f "$BATCH_QUALITY_FILE" ] && [ -s "$BATCH_QUALITY_FILE" ]; then
+                cat "$BATCH_QUALITY_FILE" >> "$QUALITY_COMBINED"
+              fi
+              rm -f "$BATCH_QUALITY_FILE"
+            done
+
+            if [ -f "$COMBINED" ] && [ -s "$COMBINED" ]; then
+              sort -u -o "$COMBINED" "$COMBINED"
+              TOTAL_THIS_ROUND=$(wc -l < "$COMBINED")
+            else
+              TOTAL_THIS_ROUND=0
+            fi
+            echo "This round: ${TOTAL_THIS_ROUND} unique ${LABEL} failures"
+
+            # Filter permanent failures
+            rm -f "$PERMANENT"
+            PREV_FILE="/tmp/prev_failures_${ID}.txt"
+            if [ -s "$PREV_FILE" ] && [ -s "$COMBINED" ]; then
+              PREV_COUNT=$(wc -l < "$PREV_FILE")
+              if [ "$TOTAL_THIS_ROUND" -lt "$PREV_COUNT" ]; then
+                echo "${LABEL} still making progress: ${PREV_COUNT} -> ${TOTAL_THIS_ROUND}. Skipping permanent failure detection."
+              else
+                comm -12 "$PREV_FILE" "$COMBINED" > "$PERMANENT"
+                if [ -s "$PERMANENT" ]; then
+                  PERM_COUNT=$(wc -l < "$PERMANENT")
+                  echo "::warning::${PERM_COUNT} ${LABEL} companies failed in both rounds (permanent failures)"
+                  comm -23 "$COMBINED" "$PERMANENT" > /tmp/filtered.txt
+                  mv /tmp/filtered.txt "$COMBINED"
+                fi
+              fi
+            fi
+            rm -f "$PREV_FILE"
+          done
+
+      - name: Validate JSON files before commit
+        run: |
+          ERRORS=0
+          for f in src/data/layer3/company-financials/*.json; do
+            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null || {
+              echo "::error::Corrupted JSON detected: $f — reverting to last known good version"
+              git checkout -- "$f"
+              ERRORS=$((ERRORS + 1))
+            }
+          done
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::warning::Reverted ${ERRORS} corrupted JSON files to last known good version"
+          fi
+
+      - name: Commit and push all results
+        run: |
+          COMMANDS='${{ inputs.commands_json }}'
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials/
+
+          # Track combined rerun files and permanent failure reports
+          echo "$COMMANDS" | jq -c '.[]' | while IFS= read -r row; do
+            ID=$(echo "$row" | jq -r '.id')
+            for FILE in "finance_tools/rerun_queue_${ID}.txt" "finance_tools/permanent_failures_${ID}.txt"; do
+              if [ -f "$FILE" ] && [ -s "$FILE" ]; then
+                git add "$FILE"
+              else
+                git rm --ignore-unmatch -f "$FILE" 2>/dev/null || true
+              fi
+            done
+            # Clean up per-batch files
+            for i in 1 2 3 4; do
+              git rm --ignore-unmatch -f "finance_tools/rerun_queue_${ID}_${i}.txt" 2>/dev/null || true
+            done
+          done
+
+          ROUND="${{ inputs.rerun_round }}"
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "${{ inputs.commit_message }} $(date -u +%Y-%m-%d) [round ${ROUND}]"
+
+          # Pull with rebase, but abort if JSON files get corrupted by text merge
+          git pull --rebase origin main
+
+          # Post-rebase validation: ensure rebase didn't corrupt JSON
+          REBASE_ERRORS=0
+          for f in $(git diff --name-only HEAD~1 -- src/data/layer3/company-financials/); do
+            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null || {
+              echo "::error::Rebase corrupted $f — taking our version"
+              git show HEAD~1:"$f" > "$f" || git checkout HEAD -- "$f"
+              REBASE_ERRORS=$((REBASE_ERRORS + 1))
+            }
+          done
+          if [ "$REBASE_ERRORS" -gt 0 ]; then
+            echo "::warning::Fixed ${REBASE_ERRORS} files corrupted by git rebase merge"
+            git add src/data/layer3/company-financials/
+            git commit --amend --no-edit
+          fi
+
+          git push
+
+      - name: Trigger rerun if needed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMANDS='${{ inputs.commands_json }}'
+          CURRENT_ROUND="${{ inputs.rerun_round }}"
+          TOTAL_FAILED=0
+
+          while IFS= read -r row; do
+            ID=$(echo "$row" | jq -r '.id')
+            COMBINED="finance_tools/rerun_queue_${ID}.txt"
+            if [ -f "$COMBINED" ] && [ -s "$COMBINED" ]; then
+              COUNT=$(wc -l < "$COMBINED")
+              TOTAL_FAILED=$((TOTAL_FAILED + COUNT))
+            fi
+          done < <(echo "$COMMANDS" | jq -c '.[]')
+
+          if [ "$TOTAL_FAILED" -gt 0 ] && [ "$CURRENT_ROUND" -lt "$MAX_RERUN_ROUNDS" ]; then
+            NEXT_ROUND=$((CURRENT_ROUND + 1))
+            echo "::notice::Triggering rerun round ${NEXT_ROUND}/${MAX_RERUN_ROUNDS} for ${TOTAL_FAILED} companies"
+            gh workflow run "${{ inputs.caller_workflow }}" \
+              -f task=${{ inputs.caller_task }} \
+              -f rerun_round=$NEXT_ROUND \
+              -f delay_minutes=$RERUN_DELAY_MINUTES
+          elif [ "$TOTAL_FAILED" -gt 0 ]; then
+            echo "::error::Max rerun rounds (${MAX_RERUN_ROUNDS}) reached. ${TOTAL_FAILED} companies still failed."
+            exit 1
+          fi
+
+      - name: Report failures to summary
+        if: always()
+        run: |
+          COMMANDS='${{ inputs.commands_json }}'
+          TITLE="${{ inputs.summary_title }}"
+          TOTAL_PENDING=0
+          HAS_PERMANENT=false
+
+          while IFS= read -r row; do
+            ID=$(echo "$row" | jq -r '.id')
+            LABEL=$(echo "$row" | jq -r '.label')
+            PERMANENT="finance_tools/permanent_failures_${ID}.txt"
+            COMBINED="finance_tools/rerun_queue_${ID}.txt"
+            QUALITY="finance_tools/quality_report_${ID}.txt"
+
+            if [ -f "$QUALITY" ] && [ -s "$QUALITY" ]; then
+              Q_COUNT=$(wc -l < "$QUALITY")
+              echo "### 📊 ${LABEL} 資料品質報告 (部分數據缺失): ${Q_COUNT} 間公司" >> $GITHUB_STEP_SUMMARY
+              echo "這些公司處理成功，但 API 缺失部分數據：" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              cat "$QUALITY" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+            fi
+
+            if [ -f "$PERMANENT" ] && [ -s "$PERMANENT" ]; then
+              PERM_COUNT=$(wc -l < "$PERMANENT")
+              echo "### ${LABEL}永久失敗 (非 API 問題): ${PERM_COUNT} 間公司" >> $GITHUB_STEP_SUMMARY
+              echo "這些公司連續兩輪失敗，已從 rerun queue 移除。" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              cat "$PERMANENT" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              HAS_PERMANENT=true
+            fi
+
+            if [ -f "$COMBINED" ] && [ -s "$COMBINED" ]; then
+              COUNT=$(wc -l < "$COMBINED")
+              TOTAL_PENDING=$((TOTAL_PENDING + COUNT))
+              echo "#### ${LABEL} 待重試 (${COUNT} 間)" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              head -20 "$COMBINED" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+            fi
+          done < <(echo "$COMMANDS" | jq -c '.[]')
+
+          if [ "$TOTAL_PENDING" -gt 0 ]; then
+            echo "### ${TITLE}待重試: ${TOTAL_PENDING} 間公司" >> $GITHUB_STEP_SUMMARY
+          elif [ "$HAS_PERMANENT" = "false" ]; then
+            echo "### ${TITLE}全部成功" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ${TITLE}無待重試 (僅有永久失敗)" >> $GITHUB_STEP_SUMMARY
+          fi

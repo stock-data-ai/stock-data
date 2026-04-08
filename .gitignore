@@ -1,0 +1,33 @@
+# Environment
+.env
+/.venv/
+
+# Python
+**/__pycache__/
+*.pyc
+*.log
+.pytest_cache/
+.mypy_cache/
+
+# Backup/Editor files
+*.bak
+*~
+*.json.fix
+
+# macOS
+**/.DS_Store
+
+# Claude Code local settings
+.claude/
+
+# Archive (本地備份，不上傳)
+src/data/layer3/company-financials-archive/
+
+# 個人筆記
+*.md
+!CLAUDE.md
+!finance_tools/QUICK_START.md
+!Web_Crawler/money_udn/README.md
+
+# Crawler progress/temp files
+Web_Crawler/money_udn/.init_progress.json
