@@ -4,6 +4,7 @@ import time
 import json
 import html
 import random
+import subprocess
 from urllib.parse import quote
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
@@ -129,10 +130,21 @@ def scrape_economic_daily_news(search_key: str, company_code: str = None,
     options.add_argument('--disable-gpu')
     options.add_argument(f'--window-size={vw},{vh}')
 
+    # Detect Chrome major version so uc downloads the matching ChromeDriver,
+    # preventing version mismatch errors (e.g. ChromeDriver 147 vs Chrome 146).
+    chrome_major = None
+    for chrome_bin in ("google-chrome", "google-chrome-stable", "chromium-browser", "chromium"):
+        try:
+            out = subprocess.check_output([chrome_bin, "--version"], stderr=subprocess.DEVNULL, text=True)
+            chrome_major = int(out.strip().split()[2].split(".")[0])
+            break
+        except Exception:
+            continue
+
     driver = None
     page_source = None
     try:
-        driver = uc.Chrome(options=options, use_subprocess=True)
+        driver = uc.Chrome(options=options, use_subprocess=True, version_main=chrome_major)
 
         # 載入前隨機等待 1~4 秒
         time.sleep(random.uniform(1, 4))

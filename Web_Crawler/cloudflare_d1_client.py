@@ -44,19 +44,19 @@ class CloudflareD1Client:
         """
         Execute a single SQL query.
         """
-        payload = {
-            "sql": sql,
-            "params": params or []
-        }
-        
+        payload: Dict[str, Any] = {"sql": sql}
+        if params:
+            payload["params"] = params
+
         try:
             response = requests.post(self.base_url, headers=self.headers, json=payload)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Error executing D1 query: {e}")
-            if e.response:
-                print(f"Response: {e.response.text}")
+            resp = getattr(e, "response", None)
+            if resp is not None:
+                print(f"Response body: {resp.text}")
             raise
 
     def batch_execute_query(self, sql: str, params_list: List[List[Any]]) -> List[Dict[str, Any]]:
