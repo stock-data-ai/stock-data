@@ -70,9 +70,26 @@ class DataAssembler:
         # The 'monthly' data is already a list of dicts from the fetcher
         monthly_list = monthly if monthly else None
 
+        # Merge annual: keep existing records for years not covered by new data
+        existing_historical = final_data.get('historical', {})
+        if annual:
+            new_years = {a['year'] for a in annual}
+            old_annual = [a for a in existing_historical.get('annual', []) if a['year'] not in new_years]
+            merged_annual = sorted(annual + old_annual, key=lambda x: x['year'], reverse=True)
+        else:
+            merged_annual = existing_historical.get('annual', [])
+
+        # Merge quarterly: keep existing records for (year, quarter) not covered by new data
+        if quarterly:
+            new_quarters = {(q['year'], q['quarter']) for q in quarterly}
+            old_quarterly = [q for q in existing_historical.get('quarterly', []) if (q['year'], q['quarter']) not in new_quarters]
+            merged_quarterly = sorted(quarterly + old_quarterly, key=lambda x: (x['year'], x['quarter']), reverse=True)
+        else:
+            merged_quarterly = existing_historical.get('quarterly', [])
+
         final_data['historical'].update({
-            "annual": annual,
-            "quarterly": quarterly,
+            "annual": merged_annual,
+            "quarterly": merged_quarterly,
             "monthlyRevenue": monthly_list[:36] if monthly_list else None,
             "dividends": dividends if dividends else None,
             "institutionalInvestors": institutional_investors_data if institutional_investors_data else None,
