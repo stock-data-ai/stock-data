@@ -56,19 +56,19 @@ def run_import_dividends(args):
         if 'latest' not in financial_data:
             financial_data['latest'] = {}
 
-        financial_data['latest']['dividendFrequency'] = dividend_data.get('frequency')
+        new_records = dividend_data.get("records", [])
+        new_keys = {(r["year"], r.get("sequence", 1)) for r in new_records}
+        old_records = [
+            r for r in (financial_data['historical'].get('dividends') or [])
+            if (r["year"], r.get("sequence", 1)) not in new_keys
+        ]
+        merged = sorted(
+            new_records + old_records,
+            key=lambda r: (r["year"], r.get("sequence", 1)),
+            reverse=True
+        )
 
-        new_dividend_list = []
-        for year, year_data in sorted(dividend_data.get('years', {}).items(), reverse=True):
-            total = year_data['cash'] + year_data['stock']
-            new_dividend_list.append({
-                "year": int(year),
-                "cashDividend": round(year_data['cash'], 4),
-                "stockDividend": round(year_data['stock'], 4),
-                "totalDividend": round(total, 4),
-            })
-
-        financial_data['historical']['dividends'] = new_dividend_list
+        financial_data['historical']['dividends'] = merged
         financial_data['lastUpdated'] = today_str()
 
         if file_mgr.save_financial_data(code, financial_data):

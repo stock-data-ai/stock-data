@@ -13,20 +13,14 @@ class DataAssembler:
     """
 
     @staticmethod
-    def build_dividend_list(company_dividends_csv_data: Dict) -> list:
-        """Builds a list of dividend data from the raw CSV data."""
-        new_dividend_list = []
-        if company_dividends_csv_data:
-            for year, year_data in sorted(company_dividends_csv_data.get('years', {}).items(), reverse=True):
-                total = year_data['cash'] + year_data['stock']
-                new_dividend_list.append({
-                    "year": int(year),
-                    "cashDividend": round(year_data['cash'], 4),
-                    "stockDividend": round(year_data['stock'], 4),
-                    "totalDividend": round(total, 4),
-                })
-        logger.debug(f"Built dividend list with {len(new_dividend_list)} entries.")
-        return new_dividend_list
+    def build_dividend_list(mops_data: Dict) -> list:
+        """Builds a list of dividend records from MOPS data (one entry per payout)."""
+        if not mops_data:
+            return []
+        records = mops_data.get("records", [])
+        result = sorted(records, key=lambda r: (r["year"], r.get("sequence", 1)), reverse=True)
+        logger.debug(f"Built dividend list with {len(result)} entries.")
+        return result
 
     @staticmethod
     def merge_institutional_investors(existing_data: Dict, institutional_investors_data: Dict[str, Any]) -> Dict:
@@ -87,11 +81,18 @@ class DataAssembler:
         else:
             merged_quarterly = existing_historical.get('quarterly', [])
 
-        # Merge dividends: keep existing records for years not covered by new data
+        # Merge dividends: keep existing records for (year, sequence) not covered by new data
         if dividends:
-            new_div_years = {d['year'] for d in dividends}
-            old_dividends = [d for d in existing_historical.get('dividends', []) or [] if d['year'] not in new_div_years]
-            merged_dividends = sorted(dividends + old_dividends, key=lambda x: x['year'], reverse=True)
+            new_div_keys = {(d['year'], d.get('sequence', 1)) for d in dividends}
+            old_dividends = [
+                d for d in existing_historical.get('dividends', []) or []
+                if (d['year'], d.get('sequence', 1)) not in new_div_keys
+            ]
+            merged_dividends = sorted(
+                dividends + old_dividends,
+                key=lambda x: (x['year'], x.get('sequence', 1)),
+                reverse=True
+            )
         else:
             merged_dividends = existing_historical.get('dividends', [])
 

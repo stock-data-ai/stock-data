@@ -77,9 +77,8 @@ def main():
     parser_full.set_defaults(func=run_full_update)
 
     # --- 'import-dividends' command ---
-    parser_import_div = subparsers.add_parser("import-dividends", help="從本地 CSV 檔案匯入股利資訊。")
-    parser_import_div.add_argument("--code", type=str, help="依股票代碼處理單一公司。")
-    parser_import_div.add_argument("--limit", type=int, help="限制要處理的公司數量。")
+    parser_import_div = subparsers.add_parser("import-dividends", help="從 MOPS 抓取最新股利公告並寫入 JSON。")
+    add_common_arguments(parser_import_div)
     parser_import_div.set_defaults(func=run_import_dividends)
 
     # --- 'update-revenue' command ---
