@@ -90,7 +90,7 @@ class DataAssembler:
         final_data['historical'].update({
             "annual": merged_annual,
             "quarterly": merged_quarterly,
-            "monthlyRevenue": monthly_list[:36] if monthly_list else None,
+            "monthlyRevenue": monthly_list[:72] if monthly_list else None,
             "dividends": dividends if dividends else None,
             "institutionalInvestors": institutional_investors_data if institutional_investors_data else None,
         })

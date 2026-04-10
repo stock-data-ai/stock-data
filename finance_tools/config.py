@@ -29,8 +29,8 @@ RETRY_BACKOFF_FACTOR = 1
 
 # --- Data Fetching ---
 DEFAULT_SLEEP_RANGE = (1, 3)
-FULL_UPDATE_DAYS = 365  # 只保留近1年，舊資料已歸棍至 company-financials-archive/
-REVENUE_DAYS = 365
+FULL_UPDATE_DAYS = 365 * 6  # 抓近6年季報，確保年度趨勢有5年完整資料
+REVENUE_DAYS = 365 * 6
 DEFAULT_FETCH_DAYS = 90
 
 # --- Rerun / Batch Settings ---
