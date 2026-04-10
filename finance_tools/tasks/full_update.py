@@ -14,7 +14,8 @@ from core.timezone import now_tw
 import json
 from pathlib import Path
 
-from fetchers import FinancialsFetcher, RevenueFetcher, DividendsFromCSVFetcher
+from fetchers import FinancialsFetcher, RevenueFetcher
+from fetchers.mops_dividends import MOPSDividendFetcher
 from fetchers.shareholding import fetch_shareholding
 from fetchers.institutional_investors_shares import fetch_institutional_investors_shares
 from processing.company_processor import CompanyProcessor
@@ -69,9 +70,10 @@ def run_full_update(args):
 
     financials_fetcher = FinancialsFetcher(client, processor_data)
     revenue_fetcher = RevenueFetcher(client, processor_data)
-    csv_dividends_fetcher = DividendsFromCSVFetcher()
 
-    all_dividends_from_csv = csv_dividends_fetcher.fetch_all()
+    mops_fetcher = MOPSDividendFetcher()
+    all_dividends_from_csv = mops_fetcher.fetch_all()
+    logger.info(f"Fetched MOPS dividend data for {len(all_dividends_from_csv)} companies.")
 
     # 載入種子值與公司基本資料（供持股比例推估使用）
     seeds = _load_json(_SEEDS_FILE)

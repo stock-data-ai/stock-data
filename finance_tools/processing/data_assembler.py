@@ -87,11 +87,19 @@ class DataAssembler:
         else:
             merged_quarterly = existing_historical.get('quarterly', [])
 
+        # Merge dividends: keep existing records for years not covered by new data
+        if dividends:
+            new_div_years = {d['year'] for d in dividends}
+            old_dividends = [d for d in existing_historical.get('dividends', []) or [] if d['year'] not in new_div_years]
+            merged_dividends = sorted(dividends + old_dividends, key=lambda x: x['year'], reverse=True)
+        else:
+            merged_dividends = existing_historical.get('dividends', [])
+
         final_data['historical'].update({
             "annual": merged_annual,
             "quarterly": merged_quarterly,
             "monthlyRevenue": monthly_list[:72] if monthly_list else None,
-            "dividends": dividends if dividends else None,
+            "dividends": merged_dividends if merged_dividends else None,
             "institutionalInvestors": institutional_investors_data if institutional_investors_data else None,
         })
         final_data["lastUpdated"] = today_str()
