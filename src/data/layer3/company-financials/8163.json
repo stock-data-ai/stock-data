@@ -9,7 +9,7 @@
     "grossMargin": 15.65,
     "operatingMargin": 0.46,
     "netMargin": 0.22,
-    "eps": 0.08,
+    "eps": 0.05,
     "dividendFrequency": "年",
     "marketCap": 7686000027.45,
     "pe": 52.94,
@@ -23,7 +23,7 @@
         "grossProfit": 3977521000.0,
         "operatingIncome": -70158000.0,
         "netIncome": 141767000.0,
-        "eps": 0.54,
+        "eps": 0.51,
         "grossMargin": 15.86,
         "operatingMargin": -0.28,
         "netMargin": 0.57,
@@ -99,7 +99,7 @@
         "grossProfit": 967995000.0,
         "operatingIncome": 28654000.0,
         "netIncome": 13316000.0,
-        "eps": 0.08,
+        "eps": 0.05,
         "grossMargin": 15.65,
         "operatingMargin": 0.46,
         "netMargin": 0.22
@@ -804,6 +804,12 @@
       }
     ],
     "dividends": [
+      {
+        "year": 2026,
+        "cashDividend": 0.5,
+        "stockDividend": 0.0,
+        "totalDividend": 0.5
+      },
       {
         "year": 2025,
         "cashDividend": 2.0,
@@ -25617,6 +25623,25 @@
         "trust_ratio": 0.47414,
         "dealer_ratio": 0.021644,
         "three_inst_ratio": 6.705784
+      },
+      "2026-04-10": {
+        "dealer_self_buy": 4.0,
+        "foreign_buy": 172.0,
+        "trust_buy": 1.0,
+        "dealer_self_net_buy": -3.4560000000000004,
+        "foreign_net_buy": -165.0,
+        "trust_net_buy": -10.409,
+        "dealer_self_sell": 7.456,
+        "foreign_sell": 337.0,
+        "trust_sell": 11.409,
+        "dealer_buy": 4.0,
+        "dealer_sell": 7.456,
+        "dealer_net_buy": -3.4560000000000004,
+        "code": "8163",
+        "trust_ratio": 0.470422,
+        "dealer_ratio": 0.02041,
+        "foreign_ratio": 6.21,
+        "three_inst_ratio": 6.700832
       },
       "2021-02-08": {
         "foreign_ratio": 15.81,
