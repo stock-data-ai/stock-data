@@ -5,7 +5,7 @@
     "year": 2025,
     "quarter": 4,
     "revenue": 973680000.0,
-    "yoy": 0,
+    "yoy": -42.2,
     "grossMargin": 24.18,
     "operatingMargin": 5.11,
     "netMargin": 3.79,
@@ -19,15 +19,14 @@
     "annual": [
       {
         "year": 2025,
-        "revenue": 3097050000.0,
-        "grossProfit": 814963000.0,
-        "operatingIncome": 279682000.0,
-        "netIncome": 187406000.0,
-        "eps": 2.56,
-        "grossMargin": 26.31,
-        "operatingMargin": 9.03,
-        "netMargin": 6.05,
-        "note": "累季",
+        "revenue": 4035592000.0,
+        "grossProfit": 1065504000.0,
+        "operatingIncome": 366719000.0,
+        "netIncome": 250246000.0,
+        "eps": 3.42,
+        "grossMargin": 26.4,
+        "operatingMargin": 9.09,
+        "netMargin": 6.2,
         "revenueYoY": null
       },
       {
@@ -79,6 +78,19 @@
         "grossMargin": 23.7,
         "operatingMargin": 3.67,
         "netMargin": 5.46,
+        "note": "累季",
+        "revenueYoY": 25.48
+      },
+      {
+        "year": 2020,
+        "revenue": 2067989000.0,
+        "grossProfit": 461722000.0,
+        "operatingIncome": 28779000.0,
+        "netIncome": 16143000.0,
+        "eps": 0.44,
+        "grossMargin": 22.33,
+        "operatingMargin": 1.39,
+        "netMargin": 0.78,
         "note": "累季",
         "revenueYoY": null
       }
@@ -227,15 +239,33 @@
         "grossMargin": 22.8,
         "operatingMargin": 3.8,
         "netMargin": 2.65
+      },
+      {
+        "year": 2020,
+        "quarter": 4,
+        "revenue": 1122229000.0,
+        "grossProfit": 249295000.0,
+        "operatingIncome": 26442000.0,
+        "netIncome": 2933000.0,
+        "eps": 0.24,
+        "grossMargin": 22.21,
+        "operatingMargin": 2.36,
+        "netMargin": 0.26
+      },
+      {
+        "year": 2020,
+        "quarter": 2,
+        "revenue": 945760000.0,
+        "grossProfit": 212427000.0,
+        "operatingIncome": 2337000.0,
+        "netIncome": 13210000.0,
+        "eps": 0.2,
+        "grossMargin": 22.46,
+        "operatingMargin": 0.25,
+        "netMargin": 1.4
       }
     ],
     "dividends": [
-      {
-        "year": 2026,
-        "cashDividend": 2.0,
-        "stockDividend": 0.0,
-        "totalDividend": 2.0
-      },
       {
         "year": 2025,
         "cashDividend": 0.8,
@@ -292,6 +322,12 @@
       }
     ],
     "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 3,
+        "revenue": 220673000.0,
+        "yoy": null
+      },
       {
         "year": 2026,
         "month": 2,
@@ -1467,6 +1503,25 @@
         "foreign_ratio": 3.85,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.0,
+        "three_inst_ratio": 3.85
+      },
+      "2026-04-10": {
+        "dealer_self_buy": 0.0,
+        "foreign_buy": 27.0,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": 0.0,
+        "foreign_net_buy": -167.0,
+        "trust_net_buy": 0.0,
+        "dealer_self_sell": 0.0,
+        "foreign_sell": 194.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 0.0,
+        "dealer_sell": 0.0,
+        "dealer_net_buy": 0.0,
+        "code": "6272",
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.0,
+        "foreign_ratio": 3.85,
         "three_inst_ratio": 3.85
       },
       "2025-12-19": {
