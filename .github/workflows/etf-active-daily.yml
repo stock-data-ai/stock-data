@@ -38,12 +38,23 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Run active ETF crawler (統一投信)
+      - name: Run active ETF crawler (統一投信 — 00981A 00988A)
         run: |
+          UNIPRES_CODES="00981A 00988A"
           if [ -n "${{ inputs.codes }}" ]; then
-            uv run python etf_Crawler/fetch_active_etf_unipres.py ${{ inputs.codes }}
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00981A|00988A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_unipres.py $FILTERED || echo "跳過統一投信（無符合代碼）"
           else
             uv run python etf_Crawler/fetch_active_etf_unipres.py
+          fi
+
+      - name: Run active ETF crawler (群益投信 — 00982A 00992A)
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00982A|00992A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_capital.py $FILTERED || echo "跳過群益投信（無符合代碼）"
+          else
+            uv run python etf_Crawler/fetch_active_etf_capital.py
           fi
 
       - name: Commit & push updated ETF data
