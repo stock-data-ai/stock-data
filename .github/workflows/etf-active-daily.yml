@@ -80,6 +80,15 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_yuanta.py
           fi
 
+      - name: Run active ETF crawler (中信投信 — 00983A 00995A)
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00983A|00995A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_ctbc.py $FILTERED || echo "跳過中信投信（無符合代碼）"
+          else
+            uv run python etf_Crawler/fetch_active_etf_ctbc.py
+          fi
+
       - name: Commit & push updated ETF data
         run: |
           git config user.name "github-actions[bot]"
