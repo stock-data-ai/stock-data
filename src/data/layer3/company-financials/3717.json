@@ -12,7 +12,8 @@
     "eps": -0.29,
     "marketCap": 3741218010.0,
     "pe": 0.0,
-    "pb": 1.2
+    "pb": 1.2,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -88,7 +89,14 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2026,
+        "cashDividend": 0.2,
+        "stockDividend": 0.0,
+        "totalDividend": 0.2
+      }
+    ],
     "institutionalInvestors": {
       "2025-09-11": {
         "code": "3717",
@@ -2932,7 +2940,7 @@
       }
     }
   },
-  "lastUpdated": "2026-03-12",
+  "lastUpdated": "2026-04-10",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [

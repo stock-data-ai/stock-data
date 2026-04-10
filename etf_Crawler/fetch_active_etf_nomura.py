@@ -221,15 +221,29 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
         return False
 
 
-def run_backfill(targets: list, days: int) -> None:
-    """補過去 N 天的 holdingsHistory（跳過已有的日期與非交易日）。"""
+def _has_shares(etf_code: str, dt: str) -> bool:
+    """檢查指定日期的 holdingsHistory 是否含有張數資料。"""
+    json_path = ETF_DATA_DIR / f"{etf_code}.json"
+    try:
+        with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
+        snap = data.get("holdingsHistory", {}).get(dt, [])
+        return any(h.get("shares") is not None for h in snap)
+    except Exception:
+        return False
+
+
+def run_backfill(targets: list, days: int, force: bool = False) -> None:
+    """補過去 N 天的 holdingsHistory。
+    force=True 時：即使日期已存在，若無張數資料也重新抓取覆蓋。
+    """
     today = date.today()
     dates = [
         (today - timedelta(days=i)).isoformat()
         for i in range(days, 0, -1)  # 由舊到新
     ]
 
-    print(f"\n補歷史模式：過去 {days} 天（{dates[0]} ～ {dates[-1]}）")
+    print(f"\n補歷史模式：過去 {days} 天（{dates[0]} ～ {dates[-1]}）{'[強制覆蓋無張數資料]' if force else ''}")
 
     for etf_code in targets:
         print(f"\n【{etf_code}】")
@@ -245,9 +259,12 @@ def run_backfill(targets: list, days: int) -> None:
         filled, skipped = 0, 0
         for d in dates:
             if d in existing_dates:
-                print(f"  {d} — 已有資料，跳過")
-                skipped += 1
-                continue
+                if force and not _has_shares(etf_code, d):
+                    print(f"  {d} — 已有資料但無張數，重新抓取")
+                else:
+                    print(f"  {d} — 已有資料，跳過")
+                    skipped += 1
+                    continue
 
             holdings, tran_date = fetch_holdings(etf_code, search_date=d)
             if holdings:
@@ -265,6 +282,7 @@ def _parse_args():
     backfill_days = None
     etf_codes = []
 
+    force = False
     i = 0
     while i < len(args):
         if args[i] == "--date" and i + 1 < len(args):
@@ -277,6 +295,9 @@ def _parse_args():
                 print(f"[ERROR] --backfill 需要整數，收到：{args[i+1]}")
                 sys.exit(1)
             i += 2
+        elif args[i] == "--force":
+            force = True
+            i += 1
         elif args[i].startswith("--"):
             print(f"[ERROR] 未知選項：{args[i]}")
             sys.exit(1)
@@ -291,14 +312,14 @@ def _parse_args():
         print(f"支援清單：{', '.join(NOMURA_ACTIVE_ETFS)}")
         sys.exit(1)
 
-    return targets, search_date, backfill_days
+    return targets, search_date, backfill_days, force
 
 
 def main():
-    targets, search_date, backfill_days = _parse_args()
+    targets, search_date, backfill_days, force = _parse_args()
 
     if backfill_days is not None:
-        run_backfill(targets, backfill_days)
+        run_backfill(targets, backfill_days, force=force)
         return
 
     success, failed = 0, []
