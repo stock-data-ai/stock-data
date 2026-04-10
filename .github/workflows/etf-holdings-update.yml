@@ -1,0 +1,59 @@
+name: ETF Holdings Update (Weekly)
+
+on:
+  schedule:
+    # Weekly: Taiwan 08:00 on Saturday (UTC 00:00 Saturday)
+    - cron: '0 0 * * 6'
+  workflow_dispatch:
+    inputs:
+      codes:
+        description: '指定 ETF 代碼（空白分隔，留空=全部）'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: etf-holdings
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run ETF holdings crawler
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            uv run python etf_Crawler/fetch_etf_holdings.py ${{ inputs.codes }}
+          else
+            uv run python etf_Crawler/fetch_etf_holdings.py
+          fi
+
+      - name: Commit & push updated ETF data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/etf/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "ETF 持股更新 $(date +%Y-%m-%d)"
+            git push
+          fi
