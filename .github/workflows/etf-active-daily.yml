@@ -57,6 +57,29 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_capital.py
           fi
 
+      - name: Run active ETF crawler (野村投信 — 00980A 00985A)
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00980A|00985A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_nomura.py $FILTERED || echo "跳過野村投信（無符合代碼）"
+          else
+            uv run python etf_Crawler/fetch_active_etf_nomura.py
+          fi
+
+      - name: Set up Node.js (for 元大投信 NUXT parser)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run active ETF crawler (元大投信 — 00990A)
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00990A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_yuanta.py $FILTERED || echo "跳過元大投信（無符合代碼）"
+          else
+            uv run python etf_Crawler/fetch_active_etf_yuanta.py
+          fi
+
       - name: Commit & push updated ETF data
         run: |
           git config user.name "github-actions[bot]"

@@ -2,28 +2,51 @@ import logging
 from core.file_manager import FileManager
 from core.timezone import today_str
 from fetchers.dividends_from_csv import DividendsFromCSVFetcher
+from fetchers.mops_dividends import MOPSDividendFetcher
 
 logger = logging.getLogger(__name__)
 
 def run_import_dividends(args):
     """
-    處理從 CSV 匯入股利數據的任務
-    - 從 CSV 檔案中讀取所有公司的股利資料。
+    處理匯入股利數據的任務
+    - 結合本地 CSV 檔案 (歷史資料) 與 MOPS 開放資料 (即時公告)。
     - 遍歷每家公司，將其股利資料更新或添加到對應的 financial JSON 檔案中。
     """
-    logger.info("Handling dividend import from CSVs...")
+    logger.info("Handling dividend import (CSV + MOPS)...")
 
     file_mgr = FileManager()
     all_companies_map = {c["code"]: c["name"] for c in file_mgr.load_companies()}
+    
+    # 1. 抓取歷史資料 (CSV)
     csv_fetcher = DividendsFromCSVFetcher()
-
     all_dividends_data = csv_fetcher.fetch_all()
+    logger.info(f"Loaded dividend data for {len(all_dividends_data)} companies from CSVs.")
+
+    # 2. 抓取即時資料 (MOPS API)
+    mops_fetcher = MOPSDividendFetcher()
+    mops_data = mops_fetcher.fetch_all()
+    logger.info(f"Fetched live dividend data for {len(mops_data)} companies from MOPS.")
+
+    # 3. 合併資料 (MOPS 資料優先或累加)
+    for code, mops_div in mops_data.items():
+        if code not in all_dividends_data:
+            all_dividends_data[code] = mops_div
+        else:
+            # 合併年度資料
+            if 'years' not in all_dividends_data[code]:
+                all_dividends_data[code]['years'] = {}
+            
+            for year, year_data in mops_div['years'].items():
+                # 如果 MOPS 的年度數據存在，直接更新（因為 MOPS 包含公積加總且更即時）
+                all_dividends_data[code]['years'][year] = year_data
+            
+            # 更新頻率
+            if 'frequency' in mops_div:
+                all_dividends_data[code]['frequency'] = mops_div['frequency']
 
     if not all_dividends_data:
-        logger.warning("No dividend data found in CSV files. Exiting.")
+        logger.warning("No dividend data found. Exiting.")
         return
-
-    logger.info(f"Found dividend data for {len(all_dividends_data)} companies in CSVs.")
 
     companies_to_process = list(all_dividends_data.items())
     if args.code:
