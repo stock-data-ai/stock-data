@@ -2,9 +2,9 @@ name: Economic Daily Scraper
 
 on:
   schedule:
-    # Daily (Mon-Fri): Taiwan 07:00 & 23:00 (各爬一個主題)
-    - cron: '0 23 * * 0-4'    # UTC Sun-Thu 23:00 = TW Mon-Fri 07:00
-    - cron: '0 15 * * 1-5'    # UTC Mon-Fri 15:00 = TW Mon-Fri 23:00
+    # Daily: Taiwan 07:00 & 23:00 (Topic Rotation)
+    - cron: '0 23 * * *'    # UTC 23:00 = TW 07:00 next day
+    - cron: '0 15 * * *'    # UTC 15:00 = TW 23:00
   workflow_dispatch:
 
 jobs:

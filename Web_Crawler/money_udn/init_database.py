@@ -428,6 +428,24 @@ def run_rotate(delay: int = 10):
 
     print()
     print(f"主題 [{topic_name}] 完成: 成功 {result['success']}, 失敗 {result['fail']}")
+    
+    # --- 自動清理機制：保留最近 30 天的新聞 ---
+    try:
+        from datetime import timedelta
+        cutoff_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+        print(f"正在清理舊數據: 刪除 {cutoff_date} 之前的新聞...")
+        
+        cleanup_query = "DELETE FROM economic_daily_news WHERE pub_date < ?"
+        cleanup_res = d1.execute_query(cleanup_query, [cutoff_date])
+        
+        if cleanup_res.get('success'):
+            print(f"  ✓ 清理成功。")
+        else:
+            print(f"  ! 清理失敗: {cleanup_res.get('error', '未知錯誤')}")
+    except Exception as e:
+        print(f"  ! 執行清理時發生未預期錯誤: {e}")
+    # ------------------------------------------
+
     print(f"下次將執行: {topics[next_index]['shortname']} ({topics[next_index]['id']})")
 
     # 也更新本地進度
