@@ -184,6 +184,7 @@ def fetch_holdings(etf_code: str, node_bin: str) -> tuple:
             return [], None
 
         tran_date = _parse_trandate(parsed.get("trandate", ""))
+
         stocks = parsed.get("stocks", [])
 
         if not stocks:
@@ -249,9 +250,19 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> 
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
+        if not tran_date:
+            print(f"  [SKIP] 無法取得資料日期，跳過寫入")
+            return False
+
         prev_holdings = data.get("topHoldings", [])
         prev_date = data.get("lastUpdated")
-        current_date = tran_date or date.today().isoformat()
+        current_date = tran_date
+
+        if current_date == prev_date and prev_holdings:
+            _key = lambda x: x.get("code") or x.get("foreignCode") or x.get("name", "")
+            if sorted([_clean_snapshot(h) for h in holdings], key=_key) == sorted([_clean_snapshot(h) for h in prev_holdings], key=_key):
+                print(f"  [SKIP] {etf_code} 數據無變化（{current_date}），跳過寫入")
+                return True
 
         if "holdingsHistory" not in data:
             data["holdingsHistory"] = {}

@@ -110,6 +110,8 @@ def fetch_holdings(etf_code: str, search_date: Optional[str] = None) -> tuple:
 
         tran_date = _parse_date(fund_asset.get("NavDate", ""))
 
+
+
         stock_table = next(
             (t for t in tables if t.get("TableTitle") == "股票"), None
         )
@@ -167,7 +169,11 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
-        current_date = tran_date or date.today().isoformat()
+        if not tran_date:
+            print(f"  [SKIP] 無法取得資料日期，跳過寫入")
+            return False
+
+        current_date = tran_date
 
         if "holdingsHistory" not in data:
             data["holdingsHistory"] = {}
@@ -178,6 +184,12 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
         else:
             prev_holdings = data.get("topHoldings", [])
             prev_date = data.get("lastUpdated")
+
+            if current_date == prev_date and prev_holdings:
+                _key = lambda x: x.get("code") or x.get("name", "")
+                if sorted([_clean_snapshot(h) for h in holdings], key=_key) == sorted([_clean_snapshot(h) for h in prev_holdings], key=_key):
+                    print(f"  [SKIP] {etf_code} 數據無變化（{current_date}），跳過寫入")
+                    return True
 
             # 舊 topHoldings 補存歷史
             if prev_date and prev_holdings and prev_date not in data["holdingsHistory"]:

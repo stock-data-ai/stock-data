@@ -187,15 +187,19 @@ def update_etf_json(etf_code: str) -> bool:
 
 
 def load_all_codes() -> list:
-    """掃描 src/data/etf/ 下所有 ETF 代碼（排除 index.json）"""
+    """掃描 src/data/etf/ 下所有 ETF 代碼（排除 index.json 與主動型 ETF）"""
     return sorted(
         p.stem for p in ETF_DATA_DIR.glob("*.json")
-        if p.stem != "index"
+        if p.stem != "index" and not p.stem.endswith("A")
     )
 
 
 def main():
     target_codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
+    active = [c for c in target_codes if c.endswith("A")]
+    if active:
+        print(f"[WARN] 跳過主動型 ETF（由專屬爬蟲處理）：{', '.join(active)}")
+        target_codes = [c for c in target_codes if not c.endswith("A")]
     total = len(target_codes)
     success_count = 0
     failed_codes = []
