@@ -62,7 +62,8 @@ YUANTA_ACTIVE_ETFS = [
 # Node.js 腳本：解析 window.__NUXT__ 並輸出 JSON
 _NODE_SCRIPT = r"""
 const vm = require('vm');
-const data = process.argv[2];
+const fs = require('fs');
+const data = fs.readFileSync(process.argv[2], 'utf8');
 
 const code = 'var window = {}; ' + data + '; module.exports = window.__NUXT__;';
 const ctx = vm.createContext({ module: { exports: {} }, exports: {} });
@@ -119,9 +120,15 @@ def _parse_nuxt_via_node(nuxt_js: str, node_bin: str) -> Optional[dict]:
         f.write(_NODE_SCRIPT)
         script_path = f.name
 
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".txt", delete=False, encoding="utf-8"
+    ) as df:
+        df.write(nuxt_js)
+        data_path = df.name
+
     try:
         result = subprocess.run(
-            [node_bin, script_path, nuxt_js],
+            [node_bin, script_path, data_path],
             capture_output=True,
             text=True,
             timeout=30,
@@ -136,6 +143,7 @@ def _parse_nuxt_via_node(nuxt_js: str, node_bin: str) -> Optional[dict]:
         return None
     finally:
         Path(script_path).unlink(missing_ok=True)
+        Path(data_path).unlink(missing_ok=True)
 
 
 def _parse_trandate(trandate: str) -> Optional[str]:
