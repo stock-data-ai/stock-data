@@ -89,6 +89,15 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_ctbc.py
           fi
 
+      - name: Run active ETF crawler (復華投信 — 00991A)
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_fuhwa.py $FILTERED || echo "跳過復華投信（無符合代碼）"
+          else
+            uv run python etf_Crawler/fetch_active_etf_fuhwa.py
+          fi
+
       - name: Commit & push updated ETF data
         run: |
           git config user.name "github-actions[bot]"
