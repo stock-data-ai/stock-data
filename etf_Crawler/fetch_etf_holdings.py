@@ -100,8 +100,8 @@ def fetch_metadata(etf_code: str) -> dict:  # type: ignore[return]
         return {}
 
 
-def fetch_holdings(etf_code: str) -> list:
-    """從 MoneyDJ 爬取 ETF 成份股"""
+def fetch_holdings(etf_code: str) -> tuple[list, str]:
+    """從 MoneyDJ 爬取 ETF 成份股與資料日期"""
     url = MONEYDJ_HOLDINGS_URL.format(code=etf_code)
     print(f"  抓取成份股 {url}")
 
@@ -111,6 +111,12 @@ def fetch_holdings(etf_code: str) -> list:
         resp.encoding = "utf-8"
         soup = BeautifulSoup(resp.text, "html.parser")
 
+        # 抓取資料日期
+        data_date = ""
+        match = re.search(r"資料日期：(\d{4}/\d{2}/\d{2})", soup.get_text())
+        if match:
+            data_date = match.group(1).replace("/", "-")
+
         table = soup.find("table", {"class": "datalist"})
         if table is None:
             for t in soup.find_all("table"):
@@ -119,7 +125,7 @@ def fetch_holdings(etf_code: str) -> list:
                     break
 
         if table is None:
-            return []
+            return [], data_date
 
         holdings = []
         rows = table.find_all("tr")
@@ -145,13 +151,22 @@ def fetch_holdings(etf_code: str) -> list:
             if weight <= 0:
                 continue
             entry = {"name": name_text, "weight": weight}
+            
+            if len(cells) >= 3:
+                shares_text = cells[2].get_text(strip=True).replace(",", "")
+                if shares_text:
+                    try:
+                        entry["shares"] = int(float(shares_text))
+                    except ValueError:
+                        pass
+                        
             if code_raw:
                 entry["code"] = code_raw
             holdings.append(entry)
-        return holdings
+        return holdings, data_date
     except Exception as e:
         print(f"  [WARN] 無法抓取成份股: {e}")
-        return []
+        return [], ""
 
 
 def update_etf_json(etf_code: str) -> bool:
@@ -161,25 +176,44 @@ def update_etf_json(etf_code: str) -> bool:
         return False
 
     try:
-        holdings = fetch_holdings(etf_code)
+        holdings, data_date = fetch_holdings(etf_code)
         metadata = fetch_metadata(etf_code)
 
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
-        if holdings:
-            data["topHoldings"] = holdings
+        is_changed = False
+
+        # 比對持股與日期
+        if data_date and data.get("lastUpdated") != data_date:
+            is_changed = True
+        
+        if holdings and data.get("topHoldings") != holdings:
+            is_changed = True
+
+        # 比對 metadata
         if metadata:
             for key in ["dividendFrequency", "inceptionDate", "issuer"]:
-                if key in metadata:
+                if key in metadata and data.get(key) != metadata[key]:
+                    is_changed = True
                     data[key] = metadata[key]
 
-        data["lastUpdated"] = date.today().isoformat()
+        if not is_changed:
+            print(f"  [Skip] {etf_code} — 資料無變動 ({data_date})")
+            return True
+
+        if holdings:
+            data["topHoldings"] = holdings
+        
+        if data_date:
+            data["lastUpdated"] = data_date
+        else:
+            data["lastUpdated"] = date.today().isoformat()
 
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-        print(f"  [OK] {etf_code} — 更新完成")
+        print(f"  [OK] {etf_code} — 更新完成 ({data_date})")
         return True
     except Exception as e:
         print(f"  [ERROR] {etf_code} 更新失敗: {e}")
