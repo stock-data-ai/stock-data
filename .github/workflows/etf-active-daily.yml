@@ -98,6 +98,15 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_fuhwa.py
           fi
 
+      - name: Run active ETF crawler (安聯投信 — 00984A 00993A)
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00984A|00993A)$" | tr '\n' ' ' | xargs)
+            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_allianz.py $FILTERED || echo "跳過安聯投信（無符合代碼）"
+          else
+            uv run python etf_Crawler/fetch_active_etf_allianz.py
+          fi
+
       - name: Commit & push updated ETF data
         run: |
           git config user.name "github-actions[bot]"
