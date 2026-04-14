@@ -10,7 +10,11 @@
     {
       "name": "臺股期貨",
       "weight": 199.81,
-      "shares": 25425
+      "shares": 25425,
+      "previousWeight": 199.79,
+      "weightChange": 0.02,
+      "previousShares": 0,
+      "sharesChange": 0
     }
   ],
   "references": [
@@ -18,5 +22,13 @@
   ],
   "lastUpdated": "2026-04-14",
   "fundSize": 22.03,
-  "issuer": "元大投信"
+  "issuer": "元大投信",
+  "holdingsHistory": {
+    "2026-04-11": [
+      {
+        "name": "臺股期貨",
+        "weight": 199.79
+      }
+    ]
+  }
 }

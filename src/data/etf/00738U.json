@@ -11,11 +11,23 @@
     {
       "name": "白銀期貨",
       "weight": 19.99,
-      "shares": 288
+      "shares": 288,
+      "previousWeight": 39.99,
+      "weightChange": -20.0,
+      "previousShares": 0,
+      "sharesChange": 0
     }
   ],
   "references": [],
   "lastUpdated": "2026-04-13",
   "fundSize": 181.06,
-  "issuer": "元大投信"
+  "issuer": "元大投信",
+  "holdingsHistory": {
+    "2026-04-11": [
+      {
+        "name": "白銀期貨",
+        "weight": 39.99
+      }
+    ]
+  }
 }

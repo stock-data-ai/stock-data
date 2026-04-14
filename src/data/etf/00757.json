@@ -11,56 +11,140 @@
     {
       "name": "Broadcom",
       "weight": 11.0,
-      "shares": 351470
+      "shares": 351470,
+      "previousWeight": 10.5,
+      "weightChange": 0.5,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Amazon",
       "weight": 10.46,
-      "shares": 529090
+      "shares": 529090,
+      "previousWeight": 10.4,
+      "weightChange": 0.06,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Netflix",
       "weight": 9.97,
-      "shares": 1172546
+      "shares": 1172546,
+      "previousWeight": 10.07,
+      "weightChange": -0.1,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "NVIDIA",
       "weight": 9.6,
-      "shares": 615521
+      "shares": 615521,
+      "previousWeight": 9.53,
+      "weightChange": 0.07,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Alphabet - Class A Common Stock",
       "weight": 9.56,
-      "shares": 360883
+      "shares": 360883,
+      "previousWeight": 9.67,
+      "weightChange": -0.11,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Apple",
       "weight": 9.49,
-      "shares": 444267
+      "shares": 444267,
+      "previousWeight": 9.74,
+      "weightChange": -0.25,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Meta",
       "weight": 9.43,
-      "shares": 180354
+      "shares": 180354,
+      "previousWeight": 9.54,
+      "weightChange": -0.11,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Microsoft",
       "weight": 8.98,
-      "shares": 283417
+      "shares": 283417,
+      "previousWeight": 8.9,
+      "weightChange": 0.08,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Micron",
       "weight": 8.45,
-      "shares": 240487
+      "shares": 240487,
+      "previousWeight": 8.53,
+      "weightChange": -0.08,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "Palantir Technologies",
       "weight": 7.93,
-      "shares": 726845
+      "shares": 726845,
+      "previousWeight": 7.98,
+      "weightChange": -0.05,
+      "previousShares": 0,
+      "sharesChange": 0
     }
   ],
   "references": [],
   "lastUpdated": "2026-04-13",
   "fundSize": 365.52,
-  "issuer": "統一投信"
+  "issuer": "統一投信",
+  "holdingsHistory": {
+    "2026-04-11": [
+      {
+        "name": "Broadcom",
+        "weight": 10.5
+      },
+      {
+        "name": "Amazon",
+        "weight": 10.4
+      },
+      {
+        "name": "Netflix",
+        "weight": 10.07
+      },
+      {
+        "name": "Apple",
+        "weight": 9.74
+      },
+      {
+        "name": "Alphabet - Class A Common Stock",
+        "weight": 9.67
+      },
+      {
+        "name": "Meta",
+        "weight": 9.54
+      },
+      {
+        "name": "NVIDIA",
+        "weight": 9.53
+      },
+      {
+        "name": "Microsoft",
+        "weight": 8.9
+      },
+      {
+        "name": "Micron",
+        "weight": 8.53
+      },
+      {
+        "name": "Palantir Technologies",
+        "weight": 7.98
+      }
+    ]
+  }
 }

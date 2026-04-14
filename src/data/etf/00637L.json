@@ -11,22 +11,51 @@
     {
       "name": "富時中國A50指數期貨",
       "weight": 191.84,
-      "shares": 79000
+      "shares": 79000,
+      "previousWeight": 191.91,
+      "weightChange": -0.07,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "華夏滬深三百",
       "weight": 6.82,
-      "shares": 6000000
+      "shares": 6000000,
+      "previousWeight": 6.74,
+      "weightChange": 0.08,
+      "previousShares": 0,
+      "sharesChange": 0
     },
     {
       "name": "元大寶滬深",
       "weight": 1.14,
       "shares": 9511000,
-      "code": "0061"
+      "code": "0061",
+      "previousWeight": 1.13,
+      "weightChange": 0.01,
+      "previousShares": 0,
+      "sharesChange": 0
     }
   ],
   "references": [],
   "lastUpdated": "2026-04-14",
   "fundSize": 223.92,
-  "issuer": "元大投信"
+  "issuer": "元大投信",
+  "holdingsHistory": {
+    "2026-04-11": [
+      {
+        "name": "富時中國A50指數期貨",
+        "weight": 191.91
+      },
+      {
+        "name": "華夏滬深三百",
+        "weight": 6.74
+      },
+      {
+        "name": "元大寶滬深",
+        "weight": 1.13,
+        "code": "0061"
+      }
+    ]
+  }
 }

@@ -169,6 +169,16 @@ def fetch_holdings(etf_code: str) -> tuple[list, str]:
         return [], ""
 
 
+def _clean_snapshot(h: dict) -> dict:
+    """只保留歷史快照應有的欄位，去除比較欄位。"""
+    clean: dict = {"name": h["name"], "weight": h["weight"]}
+    if h.get("shares") is not None:
+        clean["shares"] = h["shares"]
+    if h.get("code"):
+        clean["code"] = h["code"]
+    return clean
+
+
 def update_etf_json(etf_code: str) -> bool:
     json_path = ETF_DATA_DIR / f"{etf_code}.json"
     if not json_path.exists():
@@ -182,38 +192,68 @@ def update_etf_json(etf_code: str) -> bool:
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
-        is_changed = False
-
-        # 比對持股與日期
-        if data_date and data.get("lastUpdated") != data_date:
-            is_changed = True
-        
-        if holdings and data.get("topHoldings") != holdings:
-            is_changed = True
-
         # 比對 metadata
         if metadata:
             for key in ["dividendFrequency", "inceptionDate", "issuer"]:
                 if key in metadata and data.get(key) != metadata[key]:
-                    is_changed = True
                     data[key] = metadata[key]
 
-        if not is_changed:
-            print(f"  [Skip] {etf_code} — 資料無變動 ({data_date})")
+        if not holdings:
+            print(f"  [Skip] {etf_code} — 無持股資料")
             return True
 
-        if holdings:
-            data["topHoldings"] = holdings
-        
-        if data_date:
-            data["lastUpdated"] = data_date
-        else:
-            data["lastUpdated"] = date.today().isoformat()
+        current_date = data_date or date.today().isoformat()
+        prev_holdings = data.get("topHoldings", [])
+        prev_date = data.get("lastUpdated")
+
+        # 比對是否有變動
+        if current_date == prev_date and prev_holdings:
+            _key = lambda x: x.get("code") or x.get("name", "")
+            if sorted([_clean_snapshot(h) for h in holdings], key=_key) == sorted(
+                [_clean_snapshot(h) for h in prev_holdings], key=_key
+            ):
+                print(f"  [Skip] {etf_code} — 資料無變動 ({current_date})")
+                return True
+
+        if "holdingsHistory" not in data:
+            data["holdingsHistory"] = {}
+
+        # 舊資料補存歷史
+        if prev_date and prev_holdings and prev_date not in data["holdingsHistory"]:
+            data["holdingsHistory"][prev_date] = [_clean_snapshot(h) for h in prev_holdings]
+
+        # 計算比較欄位
+        prev_map = {h.get("code") or h.get("name"): h for h in prev_holdings}
+        for h in holdings:
+            key = h.get("code") or h.get("name")
+            prev = prev_map.get(key)
+            if prev:
+                prev_w = prev.get("weight", 0)
+                h["previousWeight"] = prev_w
+                h["weightChange"] = round(h["weight"] - prev_w, 2)
+                prev_s = prev.get("shares") or 0
+                h["previousShares"] = prev_s
+                h["sharesChange"] = (h["shares"] - prev_s) if h.get("shares") is not None and prev_s else 0
+            else:
+                h["previousWeight"] = 0
+                h["weightChange"] = h["weight"]
+                h["previousShares"] = 0
+                h["sharesChange"] = h.get("shares") or 0
+
+        data["topHoldings"] = holdings
+        data["holdingsHistory"][current_date] = [_clean_snapshot(h) for h in holdings]
+
+        # 保留最近 30 天
+        sorted_dates = sorted(data["holdingsHistory"].keys(), reverse=True)
+        for old_d in sorted_dates[30:]:
+            del data["holdingsHistory"][old_d]
+
+        data["lastUpdated"] = current_date
 
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-        print(f"  [OK] {etf_code} — 更新完成 ({data_date})")
+        print(f"  [OK] {etf_code} — 更新完成 ({current_date})")
         return True
     except Exception as e:
         print(f"  [ERROR] {etf_code} 更新失敗: {e}")

@@ -11,7 +11,11 @@
       "name": "中信中國50",
       "weight": 7.39,
       "shares": 24760000,
-      "code": "00752"
+      "code": "00752",
+      "previousWeight": 7.52,
+      "weightChange": -0.13,
+      "previousShares": 0,
+      "sharesChange": 0
     }
   ],
   "references": [
@@ -19,5 +23,14 @@
   ],
   "lastUpdated": "2026-04-13",
   "fundSize": 67.87,
-  "issuer": "中國信託投信"
+  "issuer": "中國信託投信",
+  "holdingsHistory": {
+    "2026-04-11": [
+      {
+        "name": "中信中國50",
+        "weight": 7.52,
+        "code": "00752"
+      }
+    ]
+  }
 }
