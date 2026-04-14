@@ -39,29 +39,43 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Run active ETF crawler (統一投信 — 00981A 00988A)
+        id: unipres
         run: |
-          UNIPRES_CODES="00981A 00988A"
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00981A|00988A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_unipres.py $FILTERED || echo "跳過統一投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_unipres.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_unipres.py
           fi
 
       - name: Run active ETF crawler (群益投信 — 00982A 00992A)
+        id: capital
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00982A|00992A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_capital.py $FILTERED || echo "跳過群益投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_capital.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_capital.py
           fi
 
       - name: Run active ETF crawler (野村投信 — 00980A 00985A)
+        id: nomura
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00980A|00985A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_nomura.py $FILTERED || echo "跳過野村投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_nomura.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_nomura.py
           fi
@@ -72,40 +86,85 @@ jobs:
           node-version: '20'
 
       - name: Run active ETF crawler (元大投信 — 00990A)
+        id: yuanta
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00990A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_yuanta.py $FILTERED || echo "跳過元大投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_yuanta.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_yuanta.py
           fi
 
       - name: Run active ETF crawler (中信投信 — 00983A 00995A)
+        id: ctbc
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00983A|00995A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_ctbc.py $FILTERED || echo "跳過中信投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_ctbc.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_ctbc.py
           fi
 
       - name: Run active ETF crawler (復華投信 — 00991A)
+        id: fuhwa
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_fuhwa.py $FILTERED || echo "跳過復華投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_fuhwa.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_fuhwa.py
           fi
 
       - name: Run active ETF crawler (安聯投信 — 00984A 00993A)
+        id: allianz
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00984A|00993A)$" | tr '\n' ' ' | xargs)
-            [ -n "$FILTERED" ] && uv run python etf_Crawler/fetch_active_etf_allianz.py $FILTERED || echo "跳過安聯投信（無符合代碼）"
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_allianz.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
           else
             uv run python etf_Crawler/fetch_active_etf_allianz.py
           fi
+
+      - name: Job Summary
+        if: always()
+        run: |
+          echo "## 主動型 ETF 持股更新結果" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 投信 | ETF | 狀態 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|------|" >> $GITHUB_STEP_SUMMARY
+
+          status() {
+            local result=$1
+            local skipped=$2
+            if [ "$skipped" = "true" ]; then echo "⏭️ 略過"
+            elif [ "$result" = "success" ]; then echo "✅ 成功"
+            else echo "❌ 失敗"
+            fi
+          }
+
+          echo "| 統一投信 | 00981A 00988A | $(status '${{ steps.unipres.outcome }}' '${{ steps.unipres.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 群益投信 | 00982A 00992A | $(status '${{ steps.capital.outcome }}' '${{ steps.capital.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 野村投信 | 00980A 00985A | $(status '${{ steps.nomura.outcome }}' '${{ steps.nomura.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 元大投信 | 00990A | $(status '${{ steps.yuanta.outcome }}' '${{ steps.yuanta.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 中信投信 | 00983A 00995A | $(status '${{ steps.ctbc.outcome }}' '${{ steps.ctbc.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 復華投信 | 00991A | $(status '${{ steps.fuhwa.outcome }}' '${{ steps.fuhwa.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 安聯投信 | 00984A 00993A | $(status '${{ steps.allianz.outcome }}' '${{ steps.allianz.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
 
       - name: Commit & push updated ETF data
         run: |
