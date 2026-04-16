@@ -4,6 +4,9 @@ import logging
 from typing import Tuple, Optional, Dict, Any
 from tenacity import retry, stop_after_attempt, wait_exponential
 
+# 靜音 yfinance 內部的 HTTP Error 404 日誌，避免 OTC 股票切換時產生噪音
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
+
 logger = logging.getLogger(__name__)
 
 class YahooFetcher:

@@ -338,6 +338,7 @@ jobs:
           COMMANDS='${{ inputs.commands_json }}'
           CURRENT_ROUND="${{ inputs.rerun_round }}"
           TOTAL_FAILED=0
+          ONLY_MARKETCAP=true
 
           while IFS= read -r row; do
             ID=$(echo "$row" | jq -r '.id')
@@ -345,16 +346,29 @@ jobs:
             if [ -f "$COMBINED" ] && [ -s "$COMBINED" ]; then
               COUNT=$(wc -l < "$COMBINED")
               TOTAL_FAILED=$((TOTAL_FAILED + COUNT))
+              
+              # If any non-marketcap task failed, we need to respect the full delay
+              if [ "$ID" != "marketcap" ]; then
+                ONLY_MARKETCAP=false
+              fi
             fi
           done < <(echo "$COMMANDS" | jq -c '.[]')
 
           if [ "$TOTAL_FAILED" -gt 0 ] && [ "$CURRENT_ROUND" -lt "$MAX_RERUN_ROUNDS" ]; then
             NEXT_ROUND=$((CURRENT_ROUND + 1))
-            echo "::notice::Triggering rerun round ${NEXT_ROUND}/${MAX_RERUN_ROUNDS} for ${TOTAL_FAILED} companies"
+            
+            # Smart delay: if only marketcap (Yahoo API) failed, retry immediately (0 mins)
+            DELAY=$RERUN_DELAY_MINUTES
+            if [ "$ONLY_MARKETCAP" = "true" ]; then
+              echo "Only marketcap failures detected. Setting rerun delay to 0 mins."
+              DELAY=0
+            fi
+
+            echo "::notice::Triggering rerun round ${NEXT_ROUND}/${MAX_RERUN_ROUNDS} for ${TOTAL_FAILED} companies (Delay: ${DELAY}m)"
             gh workflow run "${{ inputs.caller_workflow }}" \
               -f task=${{ inputs.caller_task }} \
               -f rerun_round=$NEXT_ROUND \
-              -f delay_minutes=$RERUN_DELAY_MINUTES
+              -f delay_minutes=$DELAY
           elif [ "$TOTAL_FAILED" -gt 0 ]; then
             echo "::error::Max rerun rounds (${MAX_RERUN_ROUNDS}) reached. ${TOTAL_FAILED} companies still failed."
             exit 1
