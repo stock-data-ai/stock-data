@@ -45,11 +45,11 @@ uv run pytest finance_tools/tests/
 ### Data Flow
 
 ```
-FinMind API / TDCC / voidful
+FinMind API / TDCC API / voidful
         ↓
-finance_tools/fetchers/      (one fetcher per data type)
+finance_tools/domains/       (domain-specific fetchers and tasks)
         ↓
-finance_tools/processing/    (orchestration, batching)
+finance_tools/orchestration/ (orchestration, batching)
         ↓
 src/data/layer3/company-financials/{code}.json   (one file per company)
         ↓

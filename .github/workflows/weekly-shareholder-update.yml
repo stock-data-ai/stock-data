@@ -26,11 +26,6 @@ on:
         required: false
         default: true
         type: boolean
-      limit:
-        description: 'Limit number of companies (for testing)'
-        required: false
-        default: '0'
-        type: string
 
 concurrency:
   group: data-pipeline-shareholder
@@ -53,5 +48,4 @@ jobs:
       rerun_round: ${{ inputs.rerun_round || '0' }}
       batch: ${{ inputs.batch || '0' }}
       force: ${{ github.event_name == 'schedule' || inputs.force || true }}
-      limit: ${{ inputs.limit || '0' }}
     secrets: inherit
