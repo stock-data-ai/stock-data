@@ -11,7 +11,6 @@ BASE_DIR = Path("src/data/layer3")
 COMPANY_FINANCIALS_DIR = BASE_DIR / "company-financials"
 COMPANIES_DIR = BASE_DIR / "companies"
 COMPANY_TOPICS_DIR = BASE_DIR / "company-topics"
-COMPANY_STOCK_PRICES_DIR = BASE_DIR / "company-stock"
 JP_COMPANY_DIR = BASE_DIR / "company-jp"
 US_COMPANY_DIR = BASE_DIR / "company-us"
 

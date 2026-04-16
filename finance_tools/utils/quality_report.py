@@ -1,5 +1,5 @@
 import os
-import config
+import finance_tools.config as config
 
 
 def save_quality_report(task_name: str, batch, quality_issues: list) -> None:

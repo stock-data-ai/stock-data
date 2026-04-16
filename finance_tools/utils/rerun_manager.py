@@ -1,7 +1,7 @@
 import os
 import logging
 from typing import List, Dict, Optional
-import config
+import finance_tools.config as config
 
 logger = logging.getLogger(__name__)
 

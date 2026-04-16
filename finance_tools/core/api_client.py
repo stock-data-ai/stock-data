@@ -4,8 +4,8 @@ import logging
 import pandas as pd
 from FinMind.data import DataLoader
 from typing import Tuple, Optional, Callable
-import config
-from core.exceptions import ApiExhaustedError, ApiResponseError
+import finance_tools.config as config
+from finance_tools.core.exceptions import ApiExhaustedError, ApiResponseError
 
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 

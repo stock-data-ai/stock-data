@@ -8,8 +8,8 @@ import logging
 from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
-from core.timezone import today_str
-import config
+from finance_tools.core.timezone import today_str
+import finance_tools.config as config
 
 
 class FileManager:

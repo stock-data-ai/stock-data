@@ -3,7 +3,7 @@
 
 從 src/data/layer3/company-financials/*.json 讀取每支股票最後一筆有效的
 trust_ratio / dealer_ratio，結合 companies-all.json 的 issuedCommonShares
-反推持股張數，輸出 finance_tools/data/inst_ratio_seeds.json。
+反推持股張數，輸出 finance_tools/assets/seeds/inst_ratio_seeds.json。
 
 用法：
     uv run finance_tools/scripts/extract_seeds.py
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).parent.parent.parent
 FINANCIALS_DIR = REPO_ROOT / "src/data/layer3/company-financials"
 COMPANIES_FILE = REPO_ROOT / "src/data/layer3/companies/companies-all.json"
-OUTPUT_FILE = REPO_ROOT / "finance_tools/data/inst_ratio_seeds.json"
+OUTPUT_FILE = REPO_ROOT / "finance_tools/assets/seeds/inst_ratio_seeds.json"
 
 
 def load_companies() -> dict:

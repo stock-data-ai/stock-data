@@ -1,8 +1,8 @@
 import json
 import logging
 from typing import List, Dict
-from core.file_manager import FileManager
-import config
+from finance_tools.core.file_manager import FileManager
+import finance_tools.config as config
 
 logger = logging.getLogger(__name__)
 

@@ -30,6 +30,14 @@ load_dotenv() # take environment variables from .env.
 
 import argparse
 import logging
+import sys
+import os
+
+# Add the project root to sys.path to allow absolute imports of finance_tools
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 # Configure logging globally
 logging.basicConfig(
@@ -38,17 +46,17 @@ logging.basicConfig(
 )
 
 # Import the run functions from the newly created task modules
-from tasks.orchestrators.full_update import run_full_update
-from tasks.fundamentals.import_dividends import run_import_dividends
-from tasks.periodic.revenue import run_update_revenue
-from tasks.periodic.valuation import run_update_valuation
-from tasks.daily.marketcap import run_update_marketcap
-from tasks.fundamentals.company_info import run_update_company_info
-from foreign_companies.tasks import run_update_us_company_info
-from foreign_companies.tasks import run_update_jp_company_info
-from tasks.maintenance.check_quality import run_check_quality
-from tasks.periodic.shareholder_data import run_fetch_shareholder_data
-from tasks.daily.institutional_investors import run_update_institutional_investors
+from finance_tools.orchestration.full_update import run_full_update
+from finance_tools.domains.dividends.tasks import run_import_dividends
+from finance_tools.domains.revenue.tasks import run_update_revenue
+from finance_tools.domains.valuation.valuation_tasks import run_update_valuation
+from finance_tools.domains.valuation.marketcap_tasks import run_update_marketcap
+from finance_tools.domains.company_info.tasks import run_update_company_info
+from finance_tools.domains.company_info.foreign_tasks import run_update_us_company_info
+from finance_tools.domains.company_info.foreign_tasks import run_update_jp_company_info
+from finance_tools.orchestration.check_quality import run_check_quality
+from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
+from finance_tools.domains.institutional_investors.tasks import run_update_institutional_investors
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""

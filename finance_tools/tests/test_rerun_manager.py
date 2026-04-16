@@ -14,7 +14,7 @@ import unittest
 # Ensure finance_tools is on the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from utils.rerun_manager import RerunManager
+from finance_tools.utils.rerun_manager import RerunManager
 
 
 class TestRerunManager(unittest.TestCase):
@@ -23,12 +23,12 @@ class TestRerunManager(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp()
         # Monkey-patch RERUN_DIR for testing
-        import utils.rerun_manager as mod
+        import finance_tools.utils.rerun_manager as mod
         self._orig_dir = mod.RERUN_DIR
         mod.RERUN_DIR = self.test_dir
 
     def tearDown(self):
-        import utils.rerun_manager as mod
+        import finance_tools.utils.rerun_manager as mod
         mod.RERUN_DIR = self._orig_dir
         # Clean up temp files
         for f in os.listdir(self.test_dir):
@@ -129,39 +129,35 @@ class TestImports(unittest.TestCase):
     """驗證所有 task module 的 import 不會報錯（不需要 API key）"""
 
     def test_import_rerun_manager(self):
-        from utils.rerun_manager import RerunManager
+        from finance_tools.utils.rerun_manager import RerunManager
         self.assertIsNotNone(RerunManager)
 
     def test_import_company_list_loader(self):
-        from utils.company_list_loader import load_companies_for_processing
+        from finance_tools.utils.company_list_loader import load_companies_for_processing
         self.assertIsNotNone(load_companies_for_processing)
 
     def test_import_full_update(self):
-        from tasks.full_update import run_full_update
+        from finance_tools.orchestration.full_update import run_full_update
         self.assertIsNotNone(run_full_update)
 
     def test_import_update_valuation(self):
-        from tasks.update_valuation import run_update_valuation
+        from finance_tools.domains.valuation.valuation_tasks import run_update_valuation
         self.assertIsNotNone(run_update_valuation)
 
     def test_import_update_institutional_investors(self):
-        from tasks.update_institutional_investors import run_update_institutional_investors
+        from finance_tools.domains.institutional_investors.tasks import run_update_institutional_investors
         self.assertIsNotNone(run_update_institutional_investors)
 
     def test_import_fetch_shareholder_data(self):
-        from tasks.fetch_shareholder_data import run_fetch_shareholder_data
+        from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
         self.assertIsNotNone(run_fetch_shareholder_data)
 
     def test_import_update_revenue(self):
-        from tasks.update_revenue import run_update_revenue
+        from finance_tools.domains.revenue.tasks import run_update_revenue
         self.assertIsNotNone(run_update_revenue)
 
-    def test_import_update_stock_prices(self):
-        from tasks.update_stock_prices import run_update_stock_prices
-        self.assertIsNotNone(run_update_stock_prices)
-
     def test_import_check_quality(self):
-        from tasks.check_quality import run_check_quality
+        from finance_tools.orchestration.check_quality import run_check_quality
         self.assertIsNotNone(run_check_quality)
 
 

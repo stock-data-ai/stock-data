@@ -62,7 +62,12 @@ GitHub Pages (public static JSON API)
 - **core/** — Shared abstractions: `api_client.py` (FinMind quota management), `file_manager.py` (atomic JSON writes), `data_processor.py`, `timezone.py`, `exceptions.py`
 - **fetchers/** — One module per data type (financials, revenue, market cap, institutional investors, TDCC, dividends, P/E/P/B)
 - **processing/** — `company_processor.py` (combines fetchers per company), `fetch_orchestrator.py` (coordinates batch runs)
-- **tasks/** — CLI task implementations invoked by cli.py
+- **tasks/** — CLI task implementations invoked by cli.py, organized by frequency/category:
+  - **daily/**: Market cap, institutional investors
+  - **periodic/**: Monthly revenue, weekly shareholder data, valuation
+  - **fundamentals/**: Basic company info, manual dividend imports
+  - **orchestrators/**: Full update coordination
+  - **maintenance/**: Data quality checks
 - **utils/** — `company_list_loader.py` (resolve --code/--topic to list), `rerun_manager.py` (track failures), `quality_report.py`
 
 ### CI/CD Pipeline (GitHub Actions)
