@@ -76,27 +76,18 @@ class FetchOrchestrator:
         logger.debug(f"正在擷取 {code} 的外資持股比例...")
         return self.shareholding_fetcher(code, start_date)
 
-    def fetch_stock_price_for_market_cap(self, code: str) -> Optional[float]:
-        """Fetches the latest stock price for market cap calculation."""
-        from .financial_calculator import FinancialCalculator # Local import to avoid circular dependency
-        from fetchers.taiwan_stock_price import fetch_taiwan_stock_price_history, get_latest_price_from_df
-
-        logger.debug(f"正在為 {code} 擷取最新股價以計算市值...")
+    def fetch_market_cap_directly(self, code: str) -> Optional[float]:
+        """Fetches market cap directly from Yahoo Finance."""
+        from fetchers.yahoo_fetcher import YahooFetcher
+        logger.debug(f"正在為 {code} 從 Yahoo 擷取現城市值...")
         try:
-            # We fetch a short period as we only need the latest price
-            df = fetch_taiwan_stock_price_history(
-                stock_id=code,
-                client=self.finmind_client,
-                days=30 # Fetch last 30 days to be safe
-            )
-            if not df.empty:
-                return get_latest_price_from_df(df)
-            else:
-                logger.warning(f"無法擷取 {code} 的股價。")
-                return None
-        except ApiExhaustedError:
-            raise
+            yahoo = YahooFetcher()
+            stats = yahoo.fetch_market_stats(code)
+            market_cap = stats.get("marketCap")
+            if market_cap:
+                return float(market_cap)
+            return None
         except Exception as e:
-            logger.error(f"擷取 {code} 股價時發生錯誤： {e}")
+            logger.error(f"從 Yahoo 擷取 {code} 市值時發生錯誤： {e}")
             return None
 

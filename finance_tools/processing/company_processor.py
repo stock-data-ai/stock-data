@@ -215,7 +215,7 @@ class CompanyProcessor:
 
     def process_marketcap_only(self, code: str, name: str, force_update: bool = False) -> tuple[bool, dict]:
         """
-        Only updates market cap data (fetch stock price via API + calculate).
+        Only updates market cap data using Yahoo Finance.
         Returns (success, status).
         """
         status = {"marketcap": False, "skipped": False}
@@ -226,28 +226,23 @@ class CompanyProcessor:
 
         logger.debug(f"正在處理 {code} {name} 的市值資料...")
         try:
-            # 1. 透過 API 取得最新股價
-            latest_price = self.fetch_orchestrator.fetch_stock_price_for_market_cap(code)
+            # 直接從 Yahoo 取得市值數值
+            market_cap = self.fetch_orchestrator.fetch_market_cap_directly(code)
 
-            # 2. 取得已發行股數
-            company_detail = self.all_companies_details.get(code, {})
-            issued_shares = company_detail.get("gov", {}).get("capital", {}).get("issuedCommonShares")
-
-            # 3. 計算市值
-            market_cap = self.calculator.calculate_market_cap(latest_price, issued_shares)
-            if market_cap > 0:
+            if market_cap and market_cap > 0:
                 status["marketcap"] = True
             else:
-                logger.warning(f"  ⚠️ {code} 的市值為 0。請檢查已發行股數和最新價格。")
+                logger.warning(f"  ⚠️ 無法從 Yahoo 取得 {code} 的市值。")
+                return False, status
 
-            # 4. 讀取現有資料，只更新市值欄位
+            # 3. 讀取現有資料，只更新市值欄位
             existing_data = self.file_mgr.load_financial_data(code)
             final_data = self.assembler.merge_marketcap(existing_data, market_cap)
 
-            # 5. 儲存
+            # 4. 儲存
             final_data_cleaned = self.processor.clean_nan(final_data)
             if self.file_mgr.save_financial_data(code, final_data_cleaned):
-                logger.debug(f"  ✔️ 市值資料處理完畢 {code} {name}。")
+                logger.debug(f"  ✔️ 從 Yahoo 取得市值並處理完畢 {code} {name}。")
                 return True, status
             else:
                 logger.error(f"  ❌ 儲存 {code} 的市值資料失敗。")

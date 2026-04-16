@@ -38,18 +38,17 @@ logging.basicConfig(
 )
 
 # Import the run functions from the newly created task modules
-from tasks.full_update import run_full_update
-from tasks.import_dividends import run_import_dividends
-from tasks.update_revenue import run_update_revenue
-from tasks.update_valuation import run_update_valuation
-from tasks.update_marketcap import run_update_marketcap
-from tasks.update_company_info import run_update_company_info
+from tasks.orchestrators.full_update import run_full_update
+from tasks.fundamentals.import_dividends import run_import_dividends
+from tasks.periodic.revenue import run_update_revenue
+from tasks.periodic.valuation import run_update_valuation
+from tasks.daily.marketcap import run_update_marketcap
+from tasks.fundamentals.company_info import run_update_company_info
 from foreign_companies.tasks import run_update_us_company_info
 from foreign_companies.tasks import run_update_jp_company_info
-from tasks.check_quality import run_check_quality
-from tasks.fetch_shareholder_data import run_fetch_shareholder_data
-from tasks.update_institutional_investors import run_update_institutional_investors
-from tasks.update_stock_prices import run_update_stock_prices
+from tasks.maintenance.check_quality import run_check_quality
+from tasks.periodic.shareholder_data import run_fetch_shareholder_data
+from tasks.daily.institutional_investors import run_update_institutional_investors
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -125,13 +124,6 @@ def main():
     )
     add_common_arguments(parser_inst_inv, include_force=True, include_rerun=True)
     parser_inst_inv.set_defaults(func=run_update_institutional_investors)
-
-    # --- 'update-stock-prices' command ---
-    parser_stock_prices = subparsers.add_parser(
-        "update-stock-prices", help="從 FinMind 擷取並儲存歷史股價。"
-    )
-    add_common_arguments(parser_stock_prices, include_force=False, include_rerun=True) # Force not really applicable for this
-    parser_stock_prices.set_defaults(func=run_update_stock_prices)
 
     args = parser.parse_args()
     
