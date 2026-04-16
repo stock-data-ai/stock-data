@@ -75,15 +75,28 @@ class YahooFetcher:
         Fetches key statistics like market cap, PE, PB from Yahoo.
         """
         symbol = self.to_yahoo_symbol(stock_id)
-        try:
-            ticker = yf.Ticker(symbol)
-            info = ticker.info
-            
-            # Try .TWO if info is empty or missing key fields
-            if (not info or 'marketCap' not in info) and symbol.endswith(".TW"):
-                alt_symbol = symbol.replace(".TW", ".TWO")
-                ticker = yf.Ticker(alt_symbol)
+        
+        def get_info(s):
+            try:
+                ticker = yf.Ticker(s)
                 info = ticker.info
+                if not info or 'marketCap' not in info:
+                    return None
+                return info
+            except Exception:
+                return None
+
+        try:
+            info = get_info(symbol)
+            
+            # If failed and it's a 4-digit code, try .TWO (OTC)
+            if not info and symbol.endswith(".TW"):
+                alt_symbol = symbol.replace(".TW", ".TWO")
+                logger.debug(f"No info for {symbol}, trying {alt_symbol}")
+                info = get_info(alt_symbol)
+
+            if not info:
+                return {}
 
             return {
                 "marketCap": info.get("marketCap"),
@@ -94,5 +107,5 @@ class YahooFetcher:
                 "currentPrice": info.get("currentPrice") or info.get("regularMarketPrice"),
             }
         except Exception as e:
-            logger.error(f"Error fetching Yahoo market stats for {stock_id}: {e}")
+            logger.debug(f"Error fetching Yahoo market stats for {stock_id}: {e}")
             return {}

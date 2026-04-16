@@ -42,16 +42,16 @@ class DataAssembler:
             existing_data['latest'] = {}
         
         # Mapping Yahoo stats to our JSON structure
-        if 'marketCap' in valuation_stats and valuation_stats['marketCap']:
+        if valuation_stats.get('marketCap') is not None:
             existing_data['latest']['marketCap'] = valuation_stats['marketCap']
         
-        if 'trailingPE' in valuation_stats and valuation_stats['trailingPE']:
+        if valuation_stats.get('trailingPE') is not None:
             existing_data['latest']['pe'] = valuation_stats['trailingPE']
             
-        if 'priceToBook' in valuation_stats and valuation_stats['priceToBook']:
+        if valuation_stats.get('priceToBook') is not None:
             existing_data['latest']['pb'] = valuation_stats['priceToBook']
             
-        if 'dividendYield' in valuation_stats and valuation_stats['dividendYield']:
+        if valuation_stats.get('dividendYield') is not None:
             # Yahoo returns yield as decimal (0.05), we store as percentage
             existing_data['latest']['dividendYield'] = valuation_stats['dividendYield'] * 100
             
