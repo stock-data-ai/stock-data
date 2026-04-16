@@ -17,8 +17,7 @@
 | `update-jp-company-info`  | 抓取日本公司基本資料（需指定代碼，如 5201.JP）                 | `uv run finance_tools/cli.py update-jp-company-info --code 5201.JP`  |
 | `full-update`             | 完整更新所有數據：財報、營收、股利、市值及**本地股價歷史**（每季財報後執行） | `uv run finance_tools/cli.py full-update`                            |
 | `update-revenue`          | 更新月營收數據（每月 10 日後執行）                             | `uv run finance_tools/cli.py update-revenue`                         |
-| `update-marketcap`        | 更新市值數據（每日收盤後執行，基於本地股價檔案計算，不需 API） | `uv run finance_tools/cli.py update-marketcap`                       |
-| `update-valuation`        | 更新本益比(PE)/淨值比(PB)估值數據（每日收盤後執行）            | `uv run finance_tools/cli.py update-valuation`                       |
+| `update-marketcap`        | 更新市值、本益比(PE)、淨值比(PB)及殖利率數據（透過 Yahoo API 每日更新） | `uv run finance_tools/cli.py update-marketcap`                       |
 | `update-institutional-investors` | 更新三大法人買賣超數據（每日收盤後執行）                     | `uv run finance_tools/cli.py update-institutional-investors`         |
 | `fetch-shareholder-data`  | 抓取股權分散表數據（每週執行）                                 | `uv run finance_tools/cli.py fetch-shareholder-data`                 |
 | `import-dividends`        | 從本地 CSV 檔案匯入股利資料（手動操作）                        | `uv run finance_tools/cli.py import-dividends`                       |
@@ -50,8 +49,8 @@ uv run finance_tools/cli.py update-revenue --topic AI
 
 #### 測試與錯誤處理
 ```bash
-# 測試性地更新前 5 家公司的估值
-uv run finance_tools/cli.py update-valuation --limit 5
+# 測試性地更新前 5 家公司的市值估值
+uv run finance_tools/cli.py update-marketcap --limit 5
 
 # 檢查所有數據品質，並重新處理所有失敗的項目
 uv run finance_tools/cli.py check-quality
@@ -60,14 +59,12 @@ uv run finance_tools/cli.py full-update --rerun
 
 ## 🗓️ 建議更新時程 (與自動化排程對應)
 
-為了保持數據最新，建議按照以下頻率執行指令。這些指令與 `.github/workflows/data-pipeline.yml` 中的自動化排程相對應：
+為了保持數據最新，建議按照以下頻率執行指令。這些指令與 `.github/workflows/` 中的自動化排程相對應：
 
-*   **每日 (週一至週五，收盤後) (GitHub Actions: 台灣時間 07:00 及 23:00):**
-    *   `uv run finance_tools/cli.py update-stock-prices` (抓取台股歷史股價數據並儲存至本地)
-    *   `uv run finance_tools/cli.py update-marketcap` (更新市值)
+*   **每日 (週一至週五，收盤後) (GitHub Actions: 台灣時間 22:00):**
+    *   `uv run finance_tools/cli.py update-marketcap` (更新市值、PE、PB、殖利率)
     *   `uv run finance_tools/cli.py update-institutional-investors` (更新三大法人買賣超數據)
 *   **每週六 (GitHub Actions: 台灣時間 09:00):**
-    *   `uv run finance_tools/cli.py update-valuation` (更新本益比(PE)/淨值比(PB)估值數據)
     *   `uv run finance_tools/cli.py fetch-shareholder-data` (抓取股權分散表數據)
 *   **每週日 (大更新) (GitHub Actions: 台灣時間 09:00):**
     *   `uv run finance_tools/cli.py full-update` (完整更新所有數據：財報、營收、市值、股利)

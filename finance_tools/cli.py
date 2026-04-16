@@ -12,7 +12,6 @@ Commands:
   full-update           - Update financials, revenue, and dividends.
   import-dividends      - Import dividend information from local CSV files.
   update-revenue        - Update monthly revenue data only.
-  update-valuation      - Update PE/PB valuation metrics for existing files.
   update-marketcap      - Update market capitalization using local price data.
   update-company-info   - Update basic information for all listed companies.
   check-quality         - Check data quality and generate a failure queue.
@@ -49,7 +48,6 @@ logging.basicConfig(
 from finance_tools.orchestration.full_update import run_full_update
 from finance_tools.domains.dividends.tasks import run_import_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
-from finance_tools.domains.valuation.valuation_tasks import run_update_valuation
 from finance_tools.domains.valuation.marketcap_tasks import run_update_marketcap
 from finance_tools.domains.company_info.tasks import run_update_company_info
 from finance_tools.domains.company_info.foreign_tasks import run_update_us_company_info
@@ -93,11 +91,6 @@ def main():
     add_common_arguments(parser_revenue, include_force=True, include_rerun=True)
     parser_revenue.set_defaults(func=run_update_revenue)
     
-    # --- 'update-valuation' command ---
-    parser_valuation = subparsers.add_parser("update-valuation", help="為現有檔案更新本益比/股價淨值比估值指標。")
-    add_common_arguments(parser_valuation, include_force=True, include_rerun=True)
-    parser_valuation.set_defaults(func=run_update_valuation)
-
     # --- 'update-marketcap' command ---
     parser_marketcap = subparsers.add_parser("update-marketcap", help="透過 API 取得股價更新市值。")
     add_common_arguments(parser_marketcap, include_force=True, include_rerun=True)

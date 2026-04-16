@@ -46,14 +46,13 @@ class DataAssembler:
             existing_data['latest']['marketCap'] = valuation_stats['marketCap']
         
         if 'trailingPE' in valuation_stats and valuation_stats['trailingPE']:
-            existing_data['latest']['peRatio'] = valuation_stats['trailingPE']
+            existing_data['latest']['pe'] = valuation_stats['trailingPE']
             
         if 'priceToBook' in valuation_stats and valuation_stats['priceToBook']:
-            existing_data['latest']['pbRatio'] = valuation_stats['priceToBook']
+            existing_data['latest']['pb'] = valuation_stats['priceToBook']
             
         if 'dividendYield' in valuation_stats and valuation_stats['dividendYield']:
-            # Yahoo returns yield as decimal (0.05), we store as percentage? 
-            # Let's keep consistency with project. (Checking other files...)
+            # Yahoo returns yield as decimal (0.05), we store as percentage
             existing_data['latest']['dividendYield'] = valuation_stats['dividendYield'] * 100
             
         existing_data['lastUpdated'] = today_str()
