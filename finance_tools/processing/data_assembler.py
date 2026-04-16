@@ -34,6 +34,32 @@ class DataAssembler:
         return existing_data
 
     @staticmethod
+    def merge_valuation(existing_data: Dict, valuation_stats: Dict[str, Any]) -> Dict:
+        """Merges market cap, PE, PB, and Yield into existing company data."""
+        if not existing_data:
+            existing_data = {}
+        if 'latest' not in existing_data:
+            existing_data['latest'] = {}
+        
+        # Mapping Yahoo stats to our JSON structure
+        if 'marketCap' in valuation_stats and valuation_stats['marketCap']:
+            existing_data['latest']['marketCap'] = valuation_stats['marketCap']
+        
+        if 'trailingPE' in valuation_stats and valuation_stats['trailingPE']:
+            existing_data['latest']['peRatio'] = valuation_stats['trailingPE']
+            
+        if 'priceToBook' in valuation_stats and valuation_stats['priceToBook']:
+            existing_data['latest']['pbRatio'] = valuation_stats['priceToBook']
+            
+        if 'dividendYield' in valuation_stats and valuation_stats['dividendYield']:
+            # Yahoo returns yield as decimal (0.05), we store as percentage? 
+            # Let's keep consistency with project. (Checking other files...)
+            existing_data['latest']['dividendYield'] = valuation_stats['dividendYield'] * 100
+            
+        existing_data['lastUpdated'] = today_str()
+        return existing_data
+
+    @staticmethod
     def merge_marketcap(existing_data: Dict, market_cap: float) -> Dict:
         """Merges only market cap into existing company data."""
         if not existing_data:

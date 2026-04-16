@@ -215,7 +215,7 @@ class CompanyProcessor:
 
     def process_marketcap_only(self, code: str, name: str, force_update: bool = False) -> tuple[bool, dict]:
         """
-        Only updates market cap data using Yahoo Finance.
+        Only updates market cap and valuation data (PE, PB, Yield) using Yahoo Finance.
         Returns (success, status).
         """
         status = {"marketcap": False, "skipped": False}
@@ -224,28 +224,28 @@ class CompanyProcessor:
             status["skipped"] = True
             return True, status
 
-        logger.debug(f"正在處理 {code} {name} 的市值資料...")
+        logger.debug(f"正在處理 {code} {name} 的市值與估值資料...")
         try:
-            # 直接從 Yahoo 取得市值數值
-            market_cap = self.fetch_orchestrator.fetch_market_cap_directly(code)
+            # 直接從 Yahoo 取得完整估值統計數據
+            valuation_stats = self.fetch_orchestrator.fetch_valuation_stats(code)
 
-            if market_cap and market_cap > 0:
+            if valuation_stats and valuation_stats.get("marketCap"):
                 status["marketcap"] = True
             else:
-                logger.warning(f"  ⚠️ 無法從 Yahoo 取得 {code} 的市值。")
+                logger.warning(f"  ⚠️ 無法從 Yahoo 取得 {code} 的完整估值數據。")
                 return False, status
 
-            # 3. 讀取現有資料，只更新市值欄位
+            # 3. 讀取現有資料，更新市值與估值指標
             existing_data = self.file_mgr.load_financial_data(code)
-            final_data = self.assembler.merge_marketcap(existing_data, market_cap)
+            final_data = self.assembler.merge_valuation(existing_data, valuation_stats)
 
             # 4. 儲存
             final_data_cleaned = self.processor.clean_nan(final_data)
             if self.file_mgr.save_financial_data(code, final_data_cleaned):
-                logger.debug(f"  ✔️ 從 Yahoo 取得市值並處理完畢 {code} {name}。")
+                logger.debug(f"  ✔️ 從 Yahoo 取得市值與估值並處理完畢 {code} {name}。")
                 return True, status
             else:
-                logger.error(f"  ❌ 儲存 {code} 的市值資料失敗。")
+                logger.error(f"  ❌ 儲存 {code} 的市值估值資料失敗。")
                 return False, status
 
         except ApiExhaustedError:

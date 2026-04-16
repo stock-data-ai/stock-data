@@ -16,10 +16,10 @@ DEFAULT_SLEEP_RANGE = config.DEFAULT_SLEEP_RANGE
 
 def run_update_marketcap(args):
     """
-    更新市值到 company-financials 檔案。
-    透過 Yahoo Finance API 直接取得最新市值數據。
+    更新市值與估值指標 (PE, PB, Yield) 到 company-financials 檔案。
+    透過 Yahoo Finance API 直接取得最新數據。
     """
-    logger.info("正在透過 Yahoo Finance 取得數據更新市值...")
+    logger.info("正在透過 Yahoo Finance 取得數據更新市值與估值指標...")
 
     batch = args.batch.split("/")[0] if getattr(args, "batch", None) else None
     read_mgr = RerunManager("marketcap")
@@ -93,7 +93,7 @@ def run_update_marketcap(args):
     save_quality_report("marketcap", batch, quality_issues)
 
     logger.info(f"\n{'='*60}")
-    logger.info(f"OK 市值更新完成: {success_count}/{len(companies)} 家公司")
+    logger.info(f"OK 市值與估值更新完成: {success_count}/{len(companies)} 家公司")
     if failed_companies:
         logger.warning(f"X 失敗: {len(failed_companies)} 家公司")
         unique_failed = sorted(list(set(failed_companies)))

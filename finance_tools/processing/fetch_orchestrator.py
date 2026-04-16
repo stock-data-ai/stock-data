@@ -78,16 +78,20 @@ class FetchOrchestrator:
 
     def fetch_market_cap_directly(self, code: str) -> Optional[float]:
         """Fetches market cap directly from Yahoo Finance."""
+        stats = self.fetch_valuation_stats(code)
+        market_cap = stats.get("marketCap")
+        if market_cap:
+            return float(market_cap)
+        return None
+
+    def fetch_valuation_stats(self, code: str) -> Dict[str, Any]:
+        """Fetches full valuation stats (market cap, PE, PB, Yield) from Yahoo Finance."""
         from fetchers.yahoo_fetcher import YahooFetcher
-        logger.debug(f"正在為 {code} 從 Yahoo 擷取現城市值...")
+        logger.debug(f"正在為 {code} 從 Yahoo 擷取估值數據...")
         try:
             yahoo = YahooFetcher()
-            stats = yahoo.fetch_market_stats(code)
-            market_cap = stats.get("marketCap")
-            if market_cap:
-                return float(market_cap)
-            return None
+            return yahoo.fetch_market_stats(code)
         except Exception as e:
-            logger.error(f"從 Yahoo 擷取 {code} 市值時發生錯誤： {e}")
-            return None
+            logger.error(f"從 Yahoo 擷取 {code} 估值時發生錯誤： {e}")
+            return {}
 
