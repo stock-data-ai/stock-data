@@ -81,7 +81,7 @@ Three-stage reusable workflow (`.github/workflows/_reusable-data-job.yml`):
 
 **Schedules** (Taiwan time):
 - Mon–Fri 09:00 & 17:00: Market cap + institutional investors
-- Sat 09:00: P/E, P/B + TDCC shareholder data
+- Sat 09:00: TDCC shareholder data (API-based)
 - Sun 09:00: Full update (financials, revenue, dividends)
 - Mon–Fri 07:00 & 23:00: Economic Daily news scraper
 

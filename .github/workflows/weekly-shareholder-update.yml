@@ -1,0 +1,57 @@
+name: Weekly Shareholder Update (Saturday)
+
+on:
+  schedule:
+    # 每週六：台北時間 09:00 (UTC 01:00)
+    - cron: '0 1 * * 6'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task identifier (for rerun chaining)'
+        required: false
+        default: 'shareholder-weekly'
+        type: string
+      rerun_round:
+        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
+        required: false
+        default: '0'
+        type: string
+      batch:
+        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        required: false
+        default: '0'
+        type: string
+      force:
+        description: 'Force update even if already updated today'
+        required: false
+        default: true
+        type: boolean
+      limit:
+        description: 'Limit number of companies (for testing)'
+        required: false
+        default: '0'
+        type: string
+
+concurrency:
+  group: data-pipeline-shareholder
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  pipeline:
+    uses: ./.github/workflows/_reusable-data-job.yml
+    with:
+      commands_json: '[{"id":"shareholder","cli":"fetch-shareholder-data","label":"TDCC 股權分散表"}]'
+      artifact_prefix: weekly-shareholder
+      commit_message: "每週更新 TDCC 股權分散數據 (API)"
+      caller_workflow: weekly-shareholder-update.yml
+      caller_task: shareholder-weekly
+      summary_title: "TDCC 每週更新"
+      rerun_round: ${{ inputs.rerun_round || '0' }}
+      batch: ${{ inputs.batch || '0' }}
+      force: ${{ github.event_name == 'schedule' || inputs.force || true }}
+      limit: ${{ inputs.limit || '0' }}
+    secrets: inherit
