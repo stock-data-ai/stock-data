@@ -73,45 +73,42 @@ class MarginTradingFetcher:
         """
         Fetch OTC (TPEx) margin trading data.
         date_str: YYYYMMDD
+        TPEx API fields: 代號,名稱,前資餘額,資買(3),資賣(4),現償(5),資餘額(6),...,前券餘額,券賣(11),券買(12),券償(13),券餘額(14),...
         """
-        # Convert YYYYMMDD to ROC date (YYY/MM/DD)
         try:
             dt = datetime.strptime(date_str, '%Y%m%d')
-            roc_year = dt.year - 1911
-            roc_date = f"{roc_year}/{dt.month:02}/{dt.day:02}"
+            roc_date = f"{dt.year - 1911}/{dt.month:02}/{dt.day:02}"
         except Exception:
             return None
 
         timestamp = int(time.time() * 1000)
         url = self.TPEX_URL.format(roc_date=roc_date, timestamp=timestamp)
-        
+
         try:
             response = requests.get(url, headers=self.headers, timeout=15)
             response.raise_for_status()
             data = response.json()
-            
-            if not data.get('aaData'):
+
+            # API 現為 tables 格式（同 TWSE），舊版 aaData 已棄用
+            tables = data.get('tables', [])
+            if not tables or not tables[0].get('data'):
                 logger.warning(f"TPEx Margin Trading API returned no data for date {date_str}")
                 return None
-            
-            # TPEx fields are usually:
-            # 0: Code, 1: Name, 2: MarginPrevBalance, 3: MarginBuy, 4: MarginSell, 5: MarginCashRepay, 6: MarginBalance...
-            # 8: ShortPrevBalance, 9: ShortBuy, 10: ShortSell, 11: ShortStockRepay, 12: ShortBalance...
-            df = pd.DataFrame(data['aaData'])
-            
-            # Column selection for TPEx (based on typical JSON structure)
-            # 0: Code, 1: Name, 3: MarginBuy, 4: MarginSell, 5: MarginCashRepay, 6: MarginBalance
-            # 9: ShortBuy, 10: ShortSell, 11: ShortStockRepay, 12: ShortBalance
-            result = df.iloc[:, [0, 1, 3, 4, 5, 6, 9, 10, 11, 12]].copy()
+
+            table = tables[0]
+            df = pd.DataFrame(table['data'], columns=table['fields'])
+
+            # 0:代號 1:名稱 3:資買 4:資賣 5:現償 6:資餘額 11:券賣 12:券買 13:券償 14:券餘額
+            result = df.iloc[:, [0, 1, 3, 4, 5, 6, 12, 11, 13, 14]].copy()
             result.columns = [
-                'stock_id', 'stock_name', 
+                'stock_id', 'stock_name',
                 'margin_buy', 'margin_sell', 'margin_repay', 'margin_balance',
                 'short_buy', 'short_sell', 'short_repay', 'short_balance'
             ]
-            
+
             for col in result.columns[2:]:
                 result[col] = pd.to_numeric(result[col].apply(self._clean_number), errors='coerce')
-                
+
             return result
         except Exception as e:
             logger.error(f"Error fetching TPEx margin trading for {date_str}: {e}")

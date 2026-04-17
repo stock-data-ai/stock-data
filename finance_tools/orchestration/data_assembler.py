@@ -74,14 +74,15 @@ class DataAssembler:
         if margin_data.get('short_balance') is not None:
             existing_data['latest']['shortBalance'] = int(margin_data['short_balance'])
 
-        # 2. Update History
-        if 'marginTradingHistory' not in existing_data:
-            existing_data['marginTradingHistory'] = {}
-        
-        # Use target date if provided, otherwise today
+        # 2. Update History (nested inside 'historical')
+        if 'historical' not in existing_data:
+            existing_data['historical'] = {}
+        if 'marginTrading' not in existing_data['historical']:
+            existing_data['historical']['marginTrading'] = {}
+
         date_key = margin_data.get('date', today_str())
-        
-        existing_data['marginTradingHistory'][date_key] = {
+
+        existing_data['historical']['marginTrading'][date_key] = {
             "marginBuy": int(margin_data.get('margin_buy', 0)),
             "marginSell": int(margin_data.get('margin_sell', 0)),
             "marginBalance": int(margin_data.get('margin_balance', 0)),

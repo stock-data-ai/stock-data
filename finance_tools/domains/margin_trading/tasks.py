@@ -71,14 +71,15 @@ def run_update_margin_trading(args):
             # 這裡選擇跳過，因為此專案通常以已存在的公司為主
             continue
 
-        if "marginTradingHistory" not in existing_data:
-            existing_data["marginTradingHistory"] = {}
-
-        # 建立新的歷史紀錄點
-        # 轉換日期格式為 YYYY-MM-DD 存檔 (保持專案慣例)
+        # 建立新的歷史紀錄點，放在 historical.marginTrading 裡
         formatted_date = f"{target_date[:4]}-{target_date[4:6]}-{target_date[6:]}"
-        
-        history_entry = {
+
+        if "historical" not in existing_data:
+            existing_data["historical"] = {}
+        if "marginTrading" not in existing_data["historical"]:
+            existing_data["historical"]["marginTrading"] = {}
+
+        existing_data["historical"]["marginTrading"][formatted_date] = {
             "marginBuy": int(row['margin_buy']),
             "marginSell": int(row['margin_sell']),
             "marginBalance": int(row['margin_balance']),
@@ -86,9 +87,6 @@ def run_update_margin_trading(args):
             "shortSell": int(row['short_sell']),
             "shortBalance": int(row['short_balance'])
         }
-
-        # 更新歷史紀錄
-        existing_data["marginTradingHistory"][formatted_date] = history_entry
         
         # 同步更新最新狀態 (latest) 以便快速分析
         if "latest" not in existing_data:
