@@ -47,10 +47,15 @@ on:
         required: false
         type: boolean
         default: false
+      rerun_delay_minutes:
+        description: 'Minutes to wait between rerun rounds (for API quota reset)'
+        required: false
+        type: string
+        default: '65'
 
 env:
   MAX_RERUN_ROUNDS: 4
-  RERUN_DELAY_MINUTES: 65
+  RERUN_DELAY_MINUTES: ${{ inputs.rerun_delay_minutes || '65' }}
 
 jobs:
   setup:
