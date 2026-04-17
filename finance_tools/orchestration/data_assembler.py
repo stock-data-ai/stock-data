@@ -59,17 +59,6 @@ class DataAssembler:
         return existing_data
 
     @staticmethod
-    def merge_marketcap(existing_data: Dict, market_cap: float) -> Dict:
-        """Merges only market cap into existing company data."""
-        if not existing_data:
-            existing_data = {}
-        if 'latest' not in existing_data:
-            existing_data['latest'] = {}
-        existing_data['latest']['marketCap'] = market_cap
-        existing_data['lastUpdated'] = today_str()
-        return existing_data
-
-    @staticmethod
     def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any]):
         """Constructs the final data dictionary to be saved."""
         final_data = existing_data if existing_data else {}

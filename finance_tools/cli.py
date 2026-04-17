@@ -1,28 +1,25 @@
 """
-Finance Tools - Refactored Unified Command Line Interface (CLI)
-
-This script acts as the main entry point for all financial data processing tasks.
-It parses command-line arguments and dispatches them to the appropriate task modules
-located in the `finance_tools.tasks` package.
+Finance Tools - Unified Command Line Interface (CLI)
 
 Usage:
   uv run finance_tools/cli.py [COMMAND] [OPTIONS]
 
 Commands:
-  full-update           - Update financials, revenue, and dividends.
-  import-dividends      - Import dividend information from local CSV files.
-  update-revenue        - Update monthly revenue data only.
-  update-marketcap      - Update market capitalization using local price data.
-  update-company-info   - Update basic information for all listed companies.
-  check-quality         - Check data quality and generate a failure queue.
-  fetch-shareholder-data- Fetch and store TDCC shareholder distribution data.
+  update-daily          - 每日更新：市值（Yahoo）+ 三大法人（FinMind）。
+  full-update           - 全量更新：財務報表、營收、股利。
+  update-revenue        - 僅更新月營收。
+  import-dividends      - 從 MOPS 抓取股利公告。
+  fetch-shareholder-data- 擷取 TDCC 股東分配資料。
+  update-company-info   - 更新上市公司基本資訊。
+  check-quality         - 檢查資料品質。
 
 Common Options:
-  --code CODE           - Process a single company by its stock code (e.g., 2330).
-  --topic TOPIC         - Process all companies within a specific topic.
-  --limit LIMIT         - Limit the number of companies to process (for testing).
-  --force               - Force update even if the data file already exists.
-  --rerun               - Rerun failed companies from the queue.
+  --code CODE           - 處理單一公司（股票代碼）。
+  --topic TOPIC         - 處理特定主題的所有公司。
+  --limit LIMIT         - 限制處理公司數（測試用）。
+  --batch N/M           - 批次處理，例如 2/4。
+  --force               - 強制更新（忽略今日已更新檢查）。
+  --rerun               - 從失敗佇列重新執行。
 """
 from dotenv import load_dotenv
 load_dotenv() # take environment variables from .env.
@@ -46,15 +43,14 @@ logging.basicConfig(
 
 # Import the run functions from the newly created task modules
 from finance_tools.orchestration.full_update import run_full_update
+from finance_tools.orchestration.daily_update import run_update_daily
 from finance_tools.domains.dividends.tasks import run_import_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
-from finance_tools.domains.valuation.marketcap_tasks import run_update_marketcap
 from finance_tools.domains.company_info.tasks import run_update_company_info
 from finance_tools.domains.company_info.foreign_tasks import run_update_us_company_info
 from finance_tools.domains.company_info.foreign_tasks import run_update_jp_company_info
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
-from finance_tools.domains.institutional_investors.tasks import run_update_institutional_investors
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -76,6 +72,11 @@ def main():
     
     subparsers = parser.add_subparsers(dest="command", required=True, help="可用的指令")
 
+    # --- 'update-daily' command ---
+    parser_daily = subparsers.add_parser("update-daily", help="每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。")
+    add_common_arguments(parser_daily, include_force=True, include_rerun=True)
+    parser_daily.set_defaults(func=run_update_daily)
+
     # --- 'full-update' command ---
     parser_full = subparsers.add_parser("full-update", help="更新財務報表、營收和股利。")
     add_common_arguments(parser_full, include_force=True, include_rerun=True)
@@ -91,11 +92,6 @@ def main():
     add_common_arguments(parser_revenue, include_force=True, include_rerun=True)
     parser_revenue.set_defaults(func=run_update_revenue)
     
-    # --- 'update-marketcap' command ---
-    parser_marketcap = subparsers.add_parser("update-marketcap", help="透過 API 取得股價更新市值。")
-    add_common_arguments(parser_marketcap, include_force=True, include_rerun=True)
-    parser_marketcap.set_defaults(func=run_update_marketcap)
-
     # --- 'update-company-info' command ---
     parser_info = subparsers.add_parser("update-company-info", help="更新所有上市公司的基本資訊。")
     parser_info.set_defaults(func=run_update_company_info)
@@ -118,13 +114,6 @@ def main():
     parser_shareholder = subparsers.add_parser("fetch-shareholder-data", help="擷取 TDCC 股東分配資料。")
     add_common_arguments(parser_shareholder, include_force=True, include_rerun=True)
     parser_shareholder.set_defaults(func=run_fetch_shareholder_data)
-
-    # --- 'update-institutional-investors' command ---
-    parser_inst_inv = subparsers.add_parser(
-        "update-institutional-investors", help="更新三大法人每日買賣超資料。"
-    )
-    add_common_arguments(parser_inst_inv, include_force=True, include_rerun=True)
-    parser_inst_inv.set_defaults(func=run_update_institutional_investors)
 
     args = parser.parse_args()
     

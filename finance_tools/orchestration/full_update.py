@@ -1,4 +1,3 @@
-import sys
 import time
 import random
 from datetime import timedelta
@@ -24,6 +23,7 @@ from finance_tools.domains.institutional_investors.calculator import InstRatioCa
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.rerun_manager import RerunManager
 from finance_tools.utils.quality_report import save_quality_report
+from finance_tools.utils.task_helpers import handle_api_exhausted
 import finance_tools.config as config
 
 _REPO_ROOT = Path(__file__).parent.parent.parent
@@ -98,7 +98,6 @@ def run_full_update(args):
         finmind_client=client,
         all_companies_details=companies_data,
         all_dividends_data=all_dividends_from_csv,
-        institutional_investors_fetcher=None,
         institutional_investors_shares_fetcher=lambda stock_id, start_date: fetch_institutional_investors_shares(client, stock_id, start_date),
         shareholding_fetcher=lambda stock_id, start_date: fetch_shareholding(client, stock_id, start_date),
         inst_ratio_calculator=inst_ratio_calc,
@@ -147,15 +146,11 @@ def run_full_update(args):
                 logger.warning(f"[{idx}/{len(companies)}] ❌  {code} {name} 處理失敗")
                 failed_companies.append(code)
         except ApiExhaustedError:
-            logger.warning(f"\n⚠️  API 額度已耗盡，發生於公司 {code}。所有可用 token 皆已用盡。")
-            remaining = companies[idx:]
-            
-            # 儲存品質報告 (即使 API 斷掉也要存目前已有的)
-            save_quality_report("full_update", batch, quality_issues)
-            write_mgr.save_api_exhausted(failed_companies, code, remaining)
-            logger.info(f"本輪已完成: {success_count}/{len(companies)} 間公司。")
-            logger.info("退出，等待 GitHub Actions 觸發下一輪重試。")
-            sys.exit(1)
+            handle_api_exhausted(
+                "full_update", batch, write_mgr,
+                failed_companies, code, companies[idx:],
+                success_count, len(companies), quality_issues,
+            )
         except Exception as e:
             logger.exception(f"  X 處理公司 {code} 時發生未預期錯誤:")
             failed_companies.append(code)
