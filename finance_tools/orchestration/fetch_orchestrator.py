@@ -5,6 +5,7 @@ import pandas as pd
 
 from finance_tools.core.api_client import FinMindClient
 from finance_tools.domains.valuation.yahoo_fetcher import YahooFetcher
+from finance_tools.domains.margin_trading.fetcher import MarginTradingFetcher
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ class FetchOrchestrator:
         self.institutional_investors_shares_fetcher = institutional_investors_shares_fetcher
         self.shareholding_fetcher = shareholding_fetcher
         self._yahoo = YahooFetcher()
+        self._margin = MarginTradingFetcher()
 
     def fetch_financials(self, code: str, start_date: str) -> Tuple[list, list, bool]:
         logger.debug(f"正在擷取 {code} 的財務報表...")
@@ -60,4 +62,9 @@ class FetchOrchestrator:
         except Exception as e:
             logger.error(f"從 Yahoo 擷取 {code} 估值時發生錯誤： {e}")
             return {}
+
+    def fetch_all_margin_trading(self, date_str: str) -> Optional[pd.DataFrame]:
+        """Fetches all margin trading records for a specific date."""
+        logger.debug(f"正在從 TWSE/TPEx 擷取 {date_str} 的全市場融資融券資料...")
+        return self._margin.fetch_all(date_str)
 

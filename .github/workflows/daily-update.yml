@@ -44,9 +44,10 @@ jobs:
   pipeline:
     uses: ./.github/workflows/_reusable-data-job.yml
     with:
-      commands_json: '[{"id":"daily","cli":"update-daily","label":"市值+三大法人"}]'
+      commands_json: '[{"id":"daily","cli":"update-daily","label":"每日更新(市值+法人+資券)"}]'
       artifact_prefix: daily
-      commit_message: "每日更新三大法人+市值數據"
+
+      commit_message: "每日更新三大法人+市值+融資融券數據"
       caller_workflow: daily-update.yml
       caller_task: daily
       summary_title: "每日更新"

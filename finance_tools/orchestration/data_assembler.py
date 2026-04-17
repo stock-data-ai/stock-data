@@ -61,7 +61,40 @@ class DataAssembler:
         return existing_data
 
     @staticmethod
-    def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any]):
+    def merge_margin_trading(existing_data: Dict, margin_data: Dict[str, Any]) -> Dict:
+        """Merges margin trading data for a specific date into history."""
+        if not existing_data:
+            existing_data = {}
+        
+        # 1. Update Latest
+        if 'latest' not in existing_data:
+            existing_data['latest'] = {}
+        if margin_data.get('margin_balance') is not None:
+            existing_data['latest']['marginBalance'] = int(margin_data['margin_balance'])
+        if margin_data.get('short_balance') is not None:
+            existing_data['latest']['shortBalance'] = int(margin_data['short_balance'])
+
+        # 2. Update History
+        if 'marginTradingHistory' not in existing_data:
+            existing_data['marginTradingHistory'] = {}
+        
+        # Use target date if provided, otherwise today
+        date_key = margin_data.get('date', today_str())
+        
+        existing_data['marginTradingHistory'][date_key] = {
+            "marginBuy": int(margin_data.get('margin_buy', 0)),
+            "marginSell": int(margin_data.get('margin_sell', 0)),
+            "marginBalance": int(margin_data.get('margin_balance', 0)),
+            "shortBuy": int(margin_data.get('short_buy', 0)),
+            "shortSell": int(margin_data.get('short_sell', 0)),
+            "shortBalance": int(margin_data.get('short_balance', 0))
+        }
+        
+        existing_data['lastUpdated'] = today_str()
+        return existing_data
+
+    @staticmethod
+    def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any], margin_trading_data: Dict[str, Any] = None):
         """Constructs the final data dictionary to be saved."""
         final_data = existing_data if existing_data else {}
         
@@ -76,6 +109,9 @@ class DataAssembler:
         })
         if 'historical' not in final_data:
             final_data['historical'] = {}
+
+        if margin_trading_data:
+            final_data = DataAssembler.merge_margin_trading(final_data, margin_trading_data)
 
         # The 'monthly' data is already a list of dicts from the fetcher
         monthly_list = monthly if monthly else None

@@ -11,6 +11,7 @@ Commands:
   import-dividends      - 從 MOPS 抓取股利公告。
   fetch-shareholder-data- 擷取 TDCC 股東分配資料。
   update-company-info   - 更新上市公司基本資訊。
+  update-margin         - 更新融資融券資料。
   check-quality         - 檢查資料品質。
 
 Common Options:
@@ -51,6 +52,7 @@ from finance_tools.domains.company_info.foreign_tasks import run_update_us_compa
 from finance_tools.domains.company_info.foreign_tasks import run_update_jp_company_info
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
+from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -114,6 +116,12 @@ def main():
     parser_shareholder = subparsers.add_parser("fetch-shareholder-data", help="擷取 TDCC 股東分配資料。")
     add_common_arguments(parser_shareholder, include_force=True, include_rerun=True)
     parser_shareholder.set_defaults(func=run_fetch_shareholder_data)
+
+    # --- 'update-margin' command ---
+    parser_margin = subparsers.add_parser("update-margin", help="更新融資融券資料。")
+    add_common_arguments(parser_margin, include_force=True)
+    parser_margin.add_argument("--date", type=str, help="指定日期 (YYYYMMDD)。")
+    parser_margin.set_defaults(func=run_update_margin_trading)
 
     args = parser.parse_args()
     

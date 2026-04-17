@@ -9,10 +9,12 @@
     "netMargin": 48.35,
     "eps": 19.51,
     "dividendFrequency": "季",
-    "marketCap": 54069309734912,
-    "pe": 28.328804,
-    "pb": 9.976649,
-    "dividendYield": 114.99999999999999
+    "marketCap": 52643024076800,
+    "pe": 27.581522,
+    "pb": 9.713476,
+    "dividendYield": 114.99999999999999,
+    "marginBalance": 26865,
+    "shortBalance": 128
   },
   "lastUpdated": "2026-04-17",
   "shareholderDataHistory": {
@@ -27991,5 +27993,63 @@
       }
     }
   },
-  "dataQuality": "high"
+  "dataQuality": "high",
+  "marginTradingHistory": {
+    "2026-04-16": {
+      "marginBuy": 1495,
+      "marginSell": 1485,
+      "marginBalance": 26865,
+      "shortBuy": 12,
+      "shortSell": 44,
+      "shortBalance": 128
+    },
+    "2026-04-08": {
+      "marginBuy": 2882,
+      "marginSell": 2057,
+      "marginBalance": 26797,
+      "shortBuy": 1,
+      "shortSell": 21,
+      "shortBalance": 39
+    },
+    "2026-04-09": {
+      "marginBuy": 998,
+      "marginSell": 953,
+      "marginBalance": 26636,
+      "shortBuy": 17,
+      "shortSell": 3,
+      "shortBalance": 41
+    },
+    "2026-04-10": {
+      "marginBuy": 1848,
+      "marginSell": 1211,
+      "marginBalance": 27217,
+      "shortBuy": 2,
+      "shortSell": 21,
+      "shortBalance": 60
+    },
+    "2026-04-13": {
+      "marginBuy": 1565,
+      "marginSell": 635,
+      "marginBalance": 28141,
+      "shortBuy": 8,
+      "shortSell": 1,
+      "shortBalance": 53
+    },
+    "2026-04-14": {
+      "marginBuy": 1280,
+      "marginSell": 2063,
+      "marginBalance": 27299,
+      "shortBuy": 6,
+      "shortSell": 25,
+      "shortBalance": 71
+    },
+    "2026-04-15": {
+      "marginBuy": 851,
+      "marginSell": 1259,
+      "marginBalance": 26878,
+      "shortBuy": 4,
+      "shortSell": 29,
+      "shortBalance": 96
+    }
+  }
 }

@@ -196,13 +196,13 @@ class CompanyProcessor:
             logger.exception(f"  ❌ 處理 {code} 三大法人資料時發生未預期錯誤：")
             return False, status
 
-    def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False) -> tuple[bool, dict]:
+    def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False, margin_trading_data: Dict[str, Any] = None) -> tuple[bool, dict]:
         """
-        每日更新：市值（Yahoo）+ 三大法人（FinMind）合併為單次 load/save。
-        成功條件：兩者都拿到資料 AND 存檔成功。
+        每日更新：市值（Yahoo）+ 三大法人（FinMind）+ 融資融券（傳入資料）合併為單次 load/save。
+        成功條件：所有必要 API 都拿到資料 AND 存檔成功。
         任一缺失 → 仍嘗試儲存已取得的部分，但回傳 False（進 rerun queue）。
         """
-        status = {"marketcap": False, "inst": False, "skipped": False}
+        status = {"marketcap": False, "inst": False, "margin": bool(margin_trading_data), "skipped": False}
 
         if not force_update and self.file_mgr.is_updated_today(code):
             logger.info(f"  ✓ Skipping {code} (already updated today)")
@@ -210,7 +210,7 @@ class CompanyProcessor:
             return True, status
 
         try:
-            # 1. Yahoo Finance（內部已 try-except，失敗回傳 {}）
+            # 1. Yahoo Finance
             valuation_stats = self.fetch_orchestrator.fetch_valuation_stats(code)
             status["marketcap"] = bool(valuation_stats.get("marketCap"))
             if not status["marketcap"]:
@@ -218,15 +218,15 @@ class CompanyProcessor:
 
             time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
-            # 2. FinMind 三大法人（ApiExhaustedError 直接往上拋）
+            # 2. FinMind 三大法人
             ratios, inst_success = self._build_ratios(code, start_date)
             status["inst"] = inst_success
             if not inst_success:
                 logger.warning(f"  ⚠️ {code}: 無法從 FinMind 取得三大法人資料。")
 
-            # 3. 兩者都失敗 → 不寫檔，直接回傳 False
-            if not status["marketcap"] and not status["inst"]:
-                logger.warning(f"  ❌ {code} {name}: 市值與法人資料均無法取得，略過儲存。")
+            # 3. 三者都失敗 → 不寫檔
+            if not status["marketcap"] and not status["inst"] and not status["margin"]:
+                logger.warning(f"  ❌ {code} {name}: 每日更新相關資料均無法取得，略過儲存。")
                 return False, status
 
             # 4. 讀一次 → 合併有取得的部分 → 存一次
@@ -235,12 +235,15 @@ class CompanyProcessor:
                 existing_data = self.assembler.merge_valuation(existing_data, valuation_stats)
             if status["inst"]:
                 existing_data = self.assembler.merge_institutional_investors(existing_data, ratios)
+            if status["margin"]:
+                existing_data = self.assembler.merge_margin_trading(existing_data, margin_trading_data)
 
             if not self._save_cleaned(code, existing_data):
                 logger.error(f"  ❌ 儲存 {code} 的每日更新資料失敗。")
                 return False, status
 
-            # 5. 兩者都成功才算真正完成；部分成功已存檔但仍進 rerun queue
+            # 5. 市值+法人都成功才算完成；margin 為附加資料，不影響 rerun 判斷
+            #    （非融資券股票不在 margin_lookup → margin_data=None → 不算失敗）
             overall_success = status["marketcap"] and status["inst"]
             if overall_success:
                 logger.debug(f"  ✔️ {code} {name}: 每日更新完畢。")
