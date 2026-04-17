@@ -29,7 +29,9 @@ class DataAssembler:
             existing_data = {}
         if 'historical' not in existing_data:
             existing_data['historical'] = {}
-        existing_data['historical']['institutionalInvestors'] = institutional_investors_data if institutional_investors_data else None
+        existing_inst = existing_data['historical'].get('institutionalInvestors') or {}
+        existing_inst.update(institutional_investors_data or {})
+        existing_data['historical']['institutionalInvestors'] = existing_inst or None
         existing_data['lastUpdated'] = today_str()
         return existing_data
 
@@ -115,7 +117,7 @@ class DataAssembler:
             "quarterly": merged_quarterly,
             "monthlyRevenue": monthly_list[:72] if monthly_list else None,
             "dividends": merged_dividends if merged_dividends else None,
-            "institutionalInvestors": institutional_investors_data if institutional_investors_data else None,
+            "institutionalInvestors": {**(existing_historical.get('institutionalInvestors') or {}), **(institutional_investors_data or {})} or None,
         })
         final_data["lastUpdated"] = today_str()
         final_data["dataQuality"] = quality

@@ -93,7 +93,7 @@ def run_update_daily(args):
         inst_ratio_calculator=inst_ratio_calc,
     )
 
-    start_date = (now_tw() - timedelta(days=config.FULL_UPDATE_DAYS)).strftime("%Y-%m-%d")
+    start_date = (now_tw() - timedelta(days=config.DEFAULT_FETCH_DAYS)).strftime("%Y-%m-%d")
     success_count = 0
     failed_companies = []
     quality_issues = []
