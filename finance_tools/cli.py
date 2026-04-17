@@ -53,6 +53,7 @@ from finance_tools.domains.company_info.foreign_tasks import run_update_jp_compa
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
+from finance_tools.domains.market_sentiment.tasks import run_update_market_sentiment
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -122,6 +123,14 @@ def main():
     add_common_arguments(parser_margin, include_force=True)
     parser_margin.add_argument("--date", type=str, help="指定日期 (YYYYMMDD)。")
     parser_margin.set_defaults(func=run_update_margin_trading)
+
+    # --- 'update-market-sentiment' command ---
+    parser_sentiment = subparsers.add_parser(
+        "update-market-sentiment",
+        help="更新整體市場情緒：三大法人買賣超 + 融資融券加總。",
+    )
+    parser_sentiment.add_argument("--date", type=str, help="指定日期 (YYYYMMDD)。")
+    parser_sentiment.set_defaults(func=run_update_market_sentiment)
 
     args = parser.parse_args()
     

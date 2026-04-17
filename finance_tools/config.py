@@ -6,6 +6,7 @@ from pathlib import Path
 # or handle relative paths carefully. 
 # Based on current usage: "src/data/layer3"
 BASE_DIR = Path("src/data/layer3")
+MARKET_DATA_DIR = Path("src/data/market")
 
 # Subdirectories
 COMPANY_FINANCIALS_DIR = BASE_DIR / "company-financials"
