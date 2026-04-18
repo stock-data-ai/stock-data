@@ -34,13 +34,16 @@ def fetch_all_tdcc_shareholding_via_api() -> Dict[str, List[Dict[str, Any]]]:
     回傳格式為 { stock_id: [records] }
     """
     logger.info(f"[TDCC API] 正在從 {TDCC_API_URL} 抓取全市場最新資料...")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
     try:
         # 下載全市場資料
-        response = requests.get(TDCC_API_URL, timeout=60)
+        response = requests.get(TDCC_API_URL, headers=headers, timeout=60)
         response.raise_for_status()
         
         # 讀取 CSV (TDCC API 回傳的是 CSV 格式)
-        df = pd.read_csv(StringIO(response.text))
+        df = pd.read_csv(StringIO(response.text), encoding="utf-8")
         
         # 欄位重新命名以對齊現有格式
         df = df.rename(columns={

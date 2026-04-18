@@ -46,6 +46,6 @@ jobs:
       caller_task: shareholder-weekly
       summary_title: "TDCC 每週更新"
       rerun_round: ${{ inputs.rerun_round || '0' }}
-      batch: ${{ inputs.batch || '0' }}
+      batch: '1'
       force: ${{ github.event_name == 'schedule' || inputs.force || true }}
     secrets: inherit
