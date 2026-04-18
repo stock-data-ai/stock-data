@@ -134,20 +134,37 @@ class MarketSentimentFetcher:
             return None
 
     # ------------------------------------------------------------------
-    # Margin trading (融資融券) — TWSE + TPEx per-stock summed
+    # Margin trading (融資融券)
     # ------------------------------------------------------------------
 
-    def _fetch_twse_margin_raw(self, date_str: str) -> Optional[pd.DataFrame]:
+    def _parse_margin_balance_row(self, row: list) -> Dict:
         """
-        Fetch TWSE per-stock margin data with prev-balance columns included.
+        Parse one row from TWSE 信用交易統計 (table[0]).
+        Fields: 項目, 買進, 賣出, 現金(券)償還, 前日餘額, 今日餘額
+        """
+        p = self._parse_yuan  # reuse int parser (no ×1000 needed)
+        today = p(row[5])
+        prev = p(row[4])
+        return {
+            "change": today - prev,
+            "buy": p(row[1]),
+            "sell": p(row[2]),
+            "balance": today,
+        }
 
-        Expected 融資融券彙總 table column indices:
-          0: code, 1: name
-          2: margin_buy(張), 3: margin_sell(張), 4: margin_repay(張)
-          5: prev_margin_balance(張), 6: margin_balance(張), 7: margin_limit
-          8: short_sell(張), 9: short_buy(張), 10: short_repay(張)
-          11: prev_short_balance(張), 12: short_balance(張), 13: short_limit
-          14: offset(資券相抵)
+    def fetch_twse_margin(self, date_str: str) -> Optional[Dict]:
+        """
+        Fetch TWSE (上市) margin aggregate from MI_MARGN table[0] (信用交易統計).
+
+        table[0] rows (欄位: 項目, 買進, 賣出, 現金(券)償還, 前日餘額, 今日餘額):
+          0: 融資(交易單位)  — 張
+          1: 融券(交易單位)  — 張
+          2: 融資金額(仟元)  — 千元
+
+        Returns:
+          longBalance:  { change, buy, sell, balance }  — 張
+          shortBalance: { change, buy, sell, balance }  — 張
+          longAmount:   { change, buy, sell, balance }  — 元 (千元 × 1000)
         """
         url = self.TWSE_MARGIN_URL.format(date=date_str)
         try:
@@ -157,55 +174,44 @@ class MarketSentimentFetcher:
 
             if data.get("stat") != "OK":
                 logger.warning(
-                    "TWSE MI_MARGN returned stat=%s for %s", data.get("stat"), date_str
+                    "TWSE MI_MARGN stat=%s for %s", data.get("stat"), date_str
                 )
                 return None
 
-            target_table = None
-            for table in data.get("tables", []):
-                if "融資融券" in table.get("title", ""):
-                    target_table = table
-                    break
-
-            if not target_table or not target_table.get("data"):
-                logger.warning("TWSE MI_MARGN: 融資融券 table not found for %s", date_str)
+            summary_table = data.get("tables", [None])[0]
+            if not summary_table or not summary_table.get("data"):
+                logger.warning("TWSE MI_MARGN: 信用交易統計 table missing for %s", date_str)
                 return None
 
-            df = pd.DataFrame(
-                target_table["data"], columns=target_table["fields"]
-            )
-            # Select: code, name, margin_buy, margin_sell,
-            #         prev_margin_balance, margin_balance,
-            #         short_sell, short_buy,
-            #         prev_short_balance, short_balance
-            result = df.iloc[:, [0, 1, 2, 3, 5, 6, 8, 9, 11, 12]].copy()
-            result.columns = [
-                "stock_id", "stock_name",
-                "margin_buy", "margin_sell",
-                "prev_margin_balance", "margin_balance",
-                "short_sell", "short_buy",
-                "prev_short_balance", "short_balance",
-            ]
-            for col in result.columns[2:]:
-                result[col] = pd.to_numeric(
-                    result[col].apply(self._clean_number), errors="coerce"
-                ).fillna(0)
-            return result
+            rows = summary_table["data"]
+            if len(rows) < 3:
+                logger.warning("TWSE 信用交易統計 unexpected row count: %d", len(rows))
+                return None
+
+            long_balance = self._parse_margin_balance_row(rows[0])   # 融資(交易單位)
+            short_balance = self._parse_margin_balance_row(rows[1])  # 融券(交易單位)
+
+            # 融資金額(仟元) → convert to 元
+            raw = self._parse_margin_balance_row(rows[2])
+            long_amount = {k: v * 1000 for k, v in raw.items()}
+
+            return {
+                "longBalance": long_balance,
+                "shortBalance": short_balance,
+                "longAmount": long_amount,
+            }
         except Exception:
-            logger.exception("Error fetching TWSE MI_MARGN for %s", date_str)
+            logger.exception("Error fetching TWSE margin for %s", date_str)
             return None
 
-    def _fetch_tpex_margin_raw(self, date_str: str) -> Optional[pd.DataFrame]:
+    def fetch_tpex_margin(self, date_str: str) -> Optional[Dict]:
         """
-        Fetch TPEx per-stock margin data with prev-balance columns included.
+        Fetch TPEx (上櫃) margin aggregate by summing per-stock data.
+        TPEx has no server-side aggregate table; per-stock summation is required.
 
-        Expected tables[0] column indices (TPEx API):
-          0: code, 1: name
-          2: prev_margin_balance(張), 3: margin_buy(張), 4: margin_sell(張)
-          5: margin_repay(張), 6: margin_balance(張)
-          ...
-          10: prev_short_balance(張), 11: short_sell(張), 12: short_buy(張)
-          13: short_repay(張), 14: short_balance(張)
+        TPEx table[0] fields (confirmed 2026):
+          0:代號  1:名稱  2:前資餘額(張)  3:資買  4:資賣  5:現償  6:資餘額
+          10:前券餘額(張)  11:券賣  12:券買  13:券償  14:券餘額
         """
         try:
             dt = datetime.strptime(date_str, "%Y%m%d")
@@ -224,80 +230,43 @@ class MarketSentimentFetcher:
 
             tables = data.get("tables", [])
             if not tables or not tables[0].get("data"):
-                logger.warning("TPEx MI_MARGN returned no data for %s", date_str)
+                logger.warning("TPEx MI_MARGN no data for %s", date_str)
                 return None
 
             table = tables[0]
             df = pd.DataFrame(table["data"], columns=table["fields"])
-            # Select: code, name,
-            #         prev_margin_balance(2), margin_buy(3), margin_sell(4),
-            #         margin_balance(6),
-            #         prev_short_balance(10), short_sell(11), short_buy(12),
-            #         short_balance(14)
-            result = df.iloc[:, [0, 1, 2, 3, 4, 6, 10, 11, 12, 14]].copy()
-            result.columns = [
-                "stock_id", "stock_name",
-                "prev_margin_balance", "margin_buy", "margin_sell",
-                "margin_balance",
-                "prev_short_balance", "short_sell", "short_buy",
-                "short_balance",
+            # cols: prev_margin(2), margin_buy(3), margin_sell(4), margin_balance(6)
+            #       prev_short(10), short_sell(11), short_buy(12), short_balance(14)
+            cols = df.columns[[2, 3, 4, 6, 10, 11, 12, 14]]
+            names = [
+                "prev_margin", "margin_buy", "margin_sell", "margin_balance",
+                "prev_short", "short_sell", "short_buy", "short_balance",
             ]
-            for col in result.columns[2:]:
-                result[col] = pd.to_numeric(
-                    result[col].apply(self._clean_number), errors="coerce"
+            num = df[cols].copy()
+            num.columns = names
+            for c in names:
+                num[c] = pd.to_numeric(
+                    num[c].apply(self._clean_number), errors="coerce"
                 ).fillna(0)
-            return result
+
+            s = num.sum()
+            return {
+                "longBalance": {
+                    "change": int(s["margin_balance"] - s["prev_margin"]),
+                    "buy": int(s["margin_buy"]),
+                    "sell": int(s["margin_sell"]),
+                    "balance": int(s["margin_balance"]),
+                },
+                "shortBalance": {
+                    "change": int(s["short_balance"] - s["prev_short"]),
+                    "buy": int(s["short_sell"]),   # 券賣 = 融券建倉
+                    "sell": int(s["short_buy"]),   # 券買 = 融券回補
+                    "balance": int(s["short_balance"]),
+                },
+            }
         except Exception:
-            logger.exception("Error fetching TPEx MI_MARGN for %s", date_str)
+            logger.exception("Error fetching TPEx margin for %s", date_str)
             return None
-
-    def fetch_margin_aggregate(self, date_str: str) -> Optional[Dict]:
-        """
-        Compute market-wide margin trading totals by summing per-stock data
-        from TWSE + TPEx.
-
-        Returns:
-            Dict with:
-              longBalance:  { change, buy, sell, balance }  — all in 張
-              shortBalance: { change, buy, sell, balance }  — all in 張
-            Returns None if both exchanges fail.
-        """
-        twse_df = self._fetch_twse_margin_raw(date_str)
-        tpex_df = self._fetch_tpex_margin_raw(date_str)
-
-        dfs = [df for df in [twse_df, tpex_df] if df is not None]
-        if not dfs:
-            return None
-
-        combined = pd.concat(dfs, ignore_index=True)
-
-        def isum(col: str) -> int:
-            return int(combined[col].sum()) if col in combined.columns else 0
-
-        margin_buy = isum("margin_buy")
-        margin_sell = isum("margin_sell")
-        margin_balance = isum("margin_balance")
-        prev_margin_balance = isum("prev_margin_balance")
-
-        short_buy = isum("short_buy")
-        short_sell = isum("short_sell")
-        short_balance = isum("short_balance")
-        prev_short_balance = isum("prev_short_balance")
-
-        return {
-            "longBalance": {
-                "change": margin_balance - prev_margin_balance,
-                "buy": margin_buy,
-                "sell": margin_sell,
-                "balance": margin_balance,
-            },
-            "shortBalance": {
-                "change": short_balance - prev_short_balance,
-                "buy": short_buy,
-                "sell": short_sell,
-                "balance": short_balance,
-            },
-        }
 
     # ------------------------------------------------------------------
     # Combined
@@ -336,10 +305,21 @@ class MarketSentimentFetcher:
         else:
             logger.warning("All institutional data unavailable for %s", date_str)
 
-        margin = self.fetch_margin_aggregate(date_str)
-        if margin:
-            result["margin"] = {"date": formatted_date, **margin}
+        twse_margin = self.fetch_twse_margin(date_str)
+        tpex_margin = self.fetch_tpex_margin(date_str)
+
+        if twse_margin or tpex_margin:
+            margin: Dict = {"date": formatted_date}
+            if twse_margin:
+                margin["twse"] = twse_margin
+            else:
+                logger.warning("TWSE margin unavailable for %s", date_str)
+            if tpex_margin:
+                margin["tpex"] = tpex_margin
+            else:
+                logger.warning("TPEx margin unavailable for %s", date_str)
+            result["margin"] = margin
         else:
-            logger.warning("Margin aggregate unavailable for %s", date_str)
+            logger.warning("All margin data unavailable for %s", date_str)
 
         return result

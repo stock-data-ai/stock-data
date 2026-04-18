@@ -54,21 +54,45 @@
         "sell": 0,
         "net": 0
       }
-    }
+    },
+    "history": []
   },
   "margin": {
     "date": "2026-04-17",
-    "longBalance": {
-      "change": 125788,
-      "buy": 733528,
-      "sell": 596855,
-      "balance": 10831586
+    "twse": {
+      "longBalance": {
+        "change": 102554,
+        "buy": 581107,
+        "sell": 469910,
+        "balance": 8557238
+      },
+      "shortBalance": {
+        "change": 4942,
+        "buy": 20840,
+        "sell": 33182,
+        "balance": 183334
+      },
+      "longAmount": {
+        "change": 4711607000,
+        "buy": 37183069000,
+        "sell": 32034381000,
+        "balance": 427120349000
+      }
     },
-    "shortBalance": {
-      "change": 6159,
-      "buy": 37801,
-      "sell": 27072,
-      "balance": 209415
-    }
+    "tpex": {
+      "longBalance": {
+        "change": 23234,
+        "buy": 152421,
+        "sell": 126945,
+        "balance": 2274348
+      },
+      "shortBalance": {
+        "change": 1217,
+        "buy": 6232,
+        "sell": 4619,
+        "balance": 26081
+      }
+    },
+    "history": []
   }
 }
