@@ -18,6 +18,13 @@ def run_fetch_shareholder_data(args):
 
     file_mgr = FileManager()
 
+    # 對於股權分散表 API 模式，分批處理是沒有意義的（因為一次拿全市場 CSV）。
+    # 強制不分批，除非是在重新執行 (rerun) 或指定公司 (code) 模式。
+    if not getattr(args, "code", None) and not getattr(args, "rerun", None):
+        if getattr(args, "batch", None):
+            logger.info("檢測到批次參數，但股權分散表任務將強制以完整模式執行以提高效率。")
+            args.batch = None
+
     # 1. 載入需要處理的公司列表
     all_potential_companies = load_companies_for_processing(args, file_mgr, None)
     if not all_potential_companies:
