@@ -11,12 +11,12 @@
     "netMargin": 16.83,
     "eps": 1.21,
     "dividendFrequency": "年",
-    "marketCap": 136948989952,
-    "pe": 106.96517,
-    "pb": 7.429035,
-    "dividendYield": 72.0,
-    "marginBalance": 14487,
-    "shortBalance": 125
+    "marketCap": 150643884032,
+    "pe": 118.25,
+    "pb": 8.171939,
+    "dividendYield": 70.0,
+    "marginBalance": 14486,
+    "shortBalance": 143
   },
   "historical": {
     "annual": [
@@ -16502,6 +16502,25 @@
         "trust_ratio": 0.87068,
         "dealer_ratio": 0.017436,
         "three_inst_ratio": 5.048116
+      },
+      "2026-04-20": {
+        "dealer_self_buy": 4.0,
+        "foreign_buy": 536.0,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": -13.0,
+        "foreign_net_buy": 385.11,
+        "trust_net_buy": -5.0,
+        "dealer_self_sell": 17.0,
+        "foreign_sell": 150.89,
+        "trust_sell": 5.0,
+        "dealer_buy": 4.0,
+        "dealer_sell": 17.0,
+        "dealer_net_buy": -13.0,
+        "code": "6789",
+        "foreign_ratio": 4.27,
+        "trust_ratio": 0.869109,
+        "dealer_ratio": 0.013352,
+        "three_inst_ratio": 5.152461
       }
     },
     "marginTrading": {
@@ -16672,10 +16691,18 @@
         "shortBuy": 0,
         "shortSell": 50,
         "shortBalance": 125
+      },
+      "2026-04-20": {
+        "marginBuy": 348,
+        "marginSell": 312,
+        "marginBalance": 14486,
+        "shortBuy": 1,
+        "shortSell": 20,
+        "shortBalance": 143
       }
     }
   },
-  "lastUpdated": "2026-04-19",
+  "lastUpdated": "2026-04-20",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
