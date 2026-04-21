@@ -1,8 +1,10 @@
 {
   "1101": [
-    "ev-battery"
+    "battery-cell-module",
+    "ess-storage"
   ],
   "1301": [
+    "battery-cell-module",
     "electrical_equipment",
     "petrochem-plastics"
   ],
@@ -48,28 +50,29 @@
   ],
   "1503": [
     "electrical_equipment",
-    "ev-battery",
+    "ess-storage",
     "industrial-automation",
     "offshore-wind"
   ],
   "1504": [
     "electrical_equipment",
+    "ess-storage",
     "industrial-automation",
     "offshore-wind"
   ],
   "1513": [
     "electrical_equipment",
-    "ev-battery",
+    "ess-storage",
     "offshore-wind"
   ],
   "1514": [
     "electrical_equipment",
-    "ev-battery",
+    "ess-storage",
     "offshore-wind"
   ],
   "1519": [
     "electrical_equipment",
-    "ev-battery",
+    "ess-storage",
     "offshore-wind"
   ],
   "1530": [
@@ -127,7 +130,7 @@
     "wafer-fab-materials"
   ],
   "1717": [
-    "ev-battery",
+    "battery-materials",
     "packaging-materials",
     "wafer-fab-materials"
   ],
@@ -135,7 +138,7 @@
     "petrochem-plastics"
   ],
   "1723": [
-    "ev-battery"
+    "battery-materials"
   ],
   "1727": [
     "wafer-fab-materials"
@@ -201,7 +204,7 @@
     "petrochem-plastics"
   ],
   "2206": [
-    "ev-battery"
+    "battery-cell-module"
   ],
   "2208": [
     "container-shipping",
@@ -224,7 +227,7 @@
     "analog-power-ic",
     "automotive-ic",
     "bbu",
-    "ev-battery",
+    "ess-storage",
     "industrial-automation",
     "liquid_cooling_system",
     "mobile-consumer-electronics",
@@ -246,7 +249,7 @@
   "2317": [
     "ai-server-odm",
     "automotive-ic",
-    "ev-battery",
+    "battery-cell-module",
     "leo-satellite",
     "liquid_cooling_system",
     "mobile-consumer-electronics"
@@ -353,7 +356,8 @@
     "advanced-packaging-test"
   ],
   "2371": [
-    "electrical_equipment"
+    "electrical_equipment",
+    "ess-storage"
   ],
   "2374": [
     "robotics_physical_ai"
@@ -749,6 +753,9 @@
     "mlcc-capacitor",
     "passive-resistor"
   ],
+  "3027": [
+    "ess-storage"
+  ],
   "3028": [
     "ic-distribution"
   ],
@@ -795,6 +802,9 @@
   "3055": [
     "advanced-packaging-equipment",
     "hbm"
+  ],
+  "3058": [
+    "ess-storage"
   ],
   "3059": [
     "optical-sensors",
@@ -863,8 +873,8 @@
     "ic-distribution"
   ],
   "3211": [
+    "battery-cell-module",
     "bbu",
-    "ev-battery",
     "psu"
   ],
   "3217": [
@@ -931,7 +941,7 @@
     "connector-highspeed"
   ],
   "3323": [
-    "ev-battery",
+    "battery-cell-module",
     "psu"
   ],
   "3324": [
@@ -1098,6 +1108,7 @@
     "it-si"
   ],
   "3576": [
+    "ess-storage",
     "solar-energy"
   ],
   "3580": [
@@ -1136,6 +1147,7 @@
   "3615": [
     "glass-core-substrate"
   ],
+  "3616": [],
   "3624": [
     "passive-resistor"
   ],
@@ -1166,9 +1178,9 @@
     "cybersecurity"
   ],
   "3665": [
+    "battery-cell-module",
     "connector-highspeed",
     "cxl-technology",
-    "ev-battery",
     "liquid_cooling_system"
   ],
   "3675": [
@@ -1191,7 +1203,7 @@
     "connector-highspeed"
   ],
   "3691": [
-    "ev-battery",
+    "battery-materials",
     "solar-energy"
   ],
   "3693": [
@@ -1270,13 +1282,13 @@
     "packaging-materials"
   ],
   "4721": [
-    "ev-battery"
+    "battery-materials"
   ],
   "4722": [
     "wafer-fab-materials"
   ],
   "4739": [
-    "ev-battery"
+    "battery-materials"
   ],
   "4749": [
     "wafer-fab-materials"
@@ -1325,8 +1337,8 @@
     "pcb-manufacturing"
   ],
   "4931": [
-    "bbu",
-    "ev-battery"
+    "battery-cell-module",
+    "bbu"
   ],
   "4934": [
     "solar-energy"
@@ -1407,7 +1419,7 @@
     "leo-satellite"
   ],
   "5227": [
-    "ev-battery"
+    "battery-materials"
   ],
   "5228": [
     "passive-inductor"
@@ -1419,7 +1431,7 @@
   ],
   "5243": [
     "ai-server-chassis-rails",
-    "ev-battery",
+    "battery-cell-module",
     "leo-satellite"
   ],
   "5254": [
@@ -1459,8 +1471,8 @@
     "analog-power-ic"
   ],
   "5309": [
-    "bbu",
-    "ev-battery"
+    "battery-cell-module",
+    "bbu"
   ],
   "5321": [
     "e-commerce"
@@ -1573,8 +1585,8 @@
     "precision-metal-casing"
   ],
   "6121": [
+    "battery-cell-module",
     "bbu",
-    "ev-battery",
     "mobile-consumer-electronics",
     "psu"
   ],
@@ -1831,6 +1843,9 @@
     "advanced-packaging-equipment",
     "wafer-fab-equipment"
   ],
+  "6441": [
+    "ess-storage"
+  ],
   "6442": [
     "high-speed-optics",
     "leo-satellite",
@@ -1868,7 +1883,7 @@
     "petrochem-plastics"
   ],
   "6509": [
-    "ev-battery",
+    "battery-materials",
     "pcb-manufacturing"
   ],
   "6510": [
@@ -1908,7 +1923,10 @@
     "packaging-materials"
   ],
   "6555": [
-    "ev-battery"
+    "battery-materials"
+  ],
+  "6558": [
+    "battery-cell-module"
   ],
   "6568": [
     "hpc-network-ic"
@@ -2033,8 +2051,8 @@
     "wafer-manufac"
   ],
   "6781": [
-    "bbu",
-    "ev-battery"
+    "battery-cell-module",
+    "bbu"
   ],
   "6786": [
     "asic-ip-design"
@@ -2064,7 +2082,7 @@
     "precision-metal-casing"
   ],
   "6806": [
-    "ev-battery",
+    "ess-storage",
     "offshore-wind",
     "solar-energy"
   ],
@@ -2102,7 +2120,7 @@
     "cloud-msp"
   ],
   "6869": [
-    "ev-battery",
+    "ess-storage",
     "offshore-wind",
     "solar-energy"
   ],
@@ -2111,7 +2129,7 @@
     "enterprise-saas"
   ],
   "6873": [
-    "ev-battery",
+    "ess-storage",
     "solar-energy"
   ],
   "6874": [
@@ -2163,6 +2181,9 @@
   "7722": [
     "e-commerce"
   ],
+  "7740": [
+    "ess-storage"
+  ],
   "7751": [
     "advanced-packaging-equipment"
   ],
@@ -2204,6 +2225,10 @@
   ],
   "8033": [
     "defense_industry"
+  ],
+  "8038": [
+    "battery-cell-module",
+    "ess-storage"
   ],
   "8039": [
     "fpc",
@@ -2287,7 +2312,11 @@
     "ddic"
   ],
   "8163": [
-    "ev-battery"
+    "battery-cell-module"
+  ],
+  "8171": [
+    "battery-cell-module",
+    "ess-storage"
   ],
   "8182": [
     "passive-resistor"
@@ -2301,8 +2330,8 @@
     "pcb-manufacturing"
   ],
   "8215": [
-    "display-panel",
-    "ev-battery"
+    "battery-materials",
+    "display-panel"
   ],
   "8222": [
     "defense_industry"

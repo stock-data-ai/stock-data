@@ -602,16 +602,40 @@
     "lastUpdated": "2026-03-08"
   },
   {
-    "id": "ev-battery",
-    "name": "綠色能源｜動力電池與儲能 (EV Battery & Energy Storage)",
-    "shortname": "動力電池與儲能",
-    "description": "涵蓋電動車動力電池與電網儲能（ESS）的完整供應鏈，從正負極材料、電解液到電芯製造、模組Pack整合與儲能系統部署。台廠在LFP正極材料與電池模組具備全球競爭力，並積極切入快速成長的ESS儲能市場。",
-    "icon": "Sun",
+    "id": "battery-materials",
+    "name": "綠色能源｜電池關鍵材料 (Battery Materials)",
+    "shortname": "電池關鍵材料",
+    "description": "涵蓋電池最核心的正極、負極、電解液與隔離膜材料。正極決定能量密度與成本，負極影響充放電速率，台廠在 LFP 正極與負極材料具備技術利基，並積極切入非中供應鏈趨勢。",
+    "icon": "Layers",
     "color": "green",
-    "companyCount": 29,
+    "companyCount": 9,
     "order": 48,
     "active": true,
-    "lastUpdated": "2026-03-13"
+    "lastUpdated": "2026-04-20"
+  },
+  {
+    "id": "battery-cell-module",
+    "name": "綠色能源｜電芯製造與模組 Pack (Battery Cell & Module)",
+    "shortname": "電芯與模組",
+    "description": "聚焦於電芯製造與電池模組封裝。台廠在中游模組具備全球頂尖競爭力，從消費性、電動車到儲能應用，並隨著鴻海電芯廠投產與台泥電芯事業，逐步完整台灣電池自製化版圖。",
+    "icon": "Battery",
+    "color": "green",
+    "companyCount": 16,
+    "order": 49,
+    "active": true,
+    "lastUpdated": "2026-04-21"
+  },
+  {
+    "id": "ess-storage",
+    "name": "綠色能源｜儲能系統整合 (Energy Storage System)",
+    "shortname": "儲能系統整合",
+    "description": "專注於電網級與工商業儲能系統（ESS）整合與建置。隨著再生能源滲透率提升與 AI 資料中心對電力穩定性的要求，儲能系統成為能源轉型的核心基礎設施，台廠憑藉重電與電力電子優勢切入。",
+    "icon": "Bolt",
+    "color": "green",
+    "companyCount": 18,
+    "order": 50,
+    "active": true,
+    "lastUpdated": "2026-04-21"
   },
   {
     "id": "dry-bulk-shipping",
@@ -621,7 +645,7 @@
     "icon": "Ship",
     "color": "cyan",
     "companyCount": 8,
-    "order": 49,
+    "order": 51,
     "active": true,
     "lastUpdated": "2026-03-08"
   },
@@ -633,7 +657,7 @@
     "icon": "Ship",
     "color": "cyan",
     "companyCount": 11,
-    "order": 50,
+    "order": 52,
     "active": true,
     "lastUpdated": "2026-03-08"
   },
@@ -645,7 +669,7 @@
     "icon": "Home",
     "color": "brown",
     "companyCount": 26,
-    "order": 51,
+    "order": 53,
     "active": true,
     "lastUpdated": "2026-03-28"
   },
@@ -657,7 +681,7 @@
     "icon": "Shield",
     "color": "red",
     "companyCount": 28,
-    "order": 52,
+    "order": 54,
     "active": true,
     "lastUpdated": "2026-03-25"
   },
@@ -669,7 +693,7 @@
     "icon": "Factory",
     "color": "amber",
     "companyCount": 26,
-    "order": 53,
+    "order": 55,
     "active": true,
     "lastUpdated": "2026-03-19"
   },
@@ -681,7 +705,7 @@
     "icon": "Wind",
     "color": "green",
     "companyCount": 23,
-    "order": 54,
+    "order": 56,
     "active": true,
     "lastUpdated": "2026-03-19"
   },
@@ -693,7 +717,7 @@
     "icon": "Cpu",
     "color": "sky",
     "companyCount": 12,
-    "order": 55,
+    "order": 57,
     "active": true,
     "lastUpdated": "2026-04-03"
   },
@@ -705,7 +729,7 @@
     "icon": "Eye",
     "color": "sky",
     "companyCount": 11,
-    "order": 56,
+    "order": 58,
     "active": true,
     "lastUpdated": "2026-03-20"
   },
@@ -717,7 +741,7 @@
     "icon": "Shield",
     "color": "red",
     "companyCount": 17,
-    "order": 57,
+    "order": 59,
     "active": true,
     "lastUpdated": "2026-04-02"
   },
@@ -729,7 +753,7 @@
     "icon": "Banknote",
     "color": "amber",
     "companyCount": 24,
-    "order": 58,
+    "order": 60,
     "active": true,
     "lastUpdated": "2026-04-02",
     "reviewBy": "Gemini"
@@ -742,7 +766,7 @@
     "icon": "Factory",
     "color": "brown",
     "companyCount": 18,
-    "order": 59,
+    "order": 61,
     "active": true,
     "lastUpdated": "2026-04-02",
     "reviewBy": "Gemini"
@@ -755,7 +779,8 @@
     "icon": "LayoutGrid",
     "color": "sky",
     "companyCount": 18,
-    "active": true
+    "active": true,
+    "order": 62
   },
   {
     "id": "etf-high-dividend",
@@ -765,7 +790,8 @@
     "icon": "Coins",
     "color": "amber",
     "companyCount": 21,
-    "active": true
+    "active": true,
+    "order": 63
   },
   {
     "id": "etf-tech-sector",
@@ -775,7 +801,8 @@
     "icon": "Cpu",
     "color": "blue",
     "companyCount": 10,
-    "active": true
+    "active": true,
+    "order": 64
   },
   {
     "id": "etf-semi-sector",
@@ -785,7 +812,8 @@
     "icon": "Microchip",
     "color": "sky",
     "companyCount": 7,
-    "active": true
+    "active": true,
+    "order": 65
   },
   {
     "id": "etf-ev-mobility",
@@ -795,7 +823,8 @@
     "icon": "CarFront",
     "color": "emerald",
     "companyCount": 5,
-    "active": true
+    "active": true,
+    "order": 66
   },
   {
     "id": "etf-us-market",
@@ -805,7 +834,8 @@
     "icon": "Globe",
     "color": "indigo",
     "companyCount": 13,
-    "active": true
+    "active": true,
+    "order": 67
   },
   {
     "id": "etf-asia-market",
@@ -815,7 +845,8 @@
     "icon": "Map",
     "color": "teal",
     "companyCount": 13,
-    "active": true
+    "active": true,
+    "order": 68
   },
   {
     "id": "etf-global-theme",
@@ -825,7 +856,8 @@
     "icon": "Globe2",
     "color": "violet",
     "companyCount": 9,
-    "active": true
+    "active": true,
+    "order": 69
   },
   {
     "id": "etf-active-equity",
@@ -835,7 +867,8 @@
     "icon": "TrendingUp",
     "color": "purple",
     "companyCount": 14,
-    "active": true
+    "active": true,
+    "order": 70
   },
   {
     "id": "etf-bond-treasury",
@@ -845,7 +878,8 @@
     "icon": "Landmark",
     "color": "emerald",
     "companyCount": 8,
-    "active": true
+    "active": true,
+    "order": 71
   },
   {
     "id": "etf-bond-corp",
@@ -855,7 +889,8 @@
     "icon": "Building2",
     "color": "slate",
     "companyCount": 14,
-    "active": true
+    "active": true,
+    "order": 72
   },
   {
     "id": "etf-bond-high-yield",
@@ -865,7 +900,8 @@
     "icon": "BarChart3",
     "color": "amber",
     "companyCount": 4,
-    "active": true
+    "active": true,
+    "order": 73
   },
   {
     "id": "etf-lev-inverse",
@@ -875,7 +911,8 @@
     "icon": "Zap",
     "color": "red",
     "companyCount": 9,
-    "active": true
+    "active": true,
+    "order": 74
   },
   {
     "id": "etf-commodity",
@@ -885,7 +922,8 @@
     "icon": "Coins",
     "color": "orange",
     "companyCount": 5,
-    "active": true
+    "active": true,
+    "order": 75
   },
   {
     "id": "optical-sensors",
@@ -895,7 +933,7 @@
     "icon": "Aperture",
     "color": "slate",
     "companyCount": 15,
-    "order": 37,
+    "order": 76,
     "active": true,
     "lastUpdated": "2026-04-18"
   }
