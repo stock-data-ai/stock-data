@@ -313,7 +313,7 @@
     "description": "聚焦於 AI 資料中心 800G/1.6T 高速交換器、WiFi 7 無線通訊設備、5G/6G 寬頻接取設備及低軌衛星地面站。作為數位基礎設施的「神經系統」，網通設備是支撐 AI 算力傳輸、萬物互聯與低延遲通訊的核心硬體。",
     "icon": "Network",
     "color": "sky",
-    "companyCount": 18,
+    "companyCount": 10,
     "active": true,
     "lastUpdated": "2026-03-12",
     "group": "硬體基建"
@@ -325,9 +325,10 @@
     "description": "旨在解決 AI 運算中「記憶體牆 (Memory Wall)」瓶頸的次世代開放互連協定。基於 PCIe 6.0 介面，CXL 3.0/3.1 實現了 CPU、GPU 與記憶體資源的動態池化 (Memory Pooling) 與共享，大幅提升資料中心運算效率並降低能耗。",
     "icon": "Cpu",
     "color": "indigo",
-    "companyCount": 17,
+    "companyCount": 7,
     "active": true,
-    "lastUpdated": "2026-03-12",
+    "lastUpdated": "2026-04-24",
+    "reviewBy": "claudecode-perfect",
     "group": "硬體基建"
   },
   {
@@ -420,10 +421,10 @@
     "id": "connector",
     "name": "關鍵元件｜連接器 (Connector)",
     "shortname": "連接器",
-    "description": "負責電力與訊號在系統中穩定傳輸的關鍵電子元件，涵蓋標準型、客製化連接器及上游材料，廣泛應用於消費性電子、車用電子與工業設備。高速/AI Server 連接器請見「高速連接器」題材。",
+    "description": "標準型與客製化連接器，廣泛應用於消費性電子與工業設備。",
     "icon": "Plug",
     "color": "slate",
-    "companyCount": 33,
+    "companyCount": 14,
     "active": true,
     "lastUpdated": "2026-03-24",
     "group": "元件材料"
@@ -432,13 +433,25 @@
     "id": "connector-highspeed",
     "name": "關鍵元件｜高速連接器 (High-Speed Connector)",
     "shortname": "高速連接器",
-    "description": "支援 AI 伺服器、資料中心與高效能運算的高速傳輸連接器，涵蓋 CPU Socket、PCIe 5.0/6.0、DDR5、CXL 及高速線纜組件，為 AI 算力基礎設施的關鍵互連元件。",
+    "description": "CPU Socket、PCIe 5.0/6.0、DDR5 高速連接器與 AI Server 高速線纜組件，AI 算力基礎設施的關鍵互連元件。",
     "icon": "Zap",
     "color": "slate",
-    "companyCount": 22,
+    "companyCount": 15,
     "active": true,
     "lastUpdated": "2026-03-24",
     "group": "元件材料"
+  },
+  {
+    "id": "connector-automotive",
+    "name": "關鍵元件｜車用連接器 (Automotive Connector)",
+    "shortname": "車用連接器",
+    "description": "電動車高壓/大電流連接器、FAKRA/HSD 訊號線束與 EV 充電接頭，三電系統與智慧座艙的核心互連元件。",
+    "icon": "CarFront",
+    "color": "emerald",
+    "companyCount": 12,
+    "active": true,
+    "lastUpdated": "2026-04-24",
+    "group": "能源車用"
   },
   {
     "id": "fpc",
