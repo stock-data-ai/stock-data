@@ -60,7 +60,7 @@ jobs:
 
   market-sentiment:
     needs: pipeline
-    if: always() && needs.pipeline.result != 'skipped'
+    if: always() && needs.pipeline.result != 'skipped' && (inputs.rerun_round == '0' || inputs.rerun_round == '')
     runs-on: ubuntu-latest
     permissions:
       contents: write

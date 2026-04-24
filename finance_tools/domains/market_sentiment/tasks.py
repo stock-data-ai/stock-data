@@ -80,6 +80,13 @@ def run_update_market_sentiment(args):
             if same_day:
                 # 同日重跑：直接沿用現有 history
                 data[section]["history"] = existing[section].get("history", [])
+                # 保留 existing 中有、但本次 API 失敗而缺少的子欄位（twse/tpex）
+                for sub in ("twse", "tpex"):
+                    if sub not in data[section] and sub in existing[section]:
+                        logger.warning(
+                            "%s.%s 本次 API 失敗，保留上次成功資料", section, sub
+                        )
+                        data[section][sub] = existing[section][sub]
             else:
                 # 新的一天：把昨天資料 push 進 history
                 data[section]["history"] = _merge_history(
