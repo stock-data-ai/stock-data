@@ -175,5 +175,6 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "主動型 ETF 持股更新 $(date +%Y-%m-%d)"
+            git pull --rebase -X ours origin main
             git push
           fi

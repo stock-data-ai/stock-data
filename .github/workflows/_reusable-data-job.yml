@@ -317,7 +317,7 @@ jobs:
           git commit -m "${{ inputs.commit_message }} $(date -u +%Y-%m-%d) [round ${ROUND}]"
 
           # Pull with rebase, but abort if JSON files get corrupted by text merge
-          git pull --rebase origin main
+          git pull --rebase -X ours origin main
 
           # Post-rebase validation: ensure rebase didn't corrupt JSON
           REBASE_ERRORS=0
