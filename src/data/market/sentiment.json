@@ -1,6 +1,33 @@
 {
   "institutional": {
     "date": "2026-04-23",
+    "twse": {
+      "foreign": {
+        "buy": 525830603434,
+        "sell": 528585597431,
+        "net": -2754993997
+      },
+      "trust": {
+        "buy": 25264894875,
+        "sell": 23908712751,
+        "net": 1356182124
+      },
+      "dealer": {
+        "buy": 10155158708,
+        "sell": 17964739977,
+        "net": -7809581269
+      },
+      "dealerHedge": {
+        "buy": 54280746027,
+        "sell": 65661618199,
+        "net": -11380872172
+      },
+      "foreignDealer": {
+        "buy": 0,
+        "sell": 0,
+        "net": 0
+      }
+    },
     "tpex": {
       "foreign": {
         "buy": 124800878415,
@@ -261,6 +288,26 @@
   },
   "margin": {
     "date": "2026-04-23",
+    "twse": {
+      "longBalance": {
+        "change": -128332,
+        "buy": 680050,
+        "sell": 802380,
+        "balance": 8501697
+      },
+      "shortBalance": {
+        "change": 1928,
+        "buy": 34088,
+        "sell": 38905,
+        "balance": 187872
+      },
+      "longAmount": {
+        "change": -7718220000,
+        "buy": 49439790000,
+        "sell": 56827959000,
+        "balance": 430827021000
+      }
+    },
     "tpex": {
       "longBalance": {
         "change": -62400,
