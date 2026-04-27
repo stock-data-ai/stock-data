@@ -13,6 +13,7 @@ Commands:
   update-company-info   - 更新上市公司基本資訊。
   update-margin         - 更新融資融券資料。
   check-quality         - 檢查資料品質。
+  compute-big-holders   - 計算大戶加碼排行並輸出 weekly_big_holders.json。
 
 Common Options:
   --code CODE           - 處理單一公司（股票代碼）。
@@ -54,6 +55,7 @@ from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
 from finance_tools.domains.market_sentiment.tasks import run_update_market_sentiment
+from finance_tools.scripts.compute_weekly_big_holders import run as run_compute_big_holders
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -131,6 +133,13 @@ def main():
     )
     parser_sentiment.add_argument("--date", type=str, help="指定日期 (YYYYMMDD)。")
     parser_sentiment.set_defaults(func=run_update_market_sentiment)
+
+    # --- 'compute-big-holders' command ---
+    parser_big_holders = subparsers.add_parser(
+        "compute-big-holders",
+        help="從 TDCC 股權分散表計算大戶加碼排行，輸出 weekly_big_holders.json。",
+    )
+    parser_big_holders.set_defaults(func=lambda args: run_compute_big_holders())
 
     args = parser.parse_args()
     
