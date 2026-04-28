@@ -82,7 +82,7 @@ def run_fetch_shareholder_data(args):
                     financial_data['shareholderDataHistory'] = {}
 
                 raw_date = tdcc_data_list[0].get('data_date')
-                formatted_date = f"{raw_date[:4]}-{raw_date[4:6]}-{raw_date[6:8]}"
+                formatted_date = raw_date  # keep YYYYMMDD format
 
                 clean_records = [
                     {
