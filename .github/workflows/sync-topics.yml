@@ -33,12 +33,16 @@ jobs:
           curl -fsSL "${HEADERS[@]}" "$BASE/src/data/layer3/company-topics/index.json$REF" \
             -o src/data/layer3/company-topics/index.json
 
+          curl -fsSL "${HEADERS[@]}" "$BASE/src/data/etf/index.json$REF" \
+            -o src/data/etf/index.json
+
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/layer0/topics.json \
-                  src/data/layer3/company-topics/index.json
+                  src/data/layer3/company-topics/index.json \
+                  src/data/etf/index.json
           git diff --cached --quiet && { echo "無變化，略過 commit。"; exit 0; }
           git commit -m "sync: 從 stock_map 同步設定檔 $(date -u +%Y-%m-%d)"
           git pull origin main --no-rebase

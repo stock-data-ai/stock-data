@@ -40,6 +40,9 @@ ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 MONEYDJ_HOLDINGS_URL = "https://www.moneydj.com/ETF/X/Basic/Basic0007B.xdjhtm?etfid={code}.TW"
 MONEYDJ_BASIC_URL = "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid={code}.TW"
 
+STOCK_MAP_INDEX_LOCAL = REPO_ROOT.parent / "stock_map" / "src" / "data" / "etf" / "index.json"
+ETF_INDEX_PATH = ETF_DATA_DIR / "index.json"  # stock-data 自己的（由 sync-topics.yml 同步）
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -182,8 +185,14 @@ def _clean_snapshot(h: dict) -> dict:
 def update_etf_json(etf_code: str) -> bool:
     json_path = ETF_DATA_DIR / f"{etf_code}.json"
     if not json_path.exists():
-        print(f"  [WARN] 找不到 {json_path.name}")
-        return False
+        print(f"  [WARN] 找不到 {json_path.name}，嘗試建立骨架...")
+        index = _load_stock_map_index()
+        entry = next((e for e in index if e["code"] == etf_code), None)
+        if entry:
+            ensure_skeleton(entry)
+        else:
+            print(f"  [WARN] index.json 也找不到 {etf_code}，跳過")
+            return False
 
     try:
         holdings, data_date = fetch_holdings(etf_code)
@@ -200,6 +209,10 @@ def update_etf_json(etf_code: str) -> bool:
 
         if not holdings:
             print(f"  [Skip] {etf_code} — 無持股資料")
+            # 仍需寫回 metadata（債券 ETF 無成份股但有配息頻率/成立日期）
+            if metadata:
+                with open(json_path, "w", encoding="utf-8") as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
             return True
 
         current_date = data_date or date.today().isoformat()
@@ -260,8 +273,52 @@ def update_etf_json(etf_code: str) -> bool:
         return False
 
 
+def _load_stock_map_index() -> list[dict]:
+    """讀 ETF index.json：本地 stock_map 優先 → 同目錄 index.json（CI 環境）"""
+    if STOCK_MAP_INDEX_LOCAL.exists():
+        with open(STOCK_MAP_INDEX_LOCAL, encoding="utf-8") as f:
+            return json.load(f)
+    if ETF_INDEX_PATH.exists():
+        with open(ETF_INDEX_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    print("[WARN] 找不到 ETF index.json")
+    return []
+
+
+def ensure_skeleton(entry: dict) -> None:
+    """若 {code}.json 不存在，從 index.json 資料建立空骨架"""
+    code = entry["code"]
+    json_path = ETF_DATA_DIR / f"{code}.json"
+    if json_path.exists():
+        return
+    skeleton = {
+        "code": code,
+        "name": entry.get("name", code),
+        "assetClass": entry.get("assetClass"),
+        "categoryId": entry.get("categoryId"),
+        "trackingIndex": entry.get("trackingIndex"),
+        "managementFee": entry.get("managementFee"),
+        "dividendFrequency": entry.get("dividendFrequency"),
+        "inceptionDate": None,
+        "fundSize": entry.get("fundSize"),
+        "issuer": entry.get("issuer"),
+        "description": None,
+        "topHoldings": [],
+        "holdingsHistory": {},
+        "lastUpdated": None,
+    }
+    ETF_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(skeleton, f, ensure_ascii=False, indent=2)
+    print(f"  [New] 建立骨架 {code}.json")
+
+
 def load_all_codes() -> list:
-    """掃描 src/data/etf/ 下所有 ETF 代碼（排除 index.json 與主動型 ETF）"""
+    """從 stock_map index.json 讀取全部代碼（排除主動型 ETF）"""
+    index = _load_stock_map_index()
+    if index:
+        return sorted(e["code"] for e in index if not e["code"].endswith("A"))
+    # fallback：掃現有檔案
     return sorted(
         p.stem for p in ETF_DATA_DIR.glob("*.json")
         if p.stem != "index" and not p.stem.endswith("A")
@@ -269,6 +326,9 @@ def load_all_codes() -> list:
 
 
 def main():
+    index = _load_stock_map_index()
+    index_map = {e["code"]: e for e in index}
+
     target_codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
     active = [c for c in target_codes if c.endswith("A")]
     if active:
@@ -278,7 +338,15 @@ def main():
     success_count = 0
     failed_codes = []
 
-    print(f"準備更新 {total} 支 ETF")
+    # 先建立所有缺少的骨架
+    missing = [c for c in target_codes if not (ETF_DATA_DIR / f"{c}.json").exists()]
+    if missing:
+        print(f"\n建立 {len(missing)} 支新 ETF 骨架...")
+        for c in missing:
+            if c in index_map:
+                ensure_skeleton(index_map[c])
+
+    print(f"\n準備更新 {total} 支 ETF")
 
     for i, code in enumerate(target_codes):
         print(f"\n[{i+1}/{total}] {code}")
