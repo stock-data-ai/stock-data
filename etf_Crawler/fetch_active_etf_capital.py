@@ -13,6 +13,7 @@ fetch_active_etf_capital.py
 支援 ETF：
   00982A (fundId=399) 群益台灣精選強棒主動式ETF基金
   00992A (fundId=500) 群益台灣科技創新主動式ETF基金
+  00997A (fundId=502) 群益美國增長主動式ETF基金
 
 API：POST https://www.capitalfund.com.tw/CFWeb/api/etf/buyback
      Body: {"fundId": "<id>", "date": null}
@@ -54,6 +55,7 @@ BASE_HEADERS = {
 CAPITAL_ACTIVE_ETFS = {
     "00982A": "399",   # 群益台灣精選強棒主動式ETF基金
     "00992A": "500",   # 群益台灣科技創新主動式ETF基金
+    "00997A": "502",   # 群益美國增長主動式ETF基金
 }
 
 

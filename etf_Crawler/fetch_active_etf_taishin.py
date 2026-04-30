@@ -15,11 +15,13 @@ fetch_active_etf_taishin.py
   解析 /ETF/Home/ETFSeriesDetail/{code} 的持股表格。
 
 支援 ETF：
+  00986A  台新全球龍頭成長主動式ETF基金
   00987A  台新台灣優勢成長主動式ETF基金
 
 用法：
     uv run etf_Crawler/fetch_active_etf_taishin.py          # 更新全部
     uv run etf_Crawler/fetch_active_etf_taishin.py 00987A   # 更新指定
+    uv run etf_Crawler/fetch_active_etf_taishin.py 00986A 00987A  # 更新多檔
 """
 
 import json
@@ -51,6 +53,7 @@ HEADERS = {
 }
 
 TAISHIN_ACTIVE_ETFS = [
+    "00986A",  # 台新全球龍頭成長主動式ETF基金
     "00987A",  # 台新台灣優勢成長主動式ETF基金
 ]
 
