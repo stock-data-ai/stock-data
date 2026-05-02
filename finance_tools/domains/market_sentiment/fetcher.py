@@ -11,7 +11,7 @@ Data sources:
 
 import logging
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
 import pandas as pd
@@ -155,6 +155,8 @@ class MarketSentimentFetcher:
     def fetch_twse_margin(self, date_str: str) -> Optional[Dict]:
         """
         Fetch TWSE (上市) margin aggregate from MI_MARGN table[0] (信用交易統計).
+        Falls back up to 7 previous days to handle holidays / non-trading days.
+        (Unlike BFI82U, MI_MARGN does not auto-return the latest trading day.)
 
         table[0] rows (欄位: 項目, 買進, 賣出, 現金(券)償還, 前日餘額, 今日餘額):
           0: 融資(交易單位)  — 張
@@ -166,6 +168,18 @@ class MarketSentimentFetcher:
           shortBalance: { change, buy, sell, balance }  — 張
           longAmount:   { change, buy, sell, balance }  — 元 (千元 × 1000)
         """
+        dt = datetime.strptime(date_str, "%Y%m%d")
+        for i in range(8):
+            try_date = (dt - timedelta(days=i)).strftime("%Y%m%d")
+            result = self._fetch_twse_margin_single(try_date)
+            if result is not None:
+                if i > 0:
+                    logger.info("TWSE margin: %s no data, using %s instead", date_str, try_date)
+                return result
+        logger.warning("TWSE margin: no data found within 7 days before %s", date_str)
+        return None
+
+    def _fetch_twse_margin_single(self, date_str: str) -> Optional[Dict]:
         url = self.TWSE_MARGIN_URL.format(date=date_str)
         try:
             resp = requests.get(url, headers=self.headers, timeout=15)
@@ -173,19 +187,15 @@ class MarketSentimentFetcher:
             data = resp.json()
 
             if data.get("stat") != "OK":
-                logger.warning(
-                    "TWSE MI_MARGN stat=%s for %s", data.get("stat"), date_str
-                )
                 return None
 
             summary_table = data.get("tables", [None])[0]
             if not summary_table or not summary_table.get("data"):
-                logger.warning("TWSE MI_MARGN: 信用交易統計 table missing for %s", date_str)
                 return None
 
             rows = summary_table["data"]
             if len(rows) < 3:
-                logger.warning("TWSE 信用交易統計 unexpected row count: %d", len(rows))
+                logger.warning("TWSE 信用交易統計 unexpected row count: %d for %s", len(rows), date_str)
                 return None
 
             long_balance = self._parse_margin_balance_row(rows[0])   # 融資(交易單位)
@@ -207,6 +217,7 @@ class MarketSentimentFetcher:
     def fetch_tpex_margin(self, date_str: str) -> Optional[Dict]:
         """
         Fetch TPEx (上櫃) margin aggregate by summing per-stock data.
+        Falls back up to 7 previous days to handle holidays / non-trading days.
         TPEx has no server-side aggregate table; per-stock summation is required.
 
         TPEx table[0] fields (confirmed 2026):
@@ -215,11 +226,22 @@ class MarketSentimentFetcher:
         """
         try:
             dt = datetime.strptime(date_str, "%Y%m%d")
-            roc_date = f"{dt.year - 1911}/{dt.month:02}/{dt.day:02}"
         except Exception:
             logger.error("Invalid date_str for TPEx: %s", date_str)
             return None
 
+        for i in range(8):
+            try_dt = dt - timedelta(days=i)
+            result = self._fetch_tpex_margin_single(try_dt.strftime("%Y%m%d"), try_dt)
+            if result is not None:
+                if i > 0:
+                    logger.info("TPEx margin: %s no data, using %s instead", date_str, try_dt.strftime("%Y%m%d"))
+                return result
+        logger.warning("TPEx margin: no data found within 7 days before %s", date_str)
+        return None
+
+    def _fetch_tpex_margin_single(self, date_str: str, dt: datetime) -> Optional[Dict]:
+        roc_date = f"{dt.year - 1911}/{dt.month:02}/{dt.day:02}"
         timestamp = int(time.time() * 1000)
         url = self.TPEX_MARGIN_URL.format(roc_date=roc_date, timestamp=timestamp)
 
@@ -230,7 +252,6 @@ class MarketSentimentFetcher:
 
             tables = data.get("tables", [])
             if not tables or not tables[0].get("data"):
-                logger.warning("TPEx MI_MARGN no data for %s", date_str)
                 return None
 
             table = tables[0]
