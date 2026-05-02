@@ -73,6 +73,12 @@ def run_update_market_sentiment(args):
     )
     same_day = existing_date == formatted_date
 
+    # Preserve existing sections that failed to fetch this run
+    for section in ("institutional", "margin"):
+        if section not in data and section in existing:
+            logger.warning("%s fetch 失敗，保留現有資料", section)
+            data[section] = existing[section]
+
     for section in ("institutional", "margin"):
         if section not in data:
             continue
