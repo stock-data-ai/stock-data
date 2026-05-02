@@ -92,6 +92,9 @@ def run_update_market_sentiment(args):
                 data[section]["history"] = _merge_history(
                     existing[section], HISTORY_LIMIT
                 )
+        else:
+            # 第一次出現此 section：確保 history 欄位存在
+            data[section]["history"] = []
 
     SENTIMENT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(SENTIMENT_FILE, "w", encoding="utf-8") as f:
