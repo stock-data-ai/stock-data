@@ -4545,7 +4545,7 @@
     "code": "00980D",
     "name": "主動聯博投等入息",
     "assetClass": "Active",
-    "categoryId": "etf-active",
+    "categoryId": "etf-bond-ig",
     "trackingIndex": null,
     "managementFee": -19998,
     "dividendFrequency": null,
@@ -4558,7 +4558,7 @@
     "code": "00980T",
     "name": "平衡凱基美國TOP",
     "assetClass": "Active",
-    "categoryId": "etf-active",
+    "categoryId": "etf-income",
     "trackingIndex": "NYSE TPEx美國Top股債平衡指數",
     "managementFee": -19998,
     "dividendFrequency": null,
@@ -4722,7 +4722,7 @@
     "code": "00981D",
     "name": "主動中信非投等債",
     "assetClass": "Active",
-    "categoryId": "etf-active",
+    "categoryId": "etf-bond-hy",
     "trackingIndex": null,
     "managementFee": -19998,
     "dividendFrequency": null,
@@ -4907,19 +4907,6 @@
     "trackingIndex": "ICE ESG 0-5年期BBB級成熟市場大型美元公司債指數"
   },
   {
-    "code": "00985D",
-    "name": "00985D",
-    "assetClass": "Active",
-    "categoryId": "etf-active",
-    "trackingIndex": null,
-    "managementFee": null,
-    "dividendFrequency": null,
-    "fundSize": null,
-    "issuer": null,
-    "trailingYield": null,
-    "beneficiaryCount": null
-  },
-  {
     "code": "00986A",
     "name": "主動台新龍頭成長",
     "assetClass": "Active",
@@ -4944,19 +4931,6 @@
     "issuer": "富蘭克林投信",
     "trailingYield": 1.83,
     "beneficiaryCount": 463
-  },
-  {
-    "code": "00986D",
-    "name": "00986D",
-    "assetClass": "Active",
-    "categoryId": "etf-active",
-    "trackingIndex": null,
-    "managementFee": null,
-    "dividendFrequency": null,
-    "fundSize": null,
-    "issuer": null,
-    "trailingYield": null,
-    "beneficiaryCount": null
   },
   {
     "code": "00987A",
@@ -5134,14 +5108,14 @@
   },
   {
     "code": "00998A",
-    "name": "00998A",
+    "name": "主動復華金融股息",
     "assetClass": "Active",
     "categoryId": "etf-active",
     "trackingIndex": null,
-    "managementFee": null,
-    "dividendFrequency": null,
+    "managementFee": 1.2,
+    "dividendFrequency": "季配",
     "fundSize": null,
-    "issuer": null,
+    "issuer": "復華投信",
     "trailingYield": null,
     "beneficiaryCount": null
   }
