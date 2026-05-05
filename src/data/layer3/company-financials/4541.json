@@ -11,11 +11,11 @@
     "netMargin": 15.05,
     "eps": 1.04,
     "dividendFrequency": "年",
-    "marketCap": 3236908800,
-    "pe": 23.688118,
-    "pb": 1.8924263,
-    "dividendYield": 162.0,
-    "marginBalance": 4155,
+    "marketCap": 3497349888,
+    "pe": 25.59406,
+    "pb": 2.0446906,
+    "dividendYield": 157.0,
+    "marginBalance": 4204,
     "shortBalance": 16
   },
   "historical": {
@@ -22698,8 +22698,8 @@
         "code": "4541",
         "foreign_ratio": 5.57,
         "trust_ratio": 0.369565,
-        "dealer_ratio": 0.002957,
-        "three_inst_ratio": 5.942522
+        "dealer_ratio": 0.0,
+        "three_inst_ratio": 5.939565
       },
       "2026-02-05": {
         "dealer_self_buy": 0.0,
@@ -22717,8 +22717,8 @@
         "code": "4541",
         "foreign_ratio": 5.55,
         "trust_ratio": 0.369565,
-        "dealer_ratio": 0.002957,
-        "three_inst_ratio": 5.922522
+        "dealer_ratio": 0.0,
+        "three_inst_ratio": 5.919565
       },
       "2026-02-06": {
         "dealer_self_buy": 0.0,
@@ -24280,6 +24280,25 @@
         "trust_ratio": 0.369565,
         "dealer_ratio": 0.013304,
         "three_inst_ratio": 7.952869
+      },
+      "2026-05-05": {
+        "dealer_self_buy": 5.0,
+        "foreign_buy": 924.0,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": 5.0,
+        "foreign_net_buy": 548.0,
+        "trust_net_buy": 0.0,
+        "dealer_self_sell": 0.0,
+        "foreign_sell": 376.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 5.0,
+        "dealer_sell": 0.0,
+        "dealer_net_buy": 5.0,
+        "code": "4541",
+        "foreign_ratio": 8.4,
+        "trust_ratio": 0.369565,
+        "dealer_ratio": 0.020696,
+        "three_inst_ratio": 8.790261
       }
     },
     "marginTrading": {
@@ -24520,6 +24539,14 @@
         "marginSell": 96,
         "marginBalance": 4155,
         "shortBuy": 3,
+        "shortSell": 1,
+        "shortBalance": 16
+      },
+      "2026-05-05": {
+        "marginBuy": 344,
+        "marginSell": 295,
+        "marginBalance": 4204,
+        "shortBuy": 1,
         "shortSell": 1,
         "shortBalance": 16
       }
