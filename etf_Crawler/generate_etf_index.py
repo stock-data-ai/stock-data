@@ -18,6 +18,7 @@ ETF 清單順序與現有 index.json 一致；新 ETF 附加到末尾。
 
 import json
 from pathlib import Path
+from typing import Optional
 
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
@@ -56,7 +57,7 @@ def load_detail_files() -> dict[str, dict]:
     return details
 
 
-def build_entry(code: str, detail: dict | None, existing: dict | None) -> dict:
+def build_entry(code: str, detail: Optional[dict], existing: Optional[dict]) -> dict:
     entry: dict = {"code": code}
 
     # Crawler-authoritative: {code}.json wins, fallback to existing
