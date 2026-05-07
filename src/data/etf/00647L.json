@@ -5,7 +5,7 @@
   "categoryId": "etf-lev-inverse",
   "trackingIndex": "標普500 2倍槓桿指數",
   "managementFee": 1.19,
-  "dividendFrequency": null,
+  "dividendFrequency": "",
   "inceptionDate": "2015-12-02",
   "fundSize": 8.59,
   "issuer": "元大投信",
@@ -13,10 +13,10 @@
   "topHoldings": [
     {
       "name": "小S&P500指數期貨",
-      "weight": 200.86,
+      "weight": 197.72,
       "shares": 140,
-      "previousWeight": 200.7,
-      "weightChange": 0.16,
+      "previousWeight": 200.86,
+      "weightChange": -3.14,
       "previousShares": 140,
       "sharesChange": 0
     }
@@ -35,7 +35,14 @@
         "weight": 200.86,
         "shares": 140
       }
+    ],
+    "2026-05-05": [
+      {
+        "name": "小S&P500指數期貨",
+        "weight": 197.72,
+        "shares": 140
+      }
     ]
   },
-  "lastUpdated": "2026-04-29"
+  "lastUpdated": "2026-05-05"
 }

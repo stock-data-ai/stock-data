@@ -83,9 +83,9 @@ def fetch_metadata(etf_code: str) -> dict:  # type: ignore[return]
         metadata = {}
 
         for tr in soup.find_all("tr"):
-            th = tr.find("th")
-            td = tr.find("td")
-            if th and td:
+            ths = tr.find_all("th")
+            tds = tr.find_all("td")
+            for th, td in zip(ths, tds):
                 label = th.get_text(strip=True)
                 value = td.get_text(strip=True)
 
@@ -329,11 +329,9 @@ def main():
     index = _load_stock_map_index()
     index_map = {e["code"]: e for e in index}
 
-    target_codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
-    active = [c for c in target_codes if c.endswith("A")]
-    if active:
-        print(f"[WARN] 跳過主動型 ETF（由專屬爬蟲處理）：{', '.join(active)}")
-        target_codes = [c for c in target_codes if not c.endswith("A")]
+    all_codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
+    active = [c for c in all_codes if c.endswith("A")]
+    target_codes = [c for c in all_codes if not c.endswith("A")]
     total = len(target_codes)
     success_count = 0
     failed_codes = []
@@ -358,8 +356,41 @@ def main():
         if i < total - 1:
             time.sleep(0.5)
 
+    # 主動型 ETF：只更新 dividendFrequency / inceptionDate / issuer
+    if active:
+        print(f"\n準備更新 {len(active)} 支主動型 ETF 配息資料")
+        active_ok = 0
+        for i, code in enumerate(active):
+            json_path = ETF_DATA_DIR / f"{code}.json"
+            if not json_path.exists():
+                print(f"  [Skip] {code} — 找不到 JSON")
+                continue
+            print(f"\n[A {i+1}/{len(active)}] {code}")
+            metadata = fetch_metadata(code)
+            if not metadata:
+                print(f"  [Skip] {code} — 無 metadata")
+                continue
+            with open(json_path, encoding="utf-8") as f:
+                data = json.load(f)
+            changed = False
+            for key in ["dividendFrequency", "inceptionDate", "issuer"]:
+                if key in metadata and data.get(key) != metadata[key]:
+                    data[key] = metadata[key]
+                    changed = True
+            if changed:
+                with open(json_path, "w", encoding="utf-8") as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+                print(f"  [OK] {code} — metadata 更新")
+            else:
+                print(f"  [Skip] {code} — 無變動")
+            active_ok += 1
+            if i < len(active) - 1:
+                time.sleep(0.5)
+
     summary = f"ETF 更新報告 ({date.today().isoformat()})\n"
     summary += f"- 成功: {success_count}/{total}\n"
+    if active:
+        summary += f"- 主動型 metadata: {len(active)} 支\n"
     if failed_codes:
         summary += f"- 失敗: {', '.join(failed_codes)}\n"
 

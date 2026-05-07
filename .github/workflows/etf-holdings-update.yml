@@ -78,6 +78,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue create \
+            --repo stock-data-ai/stock-data \
             --title "🔔 [$(date +%Y-%m-%d)] 請本地執行 fetch_etf_data.py" \
             --body "ETF holdings 已更新完成，玩股網資料需本地執行：
 

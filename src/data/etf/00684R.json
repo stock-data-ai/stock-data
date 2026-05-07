@@ -5,7 +5,7 @@
   "categoryId": "etf-lev-inverse",
   "trackingIndex": "標普美元日報酬反向一倍ER指數",
   "managementFee": 0.95,
-  "dividendFrequency": null,
+  "dividendFrequency": "",
   "inceptionDate": "2017-03-06",
   "fundSize": 1.57,
   "issuer": "元大投信",
@@ -13,12 +13,12 @@
   "topHoldings": [
     {
       "name": "美元指數期貨",
-      "weight": 102.28,
-      "shares": -49,
-      "previousWeight": 101.42,
-      "weightChange": 0.86,
+      "weight": 99.31,
+      "shares": -48,
+      "previousWeight": 102.28,
+      "weightChange": -2.97,
       "previousShares": -49,
-      "sharesChange": 0
+      "sharesChange": 1
     }
   ],
   "holdingsHistory": {
@@ -35,7 +35,14 @@
         "weight": 102.28,
         "shares": -49
       }
+    ],
+    "2026-05-05": [
+      {
+        "name": "美元指數期貨",
+        "weight": 99.31,
+        "shares": -48
+      }
     ]
   },
-  "lastUpdated": "2026-04-29"
+  "lastUpdated": "2026-05-05"
 }

@@ -5,7 +5,7 @@
   "categoryId": "etf-lev-inverse",
   "trackingIndex": "臺灣證券交易所發行量加權股價日報酬反向一倍指數",
   "managementFee": 0.34,
-  "dividendFrequency": null,
+  "dividendFrequency": "",
   "inceptionDate": "2017-03-23",
   "fundSize": 1.71,
   "issuer": "群益投信",
@@ -13,17 +13,17 @@
   "topHoldings": [
     {
       "name": "台指期202605",
-      "weight": 58.92,
-      "previousWeight": 59.33,
-      "weightChange": -0.41,
+      "weight": 58.26,
+      "previousWeight": 58.92,
+      "weightChange": -0.66,
       "previousShares": 0,
       "sharesChange": 0
     },
     {
       "name": "小台指期202605",
-      "weight": 41.25,
-      "previousWeight": 40.54,
-      "weightChange": 0.71,
+      "weight": 41.61,
+      "previousWeight": 41.25,
+      "weightChange": 0.36,
       "previousShares": 0,
       "sharesChange": 0
     }
@@ -48,7 +48,17 @@
         "name": "小台指期202605",
         "weight": 41.25
       }
+    ],
+    "2026-05-06": [
+      {
+        "name": "台指期202605",
+        "weight": 58.26
+      },
+      {
+        "name": "小台指期202605",
+        "weight": 41.61
+      }
     ]
   },
-  "lastUpdated": "2026-04-30"
+  "lastUpdated": "2026-05-06"
 }

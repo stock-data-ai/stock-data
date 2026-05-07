@@ -26,7 +26,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ISSUE=$(gh issue list --label reminder --state open --json number -q '.[0].number')
+          ISSUE=$(gh issue list --repo stock-data-ai/stock-data --label reminder --state open --json number -q '.[0].number')
           if [ -n "$ISSUE" ]; then
-            gh issue close "$ISSUE" --comment "fetch_etf_data.py 已執行，資料同步完成。✅"
+            gh issue close "$ISSUE" --repo stock-data-ai/stock-data --comment "fetch_etf_data.py 已執行，資料同步完成。✅"
           fi

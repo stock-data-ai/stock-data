@@ -5,7 +5,7 @@
   "categoryId": "etf-broad-market",
   "trackingIndex": "滬深300指數",
   "managementFee": 0.4,
-  "dividendFrequency": null,
+  "dividendFrequency": "",
   "inceptionDate": "2009-08-04",
   "fundSize": 28.42,
   "issuer": "元大投信",
@@ -13,19 +13,19 @@
   "topHoldings": [
     {
       "name": "標智滬深３００",
-      "weight": 95.05,
+      "weight": 95.08,
       "shares": 12700800,
       "previousWeight": 95.05,
-      "weightChange": 0.0,
+      "weightChange": 0.03,
       "previousShares": 12700800,
       "sharesChange": 0
     },
     {
       "name": "富時中國A50指數期貨",
-      "weight": 4.77,
+      "weight": 4.74,
       "shares": 250,
-      "previousWeight": 4.76,
-      "weightChange": 0.01,
+      "previousWeight": 4.77,
+      "weightChange": -0.03,
       "previousShares": 250,
       "sharesChange": 0
     }
@@ -54,7 +54,19 @@
         "weight": 4.77,
         "shares": 250
       }
+    ],
+    "2026-05-06": [
+      {
+        "name": "標智滬深３００",
+        "weight": 95.08,
+        "shares": 12700800
+      },
+      {
+        "name": "富時中國A50指數期貨",
+        "weight": 4.74,
+        "shares": 250
+      }
     ]
   },
-  "lastUpdated": "2026-04-30"
+  "lastUpdated": "2026-05-06"
 }

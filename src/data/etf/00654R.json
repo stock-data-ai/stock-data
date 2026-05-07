@@ -5,7 +5,7 @@
   "categoryId": "etf-lev-inverse",
   "trackingIndex": "NIFTY反向1倍指數",
   "managementFee": 1.22,
-  "dividendFrequency": null,
+  "dividendFrequency": "",
   "inceptionDate": "2016-03-16",
   "fundSize": 1.39,
   "issuer": "富邦投信",
@@ -13,18 +13,18 @@
   "topHoldings": [
     {
       "name": "2026/05印度50輕巧指數期貨",
-      "weight": 98.32,
-      "previousWeight": 98.96,
-      "weightChange": -0.64,
+      "weight": 100.56,
+      "previousWeight": 98.32,
+      "weightChange": 2.24,
       "previousShares": 0,
       "sharesChange": 0
     },
     {
       "name": "富邦吉祥貨幣市場",
-      "weight": 0.77,
+      "weight": 0.76,
       "shares": 63941,
-      "previousWeight": 0.76,
-      "weightChange": 0.01,
+      "previousWeight": 0.77,
+      "weightChange": -0.01,
       "previousShares": 63941,
       "sharesChange": 0
     }
@@ -51,7 +51,18 @@
         "weight": 0.77,
         "shares": 63941
       }
+    ],
+    "2026-05-05": [
+      {
+        "name": "2026/05印度50輕巧指數期貨",
+        "weight": 100.56
+      },
+      {
+        "name": "富邦吉祥貨幣市場",
+        "weight": 0.76,
+        "shares": 63941
+      }
     ]
   },
-  "lastUpdated": "2026-04-29"
+  "lastUpdated": "2026-05-05"
 }

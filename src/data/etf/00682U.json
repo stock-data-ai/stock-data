@@ -5,7 +5,7 @@
   "categoryId": "etf-commodity",
   "trackingIndex": "標普美元ER指數",
   "managementFee": 0.65,
-  "dividendFrequency": null,
+  "dividendFrequency": "",
   "inceptionDate": "2017-03-06",
   "fundSize": 1.56,
   "issuer": "元大投信",
@@ -13,10 +13,10 @@
   "topHoldings": [
     {
       "name": "美元指數期貨",
-      "weight": 99.76,
+      "weight": 99.91,
       "shares": 50,
-      "previousWeight": 99.63,
-      "weightChange": 0.13,
+      "previousWeight": 99.76,
+      "weightChange": 0.15,
       "previousShares": 50,
       "sharesChange": 0
     }
@@ -35,7 +35,14 @@
         "weight": 99.76,
         "shares": 50
       }
+    ],
+    "2026-05-05": [
+      {
+        "name": "美元指數期貨",
+        "weight": 99.91,
+        "shares": 50
+      }
     ]
   },
-  "lastUpdated": "2026-04-29"
+  "lastUpdated": "2026-05-05"
 }
