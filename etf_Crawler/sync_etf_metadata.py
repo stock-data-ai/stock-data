@@ -32,6 +32,7 @@ try:
     import urllib3
     from bs4 import BeautifulSoup
     from playwright.sync_api import sync_playwright
+    from playwright_stealth import Stealth
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
 
@@ -91,6 +92,7 @@ def create_session() -> requests.Session:
 
 
 session = create_session()
+stealth = Stealth()
 
 
 def _issuer(manager: str) -> str:
@@ -151,6 +153,18 @@ def load_all_codes() -> list:
     return sorted(p.stem for p in ETF_DATA_DIR.glob("*.json") if p.stem != "index")
 
 
+def wait_for_wantgoo_ready(page) -> None:
+    page.wait_for_function(
+        """() => {
+            const titleOk = !document.title.includes('Just a moment');
+            const challenge = document.querySelector('#challenge-error-text');
+            return titleOk && !challenge;
+        }""",
+        timeout=30000,
+    )
+    page.wait_for_timeout(5000)
+
+
 def fetch_wantgoo_data() -> tuple:
     max_attempts = 3
     last_err = None
@@ -170,22 +184,27 @@ def fetch_wantgoo_data() -> tuple:
                 ctx = browser.new_context(
                     user_agent=HEADERS["User-Agent"],
                     locale="zh-TW",
+                    extra_http_headers={
+                        "Accept-Language": HEADERS["Accept-Language"],
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
                 )
+                stealth.apply_stealth_sync(ctx)
                 page = ctx.new_page()
-                page.add_init_script(
-                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-                )
                 page.goto(RANKING_URL, wait_until="load", timeout=90000)
-                page.wait_for_timeout(3000)
+                wait_for_wantgoo_ready(page)
 
                 basic_list, value_list, dividend_list = page.evaluate(
                     """async () => {
                         const fetchJson = async (path) => {
                             const res = await fetch(path, {
                                 credentials: 'same-origin',
+                                mode: 'same-origin',
+                                cache: 'no-store',
                                 headers: {
                                     'X-Requested-With': 'XMLHttpRequest',
                                     'Accept': '*/*',
+                                    'Accept-Language': 'zh-TW,zh;q=0.9',
                                 },
                             });
                             if (!res.ok) {
