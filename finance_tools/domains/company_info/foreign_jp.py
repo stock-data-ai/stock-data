@@ -10,7 +10,10 @@ class JPCompanyInfoFetcher(BaseForeignCompanyFetcher):
 
     def __init__(self, company_jp_dir: str = None):
         company_jp_dir = company_jp_dir or str(config.JP_COMPANY_DIR)
-        super().__init__(company_dir=company_jp_dir)
+        super().__init__(
+            company_dir=company_jp_dir,
+            company_list_file=str(config.JP_COMPANY_LIST_FILE),
+        )
 
     def _to_yahoo_ticker(self, code: str) -> str:
         """將目錄名（5201.JP）轉換為 Yahoo Finance ticker（5201.T）"""

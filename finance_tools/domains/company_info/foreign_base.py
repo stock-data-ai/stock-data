@@ -2,6 +2,7 @@
 Base Foreign Company Fetcher - 使用 yfinance 抓取外國公司資料的基底類別
 """
 import os
+import json
 import logging
 import yfinance as yf
 from typing import Dict, Any, List, Optional
@@ -14,11 +15,34 @@ class BaseForeignCompanyFetcher:
     封裝了通用的抓取、錯誤處理與資料解析邏輯。
     """
 
-    def __init__(self, company_dir: str):
+    def __init__(self, company_dir: str, company_list_file: str = None):
         self.company_dir = company_dir
+        self.company_list_file = company_list_file
 
     def get_company_codes(self) -> List[str]:
-        """從指定目錄取得所有公司代碼"""
+        """從同步清單或指定目錄取得所有公司代碼"""
+        if self.company_list_file and os.path.exists(self.company_list_file):
+            try:
+                with open(self.company_list_file, "r", encoding="utf-8") as f:
+                    company_list = json.load(f)
+
+                codes = []
+                for item in company_list:
+                    if isinstance(item, str):
+                        code = item
+                    elif isinstance(item, dict):
+                        code = item.get("code")
+                    else:
+                        code = None
+
+                    if code:
+                        codes.append(str(code).upper())
+
+                return sorted(set(codes))
+            except Exception as e:
+                logger.error(f"Failed to read company list {self.company_list_file}: {e}")
+                return []
+
         if not os.path.exists(self.company_dir):
             logger.error(f"Directory not found: {self.company_dir}")
             return []

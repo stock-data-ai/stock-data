@@ -12,12 +12,15 @@ MARKET_DATA_DIR = Path("src/data/market")
 COMPANY_FINANCIALS_DIR = BASE_DIR / "company-financials"
 COMPANIES_DIR = BASE_DIR / "companies"
 COMPANY_TOPICS_DIR = BASE_DIR / "company-topics"
+COMPANY_LISTS_DIR = BASE_DIR / "company-lists"
 JP_COMPANY_DIR = BASE_DIR / "company-jp"
 US_COMPANY_DIR = BASE_DIR / "company-us"
 
 # Files
 COMPANIES_ALL_FILE = COMPANIES_DIR / "companies-all.json"
 COMPANY_TOPICS_INDEX_FILE = COMPANY_TOPICS_DIR / "index.json"
+US_COMPANY_LIST_FILE = COMPANY_LISTS_DIR / "us.json"
+JP_COMPANY_LIST_FILE = COMPANY_LISTS_DIR / "jp.json"
 
 # --- API Settings ---
 FINMIND_API_URL = "https://api.web.finmindtrade.com/v2/user_info"
