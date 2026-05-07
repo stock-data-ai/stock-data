@@ -57,6 +57,7 @@ jobs:
           uv run finance_tools/cli.py update-jp-company-info
 
       - name: Commit if changed
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -65,7 +66,24 @@ jobs:
                   src/data/layer3/company-lists/us.json \
                   src/data/layer3/company-lists/jp.json \
                   src/data/layer3/companies/companies-all.json
-          git diff --cached --quiet && { echo "無變化，略過 commit。"; exit 0; }
+          if git diff --cached --quiet; then
+            echo "無變化，略過 commit。"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git commit -m "sync: 從 stock_map 同步設定檔 $(date -u +%Y-%m-%d)"
           git pull origin main --no-rebase
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger stock_map static data sync
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -X POST \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/CHIJUI0128/stock_map/dispatches \
+            -d '{"event_type":"static-data-changed"}'
