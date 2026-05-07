@@ -1,6 +1,7 @@
 # /// script
 # requires-python = ">=3.9"
 # dependencies = [
+#   "playwright",
 #   "requests",
 #   "beautifulsoup4",
 # ]
@@ -10,12 +11,10 @@ sync_etf_metadata.py
 
 統一同步 ETF 基本資料到 src/data/etf/{code}.json。
 
-更新欄位：
-- managementFee
-- dividendFrequency
-- inceptionDate
-- fundSize
-- issuer
+資料來源：
+- 玩股網：managementFee, fundSize, issuer, inceptionDate, beneficiaryCount
+- 玩股網（若 API 有提供）：trailingYield
+- MoneyDJ：dividendFrequency
 
 用法：
     uv run python etf_Crawler/sync_etf_metadata.py
@@ -32,12 +31,13 @@ try:
     import requests
     import urllib3
     from bs4 import BeautifulSoup
+    from playwright.sync_api import sync_playwright
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 except ImportError:
-    print("缺少依賴，請先執行：uv add requests beautifulsoup4")
+    print("缺少依賴，請先執行：uv sync --all-extras --dev")
     sys.exit(1)
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -46,6 +46,12 @@ MONEYDJ_BASIC_URL = "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid=
 STOCK_MAP_INDEX_LOCAL = REPO_ROOT.parent / "stock_map" / "src" / "data" / "etf" / "index.json"
 ETF_INDEX_PATH = ETF_DATA_DIR / "index.json"
 
+RANKING_URL = "https://www.wantgoo.com/stock/etf/ranking/volume"
+DIVIDEND_URL = "https://www.wantgoo.com/stock/etf/dividend"
+API_BASIC = "wantgoo.com/stock/etf/basic-data"
+API_VALUE = "wantgoo.com/stock/etf/daily-value-data"
+API_DIVIDEND = "wantgoo.com/stock/etf/dividend-data"
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -53,6 +59,20 @@ HEADERS = {
         "Chrome/122.0.0.0 Safari/537.36"
     ),
     "Accept-Language": "zh-TW,zh;q=0.9",
+}
+
+STRIP = re.compile(r"證券投資信託股份有限公司|投資信託股份有限公司|證券投資信託")
+ALIAS = {
+    "元大": "元大投信", "富邦": "富邦投信", "國泰": "國泰投信",
+    "中國信託": "中國信託投信", "永豐": "永豐投信", "群益": "群益投信",
+    "台新": "台新投信", "統一": "統一投信", "野村": "野村投信",
+    "安聯": "安聯投信", "復華": "復華投信", "凱基": "凱基投信",
+    "第一金": "第一金投信", "新光": "新光投信", "華南": "華南投信",
+    "合庫": "合庫投信", "玉山": "玉山投信", "日盛": "日盛投信",
+    "聯邦": "聯邦投信", "兆豐": "兆豐投信", "台灣工銀": "台灣工銀投信",
+    "富蘭克林": "富蘭克林投信", "施羅德": "施羅德投信",
+    "摩根": "摩根投信", "貝萊德": "貝萊德投信",
+    "聯博": "聯博投信", "霸菱": "霸菱投信", "柏瑞": "柏瑞投信",
 }
 
 
@@ -71,6 +91,14 @@ def create_session() -> requests.Session:
 
 
 session = create_session()
+
+
+def _issuer(manager: str) -> str:
+    short = STRIP.sub("", manager).strip()
+    for key, val in ALIAS.items():
+        if short.startswith(key):
+            return val
+    return short + ("投信" if short and not short.endswith("投信") else "")
 
 
 def _load_stock_map_index() -> list:
@@ -101,6 +129,8 @@ def ensure_skeleton(entry: dict) -> None:
         "inceptionDate": entry.get("inceptionDate"),
         "fundSize": entry.get("fundSize"),
         "issuer": entry.get("issuer"),
+        "trailingYield": entry.get("trailingYield"),
+        "beneficiaryCount": entry.get("beneficiaryCount"),
         "description": None,
         "topHoldings": [],
         "holdingsHistory": {},
@@ -121,14 +151,94 @@ def load_all_codes() -> list:
     return sorted(p.stem for p in ETF_DATA_DIR.glob("*.json") if p.stem != "index")
 
 
-def _parse_float(value: str) -> float:
-    cleaned = value.replace(",", "").strip()
-    return round(float(cleaned), 4)
+def fetch_wantgoo_data() -> tuple:
+    max_attempts = 3
+    last_err = None
+
+    with sync_playwright() as p:
+        for attempt in range(1, max_attempts + 1):
+            captured = {}
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    "--disable-blink-features=AutomationControlled",
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                ],
+            )
+            try:
+                ctx = browser.new_context(
+                    user_agent=HEADERS["User-Agent"],
+                    locale="zh-TW",
+                )
+                page = ctx.new_page()
+                page.add_init_script(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                )
+
+                def on_response(response):
+                    url = response.url
+                    if API_BASIC in url:
+                        captured["basic"] = response.json()
+                    elif API_VALUE in url:
+                        captured["value"] = response.json()
+                    elif API_DIVIDEND in url:
+                        captured["dividend"] = response.json()
+
+                page.on("response", on_response)
+
+                page.goto(RANKING_URL, wait_until="load", timeout=90000)
+                for _ in range(60):
+                    if "basic" in captured and "value" in captured:
+                        break
+                    time.sleep(0.5)
+                else:
+                    raise TimeoutError(f"排行頁 API 未取得: {list(captured)}")
+
+                page.goto(DIVIDEND_URL, wait_until="load", timeout=90000)
+                for _ in range(60):
+                    if "dividend" in captured:
+                        break
+                    time.sleep(0.5)
+                else:
+                    print("  [WARN] 玩股網 dividend-data 未取得，inceptionDate 將沿用現值")
+
+                return (
+                    captured.get("basic", []),
+                    captured.get("value", []),
+                    captured.get("dividend", []),
+                )
+            except Exception as e:
+                last_err = e
+                print(f"  [attempt {attempt}/{max_attempts}] 玩股網抓取失敗: {e}")
+                if attempt < max_attempts:
+                    time.sleep(10)
+            finally:
+                browser.close()
+
+    raise RuntimeError(f"玩股網資料抓取失敗: {last_err}") from last_err
 
 
-def fetch_metadata(etf_code: str) -> dict:
+def build_wantgoo_metadata_maps() -> tuple:
+    basic_list, value_list, dividend_list = fetch_wantgoo_data()
+    basic_map = {e["stockNo"]: e for e in basic_list}
+    value_map = {e["stockNo"]: e for e in value_list}
+    dividend_map = {e["stockNo"]: e for e in dividend_list}
+    return basic_map, value_map, dividend_map
+
+
+def _latest_beneficiary_count(value: dict) -> int:
+    distributions = value.get("distributions") or []
+    if not distributions:
+        return None
+    people = distributions[0].get("people")
+    return people or None
+
+
+def fetch_dividend_frequency(etf_code: str) -> dict:
     url = MONEYDJ_BASIC_URL.format(code=etf_code)
-    print(f"  抓取基本資料 {url}")
+    print(f"  抓取配息頻率 {url}")
 
     try:
         resp = session.get(url, headers=HEADERS, timeout=15, verify=False)
@@ -142,35 +252,44 @@ def fetch_metadata(etf_code: str) -> dict:
         end = text.find("附註：")
         if end != -1:
             text = text[:end]
-        metadata = {}
 
         match = re.search(r"配息頻率\s+(\S+)", text)
         if match:
-            metadata["dividendFrequency"] = match.group(1)
-
-        match = re.search(r"成立日期\s+(\d{4}/\d{2}/\d{2})", text)
-        if match:
-            metadata["inceptionDate"] = match.group(1).replace("/", "-")
-
-        match = re.search(r"發行公司\s+(.+?)\s+交易所", text)
-        if match:
-            metadata["issuer"] = match.group(1).strip()
-
-        match = re.search(r"ETF規模\s+([\d,]+(?:\.\d+)?)\(百萬台幣\)", text)
-        if match:
-            metadata["fundSize"] = _parse_float(match.group(1))
-
-        match = re.search(r"經理費\(%\)\s+([\d.]+)", text)
-        if match:
-            metadata["managementFee"] = _parse_float(match.group(1))
-
-        return metadata
+            return {"dividendFrequency": match.group(1)}
+        return {}
     except Exception as e:
-        print(f"  [WARN] {etf_code} 無法抓取基本資料: {e}")
+        print(f"  [WARN] {etf_code} 無法抓取配息頻率: {e}")
         return {}
 
 
-def update_etf_json(etf_code: str, index_map: dict) -> bool:
+def build_metadata_for_code(etf_code: str, basic_map: dict, value_map: dict, dividend_map: dict) -> dict:
+    basic = basic_map.get(etf_code, {})
+    value = value_map.get(etf_code, {})
+    dividend = dividend_map.get(etf_code, {})
+
+    value_fee = value.get("fee")
+    mgmt_fee = value_fee if value_fee is not None else ((basic.get("managementFee") or 0) + (basic.get("custodyFee") or 0)) or None
+    inception_raw = dividend.get("listingDate") or basic.get("listingDate")
+    inception_date = inception_raw[:10] if inception_raw else None
+    shares = basic.get("shares")
+    book_value = value.get("bookValue")
+    fund_size = None
+    if shares and book_value:
+        fund_size = round((shares * book_value) / 1_000_000, 2)
+    metadata = {
+        "managementFee": round(mgmt_fee, 4) if mgmt_fee else None,
+        "fundSize": fund_size,
+        "issuer": _issuer(basic["manager"]) if basic.get("manager") else None,
+        "inceptionDate": inception_date,
+        "trailingYield": value.get("last4SeasonYR"),
+        "beneficiaryCount": _latest_beneficiary_count(value),
+    }
+
+    metadata.update(fetch_dividend_frequency(etf_code))
+    return metadata
+
+
+def update_etf_json(etf_code: str, index_map: dict, basic_map: dict, value_map: dict, dividend_map: dict) -> bool:
     json_path = ETF_DATA_DIR / f"{etf_code}.json"
     if not json_path.exists():
         entry = index_map.get(etf_code)
@@ -179,8 +298,9 @@ def update_etf_json(etf_code: str, index_map: dict) -> bool:
             return False
         ensure_skeleton(entry)
 
-    metadata = fetch_metadata(etf_code)
-    if not metadata:
+    metadata = build_metadata_for_code(etf_code, basic_map, value_map, dividend_map)
+    if not any(value not in ("", None) for value in metadata.values()):
+        print(f"  [WARN] {etf_code} 無可用 metadata")
         return False
 
     with open(json_path, encoding="utf-8") as f:
@@ -210,19 +330,22 @@ def main() -> None:
     index_map = {e["code"]: e for e in index}
     codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
 
+    print("先抓取玩股網 ETF 基本資料總表...")
+    basic_map, value_map, dividend_map = build_wantgoo_metadata_maps()
+
     print(f"準備同步 {len(codes)} 支 ETF 基本資料")
 
     success = 0
     failed = []
     for i, code in enumerate(codes):
         print(f"\n[{i+1}/{len(codes)}] {code}")
-        if update_etf_json(code, index_map):
+        if update_etf_json(code, index_map, basic_map, value_map, dividend_map):
             success += 1
         else:
             failed.append(code)
 
         if i < len(codes) - 1:
-            time.sleep(0.5)
+            time.sleep(0.3)
 
     print(f"\nETF 基本資料同步完成 — 成功: {success}/{len(codes)}")
     if failed:
