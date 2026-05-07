@@ -32,6 +32,8 @@ try:
     import requests
     import urllib3
     from bs4 import BeautifulSoup
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 except ImportError:
     print("缺少依賴，請先執行：uv add requests beautifulsoup4")
@@ -59,8 +61,20 @@ UNIPRES_ACTIVE_ETFS = {
 
 def create_session() -> requests.Session:
     session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
     # 先 GET 一次拿 cookie（網站有 302 + cookie 防護）
-    session.get(BASE_URL, headers=HEADERS, timeout=15, verify=False)
+    session.get(BASE_URL, headers=HEADERS, timeout=45, verify=False)
     return session
 
 
@@ -86,7 +100,7 @@ def fetch_holdings(session: requests.Session, etf_code: str, fund_code: str) -> 
     print(f"  抓取 {url}")
 
     try:
-        resp = session.get(url, headers=HEADERS, timeout=15, verify=False)
+        resp = session.get(url, headers=HEADERS, timeout=45, verify=False)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
 

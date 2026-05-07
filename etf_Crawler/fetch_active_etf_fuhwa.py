@@ -41,6 +41,8 @@ try:
     import requests
     import pandas as pd
     from bs4 import BeautifulSoup
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests pandas beautifulsoup4 lxml openpyxl")
     sys.exit(1)
@@ -62,6 +64,25 @@ HEADERS = {
         "Chrome/122.0.0.0 Safari/537.36"
     ),
 }
+
+
+def create_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+session = create_session()
 
 
 def _clean_snapshot(h: dict) -> dict:
@@ -135,7 +156,7 @@ def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = Non
             # 從 HTML 取最新日期連結
             page_url = BASE_URL.format(fund_id=fund_id)
             print(f"  抓取 {page_url}")
-            resp = requests.get(page_url, headers=HEADERS, timeout=20)
+            resp = session.get(page_url, headers=HEADERS, timeout=45)
             resp.raise_for_status()
             soup = BeautifulSoup(resp.text, 'html.parser')
 
@@ -150,7 +171,7 @@ def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = Non
 
         excel_url = EXCEL_URL.format(fund_id=fund_id, date_compact=date_compact)
         print(f"  下載 {excel_url}")
-        xresp = requests.get(excel_url, headers=HEADERS, timeout=20)
+        xresp = session.get(excel_url, headers=HEADERS, timeout=45)
         xresp.raise_for_status()
 
         if len(xresp.content) < 100:

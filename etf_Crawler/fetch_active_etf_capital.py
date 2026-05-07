@@ -33,6 +33,8 @@ from typing import Optional
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -57,6 +59,25 @@ CAPITAL_ACTIVE_ETFS = {
     "00992A": "500",   # 群益台灣科技創新主動式ETF基金
     "00997A": "502",   # 群益美國增長主動式ETF基金
 }
+
+
+def create_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+session = create_session()
 
 
 def _parse_date(date1: str) -> Optional[str]:
@@ -92,11 +113,11 @@ def fetch_holdings(etf_code: str, fund_id: str) -> tuple:
             **BASE_HEADERS,
             "Referer": f"https://www.capitalfund.com.tw/etf/product/detail/{fund_id}/portfolio",
         }
-        resp = requests.post(
+        resp = session.post(
             API_URL,
             headers=headers,
             json={"fundId": fund_id, "date": None},
-            timeout=20,
+            timeout=45,
         )
         resp.raise_for_status()
         data = resp.json()

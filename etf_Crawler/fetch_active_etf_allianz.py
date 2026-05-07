@@ -32,6 +32,8 @@ from typing import Optional
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -65,7 +67,19 @@ ALLIANZ_ACTIVE_ETFS = {
 def _create_session() -> tuple[requests.Session, str]:
     """建立 session 並取得 XSRF token。回傳 (session, xsrf_token)。"""
     session = requests.Session()
-    resp = session.get(ANTIFORGERY_URL, headers=HEADERS, timeout=15)
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["GET", "POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
+    resp = session.get(ANTIFORGERY_URL, headers=HEADERS, timeout=45)
     resp.raise_for_status()
     xsrf = session.cookies.get("X-XSRF-TOKEN", "")
     return session, xsrf
@@ -90,7 +104,7 @@ def fetch_holdings(etf_code: str, fund_id: str,
                 "x-xsrf-token": xsrf,
                 "Referer": f"{BASE_URL}/etf-info/{fund_id}",
             },
-            timeout=20,
+            timeout=45,
         )
         resp.raise_for_status()
         data = resp.json()

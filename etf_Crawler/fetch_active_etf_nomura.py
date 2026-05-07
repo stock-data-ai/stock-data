@@ -34,6 +34,8 @@ from typing import Optional
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -59,6 +61,25 @@ NOMURA_ACTIVE_ETFS = [
 ]
 
 STATUS_NO_DATA = 5  # API 回傳「此搜尋條件尚無相關資料」
+
+
+def create_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+session = create_session()
 
 
 def _parse_date(nav_date: str) -> Optional[str]:
@@ -90,11 +111,11 @@ def fetch_holdings(etf_code: str, search_date: Optional[str] = None) -> tuple:
     print(f"  抓取 {etf_code} [{label}]", end=" ... ", flush=True)
 
     try:
-        resp = requests.post(
+        resp = session.post(
             API_URL,
             headers=HEADERS,
             json={"FundID": etf_code, "SearchDate": search_date},
-            timeout=20,
+            timeout=45,
         )
         resp.raise_for_status()
         data = resp.json()

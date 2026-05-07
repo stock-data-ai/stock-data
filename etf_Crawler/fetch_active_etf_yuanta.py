@@ -36,6 +36,8 @@ from typing import Optional
 try:
     import requests
     from bs4 import BeautifulSoup
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests beautifulsoup4")
     sys.exit(1)
@@ -96,6 +98,25 @@ const sw = (wd.FundWeights && wd.FundWeights.StockWeights) || [];
 
 process.stdout.write(JSON.stringify({ trandate, stocks: sw }));
 """
+
+
+def create_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+session = create_session()
 
 
 def _find_node() -> Optional[str]:
@@ -163,7 +184,7 @@ def fetch_holdings(etf_code: str, node_bin: str) -> tuple:
     print(f"  抓取 {url}")
 
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp = session.get(url, headers=HEADERS, timeout=45)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
 

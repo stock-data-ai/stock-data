@@ -23,6 +23,8 @@ from typing import Optional, List, Dict, Any
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -48,6 +50,25 @@ FIRST_FINANCIAL_ACTIVE_ETFS = {
 }
 
 
+def create_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+session = create_session()
+
+
 def fetch_holdings(etf_code: str) -> tuple:
     """
     回傳 (holdings, tran_date_str)
@@ -67,7 +88,7 @@ def fetch_holdings(etf_code: str) -> tuple:
     }
 
     try:
-        resp = requests.post(API_URL, json=payload, headers=HEADERS, timeout=20)
+        resp = session.post(API_URL, json=payload, headers=HEADERS, timeout=45)
         resp.raise_for_status()
         
         result = resp.json()

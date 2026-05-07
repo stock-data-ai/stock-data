@@ -33,6 +33,8 @@ from typing import Optional
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -62,17 +64,36 @@ CTBC_ACTIVE_ETFS = {
 }
 
 
+def create_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.5,
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=["POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+session = create_session()
+
+
 def _get_auth_token() -> Optional[str]:
     """呼叫 home/AuthToken 取得 session token。"""
     url = f"{API_BASE}/home/AuthToken"
     encoded = urllib.parse.quote(INITIAL_TOKEN)
     try:
-        resp = requests.post(
+        resp = session.post(
             url,
             params={"token": INITIAL_TOKEN},
             json={"token": INITIAL_TOKEN},
             headers=HEADERS,
-            timeout=15,
+            timeout=45,
         )
         resp.raise_for_status()
         data = resp.json()
@@ -98,12 +119,12 @@ def fetch_holdings(etf_code: str, fid: str, token: str) -> tuple:
     print(f"  抓取 {url}  FID={fid}  StartDate={query_date}")
 
     try:
-        resp = requests.post(
+        resp = session.post(
             url,
             params={"token": token},
             json={"token": token, "FID": fid, "StartDate": query_date},
             headers=HEADERS,
-            timeout=20,
+            timeout=45,
         )
         resp.raise_for_status()
         result = resp.json()
