@@ -83,12 +83,12 @@ class MOPSDividendFetcher:
             if not code or len(code) < 4:
                 continue
 
-            # 年度 (民國 → 西元配發年，+1912)
+            # 年度 (民國 → 西元所屬年，+1911)
             try:
                 mops_year = int(row.get("股利年度", 0))
                 if mops_year == 0:
                     continue
-                payout_year = mops_year + 1912
+                fiscal_year = mops_year + 1911
             except Exception:
                 continue
 
@@ -119,7 +119,7 @@ class MOPSDividendFetcher:
                     pass
 
             record = {
-                "year": payout_year,
+                "year": fiscal_year,
                 "period": str(row.get("股利所屬年(季)度", "") or "").strip() or None,
                 "periodRange": period_range,
                 "sequence": int(row.get("期別", 1) or 1),

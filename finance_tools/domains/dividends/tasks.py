@@ -39,11 +39,16 @@ def run_import_dividends(args):
     failed_companies = []
 
     for code, dividend_data in companies_to_process:
+        if not code.isdigit():
+            logger.debug(f"  Skipping {code} (special/preferred share)")
+            continue
+
+        name = all_companies_map.get(code, code)
+
         logger.info(f"  Processing dividends for {code}...")
 
         financial_data = file_mgr.load_financial_data(code)
         if not financial_data:
-            name = all_companies_map.get(code, code)
             financial_data = {
                 "companyCode": code,
                 "companyName": name,
