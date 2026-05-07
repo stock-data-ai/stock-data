@@ -181,7 +181,13 @@ def fetch_wantgoo_data() -> tuple:
                 basic_list, value_list, dividend_list = page.evaluate(
                     """async () => {
                         const fetchJson = async (path) => {
-                            const res = await fetch(path, { credentials: 'same-origin' });
+                            const res = await fetch(path, {
+                                credentials: 'same-origin',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'Accept': '*/*',
+                                },
+                            });
                             if (!res.ok) {
                                 throw new Error(`${path} => ${res.status}`);
                             }
