@@ -18,6 +18,7 @@ concurrency:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   update:
@@ -74,6 +75,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if ! gh label list --repo stock-data-ai/stock-data --search reminder --json name -q '.[].name' | grep -Fxq reminder; then
+            gh label create reminder \
+              --repo stock-data-ai/stock-data \
+              --description "本地同步提醒" \
+              --color "FBCA04"
+          fi
+
           gh issue create \
             --repo stock-data-ai/stock-data \
             --title "🔔 [$(date +%Y-%m-%d)] 請本地同步 ETF metadata / index" \

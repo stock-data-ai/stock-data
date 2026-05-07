@@ -10,6 +10,9 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Trigger sync in stock_map
         env:
