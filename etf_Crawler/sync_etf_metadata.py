@@ -172,6 +172,7 @@ def fetch_wantgoo_data() -> tuple:
     with sync_playwright() as p:
         for attempt in range(1, max_attempts + 1):
             browser = p.chromium.launch(
+                channel="chromium",
                 headless=True,
                 args=[
                     "--disable-blink-features=AutomationControlled",
@@ -196,22 +197,27 @@ def fetch_wantgoo_data() -> tuple:
 
                 basic_list, value_list, dividend_list = page.evaluate(
                     """async () => {
-                        const fetchJson = async (path) => {
-                            const res = await fetch(path, {
-                                credentials: 'same-origin',
-                                mode: 'same-origin',
-                                cache: 'no-store',
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'Accept': '*/*',
-                                    'Accept-Language': 'zh-TW,zh;q=0.9',
-                                },
-                            });
-                            if (!res.ok) {
-                                throw new Error(`${path} => ${res.status}`);
-                            }
-                            return await res.json();
-                        };
+                        const fetchJson = (path) => new Promise((resolve, reject) => {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('GET', path, true);
+                            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                            xhr.setRequestHeader('Accept', '*/*');
+                            xhr.setRequestHeader('Accept-Language', 'zh-TW,zh;q=0.9');
+                            xhr.onreadystatechange = () => {
+                                if (xhr.readyState !== XMLHttpRequest.DONE) return;
+                                if (xhr.status >= 200 && xhr.status < 300) {
+                                    try {
+                                        resolve(JSON.parse(xhr.responseText));
+                                    } catch (err) {
+                                        reject(new Error(`${path} => invalid json`));
+                                    }
+                                } else {
+                                    reject(new Error(`${path} => ${xhr.status}`));
+                                }
+                            };
+                            xhr.onerror = () => reject(new Error(`${path} => network error`));
+                            xhr.send();
+                        });
 
                         const [basic, value, dividend] = await Promise.all([
                             fetchJson('/stock/etf/basic-data'),
