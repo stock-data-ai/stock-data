@@ -1,6 +1,8 @@
 """
 fetch_etf_data.py
 
+舊版手動同步腳本，現已不在 ETF GitHub Actions 主流程中使用。
+
 從玩股網一次抓取全市場 ETF 資料，更新：
   1. src/data/etf/index.json         — 費用/規模/發行商/殖利率/持有人數/上市日期
   2. src/data/etf/dividends/{code}.json — 各 ETF 配息歷史

@@ -5,7 +5,7 @@ generate_etf_index.py
 
 {code}.json 是 single source of truth for:
   code, name, assetClass, categoryId, trackingIndex,
-  managementFee, dividendFrequency, fundSize, issuer
+  managementFee, dividendFrequency, inceptionDate, fundSize, issuer
 
 現有 index.json 保留以下欄位（無其他爬蟲維護）：
   trailingYield, beneficiaryCount
@@ -25,7 +25,7 @@ ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 INDEX_PATH = ETF_DATA_DIR / "index.json"
 
 # Fields where the crawler ({code}.json / MoneyDJ) is authoritative
-CRAWLER_FIELDS = ["managementFee", "dividendFrequency", "fundSize", "issuer"]
+CRAWLER_FIELDS = ["managementFee", "dividendFrequency", "inceptionDate", "fundSize", "issuer"]
 
 # Fields where stock_map (existing index.json) is authoritative; {code}.json used only as fallback
 MANUAL_FIELDS = ["name", "assetClass", "categoryId", "trackingIndex"]

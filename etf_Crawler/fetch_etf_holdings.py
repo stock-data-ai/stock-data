@@ -8,9 +8,9 @@
 """
 fetch_etf_holdings.py
 
-從 MoneyDJ 爬取 ETF 成份股與持股比例，並同步更新基本資料。
+從 MoneyDJ 爬取非主動式 ETF 成份股與持股比例。
 更新欄位：
-- src/data/etf/{code}.json (topHoldings, dividendFrequency, managementFee, inceptionDate, fundSize, issuer)
+- src/data/etf/{code}.json (topHoldings, holdingsHistory, lastUpdated)
 
 用法：
     uv run etf_Crawler/fetch_etf_holdings.py              # 更新全部
@@ -38,7 +38,6 @@ except ImportError:
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 MONEYDJ_HOLDINGS_URL = "https://www.moneydj.com/ETF/X/Basic/Basic0007B.xdjhtm?etfid={code}.TW"
-MONEYDJ_BASIC_URL = "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid={code}.TW"
 
 STOCK_MAP_INDEX_LOCAL = REPO_ROOT.parent / "stock_map" / "src" / "data" / "etf" / "index.json"
 ETF_INDEX_PATH = ETF_DATA_DIR / "index.json"  # stock-data 自己的（由 sync-topics.yml 同步）
@@ -67,40 +66,6 @@ def create_session():
     return session
 
 session = create_session()
-
-
-def fetch_metadata(etf_code: str) -> dict:  # type: ignore[return]
-    """從 MoneyDJ 爬取 ETF 基本資料"""
-    url = MONEYDJ_BASIC_URL.format(code=etf_code)
-    print(f"  抓取基本資料 {url}")
-
-    try:
-        resp = session.get(url, headers=HEADERS, timeout=15, verify=False)
-        resp.raise_for_status()
-        resp.encoding = "utf-8"
-        soup = BeautifulSoup(resp.text, "html.parser")
-
-        metadata = {}
-
-        for tr in soup.find_all("tr"):
-            ths = tr.find_all("th")
-            tds = tr.find_all("td")
-            for th, td in zip(ths, tds):
-                label = th.get_text(strip=True)
-                value = td.get_text(strip=True)
-
-                if "配息頻率" in label:
-                    metadata["dividendFrequency"] = value
-                elif "成立日期" in label:
-                    m = re.search(r"(\d{4}/\d{2}/\d{2})", value)
-                    if m:
-                        metadata["inceptionDate"] = m.group(1).replace("/", "-")
-                elif "發行公司" in label:
-                    metadata["issuer"] = value
-        return metadata
-    except Exception as e:
-        print(f"  [WARN] 無法抓取基本資料: {e}")
-        return {}
 
 
 def fetch_holdings(etf_code: str) -> tuple[list, str]:
@@ -196,23 +161,11 @@ def update_etf_json(etf_code: str) -> bool:
 
     try:
         holdings, data_date = fetch_holdings(etf_code)
-        metadata = fetch_metadata(etf_code)
-
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
-        # 比對 metadata
-        if metadata:
-            for key in ["dividendFrequency", "inceptionDate", "issuer"]:
-                if key in metadata and data.get(key) != metadata[key]:
-                    data[key] = metadata[key]
-
         if not holdings:
             print(f"  [Skip] {etf_code} — 無持股資料")
-            # 仍需寫回 metadata（債券 ETF 無成份股但有配息頻率/成立日期）
-            if metadata:
-                with open(json_path, "w", encoding="utf-8") as f:
-                    json.dump(data, f, ensure_ascii=False, indent=2)
             return True
 
         current_date = data_date or date.today().isoformat()
@@ -329,9 +282,11 @@ def main():
     index = _load_stock_map_index()
     index_map = {e["code"]: e for e in index}
 
-    all_codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
-    active = [c for c in all_codes if c.endswith("A")]
-    target_codes = [c for c in all_codes if not c.endswith("A")]
+    requested_codes = sys.argv[1:] if len(sys.argv) > 1 else load_all_codes()
+    active = [c for c in requested_codes if c.endswith("A")]
+    if active:
+        print(f"[WARN] 跳過主動型 ETF（由專屬日更 workflow + metadata sync 處理）：{', '.join(active)}")
+    target_codes = [c for c in requested_codes if not c.endswith("A")]
     total = len(target_codes)
     success_count = 0
     failed_codes = []
@@ -356,41 +311,8 @@ def main():
         if i < total - 1:
             time.sleep(0.5)
 
-    # 主動型 ETF：只更新 dividendFrequency / inceptionDate / issuer
-    if active:
-        print(f"\n準備更新 {len(active)} 支主動型 ETF 配息資料")
-        active_ok = 0
-        for i, code in enumerate(active):
-            json_path = ETF_DATA_DIR / f"{code}.json"
-            if not json_path.exists():
-                print(f"  [Skip] {code} — 找不到 JSON")
-                continue
-            print(f"\n[A {i+1}/{len(active)}] {code}")
-            metadata = fetch_metadata(code)
-            if not metadata:
-                print(f"  [Skip] {code} — 無 metadata")
-                continue
-            with open(json_path, encoding="utf-8") as f:
-                data = json.load(f)
-            changed = False
-            for key in ["dividendFrequency", "inceptionDate", "issuer"]:
-                if key in metadata and data.get(key) != metadata[key]:
-                    data[key] = metadata[key]
-                    changed = True
-            if changed:
-                with open(json_path, "w", encoding="utf-8") as f:
-                    json.dump(data, f, ensure_ascii=False, indent=2)
-                print(f"  [OK] {code} — metadata 更新")
-            else:
-                print(f"  [Skip] {code} — 無變動")
-            active_ok += 1
-            if i < len(active) - 1:
-                time.sleep(0.5)
-
     summary = f"ETF 更新報告 ({date.today().isoformat()})\n"
     summary += f"- 成功: {success_count}/{total}\n"
-    if active:
-        summary += f"- 主動型 metadata: {len(active)} 支\n"
     if failed_codes:
         summary += f"- 失敗: {', '.join(failed_codes)}\n"
 

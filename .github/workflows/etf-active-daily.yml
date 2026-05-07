@@ -211,6 +211,14 @@ jobs:
           echo "| 第一金投信 | 00994A | $(status '${{ steps.first_financial.outcome }}' '${{ steps.first_financial.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 兆豐投信 | 00996A | $(status '${{ steps.mega.outcome }}' '${{ steps.mega.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
 
+      - name: Sync ETF metadata
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            uv run python etf_Crawler/sync_etf_metadata.py ${{ inputs.codes }}
+          else
+            uv run python etf_Crawler/sync_etf_metadata.py
+          fi
+
       - name: Generate ETF index from detail files
         run: uv run python etf_Crawler/generate_etf_index.py
 
