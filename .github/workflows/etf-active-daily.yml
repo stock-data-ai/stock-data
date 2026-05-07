@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      - name: Install Playwright browsers
+        run: uv run playwright install chromium
+
       - name: Run active ETF crawler (統一投信 — 00981A 00988A)
         id: unipres
         run: |

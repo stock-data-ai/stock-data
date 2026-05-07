@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      - name: Install Playwright browsers
+        run: uv run playwright install chromium
+
       - name: Run ETF holdings crawler
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
