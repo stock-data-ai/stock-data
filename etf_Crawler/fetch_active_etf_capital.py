@@ -251,6 +251,7 @@ def main():
     print(f"\n群益投信主動 ETF 更新完成 — 成功: {success}/{len(targets)}")
     if failed:
         print(f"失敗: {', '.join(failed)}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

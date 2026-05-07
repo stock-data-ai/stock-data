@@ -157,7 +157,6 @@ def fetch_wantgoo_data() -> tuple:
 
     with sync_playwright() as p:
         for attempt in range(1, max_attempts + 1):
-            captured = {}
             browser = p.chromium.launch(
                 headless=True,
                 args=[
@@ -176,39 +175,34 @@ def fetch_wantgoo_data() -> tuple:
                 page.add_init_script(
                     "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
                 )
-
-                def on_response(response):
-                    url = response.url
-                    if API_BASIC in url:
-                        captured["basic"] = response.json()
-                    elif API_VALUE in url:
-                        captured["value"] = response.json()
-                    elif API_DIVIDEND in url:
-                        captured["dividend"] = response.json()
-
-                page.on("response", on_response)
-
                 page.goto(RANKING_URL, wait_until="load", timeout=90000)
-                for _ in range(60):
-                    if "basic" in captured and "value" in captured:
-                        break
-                    time.sleep(0.5)
-                else:
-                    raise TimeoutError(f"排行頁 API 未取得: {list(captured)}")
+                page.wait_for_timeout(3000)
 
-                page.goto(DIVIDEND_URL, wait_until="load", timeout=90000)
-                for _ in range(60):
-                    if "dividend" in captured:
-                        break
-                    time.sleep(0.5)
-                else:
-                    print("  [WARN] 玩股網 dividend-data 未取得，inceptionDate 將沿用現值")
+                basic_list, value_list, dividend_list = page.evaluate(
+                    """async () => {
+                        const fetchJson = async (path) => {
+                            const res = await fetch(path, { credentials: 'same-origin' });
+                            if (!res.ok) {
+                                throw new Error(`${path} => ${res.status}`);
+                            }
+                            return await res.json();
+                        };
 
-                return (
-                    captured.get("basic", []),
-                    captured.get("value", []),
-                    captured.get("dividend", []),
+                        const [basic, value, dividend] = await Promise.all([
+                            fetchJson('/stock/etf/basic-data'),
+                            fetchJson('/stock/etf/daily-value-data'),
+                            fetchJson('/stock/etf/dividend-data'),
+                        ]);
+                        return [basic, value, dividend];
+                    }"""
                 )
+
+                if not basic_list or not value_list:
+                    raise TimeoutError(
+                        f"排行頁 API 未取得有效資料: basic={len(basic_list)} value={len(value_list)} dividend={len(dividend_list)}"
+                    )
+
+                return basic_list, value_list, dividend_list
             except Exception as e:
                 last_err = e
                 print(f"  [attempt {attempt}/{max_attempts}] 玩股網抓取失敗: {e}")
