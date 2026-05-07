@@ -43,6 +43,7 @@ jobs:
 
       - name: Run active ETF crawler (統一投信 — 00981A 00988A)
         id: unipres
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00981A|00988A)$" | tr '\n' ' ' | xargs)
@@ -57,6 +58,7 @@ jobs:
 
       - name: Run active ETF crawler (群益投信 — 00982A 00992A 00997A)
         id: capital
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00982A|00992A|00997A)$" | tr '\n' ' ' | xargs)
@@ -71,6 +73,7 @@ jobs:
 
       - name: Run active ETF crawler (野村投信 — 00980A 00985A)
         id: nomura
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00980A|00985A)$" | tr '\n' ' ' | xargs)
@@ -90,6 +93,7 @@ jobs:
 
       - name: Run active ETF crawler (元大投信 — 00990A)
         id: yuanta
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00990A)$" | tr '\n' ' ' | xargs)
@@ -104,6 +108,7 @@ jobs:
 
       - name: Run active ETF crawler (中信投信 — 00983A 00995A)
         id: ctbc
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00983A|00995A)$" | tr '\n' ' ' | xargs)
@@ -118,6 +123,7 @@ jobs:
 
       - name: Run active ETF crawler (復華投信 — 00991A)
         id: fuhwa
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A)$" | tr '\n' ' ' | xargs)
@@ -132,6 +138,7 @@ jobs:
 
       - name: Run active ETF crawler (安聯投信 — 00984A 00993A)
         id: allianz
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00984A|00993A)$" | tr '\n' ' ' | xargs)
@@ -146,6 +153,7 @@ jobs:
 
       - name: Run active ETF crawler (台新投信 — 00986A 00987A)
         id: taishin
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00986A|00987A)$" | tr '\n' ' ' | xargs)
@@ -160,6 +168,7 @@ jobs:
 
       - name: Run active ETF crawler (第一金投信 — 00994A)
         id: first_financial
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00994A)$" | tr '\n' ' ' | xargs)
@@ -174,6 +183,7 @@ jobs:
 
       - name: Run active ETF crawler (兆豐投信 — 00996A)
         id: mega
+        continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
             FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00996A)$" | tr '\n' ' ' | xargs)
