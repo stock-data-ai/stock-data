@@ -1,10 +1,9 @@
-name: Notify Static Data Changed
+name: Notify ETF Index Changed
 
 on:
   push:
     branches: [main]
     paths:
-      - 'src/data/layer3/companies/companies-all.json'
       - 'src/data/etf/index.json'
 
 jobs:
@@ -14,7 +13,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - name: Trigger sync in stock_map
+      - name: Trigger ETF index sync in stock_map
         env:
           PAT: ${{ secrets.STOCK_MAP_PAT }}
         run: |
@@ -23,13 +22,13 @@ jobs:
             -H "Authorization: token $PAT" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/CHIJUI0128/stock_map/dispatches \
-            -d '{"event_type":"static-data-changed"}'
+            -d '{"event_type":"etf-index-changed"}'
 
-      - name: 關閉 fetch_etf_data.py 提醒 Issue
+      - name: 關閉 ETF metadata/index 提醒 Issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ISSUE=$(gh issue list --repo stock-data-ai/stock-data --label reminder --state open --json number -q '.[0].number')
           if [ -n "$ISSUE" ]; then
-            gh issue close "$ISSUE" --repo stock-data-ai/stock-data --comment "fetch_etf_data.py 已執行，資料同步完成。✅"
+            gh issue close "$ISSUE" --repo stock-data-ai/stock-data --comment "ETF metadata / index 已同步完成。✅"
           fi

@@ -1,8 +1,8 @@
-name: Sync Topics from stock_map
+name: Sync Topics Config from stock_map
 
 on:
   repository_dispatch:
-    types: [topics-changed]
+    types: [topics-config-changed]
   workflow_dispatch:
 
 concurrency:
@@ -76,7 +76,7 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Trigger stock_map static data sync
+      - name: Trigger companies data sync in stock_map
         if: steps.commit.outputs.changed == 'true'
         env:
           PAT: ${{ secrets.STOCK_MAP_PAT }}
@@ -86,4 +86,4 @@ jobs:
             -H "Authorization: token $PAT" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/CHIJUI0128/stock_map/dispatches \
-            -d '{"event_type":"static-data-changed"}'
+            -d '{"event_type":"companies-data-changed"}'

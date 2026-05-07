@@ -60,17 +60,6 @@ jobs:
             git push
           fi
 
-      - name: Notify stock_map to sync ETF data
-        env:
-          PAT: ${{ secrets.STOCK_MAP_PAT }}
-        run: |
-          curl -fsSL \
-            -X POST \
-            -H "Authorization: token $PAT" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/CHIJUI0128/stock_map/dispatches \
-            -d '{"event_type":"etf-data-changed"}'
-
       - name: 開 Issue 提醒本地同步 ETF metadata/index
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

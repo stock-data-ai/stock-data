@@ -40,7 +40,7 @@ ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 MONEYDJ_HOLDINGS_URL = "https://www.moneydj.com/ETF/X/Basic/Basic0007B.xdjhtm?etfid={code}.TW"
 
 STOCK_MAP_INDEX_LOCAL = REPO_ROOT.parent / "stock_map" / "src" / "data" / "etf" / "index.json"
-ETF_INDEX_PATH = ETF_DATA_DIR / "index.json"  # stock-data 自己的（由 sync-topics.yml 同步）
+ETF_INDEX_PATH = ETF_DATA_DIR / "index.json"  # stock-data 自己的（由 sync-topics-config.yml 同步）
 
 HEADERS = {
     "User-Agent": (
