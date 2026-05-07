@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'src/data/layer3/companies/companies-all.json'
+      - 'src/data/etf/index.json'
 
 jobs:
   notify:
@@ -20,3 +21,12 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/CHIJUI0128/stock_map/dispatches \
             -d '{"event_type":"static-data-changed"}'
+
+      - name: 關閉 fetch_etf_data.py 提醒 Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE=$(gh issue list --label reminder --state open --json number -q '.[0].number')
+          if [ -n "$ISSUE" ]; then
+            gh issue close "$ISSUE" --comment "fetch_etf_data.py 已執行，資料同步完成。✅"
+          fi
