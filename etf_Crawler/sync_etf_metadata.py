@@ -246,11 +246,15 @@ def fetch_wantgoo_data() -> tuple:
 
 
 def build_wantgoo_metadata_maps() -> tuple:
-    basic_list, value_list, dividend_list = fetch_wantgoo_data()
-    basic_map = {e["stockNo"]: e for e in basic_list}
-    value_map = {e["stockNo"]: e for e in value_list}
-    dividend_map = {e["stockNo"]: e for e in dividend_list}
-    return basic_map, value_map, dividend_map
+    try:
+        basic_list, value_list, dividend_list = fetch_wantgoo_data()
+        basic_map = {e["stockNo"]: e for e in basic_list}
+        value_map = {e["stockNo"]: e for e in value_list}
+        dividend_map = {e["stockNo"]: e for e in dividend_list}
+        return basic_map, value_map, dividend_map
+    except Exception as e:
+        print(f"[WARN] 玩股網資料抓取失敗，本次改為沿用既有欄位，只同步配息頻率: {e}")
+        return {}, {}, {}
 
 
 def _latest_beneficiary_count(value: dict) -> int:

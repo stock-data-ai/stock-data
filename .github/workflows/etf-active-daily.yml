@@ -38,9 +38,6 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Install Playwright browsers
-        run: uv run playwright install chromium
-
       - name: Run active ETF crawler (統一投信 — 00981A 00988A)
         id: unipres
         continue-on-error: true
@@ -224,17 +221,6 @@ jobs:
           echo "| 第一金投信 | 00994A | $(status '${{ steps.first_financial.outcome }}' '${{ steps.first_financial.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 兆豐投信 | 00996A | $(status '${{ steps.mega.outcome }}' '${{ steps.mega.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
 
-      - name: Sync ETF metadata
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            uv run python etf_Crawler/sync_etf_metadata.py ${{ inputs.codes }}
-          else
-            uv run python etf_Crawler/sync_etf_metadata.py
-          fi
-
-      - name: Generate ETF index from detail files
-        run: uv run python etf_Crawler/generate_etf_index.py
-
       - name: Commit & push updated ETF data
         run: |
           git config user.name "github-actions[bot]"
@@ -247,19 +233,3 @@ jobs:
             git pull --rebase -X ours origin main
             git push
           fi
-
-      - name: Push generated index.json back to stock_map
-        env:
-          PAT: ${{ secrets.STOCK_MAP_PAT }}
-        run: |
-          SHA=$(curl -fsSL \
-            -H "Authorization: token $PAT" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
-            | python3 -c "import sys,json; print(json.load(sys.stdin)['sha'])")
-          CONTENT=$(base64 -w 0 src/data/etf/index.json)
-          curl -fsSL -X PUT \
-            -H "Authorization: token $PAT" \
-            -H "Content-Type: application/json" \
-            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json" \
-            -d "{\"message\":\"generate: ETF index 同步 $(date +%Y-%m-%d)\",\"content\":\"$CONTENT\",\"sha\":\"$SHA\",\"branch\":\"publish_cloudflare\"}"

@@ -38,9 +38,6 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Install Playwright browsers
-        run: uv run playwright install chromium
-
       - name: Run ETF holdings crawler
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
@@ -48,17 +45,6 @@ jobs:
           else
             uv run python etf_Crawler/fetch_etf_holdings.py
           fi
-
-      - name: Sync ETF metadata
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            uv run python etf_Crawler/sync_etf_metadata.py ${{ inputs.codes }}
-          else
-            uv run python etf_Crawler/sync_etf_metadata.py
-          fi
-
-      - name: Regenerate ETF index from detail files
-        run: uv run python etf_Crawler/generate_etf_index.py
 
       - name: Commit & push updated ETF data
         run: |
@@ -83,3 +69,23 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/CHIJUI0128/stock_map/dispatches \
             -d '{"event_type":"etf-data-changed"}'
+
+      - name: 開 Issue 提醒本地同步 ETF metadata/index
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo stock-data-ai/stock-data \
+            --title "🔔 [$(date +%Y-%m-%d)] 請本地同步 ETF metadata / index" \
+            --body "ETF holdings 已更新完成，請在本地執行：
+
+          \`\`\`bash
+          uv run python etf_Crawler/sync_etf_metadata.py
+          uv run python etf_Crawler/generate_etf_index.py
+          git add src/data/etf/
+          git commit -m \"ETF metadata/index 同步 \$(date +%Y-%m-%d)\"
+          git push
+          \`\`\`
+
+          推送後 stock_map 會再同步最新 index.json。" \
+            --label "reminder"
