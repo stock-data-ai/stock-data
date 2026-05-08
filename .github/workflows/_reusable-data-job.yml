@@ -296,16 +296,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/layer3/company-financials/
 
-          # Track combined rerun files and permanent failure reports
+          # Track combined rerun files (permanent_failures not committed — summary-only)
           echo "$COMMANDS" | jq -c '.[]' | while IFS= read -r row; do
             ID=$(echo "$row" | jq -r '.id')
-            for FILE in "finance_tools/rerun_queue_${ID}.txt" "finance_tools/permanent_failures_${ID}.txt"; do
-              if [ -f "$FILE" ] && [ -s "$FILE" ]; then
-                git add "$FILE"
-              else
-                git rm --ignore-unmatch -f "$FILE" 2>/dev/null || true
-              fi
-            done
+            RERUN_FILE="finance_tools/rerun_queue_${ID}.txt"
+            if [ -f "$RERUN_FILE" ] && [ -s "$RERUN_FILE" ]; then
+              git add "$RERUN_FILE"
+            else
+              git rm --ignore-unmatch -f "$RERUN_FILE" 2>/dev/null || true
+            fi
+            git rm --ignore-unmatch -f "finance_tools/permanent_failures_${ID}.txt" 2>/dev/null || true
             # Clean up per-batch files
             for i in 1 2 3 4; do
               git rm --ignore-unmatch -f "finance_tools/rerun_queue_${ID}_${i}.txt" 2>/dev/null || true
