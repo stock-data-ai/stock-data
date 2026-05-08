@@ -19,3 +19,13 @@ class USCompanyInfoFetcher(BaseForeignCompanyFetcher):
     def _to_yahoo_ticker(self, code: str) -> str:
         """US codes typically match Yahoo tickers directly (e.g. AAPL)"""
         return code
+
+    def _build_company_dict(self, code: str, info: dict) -> dict:
+        data = super()._build_company_dict(code, info)
+        data["shortName"] = code
+        gov = data.get("gov") or {}
+        profile = gov.get("profile") or {}
+        profile["companyShortName"] = code
+        gov["profile"] = profile
+        data["gov"] = gov
+        return data
