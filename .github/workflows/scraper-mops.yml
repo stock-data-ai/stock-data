@@ -2,8 +2,8 @@ name: MOPS Scraper
 
 on:
   schedule:
-    # Daily (Mon-Fri): Taiwan 00:00 (UTC 16:00 前一天)
-    - cron: '0 16 * * 0-4'    # UTC Sun-Thu 16:00 = TW Mon-Fri 00:00
+    # Daily (Mon-Fri): Taiwan 19:00 (UTC 11:00)
+    - cron: '0 11 * * 1-5'    # UTC Mon-Fri 11:00 = TW Mon-Fri 19:00
   workflow_dispatch:
 
 jobs:
