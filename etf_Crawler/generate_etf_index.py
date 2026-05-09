@@ -66,10 +66,10 @@ def load_detail_files() -> dict[str, dict]:
 def build_entry(code: str, detail: Optional[dict], existing: Optional[dict]) -> dict:
     entry: dict = {"code": code}
 
-    # Crawler-authoritative: {code}.json wins, fallback to existing
+    # Crawler-authoritative: {code}.json wins; explicit null in detail overrides existing too
     for field in CRAWLER_FIELDS:
-        if detail is not None and detail.get(field) not in (None, ""):
-            entry[field] = detail[field]
+        if detail is not None and field in detail:
+            entry[field] = detail[field] if detail[field] != "" else None
         else:
             entry[field] = existing.get(field) if existing else None
 

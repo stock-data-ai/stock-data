@@ -282,8 +282,9 @@ def fetch_dividend_frequency(etf_code: str) -> dict:
         if end != -1:
             text = text[:end]
 
+        VALID_FREQUENCIES = {"月配", "雙月配", "季配", "半年配", "年配", "不配息"}
         match = re.search(r"配息頻率\s+(\S+)", text)
-        if match:
+        if match and match.group(1) in VALID_FREQUENCIES:
             return {"dividendFrequency": match.group(1)}
         return {}
     except Exception as e:
@@ -305,6 +306,8 @@ def build_metadata_for_code(etf_code: str, basic_map: dict, value_map: dict, div
     fund_size = None
     if shares and book_value:
         fund_size = round((shares * book_value) / 1_000_000, 2)
+    if mgmt_fee is not None and (mgmt_fee < 0 or mgmt_fee > 5):
+        mgmt_fee = None
     metadata = {
         "managementFee": round(mgmt_fee, 4) if mgmt_fee else None,
         "fundSize": fund_size,
@@ -344,8 +347,16 @@ def update_etf_json(etf_code: str, index_map: dict, basic_map: dict, value_map: 
             changed = True
 
     if changed:
+        KEY_ORDER = [
+            "code", "name", "assetClass", "categoryId", "trackingIndex",
+            "managementFee", "dividendFrequency", "inceptionDate",
+            "fundSize", "issuer", "trailingYield", "beneficiaryCount",
+            "description", "references", "topHoldings", "holdingsHistory", "lastUpdated",
+        ]
+        ordered = {k: data[k] for k in KEY_ORDER if k in data}
+        ordered.update({k: v for k, v in data.items() if k not in ordered})
         with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(ordered, f, ensure_ascii=False, indent=2)
             f.write("\n")
         print(f"  [OK] {etf_code} — metadata 更新")
     else:
