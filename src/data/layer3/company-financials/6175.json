@@ -375,9 +375,15 @@
     "dividends": [
       {
         "year": 2025,
-        "cashDividend": 1.75,
+        "period": "年度",
+        "periodRange": "2025-01-01~2025-12-31",
+        "sequence": 1,
+        "cashDividend": 1.5,
         "stockDividend": 0.0,
-        "totalDividend": 1.75
+        "totalDividend": 1.5,
+        "payoutDate": "2026-05-07",
+        "agmDate": "2026-06-18",
+        "status": "董事會擬議"
       },
       {
         "year": 2024,
@@ -429,6 +435,12 @@
       }
     ],
     "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 4,
+        "revenue": 458207000.0,
+        "yoy": 15.86
+      },
       {
         "year": 2026,
         "month": 3,
@@ -26363,7 +26375,7 @@
       }
     }
   },
-  "lastUpdated": "2026-05-09",
+  "lastUpdated": "2026-05-10",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
