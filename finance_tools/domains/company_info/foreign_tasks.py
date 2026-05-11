@@ -46,8 +46,14 @@ def run_update_foreign_company_task(
     # 我們不希望覆蓋掉其他的台股資料，所以先讀取現有的
     all_companies = file_mgr.load_all_companies_with_details()
     
-    # Merge new data into existing data
-    all_companies.update(fetched_data)
+    # Merge new data into existing data, preserving manually-set shortName
+    for code, new_data in fetched_data.items():
+        existing = all_companies.get(code, {})
+        if existing.get("shortName"):
+            new_data["shortName"] = existing["shortName"]
+            if new_data.get("gov", {}).get("profile"):
+                new_data["gov"]["profile"]["companyShortName"] = existing["shortName"]
+        all_companies[code] = new_data
 
     # 3. Save back
     if file_mgr.save_all_companies_data(all_companies):

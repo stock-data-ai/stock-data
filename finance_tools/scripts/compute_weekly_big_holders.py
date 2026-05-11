@@ -6,7 +6,6 @@
 """
 
 import json
-import glob
 from pathlib import Path
 from datetime import datetime
 from collections import Counter
@@ -16,13 +15,14 @@ FINANCIALS_DIR = BASE / "layer3/company-financials"
 COMPANIES_ALL = BASE / "layer3/companies/companies-all.json"
 OUTPUT_FILE = BASE / "market/weekly_big_holders.json"
 
-BIG_HOLDER_MIN_SHARES = 400_000
+THRESHOLDS = [200, 400, 800, 1000]  # 單位：張（千股）
 FRESHNESS_DAYS = 45
-MAX_LOOKBACK_PERIODS = 4  # 最多往回比較幾期
+MAX_LOOKBACK_PERIODS = 4
 TOP_N = 20
 
 
-def big_holder_ratio(snapshot: list) -> tuple[float, int]:
+def big_holder_ratio(snapshot: list, min_lots: int) -> tuple[float, int]:
+    min_shares = min_lots * 1000
     total_ratio = 0.0
     total_shares = 0
     for entry in snapshot:
@@ -34,7 +34,7 @@ def big_holder_ratio(snapshot: list) -> tuple[float, int]:
             low_val = int(low_str)
         except ValueError:
             continue
-        if low_val >= BIG_HOLDER_MIN_SHARES:
+        if low_val >= min_shares:
             total_ratio += entry.get("ratio_pct", 0.0)
             total_shares += int(entry.get("shares", 0))
     return round(total_ratio, 2), total_shares
@@ -49,16 +49,10 @@ def load_display_names() -> dict[str, str]:
             for code, info in data.items()}
 
 
-def compute(today: datetime = None) -> dict:
-    if today is None:
-        today = datetime.today()
-
-    display_names = load_display_names()
+def load_raw_company_data(display_names: dict, today: datetime) -> list[dict]:
+    """Load raw history for all companies (threshold-independent)."""
     files = sorted(FINANCIALS_DIR.glob("*.json"))
-
-    # 收集每家公司的歷史大戶比例（依期數索引）
-    company_data: list[dict] = []
-
+    raw = []
     for fp in files:
         try:
             with open(fp, encoding="utf-8") as f:
@@ -72,38 +66,40 @@ def compute(today: datetime = None) -> dict:
 
         dates = sorted(history.keys())
         latest_date = datetime.strptime(dates[-1], "%Y%m%d")
-
         if (today - latest_date).days > FRESHNESS_DAYS:
             continue
 
         code = d.get("companyCode", fp.stem)
-        name = display_names.get(code, d.get("companyName", code))
-
-        # 計算最新期的大戶比例與股數
-        ratio_latest, shares_latest = big_holder_ratio(history[dates[-1]])
-        if ratio_latest == 0:
-            continue
-
-        company_data.append({
+        raw.append({
             "code": code,
-            "name": name,
-            "dates": dates,          # 所有可用日期（升序）
-            "ratioLatest": ratio_latest,
-            "sharesLatest": shares_latest,
+            "name": display_names.get(code, d.get("companyName", code)),
+            "dates": dates,
             "history": history,
         })
+    return raw
 
-    # 建立各回溯期的排行
+
+def compute_for_threshold(raw: list[dict], min_lots: int) -> list[dict]:
+    """Build period rankings for a given lot threshold."""
+    # Pre-compute latest ratio per company for this threshold
+    company_data = []
+    for c in raw:
+        dates = c["dates"]
+        ratio_latest, shares_latest = big_holder_ratio(c["history"][dates[-1]], min_lots)
+        if ratio_latest == 0:
+            continue
+        company_data.append({**c, "ratioLatest": ratio_latest, "sharesLatest": shares_latest})
+
     periods_output = []
     for lb in range(1, MAX_LOOKBACK_PERIODS + 1):
         results = []
         for c in company_data:
             dates = c["dates"]
             if len(dates) <= lb:
-                continue  # 沒有足夠期數的跳過
+                continue
 
             prev_date = dates[-(lb + 1)]
-            ratio_prev, shares_prev = big_holder_ratio(c["history"][prev_date])
+            ratio_prev, shares_prev = big_holder_ratio(c["history"][prev_date], min_lots)
 
             results.append({
                 "code": c["code"],
@@ -118,12 +114,10 @@ def compute(today: datetime = None) -> dict:
 
         results.sort(key=lambda x: x["ratioChange"], reverse=True)
 
-        # 計算最常見的 from/to（供顯示）
         from_counter = Counter(r["fromDate"] for r in results)
         main_from = from_counter.most_common(1)[0][0] if from_counter else ""
         main_to = results[0]["toDate"] if results else ""
 
-        # 計算天數差
         if main_from and main_to:
             days = (datetime.strptime(main_to, "%Y%m%d")
                     - datetime.strptime(main_from, "%Y%m%d")).days
@@ -141,17 +135,37 @@ def compute(today: datetime = None) -> dict:
             "topLosers": list(reversed(results[-TOP_N:])),
         })
 
-        print(f"[big_holders] period-{lb}: {len(results)} companies | "
-              f"{main_from} → {main_to} ({days}d) | "
-              f"top: {results[0]['code']} {results[0]['name']} "
-              f"{results[0]['ratioChange']:+.2f}%" if results else f"[big_holders] period-{lb}: no data")
+        print(
+            f"[big_holders] {min_lots}張 period-{lb}: {len(results)} companies | "
+            f"{main_from} → {main_to} ({days}d) | "
+            + (f"top: {results[0]['code']} {results[0]['name']} {results[0]['ratioChange']:+.2f}%"
+               if results else "no data")
+        )
 
-    output = {
+    return periods_output
+
+
+def compute(today: datetime = None) -> dict:
+    if today is None:
+        today = datetime.today()
+
+    display_names = load_display_names()
+    raw = load_raw_company_data(display_names, today)
+
+    thresholds_output: dict[str, dict] = {}
+    latest_date = ""
+
+    for min_lots in THRESHOLDS:
+        periods = compute_for_threshold(raw, min_lots)
+        thresholds_output[str(min_lots)] = {"periods": periods}
+        if not latest_date and periods:
+            latest_date = periods[0].get("toDate", "")
+
+    return {
         "generatedAt": today.strftime("%Y-%m-%dT%H:%M:%S"),
-        "latestDate": periods_output[0]["toDate"] if periods_output else "",
-        "periods": periods_output,
+        "latestDate": latest_date,
+        "thresholds": thresholds_output,
     }
-    return output
 
 
 def run(args=None):
