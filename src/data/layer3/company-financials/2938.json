@@ -10,7 +10,8 @@
     "operatingMargin": 5.84,
     "netMargin": 6.25,
     "eps": 0.55,
-    "marketCap": 473290000.0
+    "marketCap": 473290000.0,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -203,10 +204,92 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2024,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.5,
+        "stockDividend": 0.0,
+        "totalDividend": 2.5,
+        "payoutDate": "2025-09-17"
+      },
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.25,
+        "stockDividend": 0.0,
+        "totalDividend": 2.25,
+        "payoutDate": "2024-09-06"
+      },
+      {
+        "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.0,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0,
+        "payoutDate": "2023-09-08"
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.0,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0,
+        "payoutDate": "2022-09-08"
+      },
+      {
+        "year": 2020,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.5,
+        "stockDividend": 0.0,
+        "totalDividend": 2.5,
+        "payoutDate": "2021-10-01"
+      },
+      {
+        "year": 2019,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.5,
+        "stockDividend": 0.0,
+        "totalDividend": 2.5,
+        "payoutDate": "2020-09-09"
+      },
+      {
+        "year": 2018,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.5,
+        "stockDividend": 0.0,
+        "totalDividend": 2.5,
+        "payoutDate": "2019-09-11"
+      },
+      {
+        "year": 2017,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.4,
+        "stockDividend": 0.6,
+        "totalDividend": 3.0,
+        "payoutDate": "2018-08-22"
+      },
+      {
+        "year": 2016,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.2,
+        "stockDividend": 0.0,
+        "totalDividend": 1.2,
+        "payoutDate": "2017-09-15"
+      }
+    ],
     "institutionalInvestors": null
   },
-  "lastUpdated": "2026-03-12",
+  "lastUpdated": "2026-05-11",
   "dataQuality": "medium",
   "shareholderDataHistory": {
     "20260213": [
@@ -1691,5 +1774,6 @@
       "shares": 20140000,
       "ratio_pct": 100.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

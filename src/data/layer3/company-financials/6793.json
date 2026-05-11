@@ -10,8 +10,9 @@
     "operatingMargin": -310.99,
     "netMargin": -609.7,
     "eps": -4.75,
-    "marketCap": 464940000,
-    "pb": 0.31634176
+    "marketCap": 469476000,
+    "pb": 0.31942803,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -241,24 +242,18 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null,
-    "institutionalInvestors": {
-      "2026-05-08": {
-        "foreign_buy": 0.0,
-        "trust_buy": 0.0,
-        "foreign_net_buy": -19.0,
-        "trust_net_buy": 0.0,
-        "foreign_sell": 19.0,
-        "trust_sell": 0.0,
-        "dealer_buy": 0,
-        "dealer_sell": 0,
-        "dealer_net_buy": 0,
-        "code": "6793",
-        "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "foreign_ratio": 0.0
+    "dividends": [
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.2,
+        "stockDividend": 0.8,
+        "totalDividend": 1.0,
+        "payoutDate": "2024-09-06"
       }
-    }
+    ],
+    "institutionalInvestors": null
   },
   "lastUpdated": "2026-05-11",
   "dataQuality": "medium",
@@ -2999,5 +2994,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

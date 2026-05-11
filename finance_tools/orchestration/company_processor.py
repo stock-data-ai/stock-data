@@ -20,14 +20,13 @@ class CompanyProcessor:
     """
     def __init__(self, processor: DataProcessor, file_mgr: FileManager, finmind_client: FinMindClient,
                  financials_fetcher: Callable, revenue_fetcher: Callable,
-                 all_companies_details: Dict[str, Any], all_dividends_data: Dict[str, Any],
+                 all_companies_details: Dict[str, Any],
                  institutional_investors_shares_fetcher: Callable,
                  shareholding_fetcher: Callable = None,
                  inst_ratio_calculator: InstRatioCalculator = None):
         self.file_mgr = file_mgr
         self.processor = processor
         self.all_companies_details = all_companies_details
-        self.all_dividends_data = all_dividends_data
 
         self.fetch_orchestrator = FetchOrchestrator(
             finmind_client, financials_fetcher, revenue_fetcher,
@@ -127,14 +126,6 @@ class CompanyProcessor:
                 self.calculator.calculate_yoy_and_update_block(latest_block, latest_quarter, quarterly_data)
 
             # 3. 組合資料
-            company_dividends_csv_data = self.all_dividends_data.get(code)
-            if company_dividends_csv_data:
-                status["div"] = True
-                if company_dividends_csv_data.get('frequency'):
-                    latest_block["dividendFrequency"] = company_dividends_csv_data.get('frequency')
-
-            new_dividend_list = self.assembler.build_dividend_list(company_dividends_csv_data)
-
             data_quality = "high" if (fin_success and revenue_success) else "medium"
             if not fin_success:
                 data_quality = "low"
@@ -144,7 +135,7 @@ class CompanyProcessor:
             final_data = self.assembler.build_final_data(
                 existing_data, code, name, latest_block,
                 annual_data, quarterly_data, monthly_revenue_df,
-                new_dividend_list, data_quality, ratios
+                [], data_quality, ratios
             )
 
             # 4. 完成並儲存

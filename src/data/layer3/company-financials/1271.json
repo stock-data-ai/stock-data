@@ -179,9 +179,55 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null
+    "dividends": [
+      {
+        "year": 2024,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.3305,
+        "stockDividend": 0.0,
+        "totalDividend": 1.3305,
+        "payoutDate": "2025-08-12"
+      },
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.0,
+        "stockDividend": 0.1684,
+        "totalDividend": 1.1684,
+        "payoutDate": "2024-05-15"
+      },
+      {
+        "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.2014,
+        "stockDividend": 0.0,
+        "totalDividend": 3.2014,
+        "payoutDate": "2023-04-19"
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 4.3026,
+        "stockDividend": 0.0,
+        "totalDividend": 4.3026,
+        "payoutDate": "2022-07-11"
+      },
+      {
+        "year": 2020,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.7985,
+        "stockDividend": 0.0,
+        "totalDividend": 2.7985,
+        "payoutDate": "2021-08-18"
+      }
+    ]
   },
-  "lastUpdated": "2026-03-12",
+  "lastUpdated": "2026-05-11",
   "latest": {
     "year": 2025,
     "quarter": 2,
@@ -191,7 +237,8 @@
     "operatingMargin": 12.58,
     "netMargin": 18.98,
     "eps": 0.73,
-    "marketCap": 3261009564.0
+    "marketCap": 3261009564.0,
+    "dividendFrequency": "年"
   },
   "shareholderDataHistory": {
     "20260213": [
@@ -1679,5 +1726,6 @@
   ],
   "companyCode": "1271",
   "companyName": "晨暉生物科技股份有限公司",
-  "dataQuality": "medium"
+  "dataQuality": "medium",
+  "dividendsUpdated": "2026-05-11"
 }

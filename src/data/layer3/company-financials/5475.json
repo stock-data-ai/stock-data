@@ -11,9 +11,9 @@
     "netMargin": 4.31,
     "eps": 0.1,
     "dividendFrequency": "年",
-    "marketCap": 42142605312,
+    "marketCap": 41316278272,
     "pe": 0.0,
-    "pb": 47.24241,
+    "pb": 46.31609,
     "marginBalance": 0,
     "shortBalance": 0
   },
@@ -801,76 +801,49 @@
     ],
     "dividends": [
       {
-        "year": 2026,
+        "year": 2011,
         "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
+        "sequence": 1,
+        "cashDividend": 0.5065,
+        "stockDividend": 0.0,
+        "totalDividend": 0.5065,
+        "payoutDate": null
+      },
+      {
+        "year": 2010,
+        "period": "年度",
         "sequence": 1,
         "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0,
-        "payoutDate": "2026-03-13",
-        "agmDate": "2026-06-01",
-        "status": "董事會擬議"
+        "stockDividend": 0.5068,
+        "totalDividend": 0.5068,
+        "payoutDate": null
       },
       {
-        "year": 2025,
+        "year": 2007,
         "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
         "sequence": 1,
         "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0,
-        "payoutDate": "2026-03-13",
-        "agmDate": "2026-06-01",
-        "status": "董事會擬議"
+        "stockDividend": 1.0121,
+        "totalDividend": 1.0121,
+        "payoutDate": null
       },
       {
-        "year": 2024,
-        "cashDividend": 0.0,
+        "year": 2006,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.6,
         "stockDividend": 0.0,
-        "totalDividend": 0.0
+        "totalDividend": 0.6,
+        "payoutDate": null
       },
       {
-        "year": 2023,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2022,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2021,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2020,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2019,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2018,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2017,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
+        "year": 2004,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.9996,
+        "stockDividend": 0.9996,
+        "totalDividend": 1.9992,
+        "payoutDate": null
       }
     ],
     "institutionalInvestors": {
@@ -20484,8 +20457,8 @@
         "code": "5475",
         "foreign_ratio": 7.9,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 7.9
+        "dealer_ratio": 0.106193,
+        "three_inst_ratio": 8.006193
       },
       "2026-02-11": {
         "dealer_self_buy": 0.0,
@@ -22606,25 +22579,6 @@
         "trust_ratio": 3.206242,
         "dealer_ratio": 0.028711,
         "three_inst_ratio": 9.154953
-      },
-      "2026-05-11": {
-        "dealer_self_buy": 0.0,
-        "foreign_buy": 553.107,
-        "trust_buy": 0.0,
-        "dealer_self_net_buy": -9.0,
-        "foreign_net_buy": -297.89300000000003,
-        "trust_net_buy": 0.0,
-        "dealer_self_sell": 9.0,
-        "foreign_sell": 851.0,
-        "trust_sell": 0.0,
-        "dealer_buy": 0.0,
-        "dealer_sell": 9.0,
-        "dealer_net_buy": -9.0,
-        "code": "5475",
-        "trust_ratio": 3.206242,
-        "dealer_ratio": 0.021632,
-        "foreign_ratio": 5.92,
-        "three_inst_ratio": 9.147874
       }
     },
     "marginTrading": {
@@ -25983,5 +25937,6 @@
     }
   ],
   "lastUpdated": "2026-05-11",
-  "dataQuality": "high"
+  "dataQuality": "high",
+  "dividendsUpdated": "2026-05-11"
 }

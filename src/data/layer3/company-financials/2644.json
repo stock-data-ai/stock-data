@@ -10,10 +10,11 @@
     "operatingMargin": 5.17,
     "netMargin": 0.67,
     "eps": 0.36,
-    "marketCap": 6818654208,
-    "pe": 228.33331,
-    "pb": 5.0866337,
-    "dividendYield": 36.0
+    "marketCap": 6860130304,
+    "pe": 229.7222,
+    "pb": 5.117574,
+    "dividendYield": 36.0,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -194,39 +195,45 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null,
-    "institutionalInvestors": {
-      "2026-05-08": {
-        "foreign_buy": 0.15,
-        "trust_buy": 0.0,
-        "foreign_net_buy": 0.15,
-        "trust_net_buy": 0.0,
-        "foreign_sell": 0.0,
-        "trust_sell": 0.0,
-        "dealer_buy": 0,
-        "dealer_sell": 0,
-        "dealer_net_buy": 0,
-        "code": "2644",
-        "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "foreign_ratio": 0.0
+    "dividends": [
+      {
+        "year": 2024,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.3,
+        "stockDividend": 0.2,
+        "totalDividend": 0.5,
+        "payoutDate": "2025-10-03"
       },
-      "2026-05-11": {
-        "foreign_buy": 11.0,
-        "trust_buy": 0.0,
-        "foreign_net_buy": 11.0,
-        "trust_net_buy": 0.0,
-        "foreign_sell": 0.0,
-        "trust_sell": 0.0,
-        "dealer_buy": 0,
-        "dealer_sell": 0,
-        "dealer_net_buy": 0,
-        "code": "2644",
-        "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "foreign_ratio": 0.0
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.4,
+        "stockDividend": 0.2,
+        "totalDividend": 0.6,
+        "payoutDate": "2024-09-30"
+      },
+      {
+        "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.6,
+        "stockDividend": 0.6,
+        "totalDividend": 1.2,
+        "payoutDate": "2023-08-24"
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.0,
+        "stockDividend": 1.0,
+        "totalDividend": 2.0,
+        "payoutDate": "2022-12-13"
       }
-    }
+    ],
+    "institutionalInvestors": null
   },
   "lastUpdated": "2026-05-11",
   "dataQuality": "medium",
@@ -3081,5 +3088,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

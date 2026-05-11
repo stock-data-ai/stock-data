@@ -179,9 +179,91 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null
+    "dividends": [
+      {
+        "year": 2024,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.5144,
+        "stockDividend": 0.0,
+        "totalDividend": 1.5144,
+        "payoutDate": "2025-08-27"
+      },
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.0058,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0058,
+        "payoutDate": "2024-07-17"
+      },
+      {
+        "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.0,
+        "stockDividend": 1.0045,
+        "totalDividend": 1.0045,
+        "payoutDate": null
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.2071,
+        "stockDividend": 0.0,
+        "totalDividend": 2.2071,
+        "payoutDate": "2022-09-21"
+      },
+      {
+        "year": 2020,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.5,
+        "stockDividend": 0.0,
+        "totalDividend": 3.5,
+        "payoutDate": "2021-09-23"
+      },
+      {
+        "year": 2019,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.0,
+        "stockDividend": 0.0,
+        "totalDividend": 2.0,
+        "payoutDate": "2020-09-18"
+      },
+      {
+        "year": 2018,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.9849,
+        "stockDividend": 0.0,
+        "totalDividend": 2.9849,
+        "payoutDate": "2019-08-30"
+      },
+      {
+        "year": 2017,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.834,
+        "stockDividend": 0.0,
+        "totalDividend": 3.834,
+        "payoutDate": "2018-10-05"
+      },
+      {
+        "year": 2016,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.5,
+        "stockDividend": 0.0,
+        "totalDividend": 2.5,
+        "payoutDate": "2017-09-15"
+      }
+    ]
   },
-  "lastUpdated": "2026-03-12",
+  "lastUpdated": "2026-05-11",
   "latest": {
     "year": 2025,
     "quarter": 2,
@@ -191,7 +273,8 @@
     "operatingMargin": 1.29,
     "netMargin": -0.89,
     "eps": -0.48,
-    "marketCap": 1254567660.0
+    "marketCap": 1254567660.0,
+    "dividendFrequency": "年"
   },
   "shareholderDataHistory": {
     "20260213": [
@@ -1679,5 +1762,6 @@
   ],
   "companyCode": "1269",
   "companyName": "乾杯股份有限公司",
-  "dataQuality": "medium"
+  "dataQuality": "medium",
+  "dividendsUpdated": "2026-05-11"
 }

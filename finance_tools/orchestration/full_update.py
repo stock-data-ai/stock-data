@@ -15,7 +15,6 @@ from pathlib import Path
 
 from finance_tools.domains.financials.fetcher import FinancialsFetcher
 from finance_tools.domains.revenue.fetcher import RevenueFetcher
-from finance_tools.domains.dividends.fetcher import MOPSDividendFetcher
 from finance_tools.domains.shareholder.shareholding_fetcher import fetch_shareholding
 from finance_tools.domains.institutional_investors.shares_fetcher import fetch_institutional_investors_shares
 from finance_tools.orchestration.company_processor import CompanyProcessor
@@ -72,10 +71,6 @@ def run_full_update(args):
     financials_fetcher = FinancialsFetcher(client, processor_data)
     revenue_fetcher = RevenueFetcher(client, processor_data)
 
-    mops_fetcher = MOPSDividendFetcher()
-    all_dividends_from_csv = mops_fetcher.fetch_all()
-    logger.info(f"Fetched MOPS dividend data for {len(all_dividends_from_csv)} companies.")
-
     # 載入種子值與公司基本資料（供持股比例推估使用）
     seeds = _load_json(_SEEDS_FILE)
     companies_data = _load_json(_COMPANIES_FILE)
@@ -97,7 +92,6 @@ def run_full_update(args):
         file_mgr=file_mgr,
         finmind_client=client,
         all_companies_details=companies_data,
-        all_dividends_data=all_dividends_from_csv,
         institutional_investors_shares_fetcher=lambda stock_id, start_date: fetch_institutional_investors_shares(client, stock_id, start_date),
         shareholding_fetcher=lambda stock_id, start_date: fetch_shareholding(client, stock_id, start_date),
         inst_ratio_calculator=inst_ratio_calc,

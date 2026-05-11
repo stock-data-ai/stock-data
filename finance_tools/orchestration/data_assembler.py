@@ -13,16 +13,6 @@ class DataAssembler:
     """
 
     @staticmethod
-    def build_dividend_list(mops_data: Dict) -> list:
-        """Builds a list of dividend records from MOPS data (one entry per payout)."""
-        if not mops_data:
-            return []
-        records = mops_data.get("records", [])
-        result = sorted(records, key=lambda r: (r["year"], r.get("sequence", 1)), reverse=True)
-        logger.debug(f"Built dividend list with {len(result)} entries.")
-        return result
-
-    @staticmethod
     def merge_institutional_investors(existing_data: Dict, institutional_investors_data: Dict[str, Any]) -> Dict:
         """Merges only institutional investors data into existing company data."""
         if not existing_data:

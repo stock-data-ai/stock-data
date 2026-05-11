@@ -8,10 +8,10 @@
     "operatingMargin": 5.61,
     "netMargin": 4.83,
     "eps": 0.33,
-    "dividendFrequency": "年",
-    "marketCap": 38879604736,
-    "pe": 30.569948,
-    "pb": 3.3574233,
+    "dividendFrequency": "季",
+    "marketCap": 39340888064,
+    "pe": 30.932644,
+    "pb": 3.397257,
     "dividendYield": 168.0,
     "marginBalance": 23447,
     "shortBalance": 573
@@ -3572,76 +3572,49 @@
     ],
     "dividends": [
       {
-        "year": 2026,
-        "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
-        "sequence": 1,
-        "cashDividend": 1.0,
-        "stockDividend": 0.0,
-        "totalDividend": 1.0,
-        "payoutDate": "2026-02-25",
-        "agmDate": null,
-        "status": "董事會決議"
-      },
-      {
-        "year": 2025,
-        "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
-        "sequence": 1,
-        "cashDividend": 1.0,
-        "stockDividend": 0.0,
-        "totalDividend": 1.0,
-        "payoutDate": "2026-02-25",
-        "agmDate": null,
-        "status": "董事會決議"
-      },
-      {
         "year": 2024,
-        "cashDividend": 1.189,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.0,
         "stockDividend": 0.0,
-        "totalDividend": 1.189
+        "totalDividend": 1.0,
+        "payoutDate": "2025-07-23"
       },
       {
         "year": 2023,
-        "cashDividend": 0.85,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.1893,
         "stockDividend": 0.0,
-        "totalDividend": 0.85
+        "totalDividend": 1.1893,
+        "payoutDate": "2024-07-24"
       },
       {
         "year": 2022,
-        "cashDividend": 1.0,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.85,
         "stockDividend": 0.0,
-        "totalDividend": 1.0
+        "totalDividend": 0.85,
+        "payoutDate": "2023-07-26"
       },
       {
         "year": 2021,
-        "cashDividend": 0.0,
+        "period": "第4季",
+        "sequence": 4,
+        "cashDividend": 1.0,
         "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2020,
-        "cashDividend": 0.15,
-        "stockDividend": 0.0,
-        "totalDividend": 0.15
+        "totalDividend": 1.0,
+        "payoutDate": "2022-08-18"
       },
       {
         "year": 2019,
-        "cashDividend": 0.0,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.15,
         "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2018,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2017,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0
+        "totalDividend": 0.15,
+        "payoutDate": "2020-09-30"
       }
     ],
     "institutionalInvestors": {
@@ -28762,25 +28735,6 @@
         "trust_ratio": 0.663273,
         "dealer_ratio": 0.0,
         "three_inst_ratio": 12.213273
-      },
-      "2026-05-11": {
-        "dealer_self_buy": 133.0,
-        "foreign_buy": 2501.043,
-        "trust_buy": 0.0,
-        "dealer_self_net_buy": 125.0,
-        "foreign_net_buy": -4532.007,
-        "trust_net_buy": 0.0,
-        "dealer_self_sell": 8.0,
-        "foreign_sell": 7033.05,
-        "trust_sell": 0.0,
-        "dealer_buy": 133.0,
-        "dealer_sell": 8.0,
-        "dealer_net_buy": 125.0,
-        "code": "2329",
-        "trust_ratio": 0.663273,
-        "dealer_ratio": 0.018968,
-        "foreign_ratio": 11.55,
-        "three_inst_ratio": 12.232241
       }
     },
     "marginTrading": {
@@ -29058,5 +29012,6 @@
       }
     }
   },
-  "dataQuality": "high"
+  "dataQuality": "high",
+  "dividendsUpdated": "2026-05-11"
 }

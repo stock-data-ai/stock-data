@@ -10,9 +10,10 @@
     "operatingMargin": 4.45,
     "netMargin": 10.66,
     "eps": 0.03,
-    "marketCap": 1266266496,
-    "pb": 2.7358751,
-    "pe": 665.00006
+    "marketCap": 1275787264,
+    "pb": 2.7564456,
+    "pe": 670.0,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -242,39 +243,45 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null,
-    "institutionalInvestors": {
-      "2026-05-08": {
-        "foreign_buy": 233.5,
-        "trust_buy": 0.0,
-        "foreign_net_buy": 233.5,
-        "trust_net_buy": 0.0,
-        "foreign_sell": 0.0,
-        "trust_sell": 0.0,
-        "dealer_buy": 0,
-        "dealer_sell": 0,
-        "dealer_net_buy": 0,
-        "code": "5271",
-        "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "foreign_ratio": 0.0
+    "dividends": [
+      {
+        "year": 2014,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.0,
+        "stockDividend": 1.0,
+        "totalDividend": 1.0,
+        "payoutDate": null
       },
-      "2026-05-11": {
-        "foreign_buy": 19.0,
-        "trust_buy": 0.0,
-        "foreign_net_buy": 19.0,
-        "trust_net_buy": 0.0,
-        "foreign_sell": 0.0,
-        "trust_sell": 0.0,
-        "dealer_buy": 0,
-        "dealer_sell": 0,
-        "dealer_net_buy": 0,
-        "code": "5271",
-        "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "foreign_ratio": 0.0
+      {
+        "year": 2013,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.0,
+        "stockDividend": 1.0,
+        "totalDividend": 1.0,
+        "payoutDate": null
+      },
+      {
+        "year": 2012,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.0,
+        "stockDividend": 1.0,
+        "totalDividend": 1.0,
+        "payoutDate": null
+      },
+      {
+        "year": 2011,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.0,
+        "stockDividend": 2.0,
+        "totalDividend": 2.0,
+        "payoutDate": null
       }
-    }
+    ],
+    "institutionalInvestors": null
   },
   "lastUpdated": "2026-05-11",
   "dataQuality": "medium",
@@ -3129,5 +3136,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

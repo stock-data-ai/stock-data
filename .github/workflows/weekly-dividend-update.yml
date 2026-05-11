@@ -1,0 +1,51 @@
+name: Weekly Dividend Update (Saturday)
+
+on:
+  schedule:
+    # Weekly Saturday: Taiwan 11:00 (UTC 03:00)
+    - cron: '0 3 * * 6'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task identifier (for rerun chaining)'
+        required: false
+        default: 'weekly-saturday-dividend'
+        type: string
+      rerun_round:
+        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
+        required: false
+        default: '0'
+        type: string
+      delay_minutes:
+        description: 'Minutes to wait before start (for API quota reset)'
+        required: false
+        default: '0'
+        type: string
+      batch:
+        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        required: false
+        default: '0'
+        type: string
+
+concurrency:
+  group: data-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  pipeline:
+    uses: ./.github/workflows/_reusable-data-job.yml
+    with:
+      commands_json: '[{"id":"import_dividends","cli":"import-dividends","label":"股利更新"}]'
+      artifact_prefix: weekly-dividend-update
+      commit_message: "股利更新"
+      caller_workflow: weekly-dividend-update.yml
+      caller_task: weekly-saturday-dividend
+      summary_title: "股利更新"
+      rerun_round: ${{ inputs.rerun_round || '0' }}
+      delay_minutes: ${{ inputs.delay_minutes || '0' }}
+      batch: ${{ inputs.batch || '0' }}
+    secrets: inherit

@@ -494,46 +494,49 @@
     ],
     "dividends": [
       {
-        "year": 2026,
-        "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
-        "sequence": 1,
-        "cashDividend": 2.5,
-        "stockDividend": 0.0,
-        "totalDividend": 2.5,
-        "payoutDate": "2026-03-11",
-        "agmDate": null,
-        "status": "董事會決議"
-      },
-      {
         "year": 2025,
         "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
         "sequence": 1,
         "cashDividend": 2.5,
         "stockDividend": 0.0,
         "totalDividend": 2.5,
-        "payoutDate": "2026-03-11",
-        "agmDate": null,
-        "status": "董事會決議"
+        "payoutDate": "2026-05-15"
       },
       {
         "year": 2024,
-        "cashDividend": 2.6,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 4.5,
         "stockDividend": 0.0,
-        "totalDividend": 2.6
+        "totalDividend": 4.5,
+        "payoutDate": "2025-07-31"
       },
       {
         "year": 2023,
-        "cashDividend": 1.89,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.6,
         "stockDividend": 0.0,
-        "totalDividend": 1.89
+        "totalDividend": 2.6,
+        "payoutDate": "2024-08-05"
       },
       {
         "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.89,
+        "stockDividend": 0.0,
+        "totalDividend": 1.89,
+        "payoutDate": "2023-08-30"
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
         "cashDividend": 2.37,
         "stockDividend": 0.0,
-        "totalDividend": 2.37
+        "totalDividend": 2.37,
+        "payoutDate": "2022-08-16"
       }
     ],
     "institutionalInvestors": {
@@ -5324,7 +5327,7 @@
       }
     }
   },
-  "lastUpdated": "2026-05-07",
+  "lastUpdated": "2026-05-11",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -6809,5 +6812,6 @@
       "shares": 54000000,
       "ratio_pct": 100.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

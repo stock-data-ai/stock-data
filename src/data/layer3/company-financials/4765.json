@@ -10,7 +10,8 @@
     "operatingMargin": -8.79,
     "netMargin": -13.59,
     "eps": -0.59,
-    "marketCap": 383995253.3
+    "marketCap": 383995253.3,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -191,10 +192,56 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2020,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.0,
+        "stockDividend": 0.0,
+        "totalDividend": 1.0,
+        "payoutDate": "2021-07-28"
+      },
+      {
+        "year": 2019,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.75,
+        "stockDividend": 0.0,
+        "totalDividend": 1.75,
+        "payoutDate": "2020-08-12"
+      },
+      {
+        "year": 2018,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 2.56,
+        "stockDividend": 0.0,
+        "totalDividend": 2.56,
+        "payoutDate": "2019-07-25"
+      },
+      {
+        "year": 2017,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.42,
+        "stockDividend": 0.0,
+        "totalDividend": 1.42,
+        "payoutDate": "2018-07-25"
+      },
+      {
+        "year": 2016,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.84,
+        "stockDividend": 0.0,
+        "totalDividend": 1.84,
+        "payoutDate": "2017-07-26"
+      }
+    ],
     "institutionalInvestors": null
   },
-  "lastUpdated": "2026-03-12",
+  "lastUpdated": "2026-05-11",
   "dataQuality": "medium",
   "shareholderDataHistory": {
     "20260213": [
@@ -1679,5 +1726,6 @@
       "shares": 32133494,
       "ratio_pct": 100.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

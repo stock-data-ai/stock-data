@@ -87,7 +87,6 @@ def run_update_daily(args):
         financials_fetcher=None,
         revenue_fetcher=None,
         all_companies_details=companies_data,
-        all_dividends_data={},
         institutional_investors_shares_fetcher=lambda stock_id, start_date: fetch_institutional_investors_shares(client, stock_id, start_date),
         shareholding_fetcher=lambda stock_id, start_date: fetch_shareholding(client, stock_id, start_date),
         inst_ratio_calculator=inst_ratio_calc,

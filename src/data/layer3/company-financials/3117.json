@@ -10,7 +10,8 @@
     "operatingMargin": -7.15,
     "netMargin": -24.22,
     "eps": 0.0,
-    "marketCap": 167124000.0
+    "marketCap": 167124000.0,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -191,10 +192,47 @@
       }
     ],
     "monthlyRevenue": null,
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2017,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.5,
+        "stockDividend": 0.0,
+        "totalDividend": 0.5,
+        "payoutDate": "2018-08-22"
+      },
+      {
+        "year": 2014,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.4002,
+        "stockDividend": 0.0,
+        "totalDividend": 0.4002,
+        "payoutDate": "2015-10-07"
+      },
+      {
+        "year": 2013,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.309,
+        "stockDividend": 0.3,
+        "totalDividend": 0.609,
+        "payoutDate": "2014-09-24"
+      },
+      {
+        "year": 2012,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.522,
+        "stockDividend": 0.0,
+        "totalDividend": 0.522,
+        "payoutDate": null
+      }
+    ],
     "institutionalInvestors": null
   },
-  "lastUpdated": "2026-03-26",
+  "lastUpdated": "2026-05-11",
   "dataQuality": "medium",
   "shareholderDataHistory": {
     "20260206": [
@@ -2249,5 +2287,6 @@
       "shares": 22800000,
       "ratio_pct": 100.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }

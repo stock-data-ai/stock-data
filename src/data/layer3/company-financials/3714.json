@@ -10,10 +10,10 @@
     "operatingMargin": -5.84,
     "netMargin": -2.85,
     "eps": -0.2,
-    "dividendFrequency": "年",
-    "marketCap": 50019086336,
+    "dividendFrequency": "季",
+    "marketCap": 52376391680,
     "pe": 0.0,
-    "pb": 1.1980592,
+    "pb": 1.2648544,
     "dividendYield": 127.0,
     "marginBalance": 33807,
     "shortBalance": 684
@@ -742,52 +742,31 @@
     ],
     "dividends": [
       {
-        "year": 2026,
+        "year": 2024,
         "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
-        "sequence": 1,
-        "cashDividend": 0.0,
-        "stockDividend": 0.0,
-        "totalDividend": 0.0,
-        "payoutDate": "2026-03-06",
-        "agmDate": null,
-        "status": "董事會決議"
-      },
-      {
-        "year": 2025,
-        "period": "年度",
-        "periodRange": "2025-01-01~2025-12-31",
         "sequence": 1,
         "cashDividend": 0.9,
         "stockDividend": 0.0,
         "totalDividend": 0.9,
-        "payoutDate": "2026-05-08",
-        "agmDate": null,
-        "status": "董事會決議"
-      },
-      {
-        "year": 2024,
-        "cashDividend": 0.918,
-        "stockDividend": 0.0,
-        "totalDividend": 0.918
+        "payoutDate": "2025-07-24"
       },
       {
         "year": 2023,
-        "cashDividend": 0.0,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.9183,
         "stockDividend": 0.0,
-        "totalDividend": 0.0
-      },
-      {
-        "year": 2022,
-        "cashDividend": 2.0,
-        "stockDividend": 0.0,
-        "totalDividend": 2.0
+        "totalDividend": 0.9183,
+        "payoutDate": "2024-07-29"
       },
       {
         "year": 2021,
-        "cashDividend": 0.0,
+        "period": "第4季",
+        "sequence": 4,
+        "cashDividend": 2.0,
         "stockDividend": 0.0,
-        "totalDividend": 0.0
+        "totalDividend": 2.0,
+        "payoutDate": "2022-07-14"
       }
     ],
     "institutionalInvestors": {
@@ -22851,25 +22830,6 @@
         "trust_ratio": 0.213161,
         "dealer_ratio": 0.01834,
         "three_inst_ratio": 12.171501
-      },
-      "2026-05-11": {
-        "dealer_self_buy": 21.0,
-        "foreign_buy": 10325.057,
-        "trust_buy": 0.0,
-        "dealer_self_net_buy": -273.0,
-        "foreign_net_buy": -4177.303,
-        "trust_net_buy": -150.0,
-        "dealer_self_sell": 294.0,
-        "foreign_sell": 14502.36,
-        "trust_sell": 150.0,
-        "dealer_buy": 21.0,
-        "dealer_sell": 294.0,
-        "dealer_net_buy": -273.0,
-        "code": "3714",
-        "trust_ratio": 0.192834,
-        "dealer_ratio": 0.0,
-        "foreign_ratio": 11.94,
-        "three_inst_ratio": 12.132834
       }
     },
     "marginTrading": {
@@ -25886,5 +25846,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-11"
 }
