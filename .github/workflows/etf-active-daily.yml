@@ -38,12 +38,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Run active ETF crawler (統一投信 — 00981A 00988A)
+      - name: Run active ETF crawler (統一投信 — 00403A 00981A 00988A)
         id: unipres
         continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00981A|00988A)$" | tr '\n' ' ' | xargs)
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00403A|00981A|00988A)$" | tr '\n' ' ' | xargs)
             if [ -n "$FILTERED" ]; then
               uv run python etf_Crawler/fetch_active_etf_unipres.py $FILTERED
             else

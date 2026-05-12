@@ -14,6 +14,7 @@ fetch_active_etf_unipres.py
 支援 ETF：
   00981A (fundCode=49YTW) 主動統一台股增長
   00988A (fundCode=61YTW) 主動統一全球創新
+  00403A (fundCode=63YTW) 主動統一升級50
 
 用法：
     uv run etf_Crawler/fetch_active_etf_unipres.py          # 更新全部
@@ -56,6 +57,7 @@ HEADERS = {
 UNIPRES_ACTIVE_ETFS = {
     "00981A": "49YTW",
     "00988A": "61YTW",
+    "00403A": "63YTW",
 }
 
 
