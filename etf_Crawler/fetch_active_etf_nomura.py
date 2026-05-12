@@ -13,6 +13,7 @@ fetch_active_etf_nomura.py
 支援 ETF：
   00980A  野村臺灣優選成長主動式ETF基金
   00985A  野村台灣50主動式ETF基金
+  00999A  野村臺灣高息主動式ETF基金
 
 API：POST https://www.nomurafunds.com.tw/API/ETFAPI/api/Fund/GetFundAssets
      Body: {"FundID": "<code>", "SearchDate": null | "YYYY-MM-DD"}
@@ -58,6 +59,7 @@ HEADERS = {
 NOMURA_ACTIVE_ETFS = [
     "00980A",  # 野村臺灣優選成長主動式ETF基金
     "00985A",  # 野村台灣50主動式ETF基金
+    "00999A",  # 野村臺灣高息主動式ETF基金
 ]
 
 STATUS_NO_DATA = 5  # API 回傳「此搜尋條件尚無相關資料」
