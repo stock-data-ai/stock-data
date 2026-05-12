@@ -8,7 +8,8 @@ Commands:
   update-daily          - 每日更新：市值（Yahoo）+ 三大法人（FinMind）。
   full-update           - 全量更新：財務報表、營收、股利。
   update-revenue        - 僅更新月營收。
-  import-dividends      - 從 FinMind 更新股利資料（近5年，merge）。
+  import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
+  update-dividends      - 【定期】從 MOPS 更新 2025+ 股利。
   fetch-shareholder-data- 擷取 TDCC 股東分配資料。
   update-company-info   - 更新上市公司基本資訊。
   update-margin         - 更新融資融券資料。
@@ -46,7 +47,7 @@ logging.basicConfig(
 # Import the run functions from the newly created task modules
 from finance_tools.orchestration.full_update import run_full_update
 from finance_tools.orchestration.daily_update import run_update_daily
-from finance_tools.domains.dividends.tasks import run_import_dividends
+from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
 from finance_tools.domains.company_info.tasks import run_update_company_info
 from finance_tools.domains.company_info.foreign_tasks import run_update_us_company_info
@@ -87,11 +88,14 @@ def main():
     add_common_arguments(parser_full, include_force=True, include_rerun=True)
     parser_full.set_defaults(func=run_full_update)
 
-    # --- 'import-dividends' command ---
-    parser_import_div = subparsers.add_parser("import-dividends", help="從 FinMind 全量重建股利歷史並寫入 JSON。")
-    add_common_arguments(parser_import_div, include_rerun=True)
-    parser_import_div.add_argument("--resume", action="store_true", help="跳過今日已完成的公司（同天補跑用）。")
-    parser_import_div.set_defaults(func=run_import_dividends)
+    # --- 'import-historical-dividends' command (one-time) ---
+    parser_hist_div = subparsers.add_parser("import-historical-dividends", help="【一次性】從 CSV 匯入 2021–2024 年度合計股利。")
+    add_common_arguments(parser_hist_div, include_rerun=True)
+    parser_hist_div.set_defaults(func=run_import_historical_dividends)
+
+    # --- 'update-dividends' command (ongoing via GitHub Actions) ---
+    parser_mops_div = subparsers.add_parser("update-dividends", help="【定期】從 MOPS 抓取 2025+ 股利並 merge 至 JSON。")
+    parser_mops_div.set_defaults(func=run_update_mops_dividends)
 
     # --- 'update-revenue' command ---
     parser_revenue = subparsers.add_parser("update-revenue", help="僅更新月營收資料。")
