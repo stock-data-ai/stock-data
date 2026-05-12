@@ -530,14 +530,53 @@
     "dividends": [
       {
         "year": 2025,
-        "period": "第4季",
-        "sequence": 4,
+        "period": "年度",
+        "sequence": 1,
         "cashDividend": 18.0,
         "stockDividend": 0.0,
         "totalDividend": 18.0,
-        "payoutDate": "2026-03-12",
-        "periodRange": "2025-10-01~2025-12-31",
-        "status": "董事會決議"
+        "payoutDate": null,
+        "exDividendDate": null
+      },
+      {
+        "year": 2024,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 19.0,
+        "stockDividend": 0.0,
+        "totalDividend": 19.0,
+        "payoutDate": null,
+        "exDividendDate": "2025-06-19"
+      },
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 15.0,
+        "stockDividend": 0.0,
+        "totalDividend": 15.0,
+        "payoutDate": null,
+        "exDividendDate": "2024-06-20"
+      },
+      {
+        "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 10.0,
+        "stockDividend": 0.0,
+        "totalDividend": 10.0,
+        "payoutDate": null,
+        "exDividendDate": "2023-06-21"
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 6.0,
+        "stockDividend": 0.0,
+        "totalDividend": 6.0,
+        "payoutDate": "2022-08-31",
+        "exDividendDate": "2022-08-04"
       }
     ],
     "institutionalInvestors": {

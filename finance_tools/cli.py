@@ -89,8 +89,7 @@ def main():
     parser_full.set_defaults(func=run_full_update)
 
     # --- 'import-historical-dividends' command (one-time) ---
-    parser_hist_div = subparsers.add_parser("import-historical-dividends", help="【一次性】從 CSV 匯入 2021–2024 年度合計股利。")
-    add_common_arguments(parser_hist_div, include_rerun=True)
+    parser_hist_div = subparsers.add_parser("import-historical-dividends", help="【一次性】從 CSV 匯入 2021–2025 年度合計股利（涵蓋所有 CSV 公司）。")
     parser_hist_div.set_defaults(func=run_import_historical_dividends)
 
     # --- 'update-dividends' command (ongoing via GitHub Actions) ---

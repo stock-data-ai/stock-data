@@ -3,8 +3,6 @@ from finance_tools.core.file_manager import FileManager
 from finance_tools.core.timezone import today_str
 from finance_tools.domains.dividends.csv_fetcher import load_all as load_csv
 from finance_tools.domains.dividends.mops_fetcher import fetch_all as fetch_mops
-from finance_tools.utils.company_list_loader import load_companies_for_processing
-from finance_tools.utils.rerun_manager import RerunManager
 
 logger = logging.getLogger(__name__)
 
@@ -26,31 +24,27 @@ def _mops_year_complete(year_records: list, freq: str) -> bool:
 
 
 def run_import_historical_dividends(args):
-    """【一次性】從 CSV 匯入 2021–2025 歷史股利（年度合計，一年一筆）。"""
+    """【一次性】從 CSV 匯入 2021–2025 歷史股利（年度合計，一年一筆）。
+    直接以 CSV 涵蓋的公司為主，不依賴 topic index。
+    """
     logger.info("Starting historical CSV dividend import (2021–2025)...")
 
     file_mgr = FileManager()
-    batch = getattr(args, "batch", None)
-    rerun_manager = RerunManager("import_dividends", batch)
-    companies = load_companies_for_processing(args, file_mgr, rerun_manager)
-
-    if not companies:
-        logger.info("沒有公司需要處理。")
-        return
 
     logger.info("載入 CSV 歷史股利資料（2021–2025）...")
     csv_data, freq_map = load_csv()
     logger.info(f"CSV 涵蓋 {len(csv_data)} 家公司。")
 
+    # 直接用 CSV 的 key 當作處理清單，不走 topic-based company loader
+    all_codes = sorted(csv_data.keys())
     success_count = 0
     failed = []
-    total = len(companies)
+    total = len(all_codes)
 
-    for i, company in enumerate(companies, 1):
-        code = company["code"]
-        name = company.get("name", code)
+    for i, code in enumerate(all_codes, 1):
+        name = code
 
-        if i % 50 == 0:
+        if i % 100 == 0:
             logger.info(f"  進度: {i}/{total}，已成功: {success_count}")
 
         records = csv_data.get(code, [])
