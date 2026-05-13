@@ -38,6 +38,17 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      - name: Fetch stock_map index.json (master)
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
+          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
+
       - name: Run ETF holdings crawler
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
@@ -59,16 +70,8 @@ jobs:
             git push
           fi
 
-      - name: Fetch stock_map index.json (master) and regenerate
-        env:
-          PAT: ${{ secrets.STOCK_MAP_PAT }}
-        run: |
-          curl -fsSL \
-            -H "Authorization: token $PAT" \
-            -H "Accept: application/vnd.github.v3.raw" \
-            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
-            -o src/data/etf/index.json
-          uv run python etf_Crawler/generate_etf_index.py
+      - name: Regenerate index.json from updated holdings
+        run: uv run python etf_Crawler/generate_etf_index.py
 
       - name: Push updated index.json to stock_map
         env:
