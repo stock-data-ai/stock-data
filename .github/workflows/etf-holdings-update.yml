@@ -18,7 +18,6 @@ concurrency:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   update:
@@ -47,7 +46,7 @@ jobs:
             uv run python etf_Crawler/fetch_etf_holdings.py
           fi
 
-      - name: Commit & push updated ETF data
+      - name: Commit & push updated ETF holdings
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -60,29 +59,36 @@ jobs:
             git push
           fi
 
-      - name: 開 Issue 提醒本地同步 ETF metadata/index
+      - name: Fetch stock_map index.json (master) and regenerate
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
         run: |
-          if ! gh label list --repo stock-data-ai/stock-data --search reminder --json name -q '.[].name' | grep -Fxq reminder; then
-            gh label create reminder \
-              --repo stock-data-ai/stock-data \
-              --description "本地同步提醒" \
-              --color "FBCA04"
-          fi
-
-          gh issue create \
-            --repo stock-data-ai/stock-data \
-            --title "🔔 [$(date +%Y-%m-%d)] 請本地同步 ETF metadata / index" \
-            --body "ETF holdings 已更新完成，請在本地執行：
-
-          \`\`\`bash
-          uv run python etf_Crawler/sync_etf_metadata.py
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
           uv run python etf_Crawler/generate_etf_index.py
-          git add src/data/etf/
-          git commit -m \"ETF metadata/index 同步 \$(date +%Y-%m-%d)\"
-          git push
-          \`\`\`
 
-          推送後 stock_map 會再同步最新 index.json。" \
-            --label "reminder"
+      - name: Push updated index.json to stock_map
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          CONTENT=$(base64 -w 0 src/data/etf/index.json)
+          SHA=$(curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            | jq -r '.sha')
+          curl -fsSL \
+            -X PUT \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json" \
+            -d "{
+              \"message\": \"sync: ETF index 更新 $(date +%Y-%m-%d)\",
+              \"content\": \"$CONTENT\",
+              \"sha\": \"$SHA\",
+              \"branch\": \"publish_cloudflare\"
+            }"
+          echo "✅ index.json 已推送至 stock_map"
