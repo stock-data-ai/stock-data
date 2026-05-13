@@ -97,10 +97,14 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Fetch latest companies-all.json from stock_map
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
         run: |
           mkdir -p src/data/layer3/companies
           curl -fsSL \
-            "https://raw.githubusercontent.com/CHIJUI0128/stock_map/publish_cloudflare/src/data/layer3/companies/companies-all.json" \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/layer3/companies/companies-all.json?ref=publish_cloudflare" \
             -o src/data/layer3/companies/companies-all.json
           echo "✅ companies-all.json 已從 stock_map 取得"
 

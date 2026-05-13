@@ -49,9 +49,6 @@ from finance_tools.orchestration.full_update import run_full_update
 from finance_tools.orchestration.daily_update import run_update_daily
 from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
-from finance_tools.domains.company_info.tasks import run_update_company_info
-from finance_tools.domains.company_info.foreign_tasks import run_update_us_company_info
-from finance_tools.domains.company_info.foreign_tasks import run_update_jp_company_info
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
@@ -101,20 +98,6 @@ def main():
     add_common_arguments(parser_revenue, include_force=True, include_rerun=True)
     parser_revenue.set_defaults(func=run_update_revenue)
     
-    # --- 'update-company-info' command ---
-    parser_info = subparsers.add_parser("update-company-info", help="更新所有上市公司的基本資訊。")
-    parser_info.set_defaults(func=run_update_company_info)
-
-    # --- 'update-us-company-info' command ---
-    parser_us_info = subparsers.add_parser("update-us-company-info", help="從 Yahoo Finance 更新美國公司的基本資訊。")
-    parser_us_info.add_argument("--code", type=str, help="依股票代碼擷取單一美國公司 (例如 NVDA)。")
-    parser_us_info.set_defaults(func=run_update_us_company_info)
-
-    # --- 'update-jp-company-info' command ---
-    parser_jp_info = subparsers.add_parser("update-jp-company-info", help="從 Yahoo Finance 更新日本公司的基本資訊。")
-    parser_jp_info.add_argument("--code", type=str, help="依股票代碼擷取單一日本公司 (例如 5201.JP)。")
-    parser_jp_info.set_defaults(func=run_update_jp_company_info)
-
     # --- 'check-quality' command ---
     parser_quality = subparsers.add_parser("check-quality", help="檢查資料品質並產生失敗佇列。")
     parser_quality.set_defaults(func=run_check_quality)
