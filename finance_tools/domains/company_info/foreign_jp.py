@@ -12,7 +12,6 @@ class JPCompanyInfoFetcher(BaseForeignCompanyFetcher):
         company_jp_dir = company_jp_dir or str(config.JP_COMPANY_DIR)
         super().__init__(
             company_dir=company_jp_dir,
-            company_list_file=str(config.JP_COMPANY_LIST_FILE),
         )
 
     def _to_yahoo_ticker(self, code: str) -> str:

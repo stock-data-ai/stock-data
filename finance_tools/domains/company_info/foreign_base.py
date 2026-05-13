@@ -15,34 +15,11 @@ class BaseForeignCompanyFetcher:
     封裝了通用的抓取、錯誤處理與資料解析邏輯。
     """
 
-    def __init__(self, company_dir: str, company_list_file: str = None):
+    def __init__(self, company_dir: str):
         self.company_dir = company_dir
-        self.company_list_file = company_list_file
 
     def get_company_codes(self) -> List[str]:
-        """從同步清單或指定目錄取得所有公司代碼"""
-        if self.company_list_file and os.path.exists(self.company_list_file):
-            try:
-                with open(self.company_list_file, "r", encoding="utf-8") as f:
-                    company_list = json.load(f)
-
-                codes = []
-                for item in company_list:
-                    if isinstance(item, str):
-                        code = item
-                    elif isinstance(item, dict):
-                        code = item.get("code")
-                    else:
-                        code = None
-
-                    if code:
-                        codes.append(str(code).upper())
-
-                return sorted(set(codes))
-            except Exception as e:
-                logger.error(f"Failed to read company list {self.company_list_file}: {e}")
-                return []
-
+        """從資料夾結構取得所有公司代碼"""
         if not os.path.exists(self.company_dir):
             logger.error(f"Directory not found: {self.company_dir}")
             return []
