@@ -96,6 +96,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Fetch latest companies-all.json from stock_map
+        run: |
+          mkdir -p src/data/layer3/companies
+          curl -fsSL \
+            "https://raw.githubusercontent.com/CHIJUI0128/stock_map/publish_cloudflare/src/data/layer3/companies/companies-all.json" \
+            -o src/data/layer3/companies/companies-all.json
+          echo "✅ companies-all.json 已從 stock_map 取得"
+
       - name: Wait for API quota reset (chained runs only)
         if: inputs.delay_minutes != '0' && inputs.delay_minutes != ''
         run: |
