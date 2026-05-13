@@ -18,6 +18,7 @@ concurrency:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   update:
@@ -95,3 +96,21 @@ jobs:
               \"branch\": \"publish_cloudflare\"
             }"
           echo "✅ index.json 已推送至 stock_map"
+
+      - name: 開 Issue 提醒本地跑 sync_etf_metadata
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo stock-data-ai/stock-data \
+            --title "🔔 [$(date +%Y-%m-%d)] 請本地跑 ETF metadata 同步" \
+            --body "ETF 持股已自動更新完成。請在本地執行 metadata 同步（玩股網費率/規模）：
+
+          \`\`\`bash
+          uv run python etf_Crawler/sync_etf_metadata.py
+          git add src/data/etf/
+          git commit -m \"ETF metadata 同步 \$(date +%Y-%m-%d)\"
+          git push
+          \`\`\`
+
+          推送後週六 CI 會在下次執行時自動帶入最新 metadata 並更新 stock_map 的 index.json。"
