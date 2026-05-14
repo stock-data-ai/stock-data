@@ -28,6 +28,19 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      - name: Fetch data files from stock_map
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          BASE="https://api.github.com/repos/CHIJUI0128/stock_map/contents"
+          REF="?ref=publish_cloudflare"
+          HEADERS=(-H "Authorization: token $PAT" -H "Accept: application/vnd.github.v3.raw")
+          mkdir -p src/data/layer0 src/data/layer3/companies src/data/layer3/company-topics
+          curl -fsSL "${HEADERS[@]}" "$BASE/src/data/layer0/topics.json$REF"                          -o src/data/layer0/topics.json
+          curl -fsSL "${HEADERS[@]}" "$BASE/src/data/layer3/companies/companies-all.json$REF"         -o src/data/layer3/companies/companies-all.json
+          curl -fsSL "${HEADERS[@]}" "$BASE/src/data/layer3/company-topics/index.json$REF"            -o src/data/layer3/company-topics/index.json
+          echo "✅ stock_map 資料檔已取得"
+
       - name: Install Chrome for Selenium
         uses: browser-actions/setup-chrome@v1
         with:
