@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import datetime
 import time
@@ -295,7 +296,6 @@ def scrape_economic_daily_news(search_key: str, company_code: str = None,
     # Save to Cloudflare D1
     try:
         client = CloudflareD1Client()
-        client.migrate_add_company_code()  # ensure column exists
         client.init_tables()
 
         print("正在寫入 Cloudflare D1...")
