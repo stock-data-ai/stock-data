@@ -334,28 +334,18 @@ def reset_progress():
 # === 主題輪替模式 (GitHub Actions 用) ===
 
 def _get_d1_client():
-    """取得 D1 client"""
+    """取得 crawler DB client（stock-map-crawler，存 topic_rotation）"""
+    import os
     from cloudflare_d1_client import CloudflareD1Client
-    return CloudflareD1Client()
+    crawler_db_id = os.environ.get('CLOUDFLARE_CRAWLER_DB_ID')
+    if not crawler_db_id:
+        raise ValueError("CLOUDFLARE_CRAWLER_DB_ID 未設定")
+    return CloudflareD1Client(database_id=crawler_db_id)
 
 
 def _init_rotation_table(d1):
-    """建立主題輪替表"""
-    d1.execute_query("""
-        CREATE TABLE IF NOT EXISTS topic_rotation (
-            id INTEGER PRIMARY KEY CHECK (id = 1),
-            current_index INTEGER DEFAULT 0,
-            last_topic_id TEXT,
-            last_topic_name TEXT,
-            last_run_at TEXT,
-            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-    # 確保有一筆初始資料
-    d1.execute_query("""
-        INSERT OR IGNORE INTO topic_rotation (id, current_index)
-        VALUES (1, 0)
-    """)
+    """建立主題輪替表（使用 crawler DB 的 init_crawler_tables）"""
+    d1.init_crawler_tables()
 
 
 def _get_current_rotation_index(d1) -> int:

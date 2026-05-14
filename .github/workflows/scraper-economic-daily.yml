@@ -45,5 +45,6 @@ jobs:
           PYTHONUNBUFFERED: "1"
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_DATABASE_ID: ${{ secrets.CLOUDFLARE_DATABASE_ID }}
+          CLOUDFLARE_CRAWLER_DB_ID: ${{ secrets.CLOUDFLARE_CRAWLER_DB_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: uv run python -m Web_Crawler.money_udn.init_database --rotate

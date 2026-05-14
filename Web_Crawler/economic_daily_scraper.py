@@ -15,23 +15,21 @@ from selenium.common.exceptions import TimeoutException
 from cloudflare_d1_client import CloudflareD1Client
 
 
-def update_crawl_status(client: CloudflareD1Client, company_code: str, company_name: str,
+def _get_crawler_client() -> CloudflareD1Client:
+    """取得爬蟲管理 DB client（stock-map-crawler）"""
+    crawler_db_id = os.environ.get('CLOUDFLARE_CRAWLER_DB_ID')
+    if not crawler_db_id:
+        raise ValueError("CLOUDFLARE_CRAWLER_DB_ID 未設定")
+    return CloudflareD1Client(database_id=crawler_db_id)
+
+
+def update_crawl_status(company_code: str, company_name: str,
                         status: str, news_count: int = 0):
-    """
-    更新爬取狀態到 Cloudflare D1
-
-    Args:
-        client: D1 客戶端
-        company_code: 股票代碼
-        company_name: 公司名稱
-        status: 'success' | 'failed' | 'skipped'
-        news_count: 爬到的新聞數量
-    """
+    """更新爬取狀態到 crawl_schedule（crawler DB）"""
     now = datetime.datetime.now().isoformat()
-
     try:
-        # 更新 crawl_schedule
-        client.execute_query("""
+        crawler = _get_crawler_client()
+        crawler.execute_query("""
             INSERT INTO crawl_schedule (company_code, company_name, last_crawled, last_crawl_status, total_crawls, total_hits)
             VALUES (?, ?, ?, ?, 1, ?)
             ON CONFLICT(company_code) DO UPDATE SET
@@ -48,13 +46,6 @@ def update_crawl_status(client: CloudflareD1Client, company_code: str, company_n
             1 if news_count > 0 else 0,
             news_count
         ])
-
-        # 記錄到 crawl_logs
-        client.execute_query("""
-            INSERT INTO crawl_logs (company_code, crawl_date, crawl_result, news_count)
-            VALUES (?, ?, ?, ?)
-        """, [company_code, now[:10], status, news_count])
-
     except Exception as e:
         print(f"更新爬取狀態失敗: {e}")
 
@@ -328,7 +319,7 @@ def scrape_economic_daily_news(search_key: str, company_code: str = None,
 
         # 更新爬取狀態 (如果有提供公司代碼)
         if company_code:
-            update_crawl_status(client, company_code, search_key, 'success', len(df))
+            update_crawl_status(company_code, search_key, 'success', len(df))
 
     except Exception as e:
         print(f"寫入 Cloudflare D1 時發生錯誤: {e}")

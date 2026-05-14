@@ -148,8 +148,14 @@ class CloudflareD1Client:
             ON economic_daily_news(company_code);
         """)
 
-        # Table for Crawl Schedule (Smart Scheduler)
-        schedule_sql = """
+        print("Tables initialized (if not existed).")
+
+    def init_crawler_tables(self):
+        """
+        Initialize crawler management tables in the crawler DB (stock-map-crawler).
+        Use with CloudflareD1Client(database_id=os.environ['CLOUDFLARE_CRAWLER_DB_ID']).
+        """
+        self.execute_query("""
         CREATE TABLE IF NOT EXISTS crawl_schedule (
             company_code TEXT PRIMARY KEY,
             company_name TEXT NOT NULL,
@@ -162,23 +168,16 @@ class CloudflareD1Client:
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
             updated_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
-        """
-        self.execute_query(schedule_sql)
-
-        # Table for Crawl Logs
-        logs_sql = """
-        CREATE TABLE IF NOT EXISTS crawl_logs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            company_code TEXT NOT NULL,
-            crawl_date TEXT NOT NULL,
-            pre_filter_result TEXT,
-            crawl_result TEXT,
-            news_count INTEGER DEFAULT 0,
-            error_message TEXT,
-            duration_ms INTEGER,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        """)
+        self.execute_query("""
+        CREATE TABLE IF NOT EXISTS topic_rotation (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            current_index INTEGER DEFAULT 0,
+            last_topic_id TEXT,
+            last_topic_name TEXT,
+            last_run_at TEXT,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
-        """
-        self.execute_query(logs_sql)
-
-        print("Tables initialized (if not existed).")
+        """)
+        self.execute_query("INSERT OR IGNORE INTO topic_rotation (id, current_index) VALUES (1, 0)")
+        print("Crawler tables initialized (if not existed).")
