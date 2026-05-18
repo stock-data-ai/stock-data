@@ -87,22 +87,6 @@ class CloudflareD1Client:
             
         return results
 
-    def migrate_add_company_code(self):
-        """One-time migration: add company_code column to economic_daily_news if not exists."""
-        try:
-            self.execute_query("ALTER TABLE economic_daily_news ADD COLUMN company_code TEXT;")
-            print("Migration: added company_code column to economic_daily_news")
-        except Exception:
-            pass  # Column already exists
-        try:
-            self.execute_query("""
-                CREATE INDEX IF NOT EXISTS idx_economic_daily_news_company_code
-                ON economic_daily_news(company_code);
-            """)
-            print("Migration: created company_code index")
-        except Exception:
-            pass
-
     def init_tables(self):
         """
         Initialize the generic tables if they don't exist.
