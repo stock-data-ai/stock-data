@@ -1,10 +1,6 @@
 name: Economic Daily Scraper
 
 on:
-  schedule:
-    # Daily: Taiwan 07:00 & 23:00 (Topic Rotation)
-    - cron: '0 23 * * *'    # UTC 23:00 = TW 07:00 next day
-    - cron: '0 15 * * *'    # UTC 15:00 = TW 23:00
   workflow_dispatch:
 
 jobs:
@@ -46,8 +42,8 @@ jobs:
         with:
           chrome-version: stable
 
-      - name: Random startup delay (only on schedule)
-        if: ${{ github.event_name == 'schedule' }}
+      - name: Random startup delay
+        if: ${{ !inputs.skip_delay }}
         run: |
           DELAY=$((RANDOM % 300))
           echo "Waiting ${DELAY} seconds (0~5 min)..."

@@ -1,9 +1,6 @@
 name: Active ETF Holdings Update (Daily)
 
 on:
-  schedule:
-    # Mon-Fri: Taiwan 18:00 (UTC 10:00)
-    - cron: '0 10 * * 1-5'
   workflow_dispatch:
     inputs:
       codes:

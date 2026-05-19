@@ -1,9 +1,6 @@
 name: Daily Update
 
 on:
-  schedule:
-    # Daily (Mon-Fri): Taiwan 17:00 (UTC 09:00)
-    - cron: '0 9 * * 1-5'    # UTC Mon-Fri 09:00 = TW Mon-Fri 17:00
   workflow_dispatch:
     inputs:
       task:

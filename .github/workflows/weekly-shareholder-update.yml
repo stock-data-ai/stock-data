@@ -1,9 +1,6 @@
 name: Weekly Shareholder Update (Saturday)
 
 on:
-  schedule:
-    # 每週六：台北時間 09:00 (UTC 01:00)
-    - cron: '0 1 * * 6'
   workflow_dispatch:
     inputs:
       task:

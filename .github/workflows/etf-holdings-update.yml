@@ -1,9 +1,6 @@
 name: ETF Holdings Update (Weekly)
 
 on:
-  schedule:
-    # Weekly: Taiwan 08:00 on Saturday (UTC 00:00 Saturday)
-    - cron: '0 0 * * 6'
   workflow_dispatch:
     inputs:
       codes:

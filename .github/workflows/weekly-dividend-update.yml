@@ -1,9 +1,6 @@
 name: Weekly Dividend Update (Saturday)
 
 on:
-  schedule:
-    # Weekly Saturday: Taiwan 11:00 (UTC 03:00)
-    - cron: '0 3 * * 6'
   workflow_dispatch:
 
 concurrency:

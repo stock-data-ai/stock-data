@@ -1,0 +1,17 @@
+name = "stock-data-cron"
+main = "src/index.ts"
+compatibility_date = "2024-01-29"
+
+[triggers]
+crons = [
+  "0 9 * * 1-5",    # daily-update          台灣 17:00 週一～五
+  "0 10 * * 1-5",   # etf-active-daily      台灣 18:00 週一～五
+  "0 11 * * 1-5",   # scraper-mops          台灣 19:00 週一～五
+  "0 23 * * *",     # scraper-economic-daily 台灣 07:00
+  "0 15 * * *",     # scraper-economic-daily 台灣 23:00
+  "0 0 * * 6",      # etf-holdings-update   台灣 08:00 週六
+  "0 1 * * 6",      # weekly-shareholder    台灣 09:00 週六
+  "0 3 * * 6",      # weekly-dividend       台灣 11:00 週六
+  "0 1 * * 7",      # weekly-full-update    台灣 09:00 週日
+  "0 19 * * 7",     # cleanup               台灣 03:00 週日
+]
