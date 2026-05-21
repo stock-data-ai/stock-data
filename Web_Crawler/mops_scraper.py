@@ -224,6 +224,9 @@ def scrape_mops_material_info(
                         'content': detail.get('content'),
                         'speaker': detail.get('speaker'),
                         'event_date': detail.get('event_date'),
+                        'enter_date_roc': enter_date,
+                        'serial_number': serial_number,
+                        'market_kind': market_kind,
                     })
 
             print(f"  取得 {len([d for d in data if not stock_codes or d[2] in stock_codes])} 筆資料")
@@ -250,12 +253,15 @@ def scrape_mops_material_info(
             print("正在寫入 Cloudflare D1...")
             # Prepare data for insertion
             insert_sql = """
-            INSERT INTO mops_announcements (code, name, pub_date, pub_time, subject, source, content, speaker, event_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO mops_announcements (code, name, pub_date, pub_time, subject, source, content, speaker, event_date, enter_date_roc, serial_number, market_kind)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(code, pub_date, pub_time, subject) DO UPDATE SET
                 content = COALESCE(excluded.content, mops_announcements.content),
                 speaker = COALESCE(excluded.speaker, mops_announcements.speaker),
-                event_date = COALESCE(excluded.event_date, mops_announcements.event_date);
+                event_date = COALESCE(excluded.event_date, mops_announcements.event_date),
+                enter_date_roc = COALESCE(excluded.enter_date_roc, mops_announcements.enter_date_roc),
+                serial_number = COALESCE(excluded.serial_number, mops_announcements.serial_number),
+                market_kind = COALESCE(excluded.market_kind, mops_announcements.market_kind);
             """
 
             params_list = []
@@ -270,6 +276,9 @@ def scrape_mops_material_info(
                     row.get('content'),
                     row.get('speaker'),
                     row.get('event_date'),
+                    row.get('enter_date_roc'),
+                    row.get('serial_number'),
+                    row.get('market_kind'),
                 ])
             
             client.batch_execute_query(insert_sql, params_list)

@@ -107,6 +107,9 @@ class CloudflareD1Client:
             content TEXT,
             speaker TEXT,
             event_date TEXT,
+            enter_date_roc TEXT,
+            serial_number INTEGER,
+            market_kind TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(code, pub_date, pub_time, subject)
         );
@@ -114,7 +117,10 @@ class CloudflareD1Client:
         self.execute_query(mops_sql)
 
         # Migration: add new columns to existing table (safe to run repeatedly)
-        for col, col_type in [('content', 'TEXT'), ('speaker', 'TEXT'), ('event_date', 'TEXT')]:
+        for col, col_type in [
+            ('content', 'TEXT'), ('speaker', 'TEXT'), ('event_date', 'TEXT'),
+            ('enter_date_roc', 'TEXT'), ('serial_number', 'INTEGER'), ('market_kind', 'TEXT'),
+        ]:
             try:
                 self.execute_query(f"ALTER TABLE mops_announcements ADD COLUMN {col} {col_type};")
             except Exception:
