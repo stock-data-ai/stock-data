@@ -101,64 +101,78 @@ def fetch_holdings(session: requests.Session, etf_code: str, fund_code: str) -> 
     url = f"{BASE_URL}?fundCode={fund_code}&tabName=asset"
     print(f"  抓取 {url}")
 
-    try:
-        resp = session.get(url, headers=HEADERS, timeout=45, verify=False)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=45, verify=False)
+            resp.raise_for_status()
+            soup = BeautifulSoup(resp.text, "html.parser")
 
-        elem = soup.find(id="DataAsset")
-        if not elem:
-            print(f"  [WARN] 找不到 DataAsset 元素")
-            print(f"  [DEBUG] HTTP {resp.status_code}, Content-Type: {resp.headers.get('Content-Type', '')}")
-            print(f"  [DEBUG] Response (前500字):\n{resp.text[:500]}")
-            return [], None
+            elem = soup.find(id="DataAsset")
+            if not elem:
+                print(f"  [WARN] 找不到 DataAsset 元素（第 {attempt}/{max_attempts} 次）")
+                print(f"  [DEBUG] HTTP {resp.status_code}, Content-Type: {resp.headers.get('Content-Type', '')}")
+                print(f"  [DEBUG] Response (前500字):\n{resp.text[:500]}")
+                if attempt < max_attempts:
+                    wait = attempt * 10
+                    print(f"  [RETRY] {wait} 秒後重試...")
+                    time.sleep(wait)
+                    session.get(BASE_URL, headers=HEADERS, timeout=45, verify=False)
+                    continue
+                return [], None
 
-        raw = html_module.unescape(elem.get("data-content", ""))
-        asset_data: list[dict] = json.loads(raw)
+            raw = html_module.unescape(elem.get("data-content", ""))
+            asset_data: list[dict] = json.loads(raw)
 
-        # 找股票資產區塊
-        stock_block = next((a for a in asset_data if a.get("AssetCode") == "ST"), None)
-        if not stock_block or not stock_block.get("Details"):
-            print(f"  [WARN] 無股票持股資料")
-            return [], None
+            # 找股票資產區塊
+            stock_block = next((a for a in asset_data if a.get("AssetCode") == "ST"), None)
+            if not stock_block or not stock_block.get("Details"):
+                print(f"  [WARN] 無股票持股資料")
+                return [], None
 
-        details = stock_block["Details"]
-        tran_date = details[0].get("TranDate", "")[:10] if details else None
+            details = stock_block["Details"]
+            tran_date = details[0].get("TranDate", "")[:10] if details else None
 
-        holdings = []
-        for d in details:
-            code_raw = str(d.get("DetailCode", "")).strip()
-            name = str(d.get("DetailName", "")).strip()
-            weight = d.get("NavRate")
-            shares = d.get("Share")
+            holdings = []
+            for d in details:
+                code_raw = str(d.get("DetailCode", "")).strip()
+                name = str(d.get("DetailName", "")).strip()
+                weight = d.get("NavRate")
+                shares = d.get("Share")
 
-            if weight is None:
-                continue
-            try:
-                weight = round(float(weight), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
+                if weight is None:
+                    continue
+                try:
+                    weight = round(float(weight), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
 
-            entry: dict = {
-                "name": name,
-                "weight": weight,
-                "shares": int(shares) if shares is not None else None
-            }
-            # 台股代號：4-6位純數字
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
-            elif code_raw:
-                entry["foreignCode"] = code_raw
+                entry: dict = {
+                    "name": name,
+                    "weight": weight,
+                    "shares": int(shares) if shares is not None else None
+                }
+                # 台股代號：4-6位純數字
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
+                elif code_raw:
+                    entry["foreignCode"] = code_raw
 
-            holdings.append(entry)
+                holdings.append(entry)
 
-        return holdings, tran_date
+            return holdings, tran_date
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                wait = attempt * 10
+                print(f"  [RETRY] {wait} 秒後重試...")
+                time.sleep(wait)
+                session.get(BASE_URL, headers=HEADERS, timeout=45, verify=False)
+
+    return [], None
 
 
 def update_etf_json(etf_code: str, holdings: list[dict], tran_date: Optional[str]) -> bool:

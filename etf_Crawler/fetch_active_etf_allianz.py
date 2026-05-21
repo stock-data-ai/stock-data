@@ -94,79 +94,83 @@ def fetch_holdings(etf_code: str, fund_id: str,
     """
     print(f"  抓取 {API_URL}  FundID={fund_id}")
 
-    try:
-        resp = session.post(
-            API_URL,
-            json={"FundID": fund_id},
-            headers={
-                **HEADERS,
-                "Content-Type": "application/json",
-                "x-xsrf-token": xsrf,
-                "Referer": f"{BASE_URL}/etf-info/{fund_id}",
-            },
-            timeout=45,
-        )
-        resp.raise_for_status()
-        data = resp.json()
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.post(
+                API_URL,
+                json={"FundID": fund_id},
+                headers={
+                    **HEADERS,
+                    "Content-Type": "application/json",
+                    "x-xsrf-token": xsrf,
+                    "Referer": f"{BASE_URL}/etf-info/{fund_id}",
+                },
+                timeout=45,
+            )
+            resp.raise_for_status()
+            data = resp.json()
 
-        entries = data.get("Entries", {})
-        fund_data = entries.get("Data", {})
-        fund_asset = fund_data.get("FundAsset", {}) or {}
+            entries = data.get("Entries", {})
+            fund_data = entries.get("Data", {})
+            fund_asset = fund_data.get("FundAsset", {}) or {}
 
-        # 解析資料日期
-        nav_date_raw = fund_asset.get("NavDate", "")
-        tran_date: Optional[str] = None
-        if nav_date_raw:
-            parts = nav_date_raw.split("/")
-            if len(parts) == 3:
-                tran_date = f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
+            nav_date_raw = fund_asset.get("NavDate", "")
+            tran_date: Optional[str] = None
+            if nav_date_raw:
+                parts = nav_date_raw.split("/")
+                if len(parts) == 3:
+                    tran_date = f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
 
-        # 找股票持股表格（TableTitle 以「股票」開頭）
-        tables = fund_data.get("Table", [])
-        stock_table = next(
-            (t for t in tables if str(t.get("TableTitle", "")).startswith("股票") and t.get("Rows")),
-            None,
-        )
+            tables = fund_data.get("Table", [])
+            stock_table = next(
+                (t for t in tables if str(t.get("TableTitle", "")).startswith("股票") and t.get("Rows")),
+                None,
+            )
 
-        if not stock_table:
-            print(f"  [WARN] 無股票持股資料")
-            return [], tran_date
+            if not stock_table:
+                print(f"  [WARN] 無股票持股資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], tran_date
 
-        # 欄位順序：[序號, 股票代號, 股票名稱, 股數, 權重(%)]
-        holdings = []
-        for row in stock_table["Rows"]:
-            if len(row) < 5:
-                continue
-            code_raw = str(row[1]).strip()
-            name = str(row[2]).strip()
-            shares_raw = str(row[3]).replace(",", "").strip()
-            weight_raw = str(row[4]).replace("%", "").strip()
+            holdings = []
+            for row in stock_table["Rows"]:
+                if len(row) < 5:
+                    continue
+                code_raw = str(row[1]).strip()
+                name = str(row[2]).strip()
+                shares_raw = str(row[3]).replace(",", "").strip()
+                weight_raw = str(row[4]).replace("%", "").strip()
 
-            try:
-                weight = round(float(weight_raw), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
+                try:
+                    weight = round(float(weight_raw), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
 
-            try:
-                shares = int(float(shares_raw)) if shares_raw and shares_raw != "-" else None
-            except (ValueError, TypeError):
-                shares = None
+                try:
+                    shares = int(float(shares_raw)) if shares_raw and shares_raw != "-" else None
+                except (ValueError, TypeError):
+                    shares = None
 
-            entry: dict = {"name": name, "weight": weight, "shares": shares}
-            # 台股代號：4-6 位純數字
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
+                entry: dict = {"name": name, "weight": weight, "shares": shares}
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
 
-            holdings.append(entry)
+                holdings.append(entry)
 
-        print(f"  [OK] {len(holdings)} 筆持股，日期 {tran_date}")
-        return holdings, tran_date
+            print(f"  [OK] {len(holdings)} 筆持股，日期 {tran_date}")
+            return holdings, tran_date
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def _clean_snapshot(h: dict) -> dict:

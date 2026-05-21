@@ -85,83 +85,87 @@ def fetch_holdings(etf_code: str) -> tuple:
     url = BASE_URL.format(fund_id=fund_id)
     print(f"  抓取 {etf_code} (URL: {url})...")
 
-    try:
-        resp = session.get(url, headers=HEADERS, timeout=45)
-        resp.raise_for_status()
-        
-        soup = BeautifulSoup(resp.text, "html.parser")
-        
-        # 1. 尋找資料日期
-        # 優先找包含「資料來源」字樣的區塊：<p>資料來源：兆豐投信，2026/04/30</p>
-        tran_date = None
-        date_pattern = re.compile(r"(\d{4})/(\d{2})/(\d{2})")
-        
-        # 尋找包含「資料來源」的標籤
-        source_tag = soup.find(string=re.compile("資料來源"))
-        if source_tag:
-            match = date_pattern.search(source_tag)
-            if match:
-                tran_date = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
-        
-        # 若找不到，退而求其次找第一個符合格式的日期
-        if not tran_date:
-            date_text = soup.find(string=date_pattern)
-            if date_text:
-                match = date_pattern.search(date_text)
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=45)
+            resp.raise_for_status()
+
+            soup = BeautifulSoup(resp.text, "html.parser")
+
+            tran_date = None
+            date_pattern = re.compile(r"(\d{4})/(\d{2})/(\d{2})")
+
+            source_tag = soup.find(string=re.compile("資料來源"))
+            if source_tag:
+                match = date_pattern.search(source_tag)
                 if match:
                     tran_date = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
 
-        # 2. 尋找持股列表
-        # 兆豐結構：id="fund_content_list_1" 下的 div.fund-info.content-list-1
-        holdings_container = soup.find(id="fund_content_list_1")
-        if not holdings_container:
-            print(f"  [WARN] 找不到持股容器 (fund_content_list_1)")
-            return [], None
-            
-        rows = holdings_container.find_all("div", class_="fund-info")
-        if not rows:
-            print(f"  [WARN] 找不到持股項目 (fund-info)")
-            return [], None
+            if not tran_date:
+                date_text = soup.find(string=date_pattern)
+                if date_text:
+                    match = date_pattern.search(date_text)
+                    if match:
+                        tran_date = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
 
-        holdings = []
-        for row in rows:
-            cols = row.find_all("div", class_="fund-content")
-            if len(cols) < 4:
-                continue
-                
-            code_raw = cols[0].get_text(strip=True)
-            name = cols[1].get_text(strip=True)
-            shares_raw = cols[2].get_text(strip=True).replace(",", "")
-            weight_raw = cols[3].get_text(strip=True).replace("%", "").strip()
+            holdings_container = soup.find(id="fund_content_list_1")
+            if not holdings_container:
+                print(f"  [WARN] 找不到持股容器 (fund_content_list_1)（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-            try:
-                weight = round(float(weight_raw), 2)
-                shares = int(float(shares_raw))
-            except (ValueError, TypeError):
-                continue
+            rows = holdings_container.find_all("div", class_="fund-info")
+            if not rows:
+                print(f"  [WARN] 找不到持股項目 (fund-info)（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-            if weight <= 0:
-                continue
+            holdings = []
+            for row in rows:
+                cols = row.find_all("div", class_="fund-content")
+                if len(cols) < 4:
+                    continue
 
-            entry = {
-                "name": name,
-                "weight": weight,
-                "shares": shares if shares > 0 else None,
-            }
+                code_raw = cols[0].get_text(strip=True)
+                name = cols[1].get_text(strip=True)
+                shares_raw = cols[2].get_text(strip=True).replace(",", "")
+                weight_raw = cols[3].get_text(strip=True).replace("%", "").strip()
 
-            # 判斷是否為台股代號
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
-            elif code_raw:
-                entry["foreignCode"] = code_raw
+                try:
+                    weight = round(float(weight_raw), 2)
+                    shares = int(float(shares_raw))
+                except (ValueError, TypeError):
+                    continue
 
-            holdings.append(entry)
+                if weight <= 0:
+                    continue
 
-        return holdings, tran_date
+                entry = {
+                    "name": name,
+                    "weight": weight,
+                    "shares": shares if shares > 0 else None,
+                }
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
+                elif code_raw:
+                    entry["foreignCode"] = code_raw
+
+                holdings.append(entry)
+
+            return holdings, tran_date
+
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def _clean_snapshot(h: dict) -> dict:

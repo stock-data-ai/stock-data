@@ -88,68 +88,70 @@ def fetch_holdings(etf_code: str) -> tuple:
     url = f"{BASE_URL}/{etf_code}"
     print(f"  抓取 {url}", end=" ... ", flush=True)
 
-    try:
-        resp = session.get(url, headers=HEADERS, timeout=45)
-        resp.raise_for_status()
-        html = resp.text
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=45)
+            resp.raise_for_status()
+            html = resp.text
 
-        # 取得公告日期（PUB_DATE）
-        m = re.search(r'id="PUB_DATE"[^>]+value="([^"]+)"', html)
-        data_date = m.group(1) if m else None
+            m = re.search(r'id="PUB_DATE"[^>]+value="([^"]+)"', html)
+            data_date = m.group(1) if m else None
 
-        # 定位持股表格（代號 / 名稱 / 股數 / 持股權重）
-        idx = html.find('<th>代號</th>')
-        if idx == -1:
-            print("找不到持股表格")
-            return [], data_date
+            idx = html.find('<th>代號</th>')
+            if idx == -1:
+                print(f"找不到持股表格（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], data_date
 
-        section = html[idx:idx + 30000]
+            section = html[idx:idx + 30000]
 
-        # 每筆持股：4 欄 <td>
-        rows = re.findall(
-            r'<tr>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td>\s*</tr>',
-            section,
-        )
+            rows = re.findall(
+                r'<tr>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td>\s*</tr>',
+                section,
+            )
 
-        holdings = []
-        for code_raw, name, shares_raw, weight_raw in rows:
-            code_raw = code_raw.strip()
-            name = name.strip()
-            shares_raw = shares_raw.strip()
-            weight_raw = weight_raw.strip()
+            holdings = []
+            for code_raw, name, shares_raw, weight_raw in rows:
+                code_raw = code_raw.strip()
+                name = name.strip()
+                shares_raw = shares_raw.strip()
+                weight_raw = weight_raw.strip()
 
-            # 比重：去除 % 號
-            try:
-                weight = round(float(weight_raw.rstrip("%").replace(",", "")), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
+                try:
+                    weight = round(float(weight_raw.rstrip("%").replace(",", "")), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
 
-            # 股數
-            try:
-                shares = int(shares_raw.replace(",", ""))
-            except (ValueError, TypeError):
-                shares = None
+                try:
+                    shares = int(shares_raw.replace(",", ""))
+                except (ValueError, TypeError):
+                    shares = None
 
-            entry: dict = {"name": name, "weight": weight, "shares": shares}
+                entry: dict = {"name": name, "weight": weight, "shares": shares}
 
-            # 代號格式："2330 TT" → 取純數字部分
-            parts = code_raw.split()
-            numeric = parts[0] if parts else ""
-            if numeric.isdigit() and 4 <= len(numeric) <= 6:
-                entry["code"] = numeric
-            elif code_raw:
-                entry["foreignCode"] = code_raw
+                parts = code_raw.split()
+                numeric = parts[0] if parts else ""
+                if numeric.isdigit() and 4 <= len(numeric) <= 6:
+                    entry["code"] = numeric
+                elif code_raw:
+                    entry["foreignCode"] = code_raw
 
-            holdings.append(entry)
+                holdings.append(entry)
 
-        print(f"{len(holdings)} 筆，日期 {data_date}")
-        return holdings, data_date
+            print(f"{len(holdings)} 筆，日期 {data_date}")
+            return holdings, data_date
 
-    except Exception as e:
-        print(f"失敗: {e}")
-        return [], None
+        except Exception as e:
+            print(f"失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def _clean_snapshot(h: dict) -> dict:

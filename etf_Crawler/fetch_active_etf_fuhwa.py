@@ -147,48 +147,58 @@ def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = Non
     回傳 (holdings, tran_date_str)。
     search_date: "YYYY-MM-DD" 或 None（從 HTML 取最新日期）。
     """
-    try:
-        if search_date:
-            date_compact = search_date.replace('-', '')
-            tran_date = search_date
-            print(f"  指定日期: {tran_date}")
-        else:
-            # 從 HTML 取最新日期連結
-            page_url = BASE_URL.format(fund_id=fund_id)
-            print(f"  抓取 {page_url}")
-            resp = session.get(page_url, headers=HEADERS, timeout=45)
-            resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, 'html.parser')
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            if search_date:
+                date_compact = search_date.replace('-', '')
+                tran_date = search_date
+                print(f"  指定日期: {tran_date}")
+            else:
+                page_url = BASE_URL.format(fund_id=fund_id)
+                print(f"  抓取 {page_url}")
+                resp = session.get(page_url, headers=HEADERS, timeout=45)
+                resp.raise_for_status()
+                soup = BeautifulSoup(resp.text, 'html.parser')
 
-            excel_link = soup.find('a', href=lambda h: h and 'assetsExcel' in h)
-            if not excel_link:
-                print("  [ERROR] 找不到 Excel 下載連結")
+                excel_link = soup.find('a', href=lambda h: h and 'assetsExcel' in h)
+                if not excel_link:
+                    print(f"  [ERROR] 找不到 Excel 下載連結（第 {attempt}/{max_attempts} 次）")
+                    if attempt < max_attempts:
+                        time.sleep(attempt * 10)
+                        continue
+                    return [], None
+
+                date_compact = excel_link['href'].split('/')[-1]
+                tran_date = f"{date_compact[:4]}-{date_compact[4:6]}-{date_compact[6:]}"
+                print(f"  資料日期: {tran_date}")
+
+            excel_url = EXCEL_URL.format(fund_id=fund_id, date_compact=date_compact)
+            print(f"  下載 {excel_url}")
+            xresp = session.get(excel_url, headers=HEADERS, timeout=45)
+            xresp.raise_for_status()
+
+            if len(xresp.content) < 100:
+                print(f"  [SKIP] {tran_date} 無資料（可能為假日）")
                 return [], None
 
-            date_compact = excel_link['href'].split('/')[-1]
-            tran_date = f"{date_compact[:4]}-{date_compact[4:6]}-{date_compact[6:]}"
-            print(f"  資料日期: {tran_date}")
+            holdings = _parse_excel(xresp.content)
+            if not holdings:
+                print(f"  [ERROR] Excel 中找不到持股表頭（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        excel_url = EXCEL_URL.format(fund_id=fund_id, date_compact=date_compact)
-        print(f"  下載 {excel_url}")
-        xresp = session.get(excel_url, headers=HEADERS, timeout=45)
-        xresp.raise_for_status()
+            print(f"  找到 {len(holdings)} 筆持股")
+            return holdings, tran_date
 
-        if len(xresp.content) < 100:
-            print(f"  [SKIP] {tran_date} 無資料（可能為假日）")
-            return [], None
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
 
-        holdings = _parse_excel(xresp.content)
-        if not holdings:
-            print(f"  [ERROR] Excel 中找不到持股表頭")
-            return [], None
-
-        print(f"  找到 {len(holdings)} 筆持股")
-        return holdings, tran_date
-
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+    return [], None
 
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],

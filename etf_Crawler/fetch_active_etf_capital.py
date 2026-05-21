@@ -108,65 +108,73 @@ def fetch_holdings(etf_code: str, fund_id: str) -> tuple:
     """
     print(f"  抓取 {API_URL} (fundId={fund_id})")
 
-    try:
-        headers = {
-            **BASE_HEADERS,
-            "Referer": f"https://www.capitalfund.com.tw/etf/product/detail/{fund_id}/portfolio",
-        }
-        resp = session.post(
-            API_URL,
-            headers=headers,
-            json={"fundId": fund_id, "date": None},
-            timeout=45,
-        )
-        resp.raise_for_status()
-        data = resp.json()
-
-        if data.get("code") != 200:
-            print(f"  [WARN] API 回應 code={data.get('code')}")
-            return [], None
-
-        stocks = data.get("data", {}).get("stocks", [])
-        if not stocks:
-            print(f"  [WARN] 無持股資料")
-            return [], None
-
-        # 解析日期（取第一筆的 date1）
-        tran_date = _parse_date(stocks[0].get("date1", ""))
-
-
-        holdings = []
-        for s in stocks:
-            code_raw = str(s.get("stocNo", "")).strip()
-            name = str(s.get("stocName", "")).strip()
-            weight = s.get("weight")
-            shares = s.get("share")
-
-            if weight is None:
-                continue
-            try:
-                weight = round(float(weight), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
-
-            entry: dict = {
-                "name": name,
-                "weight": weight,
-                "shares": int(shares) if shares is not None else None,
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            headers = {
+                **BASE_HEADERS,
+                "Referer": f"https://www.capitalfund.com.tw/etf/product/detail/{fund_id}/portfolio",
             }
-            # 台股代號：4-6位純數字
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
+            resp = session.post(
+                API_URL,
+                headers=headers,
+                json={"fundId": fund_id, "date": None},
+                timeout=45,
+            )
+            resp.raise_for_status()
+            data = resp.json()
 
-            holdings.append(entry)
+            if data.get("code") != 200:
+                print(f"  [WARN] API 回應 code={data.get('code')}（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        return holdings, tran_date
+            stocks = data.get("data", {}).get("stocks", [])
+            if not stocks:
+                print(f"  [WARN] 無持股資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+            tran_date = _parse_date(stocks[0].get("date1", ""))
+
+            holdings = []
+            for s in stocks:
+                code_raw = str(s.get("stocNo", "")).strip()
+                name = str(s.get("stocName", "")).strip()
+                weight = s.get("weight")
+                shares = s.get("share")
+
+                if weight is None:
+                    continue
+                try:
+                    weight = round(float(weight), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
+
+                entry: dict = {
+                    "name": name,
+                    "weight": weight,
+                    "shares": int(shares) if shares is not None else None,
+                }
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
+
+                holdings.append(entry)
+
+            return holdings, tran_date
+
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> bool:

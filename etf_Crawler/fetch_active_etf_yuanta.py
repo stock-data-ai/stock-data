@@ -183,70 +183,81 @@ def fetch_holdings(etf_code: str, node_bin: str) -> tuple:
     url = BASE_URL.format(code=etf_code)
     print(f"  抓取 {url}")
 
-    try:
-        resp = session.get(url, headers=HEADERS, timeout=45)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=45)
+            resp.raise_for_status()
+            soup = BeautifulSoup(resp.text, "html.parser")
 
-        # 找含有 window.__NUXT__ 的 <script> 標籤
-        nuxt_js = None
-        for script in soup.find_all("script"):
-            text = script.string or ""
-            if "window.__NUXT__" in text:
-                nuxt_js = text.strip()
-                break
+            nuxt_js = None
+            for script in soup.find_all("script"):
+                text = script.string or ""
+                if "window.__NUXT__" in text:
+                    nuxt_js = text.strip()
+                    break
 
-        if not nuxt_js:
-            print(f"  [WARN] 找不到 window.__NUXT__ 資料")
-            return [], None
+            if not nuxt_js:
+                print(f"  [WARN] 找不到 window.__NUXT__ 資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        parsed = _parse_nuxt_via_node(nuxt_js, node_bin)
-        if not parsed:
-            return [], None
+            parsed = _parse_nuxt_via_node(nuxt_js, node_bin)
+            if not parsed:
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        tran_date = _parse_trandate(parsed.get("trandate", ""))
+            tran_date = _parse_trandate(parsed.get("trandate", ""))
+            stocks = parsed.get("stocks", [])
 
-        stocks = parsed.get("stocks", [])
+            if not stocks:
+                print(f"  [WARN] 無持股資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        if not stocks:
-            print(f"  [WARN] 無持股資料")
-            return [], None
+            holdings = []
+            for s in stocks:
+                code_raw = str(s.get("code", "")).strip()
+                name = str(s.get("name", "")).strip()
+                weight = s.get("weights")
+                qty = s.get("qty")
 
-        holdings = []
-        for s in stocks:
-            code_raw = str(s.get("code", "")).strip()
-            name = str(s.get("name", "")).strip()
-            weight = s.get("weights")
-            qty = s.get("qty")
+                if weight is None:
+                    continue
+                try:
+                    weight = round(float(weight), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
 
-            if weight is None:
-                continue
-            try:
-                weight = round(float(weight), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
+                entry: dict = {
+                    "name": name,
+                    "weight": weight,
+                    "shares": int(qty) if qty is not None else None,
+                }
 
-            entry: dict = {
-                "name": name,
-                "weight": weight,
-                "shares": int(qty) if qty is not None else None,
-            }
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
+                elif code_raw:
+                    entry["foreignCode"] = code_raw
 
-            # 台股代號：4-6 位純數字
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
-            elif code_raw:
-                entry["foreignCode"] = code_raw
+                holdings.append(entry)
 
-            holdings.append(entry)
+            return holdings, tran_date
 
-        return holdings, tran_date
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+    return [], None
 
 
 def _clean_snapshot(h: dict) -> dict:

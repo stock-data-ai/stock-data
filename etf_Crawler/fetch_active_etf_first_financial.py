@@ -87,67 +87,74 @@ def fetch_holdings(etf_code: str) -> tuple:
         "pStrDate": ""  # 空字串表示抓取最新
     }
 
-    try:
-        resp = session.post(API_URL, json=payload, headers=HEADERS, timeout=45)
-        resp.raise_for_status()
-        
-        result = resp.json()
-        # API 回傳格式為 {"d": "[{...}, ...]"}，需要再次解析 JSON 字串
-        data_str = result.get("d")
-        if not data_str:
-            print(f"  [WARN] API 未回傳資料內容")
-            return [], None
-            
-        raw_holdings = json.loads(data_str)
-        if not raw_holdings:
-            print(f"  [WARN] 持股清單為空")
-            return [], None
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.post(API_URL, json=payload, headers=HEADERS, timeout=45)
+            resp.raise_for_status()
 
-        holdings = []
-        tran_date = None
+            result = resp.json()
+            data_str = result.get("d")
+            if not data_str:
+                print(f"  [WARN] API 未回傳資料內容（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        for item in raw_holdings:
-            # group "1" 通常是股票
-            if item.get("group") != "1":
-                continue
+            raw_holdings = json.loads(data_str)
+            if not raw_holdings:
+                print(f"  [WARN] 持股清單為空（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-            # 取得資料日期 (所有項目的 sdate 應該是一樣的)
-            if not tran_date:
-                tran_date = item.get("sdate")
+            holdings = []
+            tran_date = None
 
-            code = item.get("A", "").strip()
-            name = item.get("B", "").strip().replace(" ", "")
-            weight_str = item.get("C", "0")
-            shares_str = item.get("D", "0").replace(",", "")
+            for item in raw_holdings:
+                if item.get("group") != "1":
+                    continue
 
-            try:
-                weight = round(float(weight_str), 2)
-                shares = int(float(shares_str))
-            except (ValueError, TypeError):
-                continue
+                if not tran_date:
+                    tran_date = item.get("sdate")
 
-            if weight <= 0 and shares <= 0:
-                continue
+                code = item.get("A", "").strip()
+                name = item.get("B", "").strip().replace(" ", "")
+                weight_str = item.get("C", "0")
+                shares_str = item.get("D", "0").replace(",", "")
 
-            entry = {
-                "name": name,
-                "weight": weight,
-                "shares": shares if shares > 0 else None,
-            }
+                try:
+                    weight = round(float(weight_str), 2)
+                    shares = int(float(shares_str))
+                except (ValueError, TypeError):
+                    continue
 
-            # 判斷是否為台股代號 (通常 4-6 位數字)
-            if code.isdigit() and 4 <= len(code) <= 6:
-                entry["code"] = code
-            elif code:
-                entry["foreignCode"] = code
+                if weight <= 0 and shares <= 0:
+                    continue
 
-            holdings.append(entry)
+                entry = {
+                    "name": name,
+                    "weight": weight,
+                    "shares": shares if shares > 0 else None,
+                }
 
-        return holdings, tran_date
+                if code.isdigit() and 4 <= len(code) <= 6:
+                    entry["code"] = code
+                elif code:
+                    entry["foreignCode"] = code
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+                holdings.append(entry)
+
+            return holdings, tran_date
+
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def _clean_snapshot(h: dict) -> dict:

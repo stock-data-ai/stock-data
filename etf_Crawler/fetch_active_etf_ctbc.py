@@ -118,80 +118,86 @@ def fetch_holdings(etf_code: str, fid: str, token: str) -> tuple:
 
     print(f"  抓取 {url}  FID={fid}  StartDate={query_date}")
 
-    try:
-        resp = session.post(
-            url,
-            params={"token": token},
-            json={"token": token, "FID": fid, "StartDate": query_date},
-            headers=HEADERS,
-            timeout=45,
-        )
-        resp.raise_for_status()
-        result = resp.json()
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.post(
+                url,
+                params={"token": token},
+                json={"token": token, "FID": fid, "StartDate": query_date},
+                headers=HEADERS,
+                timeout=45,
+            )
+            resp.raise_for_status()
+            result = resp.json()
 
-        if result.get("ResultCode") != 0:
-            print(f"  [WARN] API 錯誤: {result.get('ResultMsg')}")
-            return [], None
-
-        api_data = result["Data"]
-
-        # 資料日期從 FundAssets 取得
-        fund_assets = api_data.get("FundAssets", [])
-        data_date: Optional[str] = None
-        if fund_assets:
-            raw_dt = fund_assets[0].get("NAV_DT", "")
-            # 格式可能是 "2026-04-09T00:00:00" 或 "2026/04/09"
-            if "T" in raw_dt:
-                data_date = raw_dt.split("T")[0]
-            elif "/" in raw_dt:
-                data_date = raw_dt.replace("/", "-")
-            else:
-                data_date = raw_dt or None
-
-        # 只取股票（STOCK）持股
-        holdings = []
-        for section in api_data.get("FundAssetsDetail", []):
-            if section.get("Code") != "STOCK":
-                continue
-            for item in section.get("Data", []):
-                code_raw = str(item.get("code_", "")).strip()
-                name = str(item.get("name_", "")).strip()
-                weight_str = str(item.get("weights_", "")).replace(",", "").strip()
-                qty_str = str(item.get("qty_", "")).replace(",", "").strip()
-
-                try:
-                    weight = round(float(weight_str), 2)
-                except (ValueError, TypeError):
+            if result.get("ResultCode") != 0:
+                print(f"  [WARN] API 錯誤: {result.get('ResultMsg')}（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
                     continue
-                if weight <= 0:
+                return [], None
+
+            api_data = result["Data"]
+
+            fund_assets = api_data.get("FundAssets", [])
+            data_date: Optional[str] = None
+            if fund_assets:
+                raw_dt = fund_assets[0].get("NAV_DT", "")
+                if "T" in raw_dt:
+                    data_date = raw_dt.split("T")[0]
+                elif "/" in raw_dt:
+                    data_date = raw_dt.replace("/", "-")
+                else:
+                    data_date = raw_dt or None
+
+            holdings = []
+            for section in api_data.get("FundAssetsDetail", []):
+                if section.get("Code") != "STOCK":
                     continue
+                for item in section.get("Data", []):
+                    code_raw = str(item.get("code_", "")).strip()
+                    name = str(item.get("name_", "")).strip()
+                    weight_str = str(item.get("weights_", "")).replace(",", "").strip()
+                    qty_str = str(item.get("qty_", "")).replace(",", "").strip()
 
-                try:
-                    shares = int(float(qty_str)) if qty_str and qty_str != "0.00" else None
-                except (ValueError, TypeError):
-                    shares = None
+                    try:
+                        weight = round(float(weight_str), 2)
+                    except (ValueError, TypeError):
+                        continue
+                    if weight <= 0:
+                        continue
 
-                entry: dict = {"name": name, "weight": weight, "shares": shares}
+                    try:
+                        shares = int(float(qty_str)) if qty_str and qty_str != "0.00" else None
+                    except (ValueError, TypeError):
+                        shares = None
 
-                # 台股代號：4-6 位純數字
-                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                    entry["code"] = code_raw
-                elif code_raw:
-                    entry["foreignCode"] = code_raw
+                    entry: dict = {"name": name, "weight": weight, "shares": shares}
 
-                holdings.append(entry)
+                    if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                        entry["code"] = code_raw
+                    elif code_raw:
+                        entry["foreignCode"] = code_raw
 
-        if not holdings:
-            print(f"  [WARN] 無股票持股資料")
-            return [], data_date
+                    holdings.append(entry)
 
-        # 依比重排序
-        holdings.sort(key=lambda h: h["weight"], reverse=True)
-        return holdings, data_date
+            if not holdings:
+                print(f"  [WARN] 無股票持股資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], data_date
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+            holdings.sort(key=lambda h: h["weight"], reverse=True)
+            return holdings, data_date
+
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def _clean_snapshot(h: dict) -> dict:

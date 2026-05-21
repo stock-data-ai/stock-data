@@ -92,51 +92,61 @@ def fetch_holdings(etf_code: str, fund_code: str) -> tuple:
     url = f"{API_BASE}?fundCode={fund_code}"
     print(f"  抓取 {url}")
 
-    try:
-        resp = session.get(url, headers=BASE_HEADERS, timeout=45)
-        resp.raise_for_status()
-        data = resp.json()
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.get(url, headers=BASE_HEADERS, timeout=45)
+            resp.raise_for_status()
+            data = resp.json()
 
-        if not data.get("success"):
-            print(f"  [WARN] API 回應失敗: {data.get('returnMessage')}")
-            return [], None
+            if not data.get("success"):
+                print(f"  [WARN] API 回應失敗: {data.get('returnMessage')}（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        result = data.get("result", {})
-        stocks = result.get("stockWeights", [])
-        if not stocks:
-            print(f"  [WARN] 無持股資料")
-            return [], None
+            result = data.get("result", {})
+            stocks = result.get("stockWeights", [])
+            if not stocks:
+                print(f"  [WARN] 無持股資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
-        # 日期格式 "2026/05/12" → "2026-05-12"
-        raw_date = result.get("date", "")
-        tran_date = raw_date.replace("/", "-") if raw_date else None
+            raw_date = result.get("date", "")
+            tran_date = raw_date.replace("/", "-") if raw_date else None
 
-        holdings = []
-        for s in stocks:
-            code_raw = str(s.get("stockCode", "")).strip()
-            name = _clean_name(str(s.get("stockName", "")))
-            weight_raw = s.get("weights")
+            holdings = []
+            for s in stocks:
+                code_raw = str(s.get("stockCode", "")).strip()
+                name = _clean_name(str(s.get("stockName", "")))
+                weight_raw = s.get("weights")
 
-            if weight_raw is None:
-                continue
-            try:
-                weight = round(float(weight_raw), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
+                if weight_raw is None:
+                    continue
+                try:
+                    weight = round(float(weight_raw), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
 
-            entry: dict = {"name": name, "weight": weight}
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
+                entry: dict = {"name": name, "weight": weight}
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
 
-            holdings.append(entry)
+                holdings.append(entry)
 
-        return holdings, tran_date
+            return holdings, tran_date
 
-    except Exception as e:
-        print(f"  [ERROR] 抓取失敗: {e}")
-        return [], None
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
 
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> bool:

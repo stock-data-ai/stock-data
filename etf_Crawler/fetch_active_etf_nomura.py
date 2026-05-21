@@ -112,69 +112,75 @@ def fetch_holdings(etf_code: str, search_date: Optional[str] = None) -> tuple:
     label = search_date or "最新"
     print(f"  抓取 {etf_code} [{label}]", end=" ... ", flush=True)
 
-    try:
-        resp = session.post(
-            API_URL,
-            headers=HEADERS,
-            json={"FundID": etf_code, "SearchDate": search_date},
-            timeout=45,
-        )
-        resp.raise_for_status()
-        data = resp.json()
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.post(
+                API_URL,
+                headers=HEADERS,
+                json={"FundID": etf_code, "SearchDate": search_date},
+                timeout=45,
+            )
+            resp.raise_for_status()
+            data = resp.json()
 
-        if data.get("StatusCode") == STATUS_NO_DATA:
-            print("無資料（非交易日）")
-            return [], None
+            if data.get("StatusCode") == STATUS_NO_DATA:
+                print("無資料（非交易日）")
+                return [], None
 
-        entries = data.get("Entries", {})
-        fund_data = entries.get("Data", {})
-        fund_asset = fund_data.get("FundAsset", {}) or {}
-        tables = fund_data.get("Table", [])
+            entries = data.get("Entries", {})
+            fund_data = entries.get("Data", {})
+            fund_asset = fund_data.get("FundAsset", {}) or {}
+            tables = fund_data.get("Table", [])
 
-        tran_date = _parse_date(fund_asset.get("NavDate", ""))
+            tran_date = _parse_date(fund_asset.get("NavDate", ""))
 
+            stock_table = next(
+                (t for t in tables if t.get("TableTitle") == "股票"), None
+            )
+            if not stock_table or not stock_table.get("Rows"):
+                print(f"無股票持股資料（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
 
+            holdings = []
+            for row in stock_table["Rows"]:
+                if len(row) < 4:
+                    continue
+                code_raw = str(row[0]).strip()
+                name = str(row[1]).strip()
+                shares_raw = row[2]
+                weight_raw = row[3]
 
-        stock_table = next(
-            (t for t in tables if t.get("TableTitle") == "股票"), None
-        )
-        if not stock_table or not stock_table.get("Rows"):
-            print("無股票持股資料")
-            return [], None
+                try:
+                    weight = round(float(weight_raw), 2)
+                except (ValueError, TypeError):
+                    continue
+                if weight <= 0:
+                    continue
 
-        holdings = []
-        for row in stock_table["Rows"]:
-            if len(row) < 4:
-                continue
-            code_raw = str(row[0]).strip()
-            name = str(row[1]).strip()
-            shares_raw = row[2]
-            weight_raw = row[3]
+                try:
+                    shares = int(str(shares_raw).replace(",", ""))
+                except (ValueError, TypeError):
+                    shares = None
 
-            try:
-                weight = round(float(weight_raw), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
+                entry: dict = {"name": name, "weight": weight, "shares": shares}
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
 
-            try:
-                shares = int(str(shares_raw).replace(",", ""))
-            except (ValueError, TypeError):
-                shares = None
+                holdings.append(entry)
 
-            entry: dict = {"name": name, "weight": weight, "shares": shares}
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
+            print(f"{len(holdings)} 筆，日期 {tran_date}")
+            return holdings, tran_date
 
-            holdings.append(entry)
+        except Exception as e:
+            print(f"失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
 
-        print(f"{len(holdings)} 筆，日期 {tran_date}")
-        return holdings, tran_date
-
-    except Exception as e:
-        print(f"失敗: {e}")
-        return [], None
+    return [], None
 
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
