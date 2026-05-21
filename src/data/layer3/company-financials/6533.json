@@ -14,8 +14,8 @@
     "marketCap": 10965941248,
     "pe": 0.0,
     "pb": 2.7569082,
-    "marginBalance": 2312,
-    "shortBalance": 26
+    "marginBalance": 2338,
+    "shortBalance": 28
   },
   "historical": {
     "annual": [
@@ -26103,6 +26103,25 @@
         "trust_ratio": 0.04146,
         "dealer_ratio": 0.009459,
         "three_inst_ratio": 11.350919
+      },
+      "2026-05-20": {
+        "dealer_self_buy": 1.001,
+        "foreign_buy": 616.09,
+        "trust_buy": 15.0,
+        "dealer_self_net_buy": 0.0009999999999998899,
+        "foreign_net_buy": 232.94000000000005,
+        "trust_net_buy": 15.0,
+        "dealer_self_sell": 1.0,
+        "foreign_sell": 383.15,
+        "trust_sell": 0.0,
+        "dealer_buy": 1.001,
+        "dealer_sell": 1.0,
+        "dealer_net_buy": 0.0009999999999998899,
+        "code": "6533",
+        "foreign_ratio": 11.72,
+        "trust_ratio": 0.071075,
+        "dealer_ratio": 0.009461,
+        "three_inst_ratio": 11.800536
       }
     },
     "marginTrading": {
@@ -26417,10 +26436,18 @@
         "shortBuy": 2,
         "shortSell": 2,
         "shortBalance": 26
+      },
+      "2026-05-20": {
+        "marginBuy": 49,
+        "marginSell": 23,
+        "marginBalance": 2338,
+        "shortBuy": 2,
+        "shortSell": 4,
+        "shortBalance": 28
       }
     }
   },
-  "lastUpdated": "2026-05-20",
+  "lastUpdated": "2026-05-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
