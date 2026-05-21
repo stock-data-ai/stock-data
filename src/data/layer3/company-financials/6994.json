@@ -15,8 +15,8 @@
     "pe": 8.626818,
     "pb": 1.6262143,
     "dividendYield": 184.0,
-    "marginBalance": 2907,
-    "shortBalance": 43
+    "marginBalance": 2914,
+    "shortBalance": 51
   },
   "historical": {
     "annual": [
@@ -5917,10 +5917,10 @@
         "dealer_sell": 0.0,
         "dealer_net_buy": 3.0,
         "code": "6994",
+        "foreign_ratio": 1.21,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.004045,
-        "foreign_ratio": 1.01,
-        "three_inst_ratio": 1.014045
+        "three_inst_ratio": 1.214045
       }
     },
     "marginTrading": {
@@ -6235,6 +6235,14 @@
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 43
+      },
+      "2026-05-21": {
+        "marginBuy": 22,
+        "marginSell": 15,
+        "marginBalance": 2914,
+        "shortBuy": 0,
+        "shortSell": 8,
+        "shortBalance": 51
       }
     }
   },
