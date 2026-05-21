@@ -109,6 +109,8 @@ def fetch_holdings(session: requests.Session, etf_code: str, fund_code: str) -> 
         elem = soup.find(id="DataAsset")
         if not elem:
             print(f"  [WARN] 找不到 DataAsset 元素")
+            print(f"  [DEBUG] HTTP {resp.status_code}, Content-Type: {resp.headers.get('Content-Type', '')}")
+            print(f"  [DEBUG] Response (前500字):\n{resp.text[:500]}")
             return [], None
 
         raw = html_module.unescape(elem.get("data-content", ""))

@@ -246,3 +246,30 @@ jobs:
             git pull --rebase -X ours origin main
             git push
           fi
+
+      - name: Fail if any crawler failed
+        if: always()
+        run: |
+          FAILED=""
+          check() {
+            local name=$1 result=$2 skipped=$3
+            if [ "$skipped" != "true" ] && [ "$result" != "success" ]; then
+              FAILED="$FAILED $name"
+            fi
+          }
+          check "統一投信" "${{ steps.unipres.outcome }}" "${{ steps.unipres.outputs.SKIPPED }}"
+          check "群益投信" "${{ steps.capital.outcome }}" "${{ steps.capital.outputs.SKIPPED }}"
+          check "野村投信" "${{ steps.nomura.outcome }}" "${{ steps.nomura.outputs.SKIPPED }}"
+          check "元大投信" "${{ steps.yuanta.outcome }}" "${{ steps.yuanta.outputs.SKIPPED }}"
+          check "中信投信" "${{ steps.ctbc.outcome }}" "${{ steps.ctbc.outputs.SKIPPED }}"
+          check "復華投信" "${{ steps.fuhwa.outcome }}" "${{ steps.fuhwa.outputs.SKIPPED }}"
+          check "安聯投信" "${{ steps.allianz.outcome }}" "${{ steps.allianz.outputs.SKIPPED }}"
+          check "台新投信" "${{ steps.taishin.outcome }}" "${{ steps.taishin.outputs.SKIPPED }}"
+          check "第一金投信" "${{ steps.first_financial.outcome }}" "${{ steps.first_financial.outputs.SKIPPED }}"
+          check "兆豐投信" "${{ steps.mega.outcome }}" "${{ steps.mega.outputs.SKIPPED }}"
+          check "國泰投信" "${{ steps.cathay.outcome }}" "${{ steps.cathay.outputs.SKIPPED }}"
+          if [ -n "$FAILED" ]; then
+            echo "❌ 以下投信爬蟲失敗：$FAILED"
+            exit 1
+          fi
+          echo "✅ 所有爬蟲成功"
