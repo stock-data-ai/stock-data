@@ -3,7 +3,7 @@ import datetime
 import time
 import re
 import requests
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from cloudflare_d1_client import CloudflareD1Client
 
 
@@ -28,6 +28,56 @@ def convert_roc_date(date_str: str) -> str:
         return f'{year}{month:02d}{day:02d}'
 
     return date_str
+
+
+def fetch_mops_detail(
+    enter_date: str,
+    serial_number: int,
+    company_id: str,
+    market_kind: str,
+    headers: dict,
+) -> Dict[str, Any]:
+    """
+    呼叫 MOPS detail API 取得單筆公告的完整內容。
+    回傳 {'content': str, 'speaker': str, 'event_date': str}，失敗時回傳空值。
+    """
+    try:
+        params = {
+            'enterDate': enter_date,
+            'serialNumber': serial_number,
+            'companyId': company_id,
+            'marketKind': market_kind,
+        }
+        r = requests.post(
+            'https://mops.twse.com.tw/mops/api/t05st02_detail',
+            headers=headers,
+            json=params,
+            timeout=30,
+        )
+        r.raise_for_status()
+        result = r.json()
+        if result.get('code') != 200:
+            return {}
+        data_rows = result.get('result', {}).get('data', [])
+        # Find the row matching serial_number (data[i][0] == serial_number)
+        for row in data_rows:
+            if len(row) >= 10 and int(row[0]) == int(serial_number):
+                return {
+                    'content': str(row[9]).replace('\r\n', '\n').strip() if row[9] else None,
+                    'speaker': str(row[3]).strip() if row[3] else None,
+                    'event_date': convert_roc_date(str(row[8])) if row[8] else None,
+                }
+        # Fallback: return first row if serial match fails
+        if data_rows and len(data_rows[0]) >= 10:
+            row = data_rows[0]
+            return {
+                'content': str(row[9]).replace('\r\n', '\n').strip() if row[9] else None,
+                'speaker': str(row[3]).strip() if row[3] else None,
+                'event_date': convert_roc_date(str(row[8])) if row[8] else None,
+            }
+    except Exception as e:
+        print(f"  detail API 失敗 ({company_id} serial={serial_number}): {e}")
+    return {}
 
 
 def scrape_mops_material_info(
@@ -151,13 +201,29 @@ def scrape_mops_material_info(
                     # 轉換日期
                     pub_date = convert_roc_date(roc_date)
 
+                    # 解析 detail 參數（item[5] 含 enterDate/serialNumber/marketKind）
+                    meta = item[5] if len(item) > 5 else {}
+                    detail_params = meta.get('parameters', {}) if isinstance(meta, dict) else {}
+                    enter_date = detail_params.get('enterDate')
+                    serial_number = detail_params.get('serialNumber')
+                    market_kind = detail_params.get('marketKind')
+
+                    # 呼叫 detail API 取得內文
+                    detail = {}
+                    if enter_date and serial_number and market_kind:
+                        detail = fetch_mops_detail(enter_date, serial_number, code, market_kind, headers)
+                        time.sleep(0.2)  # 避免打爆 MOPS
+
                     all_data.append({
                         'code': code,
                         'name': name,
                         'pub_date': pub_date,
                         'pub_time': pub_time,
                         'subject': subject.replace('\r\n', ' ').replace('\n', ' '),
-                        'source': '公開資訊觀測站'
+                        'source': '公開資訊觀測站',
+                        'content': detail.get('content'),
+                        'speaker': detail.get('speaker'),
+                        'event_date': detail.get('event_date'),
                     })
 
             print(f"  取得 {len([d for d in data if not stock_codes or d[2] in stock_codes])} 筆資料")
@@ -184,12 +250,14 @@ def scrape_mops_material_info(
             print("正在寫入 Cloudflare D1...")
             # Prepare data for insertion
             insert_sql = """
-            INSERT OR IGNORE INTO mops_announcements (code, name, pub_date, pub_time, subject, source)
-            VALUES (?, ?, ?, ?, ?, ?);
+            INSERT INTO mops_announcements (code, name, pub_date, pub_time, subject, source, content, speaker, event_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(code, pub_date, pub_time, subject) DO UPDATE SET
+                content = COALESCE(excluded.content, mops_announcements.content),
+                speaker = COALESCE(excluded.speaker, mops_announcements.speaker),
+                event_date = COALESCE(excluded.event_date, mops_announcements.event_date);
             """
-            
-            # Convert DataFrame rows to list of param lists
-            # Note: ensuring all types are JSON serializable (str mostly)
+
             params_list = []
             for _, row in df.iterrows():
                 params_list.append([
@@ -198,12 +266,22 @@ def scrape_mops_material_info(
                     str(row['pub_date']),
                     str(row['pub_time']),
                     str(row['subject']),
-                    str(row['source'])
+                    str(row['source']),
+                    row.get('content'),
+                    row.get('speaker'),
+                    row.get('event_date'),
                 ])
             
             client.batch_execute_query(insert_sql, params_list)
             print("成功寫入 Cloudflare D1")
-            
+
+            # 清除 90 天前的舊資料
+            cutoff = (datetime.datetime.now() - datetime.timedelta(days=90)).strftime('%Y%m%d')
+            deleted = client.execute_query(
+                f"DELETE FROM mops_announcements WHERE pub_date < '{cutoff}';"
+            )
+            print(f"已清除 {cutoff} 以前的舊資料")
+
         except Exception as e:
             print(f"寫入 Cloudflare D1 時發生錯誤: {e}")
             print("請確認已設定 CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_DATABASE_ID, CLOUDFLARE_API_TOKEN 環境變數")

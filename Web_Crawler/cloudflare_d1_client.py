@@ -104,11 +104,21 @@ class CloudflareD1Client:
             pub_time TEXT,
             subject TEXT,
             source TEXT,
+            content TEXT,
+            speaker TEXT,
+            event_date TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(code, pub_date, pub_time, subject)
         );
         """
         self.execute_query(mops_sql)
+
+        # Migration: add new columns to existing table (safe to run repeatedly)
+        for col, col_type in [('content', 'TEXT'), ('speaker', 'TEXT'), ('event_date', 'TEXT')]:
+            try:
+                self.execute_query(f"ALTER TABLE mops_announcements ADD COLUMN {col} {col_type};")
+            except Exception:
+                pass  # Column already exists
 
         # Table for Economic Daily News
         # pub_date (TEXT), title (TEXT), link (TEXT), source (TEXT)
