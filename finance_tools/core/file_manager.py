@@ -27,42 +27,31 @@ class FileManager:
 
     def load_companies(self) -> List[Dict[str, str]]:
         """
-        載入公司清單。現在從 company-topics/index.json 檔案中獲取公司代碼，
-        並從 companies-all.json 檔案中獲取公司名稱。
+        載入公司清單。從 company-financials/ 目錄掃描所有 4 位數台股代碼，
+        並從 companies-all.json 取得公司名稱。
+        這樣可以覆蓋所有已有財務檔案的公司，不論是否在 company-topics 題材中。
         """
-        companies = []
-        company_codes_from_topics = set()
-
-        index_file_path = str(config.COMPANY_TOPICS_INDEX_FILE)
-
-        if not os.path.exists(index_file_path):
-            logger.warning(f"Company topics index file not found: {index_file_path}")
-            return []
-
-        try:
-            with open(index_file_path, "r", encoding="utf-8") as f:
-                topic_index = json.load(f)
-                company_codes_from_topics = set(topic_index.keys())
-        except json.JSONDecodeError as e:
-            logger.error(f"Error decoding JSON from {index_file_path}: {e}")
-            return []
-        except Exception as e:
-            logger.error(f"Error reading {index_file_path}: {e}")
-            return []
-
-        if not company_codes_from_topics:
-            logger.warning(f"No company codes found in {index_file_path}.")
-            return []
-
-        # 2. For each identified code, try to load its name from companies-all.json
         all_companies_details = self.load_all_companies_with_details()
 
-        for code in sorted(list(company_codes_from_topics)):
-            company_detail = all_companies_details.get(code, {})
-            name = company_detail.get("name", code) # Get name from details, default to code
+        codes: set[str] = set()
+        if os.path.isdir(self.financials_dir):
+            for filename in os.listdir(self.financials_dir):
+                if filename.endswith(".json"):
+                    code = filename[:-5]  # strip .json
+                    if code.isdigit() and len(code) == 4:
+                        codes.add(code)
 
+        if not codes:
+            logger.warning(f"No 4-digit company codes found in {self.financials_dir}.")
+            return []
+
+        companies = []
+        for code in sorted(codes):
+            detail = all_companies_details.get(code, {})
+            name = detail.get("name", code)
             companies.append({"code": code, "name": name})
 
+        logger.info(f"Loaded {len(companies)} companies from {self.financials_dir}.")
         return companies
 
     def load_all_companies_with_details(self) -> Dict[str, Any]:
