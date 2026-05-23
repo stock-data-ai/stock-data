@@ -1,7 +1,7 @@
 import time
 import logging
 import pandas as pd
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import List, Dict, Any
 
 from finance_tools.core import DataProcessor, FileManager
@@ -12,94 +12,89 @@ import finance_tools.config as config
 
 logger = logging.getLogger(__name__)
 
-def run_update_margin_trading(args):
-    """
-    處理更新融資融券任務
-    """
-    logger.info("Handling margin trading update...")
 
-    fetcher = MarginTradingFetcher()
-    processor = DataProcessor()
-    file_mgr = FileManager()
+def _trading_days_between(start_str: str, end_str: str) -> List[str]:
+    """回傳 start～end 之間所有週一到週五的日期 (YYYYMMDD)，不含假日判斷（假日當天 TWSE 回空）。"""
+    start = datetime.strptime(start_str, "%Y%m%d")
+    end = datetime.strptime(end_str, "%Y%m%d")
+    days = []
+    cur = start
+    while cur <= end:
+        if cur.weekday() < 5:  # Mon-Fri
+            days.append(cur.strftime("%Y%m%d"))
+        cur += timedelta(days=1)
+    return days
 
-    # 確定要抓取的日期
-    # 如果 args 中有指定日期則使用指定日期，否則使用最近的交易日（簡化起見先用今天/昨天）
-    target_date = getattr(args, 'date', None)
-    if not target_date:
-        # 如果是凌晨，可能要抓昨天的資料
-        now = now_tw()
-        if now.hour < 18: # 證交所通常 17:00-18:00 更新
-            target_date = (now - timedelta(days=1)).strftime("%Y%m%d")
-        else:
-            target_date = now.strftime("%Y%m%d")
-    
-    # 移除日期中的橫槓 (如果是 YYYY-MM-DD 轉為 YYYYMMDD)
-    target_date = target_date.replace("-", "")
-    
-    logger.info(f"Target Date: {target_date}")
 
-    # 1. 一次性抓取全市場資料 (上市 + 上櫃)
+def _process_one_date(target_date: str, fetcher, processor, file_mgr, company_codes) -> int:
+    """抓單日全市場融資融券並寫入 JSON，回傳成功筆數。"""
     combined_df = fetcher.fetch_all(target_date)
-    
     if combined_df is None or combined_df.empty:
-        logger.warning(f"No margin trading data found for {target_date}.")
-        return
+        logger.warning(f"  [{target_date}] 無資料（假日或尚未公布）。")
+        return 0
 
-    logger.info(f"Fetched {len(combined_df)} records from TWSE/TPEx.")
-
-    # 2. 載入需要處理的公司列表（用於過濾，避免處理不感興趣的股票）
-    companies = load_companies_for_processing(args, file_mgr)
-    company_codes = {c["code"] for c in companies} if companies else None
-
+    formatted_date = f"{target_date[:4]}-{target_date[4:6]}-{target_date[6:]}"
     success_count = 0
-    
-    # 3. 遍歷抓到的資料並更新對應的 JSON
-    # 將 DataFrame 轉為 dict 加速查找
-    records = combined_df.to_dict('records')
-    
-    for idx, row in enumerate(records, 1):
+
+    for row in combined_df.to_dict('records'):
         code = str(row['stock_id']).strip()
-        
-        # 如果有指定公司列表且不在名單內，跳過
         if company_codes and code not in company_codes:
             continue
 
-        # 讀取現有資料
         existing_data = file_mgr.load_financial_data(code)
         if not existing_data:
-            # 如果 layer3 沒有該股票的檔案，視情況決定是否建立或跳過
-            # 這裡選擇跳過，因為此專案通常以已存在的公司為主
             continue
 
-        # 建立新的歷史紀錄點，放在 historical.marginTrading 裡
-        formatted_date = f"{target_date[:4]}-{target_date[4:6]}-{target_date[6:]}"
-
-        if "historical" not in existing_data:
-            existing_data["historical"] = {}
-        if "marginTrading" not in existing_data["historical"]:
-            existing_data["historical"]["marginTrading"] = {}
-
-        existing_data["historical"]["marginTrading"][formatted_date] = {
+        existing_data.setdefault("historical", {}).setdefault("marginTrading", {})[formatted_date] = {
             "marginBuy": int(row['margin_buy']),
             "marginSell": int(row['margin_sell']),
             "marginBalance": int(row['margin_balance']),
             "shortBuy": int(row['short_buy']),
             "shortSell": int(row['short_sell']),
-            "shortBalance": int(row['short_balance'])
+            "shortBalance": int(row['short_balance']),
         }
-        
-        # 同步更新最新狀態 (latest) 以便快速分析
-        if "latest" not in existing_data:
-            existing_data["latest"] = {}
-        
-        existing_data["latest"]["marginBalance"] = int(row['margin_balance'])
-        existing_data["latest"]["shortBalance"] = int(row['short_balance'])
-        
-        # 存檔
-        final_data = processor.clean_nan(existing_data)
-        if file_mgr.save_financial_data(code, final_data):
-            success_count += 1
-            if success_count % 100 == 0:
-                logger.info(f"Updated {success_count} companies...")
+        existing_data.setdefault("latest", {}).update({
+            "marginBalance": int(row['margin_balance']),
+            "shortBalance": int(row['short_balance']),
+        })
 
-    logger.info(f"Successfully updated margin trading for {success_count} companies.")
+        if file_mgr.save_financial_data(code, processor.clean_nan(existing_data)):
+            success_count += 1
+
+    logger.info(f"  [{target_date}] 完成 {success_count} 家公司。")
+    return success_count
+
+
+def run_update_margin_trading(args):
+    """更新融資融券：支援單日（--date）或補齊區間（--backfill-from）。"""
+    fetcher = MarginTradingFetcher()
+    processor = DataProcessor()
+    file_mgr = FileManager()
+
+    companies = load_companies_for_processing(args, file_mgr)
+    company_codes = {c["code"] for c in companies} if companies else None
+
+    backfill_from = getattr(args, 'backfill_from', None)
+    if backfill_from:
+        # 補齊歷史區間
+        start = backfill_from.replace("-", "")
+        now = now_tw()
+        end = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
+        dates = _trading_days_between(start, end)
+        logger.info(f"補齊融資融券：{start} ～ {end}，共 {len(dates)} 個交易日。")
+        total = 0
+        for d in dates:
+            total += _process_one_date(d, fetcher, processor, file_mgr, company_codes)
+            time.sleep(2)
+        logger.info(f"補齊完成，總計 {total} 筆。")
+        return
+
+    # 單日模式
+    target_date = getattr(args, 'date', None)
+    if not target_date:
+        now = now_tw()
+        target_date = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
+    target_date = target_date.replace("-", "")
+
+    logger.info(f"Target Date: {target_date}")
+    _process_one_date(target_date, fetcher, processor, file_mgr, company_codes)

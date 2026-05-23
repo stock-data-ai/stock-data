@@ -110,7 +110,8 @@ def main():
     # --- 'update-margin' command ---
     parser_margin = subparsers.add_parser("update-margin", help="更新融資融券資料。")
     add_common_arguments(parser_margin, include_force=True)
-    parser_margin.add_argument("--date", type=str, help="指定日期 (YYYYMMDD)。")
+    parser_margin.add_argument("--date", type=str, help="指定單日 (YYYYMMDD 或 YYYY-MM-DD)。")
+    parser_margin.add_argument("--backfill-from", type=str, dest="backfill_from", help="補齊歷史：從此日起到昨天 (YYYYMMDD 或 YYYY-MM-DD)。")
     parser_margin.set_defaults(func=run_update_margin_trading)
 
     # --- 'update-market-sentiment' command ---
