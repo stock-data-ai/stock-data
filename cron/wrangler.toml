@@ -2,18 +2,28 @@ name = "stock-data-cron"
 main = "src/index.ts"
 compatibility_date = "2024-01-29"
 
+# Cloudflare day-of-week: 1=Sun 2=Mon 3=Tue 4=Wed 5=Thu 6=Fri 7=Sat
+# Ranges (1-5) are NOT supported — use individual values only
+
 [triggers]
 crons = [
-  "30 10 * * 1-5",  # daily-update          台灣 18:30 週一～五
-  "30 14 * * 1-5",  # daily-update          台灣 22:30 週一～五
-  "0 8 * * 1-5",    # etf-active-daily      台灣 16:00 週一～五
-  "0 10 * * 1-5",   # etf-active-daily      台灣 18:00 週一～五
-  "0 11 * * 1-5",   # scraper-mops          台灣 19:00 週一～五
-  "0 23 * * *",     # scraper-economic-daily 台灣 07:00
-  "0 15 * * *",     # scraper-economic-daily 台灣 23:00
-  "0 0 * * 6",      # etf-holdings-update   台灣 08:00 週六
-  "0 1 * * 6",      # weekly-shareholder    台灣 09:00 週六
-  "0 3 * * 6",      # weekly-dividend       台灣 11:00 週六
-  "0 1 * * 7",      # weekly-full-update    台灣 09:00 週日
-  "0 19 * * 7",     # cleanup               台灣 03:00 週日
+  # daily-update 台灣 18:30 週一～五
+  "30 10 * * 2", "30 10 * * 3", "30 10 * * 4", "30 10 * * 5", "30 10 * * 6",
+  # daily-update 台灣 22:30 週一～五
+  "30 14 * * 2", "30 14 * * 3", "30 14 * * 4", "30 14 * * 5", "30 14 * * 6",
+  # etf-active-daily 台灣 16:00 週一～五
+  "0 8 * * 2",  "0 8 * * 3",  "0 8 * * 4",  "0 8 * * 5",  "0 8 * * 6",
+  # etf-active-daily 台灣 18:00 週一～五
+  "0 10 * * 2", "0 10 * * 3", "0 10 * * 4", "0 10 * * 5", "0 10 * * 6",
+  # scraper-mops 台灣 19:00 週一～五
+  "0 11 * * 2", "0 11 * * 3", "0 11 * * 4", "0 11 * * 5", "0 11 * * 6",
+  # scraper-economic-daily 台灣 07:00 / 23:00 (每天)
+  "0 23 * * *", "0 15 * * *",
+  # 週六 (7=Sat)
+  "0 0 * * 7",  # etf-holdings-update 台灣 08:00
+  "0 1 * * 7",  # weekly-shareholder  台灣 09:00
+  "0 3 * * 7",  # weekly-dividend     台灣 11:00
+  # 週日 (1=Sun)
+  "0 1 * * 1",  # weekly-full-update  台灣 09:00
+  "0 19 * * 1", # cleanup             台灣 03:00
 ]
