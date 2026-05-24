@@ -14,7 +14,6 @@ interface CronJob {
 
 const WEEKDAY_DAILY_UPDATE = { workflow: 'daily-update.yml', inputs: { force: 'true' } };
 const WEEKDAY_ETF_ACTIVE   = { workflow: 'etf-active-daily.yml' };
-const WEEKDAY_MOPS         = { workflow: 'scraper-mops.yml' };
 
 const CRON_MAP: Record<string, CronJob> = {
   // daily-update 台灣 18:30 週一～五
@@ -33,10 +32,8 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 10 * * 2': WEEKDAY_ETF_ACTIVE, '0 10 * * 3': WEEKDAY_ETF_ACTIVE,
   '0 10 * * 4': WEEKDAY_ETF_ACTIVE, '0 10 * * 5': WEEKDAY_ETF_ACTIVE,
   '0 10 * * 6': WEEKDAY_ETF_ACTIVE,
-  // scraper-mops 台灣 19:00 週一～五
-  '0 11 * * 2': WEEKDAY_MOPS, '0 11 * * 3': WEEKDAY_MOPS,
-  '0 11 * * 4': WEEKDAY_MOPS, '0 11 * * 5': WEEKDAY_MOPS,
-  '0 11 * * 6': WEEKDAY_MOPS,
+  // scraper-mops 台灣 19:00 每天
+  '0 11 * * *': { workflow: 'scraper-mops.yml' },
   // scraper-economic-daily (每天)
   '0 23 * * *': { workflow: 'scraper-economic-daily.yml' }, // 台灣 07:00
   '0 15 * * *': { workflow: 'scraper-economic-daily.yml' }, // 台灣 23:00
