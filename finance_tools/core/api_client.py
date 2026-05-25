@@ -139,11 +139,11 @@ class FinMindClient:
             self.loader.taiwan_stock_income_statement, stock_id, start_date, "損益表"
         )
 
-    def fetch_cash_flow_statement(
+    def fetch_cash_flows_statement(
         self, stock_id: str, start_date: str
     ) -> Tuple[pd.DataFrame, bool]:
         return self._fetch(
-            self.loader.taiwan_stock_cash_flow_statement, stock_id, start_date, "現金流量表"
+            self.loader.taiwan_stock_cash_flows_statement, stock_id, start_date, "現金流量表"
         )
 
     def fetch_monthly_revenue(

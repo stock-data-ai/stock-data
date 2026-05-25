@@ -343,3 +343,114 @@ class DataProcessor:
 
         dividends.sort(key=lambda x: x["year"], reverse=True)
         return dividends
+
+    @classmethod
+    def process_balance_sheet(
+        cls, stock_id: str, bs_df: pd.DataFrame
+    ) -> Dict[int, Dict]:
+        """
+        處理資產負債表，回傳每年年底快照 (Q4 = 12/31)。
+        FinMind 每個項目有兩列：一列元值、一列百分比，
+        取 abs(value) 最大者（元值）以避免取到百分比列。
+
+        Returns: {year: {totalAssets, totalLiabilities, equity,
+                         currentAssets, currentLiabilities}}
+        """
+        if bs_df.empty:
+            return {}
+
+        TARGET = {
+            "totalAssets":        ["資產總額", "資產合計"],
+            "totalLiabilities":   ["負債總額", "負債合計"],
+            "equity":             ["歸屬於母公司業主之權益合計", "權益總額", "權益合計"],
+            "currentAssets":      ["流動資產合計", "流動資產"],
+            "currentLiabilities": ["流動負債合計", "流動負債"],
+        }
+        all_names = {name: key for key, names in TARGET.items() for name in names}
+        # priority: earlier = preferred
+        name_priority = {
+            name: i
+            for key, names in TARGET.items()
+            for i, name in enumerate(names)
+        }
+
+        bs_df = bs_df.copy()
+        bs_df["date"] = pd.to_datetime(bs_df["date"])
+        bs_df["_metric"] = bs_df["origin_name"].map(all_names)
+        bs_df = bs_df.dropna(subset=["_metric"])
+
+        # 每個 (date, metric) 保留 abs(value) 最大的那列（元值遠大於百分比列）
+        bs_df["_abs"] = bs_df["value"].abs()
+        bs_df = (
+            bs_df.sort_values("_abs", ascending=False)
+            .drop_duplicates(subset=["date", "_metric"], keep="first")
+        )
+
+        result: Dict[int, Dict] = {}
+        for _, row in bs_df.iterrows():
+            date = row["date"]
+            # 只取年底 (Q4 = 12月)
+            if date.month != 12:
+                continue
+            year = date.year
+            metric = row["_metric"]
+            value = float(row["value"])
+
+            if year not in result:
+                result[year] = {}
+
+            # 若同年已有值，依 priority 決定保留哪個 origin_name
+            existing_origin = result[year].get(f"_origin_{metric}")
+            current_priority = name_priority.get(row["origin_name"], 999)
+            existing_priority = name_priority.get(existing_origin, 999) if existing_origin else 999
+            if existing_origin is None or current_priority < existing_priority:
+                result[year][metric] = value
+                result[year][f"_origin_{metric}"] = row["origin_name"]
+
+        # 清除內部用的 _origin_ 欄位
+        for year in result:
+            result[year] = {k: v for k, v in result[year].items() if not k.startswith("_origin_")}
+
+        logger.debug(f"  Processed balance sheet for {stock_id}: {sorted(result.keys())} years")
+        return result
+
+    @classmethod
+    def process_cash_flows(
+        cls, stock_id: str, cf_df: pd.DataFrame
+    ) -> Dict[int, Dict]:
+        """
+        處理現金流量表，回傳每年全年累計值 (Q4 = 12/31)。
+        FinMind 現金流量表為「累計制」，必須只取 Q4 值，不可加總各季。
+        同一指標可能有兩個重複 origin_name，以 drop_duplicates 處理。
+
+        Returns: {year: {ocf, capex}}
+        """
+        if cf_df.empty:
+            return {}
+
+        OCF_NAMES  = ["營業活動之淨現金流入（流出）", "營業活動之淨現金流入"]
+        CAPEX_NAMES = ["取得不動產、廠房及設備", "購置不動產、廠房及設備"]
+
+        cf_df = cf_df.copy()
+        cf_df["date"] = pd.to_datetime(cf_df["date"])
+
+        # 只取年底 (Q4 = 12月)
+        cf_q4 = cf_df[cf_df["date"].dt.month == 12].copy()
+        if cf_q4.empty:
+            return {}
+
+        result: Dict[int, Dict] = {}
+        for year, group in cf_q4.groupby(cf_q4["date"].dt.year):
+            # 去除重複 origin_name（保留第一筆，值相同）
+            group = group.drop_duplicates(subset=["origin_name"])
+
+            ocf_row   = group[group["origin_name"].isin(OCF_NAMES)]
+            capex_row = group[group["origin_name"].isin(CAPEX_NAMES)]
+
+            ocf   = float(ocf_row["value"].iloc[0])   if not ocf_row.empty   else None
+            capex = float(capex_row["value"].iloc[0]) if not capex_row.empty else None
+
+            result[int(year)] = {"ocf": ocf, "capex": capex}
+
+        logger.debug(f"  Processed cash flows for {stock_id}: {sorted(result.keys())} years")
+        return result
