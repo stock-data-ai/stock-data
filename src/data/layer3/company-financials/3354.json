@@ -31,7 +31,13 @@
         "operatingMargin": -56.62,
         "netMargin": -41.93,
         "note": "累季",
-        "revenueYoY": 9.21
+        "revenueYoY": 9.21,
+        "roe": null,
+        "roa": null,
+        "currentRatio": null,
+        "debtRatio": null,
+        "ocf": null,
+        "fcf": null
       },
       {
         "year": 2025,
@@ -43,7 +49,13 @@
         "grossMargin": 12.31,
         "operatingMargin": -92.03,
         "netMargin": -59.5,
-        "revenueYoY": -22.74
+        "revenueYoY": -22.74,
+        "roe": -7.41,
+        "roa": -6.68,
+        "currentRatio": 1379.36,
+        "debtRatio": 9.79,
+        "ocf": -66602000.0,
+        "fcf": -74446000.0
       },
       {
         "year": 2024,
@@ -55,7 +67,13 @@
         "grossMargin": 10.35,
         "operatingMargin": -80.86,
         "netMargin": -18.44,
-        "revenueYoY": 16.25
+        "revenueYoY": 16.25,
+        "roe": -2.73,
+        "roa": -2.27,
+        "currentRatio": 453.17,
+        "debtRatio": 16.86,
+        "ocf": -61903000.0,
+        "fcf": -66122000.0
       },
       {
         "year": 2023,
@@ -67,7 +85,13 @@
         "grossMargin": -13.41,
         "operatingMargin": -120.64,
         "netMargin": -76.2,
-        "revenueYoY": -29.34
+        "revenueYoY": -29.34,
+        "roe": -9.36,
+        "roa": -7.07,
+        "currentRatio": 272.05,
+        "debtRatio": 24.49,
+        "ocf": -47027000.0,
+        "fcf": -56970000.0
       },
       {
         "year": 2022,
@@ -79,7 +103,13 @@
         "grossMargin": 7.3,
         "operatingMargin": -63.74,
         "netMargin": -13.64,
-        "revenueYoY": -22.12
+        "revenueYoY": -22.12,
+        "roe": -2.13,
+        "roa": -1.61,
+        "currentRatio": 280.68,
+        "debtRatio": 24.5,
+        "ocf": 76659000.0,
+        "fcf": 68917000.0
       },
       {
         "year": 2021,
@@ -91,7 +121,13 @@
         "grossMargin": 19.27,
         "operatingMargin": -40.71,
         "netMargin": -25.82,
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": -4.99,
+        "roa": -3.57,
+        "currentRatio": 249.82,
+        "debtRatio": 28.36,
+        "ocf": 245689000.0,
+        "fcf": 229525000.0
       },
       {
         "year": 2020,
@@ -104,7 +140,13 @@
         "operatingMargin": -16.61,
         "netMargin": -22.92,
         "note": "累季",
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": -4.38,
+        "roa": -3.14,
+        "currentRatio": 254.52,
+        "debtRatio": 28.3,
+        "ocf": null,
+        "fcf": null
       }
     ],
     "quarterly": [
@@ -24792,6 +24834,25 @@
         "trust_ratio": 0.0,
         "dealer_ratio": 0.009984,
         "three_inst_ratio": 2.469984
+      },
+      "2026-05-25": {
+        "dealer_self_buy": 0.0,
+        "foreign_buy": 418.358,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": 0.0,
+        "foreign_net_buy": -202.642,
+        "trust_net_buy": 0.0,
+        "dealer_self_sell": 0.0,
+        "foreign_sell": 621.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 0.0,
+        "dealer_sell": 0.0,
+        "dealer_net_buy": 0.0,
+        "code": "3354",
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.009984,
+        "foreign_ratio": 2.46,
+        "three_inst_ratio": 2.469984
       }
     },
     "marginTrading": {
@@ -25189,7 +25250,7 @@
       }
     }
   },
-  "lastUpdated": "2026-05-24",
+  "lastUpdated": "2026-05-25",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251128": [

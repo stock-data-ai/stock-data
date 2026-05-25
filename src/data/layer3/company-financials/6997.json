@@ -29,7 +29,13 @@
         "operatingMargin": -6.13,
         "netMargin": -4.56,
         "note": "累季",
-        "revenueYoY": 6.81
+        "revenueYoY": 6.81,
+        "roe": null,
+        "roa": null,
+        "currentRatio": null,
+        "debtRatio": null,
+        "ocf": null,
+        "fcf": null
       },
       {
         "year": 2025,
@@ -41,7 +47,13 @@
         "grossMargin": 9.99,
         "operatingMargin": 3.15,
         "netMargin": 2.53,
-        "revenueYoY": 11.23
+        "revenueYoY": 11.23,
+        "roe": 18.04,
+        "roa": 6.12,
+        "currentRatio": 157.26,
+        "debtRatio": 66.09,
+        "ocf": 197096000.0,
+        "fcf": 194493000.0
       },
       {
         "year": 2024,
@@ -53,7 +65,13 @@
         "grossMargin": 12.33,
         "operatingMargin": 3.88,
         "netMargin": 3.07,
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": 19.58,
+        "roa": 7.66,
+        "currentRatio": 175.38,
+        "debtRatio": 60.91,
+        "ocf": -69142000.0,
+        "fcf": -70022000.0
       },
       {
         "year": 2023,
@@ -66,7 +84,13 @@
         "operatingMargin": 2.41,
         "netMargin": 1.9,
         "note": "累季",
-        "revenueYoY": -6.19
+        "revenueYoY": -6.19,
+        "roe": 26.84,
+        "roa": 5.9,
+        "currentRatio": 131.78,
+        "debtRatio": 78.03,
+        "ocf": 296717000.0,
+        "fcf": 293681000.0
       },
       {
         "year": 2022,
@@ -79,7 +103,13 @@
         "operatingMargin": 1.87,
         "netMargin": 1.2,
         "note": "累季",
-        "revenueYoY": 44.18
+        "revenueYoY": 44.18,
+        "roe": 26.54,
+        "roa": 4.25,
+        "currentRatio": 119.71,
+        "debtRatio": 84.01,
+        "ocf": -28360000.0,
+        "fcf": -33775000.0
       },
       {
         "year": 2021,
@@ -92,7 +122,13 @@
         "operatingMargin": 2.67,
         "netMargin": 1.72,
         "note": "累季",
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": 36.63,
+        "roa": 5.44,
+        "currentRatio": 118.5,
+        "debtRatio": 85.16,
+        "ocf": null,
+        "fcf": null
       }
     ],
     "quarterly": [
@@ -2603,8 +2639,8 @@
         "code": "6997",
         "foreign_ratio": 20.11,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.11
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.114525
       },
       "2026-03-03": {
         "dealer_self_buy": 0.0,
@@ -2622,8 +2658,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-03-30": {
         "dealer_self_buy": 0.0,
@@ -2641,8 +2677,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2024-12-13": {
         "foreign_ratio": 20.14,
@@ -3448,8 +3484,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-04-23": {
         "dealer_self_buy": 0.0,
@@ -3467,8 +3503,8 @@
         "code": "6997",
         "foreign_ratio": 20.11,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.11
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.114525
       },
       "2026-04-24": {
         "foreign_ratio": 20.11,
@@ -3498,8 +3534,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-04-30": {
         "dealer_self_buy": 0.0,
@@ -3517,8 +3553,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-05-04": {
         "foreign_ratio": 20.12,
@@ -3540,8 +3576,8 @@
         "code": "6997",
         "foreign_ratio": 20.13,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.13
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.134525
       },
       "2026-05-06": {
         "dealer_self_buy": 0.0,
@@ -3559,8 +3595,8 @@
         "code": "6997",
         "foreign_ratio": 20.11,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.11
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.114525
       },
       "2026-05-07": {
         "dealer_self_buy": 0.0,
@@ -3578,8 +3614,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-05-08": {
         "dealer_self_buy": 0.0,
@@ -3597,8 +3633,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-05-11": {
         "dealer_self_buy": 0.0,
@@ -3616,8 +3652,8 @@
         "code": "6997",
         "foreign_ratio": 20.13,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.13
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.134525
       },
       "2026-05-12": {
         "dealer_self_buy": 0.0,
@@ -3635,8 +3671,8 @@
         "code": "6997",
         "foreign_ratio": 20.13,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.13
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.134525
       },
       "2026-05-14": {
         "dealer_self_buy": 0.0,
@@ -3654,8 +3690,8 @@
         "code": "6997",
         "foreign_ratio": 20.13,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.13
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.134525
       },
       "2026-05-13": {
         "foreign_ratio": 20.13,
@@ -3677,8 +3713,8 @@
         "code": "6997",
         "foreign_ratio": 20.13,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.13
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.134525
       },
       "2026-05-18": {
         "foreign_ratio": 20.13,
@@ -3700,8 +3736,8 @@
         "code": "6997",
         "foreign_ratio": 20.12,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.12
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.124525
       },
       "2026-05-19": {
         "foreign_ratio": 20.13,
@@ -3903,12 +3939,12 @@
         "code": "6997",
         "foreign_ratio": 20.13,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 20.13
+        "dealer_ratio": 0.004525,
+        "three_inst_ratio": 20.134525
       }
     }
   },
-  "lastUpdated": "2026-05-24",
+  "lastUpdated": "2026-05-25",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
