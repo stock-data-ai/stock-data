@@ -3,6 +3,11 @@ name: Weekly Balance Sheet Update (Monday)
 on:
   workflow_dispatch:
     inputs:
+      task:
+        description: 'Task identifier (for rerun chaining)'
+        required: false
+        default: 'weekly-monday'
+        type: string
       rerun_round:
         description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
         required: false
