@@ -130,7 +130,6 @@ def run_full_update(args):
                     if not status.get("fin"): missings.append("財報")
                     if not status.get("rev"): missings.append("營收")
                     if not status.get("inst"): missings.append("法人")
-                    if not status.get("div"): missings.append("股利")
                     
                     if missings:
                         quality_issues.append(f"{code} {name}: 缺失 {', '.join(missings)}")
