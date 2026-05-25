@@ -1,0 +1,41 @@
+name: Weekly Balance Sheet Update (Monday)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: data-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-balance-sheet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run balance sheet & cash flow update
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: uv run finance_tools/cli.py update-balance-sheet
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "資產負債表/現金流量更新 $(date +'%Y-%m-%d')"
+            git push
+          fi

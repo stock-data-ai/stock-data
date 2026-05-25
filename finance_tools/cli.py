@@ -6,10 +6,11 @@ Usage:
 
 Commands:
   update-daily          - 每日更新：市值（Yahoo）+ 三大法人（FinMind）。
-  full-update           - 全量更新：財務報表、營收、股利。
+  full-update           - 全量更新：財務報表、營收。
   update-revenue        - 僅更新月營收。
   import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
   update-dividends      - 【定期】從 MOPS 更新 2025+ 股利。
+  update-balance-sheet  - 【定期】更新資產負債表 + 現金流量表（ROE/ROA/比率/OCF/FCF）。
   fetch-shareholder-data- 擷取 TDCC 股東分配資料。
   update-company-info   - 更新上市公司基本資訊。
   update-margin         - 更新融資融券資料。
@@ -49,6 +50,7 @@ from finance_tools.orchestration.full_update import run_full_update
 from finance_tools.orchestration.daily_update import run_update_daily
 from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
+from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
@@ -92,6 +94,11 @@ def main():
     # --- 'update-dividends' command (ongoing via GitHub Actions) ---
     parser_mops_div = subparsers.add_parser("update-dividends", help="【定期】從 MOPS 抓取 2025+ 股利並 merge 至 JSON。")
     parser_mops_div.set_defaults(func=run_update_mops_dividends)
+
+    # --- 'update-balance-sheet' command ---
+    parser_bs = subparsers.add_parser("update-balance-sheet", help="【定期】從 FinMind 抓取資產負債表 + 現金流量表，計算 ROE/ROA/流動比率/負債比率/OCF/FCF。")
+    add_common_arguments(parser_bs, include_force=True, include_rerun=True)
+    parser_bs.set_defaults(func=run_update_balance_sheet)
 
     # --- 'update-revenue' command ---
     parser_revenue = subparsers.add_parser("update-revenue", help="僅更新月營收資料。")
