@@ -344,17 +344,21 @@ class DataProcessor:
         dividends.sort(key=lambda x: x["year"], reverse=True)
         return dividends
 
+    _MONTH_TO_QUARTER = {3: 1, 6: 2, 9: 3, 12: 4}
+
     @classmethod
     def process_balance_sheet(
         cls, stock_id: str, bs_df: pd.DataFrame
-    ) -> Dict[int, Dict]:
+    ) -> Dict[tuple, Dict]:
         """
-        處理資產負債表，回傳每年年底快照 (Q4 = 12/31)。
+        處理資產負債表，回傳所有季度快照。
         FinMind 每個項目有兩列：一列元值、一列百分比，
         取 abs(value) 最大者（元值）以避免取到百分比列。
 
-        Returns: {year: {totalAssets, totalLiabilities, equity,
-                         currentAssets, currentLiabilities}}
+        Returns: {(year, quarter): {totalAssets, totalLiabilities, equity,
+                                    currentAssets, currentLiabilities}}
+        e.g. {(2024, 4): {...}, (2024, 3): {...}, ...}
+        Q4 資料可用於計算年度 ROE/ROA；所有季度可用於季度 currentRatio/debtRatio。
         """
         if bs_df.empty:
             return {}
@@ -367,7 +371,6 @@ class DataProcessor:
             "currentLiabilities": ["流動負債合計", "流動負債"],
         }
         all_names = {name: key for key, names in TARGET.items() for name in names}
-        # priority: earlier = preferred
         name_priority = {
             name: i
             for key, names in TARGET.items()
@@ -379,39 +382,37 @@ class DataProcessor:
         bs_df["_metric"] = bs_df["origin_name"].map(all_names)
         bs_df = bs_df.dropna(subset=["_metric"])
 
-        # 每個 (date, metric) 保留 abs(value) 最大的那列（元值遠大於百分比列）
         bs_df["_abs"] = bs_df["value"].abs()
         bs_df = (
             bs_df.sort_values("_abs", ascending=False)
             .drop_duplicates(subset=["date", "_metric"], keep="first")
         )
 
-        result: Dict[int, Dict] = {}
+        result: Dict[tuple, Dict] = {}
         for _, row in bs_df.iterrows():
             date = row["date"]
-            # 只取年底 (Q4 = 12月)
-            if date.month != 12:
-                continue
-            year = date.year
+            quarter = cls._MONTH_TO_QUARTER.get(date.month)
+            if quarter is None:
+                continue  # 非季末日期，跳過
+            key = (date.year, quarter)
             metric = row["_metric"]
             value = float(row["value"])
 
-            if year not in result:
-                result[year] = {}
+            if key not in result:
+                result[key] = {}
 
-            # 若同年已有值，依 priority 決定保留哪個 origin_name
-            existing_origin = result[year].get(f"_origin_{metric}")
+            existing_origin = result[key].get(f"_origin_{metric}")
             current_priority = name_priority.get(row["origin_name"], 999)
             existing_priority = name_priority.get(existing_origin, 999) if existing_origin else 999
             if existing_origin is None or current_priority < existing_priority:
-                result[year][metric] = value
-                result[year][f"_origin_{metric}"] = row["origin_name"]
+                result[key][metric] = value
+                result[key][f"_origin_{metric}"] = row["origin_name"]
 
-        # 清除內部用的 _origin_ 欄位
-        for year in result:
-            result[year] = {k: v for k, v in result[year].items() if not k.startswith("_origin_")}
+        for key in result:
+            result[key] = {k: v for k, v in result[key].items() if not k.startswith("_origin_")}
 
-        logger.debug(f"  Processed balance sheet for {stock_id}: {sorted(result.keys())} years")
+        years = sorted({k[0] for k in result})
+        logger.debug(f"  Processed balance sheet for {stock_id}: {years} years ({len(result)} quarters)")
         return result
 
     @classmethod

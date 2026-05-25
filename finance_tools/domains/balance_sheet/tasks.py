@@ -99,57 +99,85 @@ def _update_one(
     name: str,
     start_date: str,
 ) -> bool:
-    """讀取現有 JSON → 抓 BS+CF → 計算指標 → 合併 → 存回。"""
+    """讀取現有 JSON → 抓 BS+CF → 計算指標 → 合併 → 存回。
+
+    - currentRatio / debtRatio → quarterly[]（季度快照，每季末更新）
+    - ROE / ROA / OCF / FCF   → annual[]（全年累計，僅 Q4）
+    """
     financial_data = file_mgr.load_financial_data(code)
     if not financial_data:
         logger.debug(f"  [{code}] 無現有 JSON，跳過")
-        return True  # 無 JSON 不算失敗，full_update 還沒跑到而已
+        return True
 
-    annual_list = financial_data.get("historical", {}).get("annual", [])
+    annual_list    = financial_data.get("historical", {}).get("annual", [])
+    quarterly_list = financial_data.get("historical", {}).get("quarterly", [])
     if not annual_list:
         logger.debug(f"  [{code}] annual 為空，跳過")
         return True
 
-    # 抓資產負債表
-    bs_by_year = {}
+    # ── 抓資產負債表（所有季度）──────────────────────────────────────
+    bs_by_yq: dict = {}  # {(year, quarter): {totalAssets, ...}}
     bs_df, bs_ok = client.fetch_balance_sheet(code, start_date)
     if bs_ok and not bs_df.empty:
-        bs_by_year = processor.process_balance_sheet(code, bs_df)
+        bs_by_yq = processor.process_balance_sheet(code, bs_df)
 
-    # 抓現金流量表
-    cf_by_year = {}
+    # ── 抓現金流量表（年度，Q4 累計）────────────────────────────────
+    cf_by_year: dict = {}
     cf_df, cf_ok = client.fetch_cash_flows_statement(code, start_date)
     if cf_ok and not cf_df.empty:
         cf_by_year = processor.process_cash_flows(code, cf_df)
 
-    if not bs_by_year and not cf_by_year:
+    if not bs_by_yq and not cf_by_year:
         logger.debug(f"  [{code}] BS + CF 均無資料，跳過")
         return True
 
-    # 合併指標進 annual[]
+    # ── 合併 currentRatio / debtRatio → quarterly[] ──────────────────
+    # 建立快速查詢 dict，key = (year, quarter)
+    qmap: dict = {(q["year"], q["quarter"]): q for q in quarterly_list if "quarter" in q}
+
+    for (year, quarter), bs in bs_by_yq.items():
+        current_assets = bs.get("currentAssets")
+        current_liab   = bs.get("currentLiabilities")
+        total_assets   = bs.get("totalAssets")
+        total_liab     = bs.get("totalLiabilities")
+
+        cr = round(current_assets / current_liab * 100, 2) if current_assets and current_liab and current_liab > 0 else None
+        dr = round(total_liab / total_assets * 100, 2)     if total_liab and total_assets and total_assets > 0    else None
+
+        if (year, quarter) in qmap:
+            qmap[(year, quarter)]["currentRatio"] = cr
+            qmap[(year, quarter)]["debtRatio"]    = dr
+        else:
+            # quarterly[] 可能沒有這季（例如只有年度資料），新增一筆
+            new_q = {"year": year, "quarter": quarter, "currentRatio": cr, "debtRatio": dr}
+            qmap[(year, quarter)] = new_q
+            quarterly_list.append(new_q)
+
+    # ── 合併 ROE / ROA / OCF / FCF → annual[]（Q4 年度數字）────────
     for item in annual_list:
         year = item.get("year")
         if year is None:
             continue
 
         net_income = item.get("netIncome", 0) or 0
-        bs = bs_by_year.get(year, {})
-        cf = cf_by_year.get(year, {})
+        bs_q4      = bs_by_yq.get((year, 4), {})
+        cf         = cf_by_year.get(year, {})
 
-        total_assets   = bs.get("totalAssets")
-        total_liab     = bs.get("totalLiabilities")
-        equity         = bs.get("equity")
-        current_assets = bs.get("currentAssets")
-        current_liab   = bs.get("currentLiabilities")
-        ocf            = cf.get("ocf")
-        capex          = cf.get("capex")
+        total_assets = bs_q4.get("totalAssets")
+        total_liab   = bs_q4.get("totalLiabilities")
+        equity       = bs_q4.get("equity")
+        ocf          = cf.get("ocf")
+        capex        = cf.get("capex")
 
-        item["roe"]          = round(net_income / equity * 100, 2)            if equity          and equity > 0          else None
-        item["roa"]          = round(net_income / total_assets * 100, 2)      if total_assets    and total_assets > 0    else None
-        item["currentRatio"] = round(current_assets / current_liab * 100, 2)  if current_assets  and current_liab and current_liab > 0 else None
-        item["debtRatio"]    = round(total_liab / total_assets * 100, 2)      if total_liab      and total_assets > 0    else None
-        item["ocf"]          = round(ocf, 0)                                  if ocf   is not None else None
-        item["fcf"]          = round(ocf + capex, 0)                          if ocf   is not None and capex is not None else None
+        item["roe"] = round(net_income / equity * 100, 2)       if equity      and equity > 0      else None
+        item["roa"] = round(net_income / total_assets * 100, 2) if total_assets and total_assets > 0 else None
+        item["ocf"] = round(ocf, 0)                             if ocf   is not None else None
+        item["fcf"] = round(ocf + capex, 0)                     if ocf is not None and capex is not None else None
+        # debtRatio 也放年度（Q4 快照），方便年度表格顯示
+        item["debtRatio"] = round(total_liab / total_assets * 100, 2) if total_liab and total_assets and total_assets > 0 else None
 
-    financial_data["historical"]["annual"] = annual_list
+    financial_data["historical"]["annual"]    = annual_list
+    financial_data["historical"]["quarterly"] = sorted(
+        quarterly_list, key=lambda q: (q["year"], q.get("quarter", 0)), reverse=True
+    )
     return file_mgr.save_financial_data(code, financial_data)
