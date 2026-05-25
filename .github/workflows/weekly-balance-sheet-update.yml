@@ -2,6 +2,27 @@ name: Weekly Balance Sheet Update (Monday)
 
 on:
   workflow_dispatch:
+    inputs:
+      rerun_round:
+        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
+        required: false
+        default: '0'
+        type: string
+      delay_minutes:
+        description: 'Minutes to wait before start (for API quota reset)'
+        required: false
+        default: '0'
+        type: string
+      batch:
+        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        required: false
+        default: '0'
+        type: string
+      force:
+        description: 'Force update even if already updated today'
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: data-pipeline
@@ -9,33 +30,20 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
-  update-balance-sheet:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Install dependencies
-        run: uv sync --all-extras --dev
-
-      - name: Run balance sheet & cash flow update
-        env:
-          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
-        run: uv run finance_tools/cli.py update-balance-sheet
-
-      - name: Commit updated data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/layer3/company-financials/
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "資產負債表/現金流量更新 $(date +'%Y-%m-%d')"
-            git push
-          fi
+  pipeline:
+    uses: ./.github/workflows/_reusable-data-job.yml
+    with:
+      commands_json: '[{"id":"balance_sheet","cli":"update-balance-sheet","label":"資產負債表/現金流量"}]'
+      artifact_prefix: weekly-balance-sheet
+      commit_message: "資產負債表/現金流量更新"
+      caller_workflow: weekly-balance-sheet-update.yml
+      caller_task: weekly-monday
+      summary_title: "資產負債表/現金流量更新"
+      rerun_round: ${{ inputs.rerun_round || '0' }}
+      delay_minutes: ${{ inputs.delay_minutes || '0' }}
+      batch: ${{ inputs.batch || '0' }}
+      force: ${{ inputs.force || false }}
+    secrets: inherit
