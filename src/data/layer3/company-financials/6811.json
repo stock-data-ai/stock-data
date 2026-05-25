@@ -31,7 +31,13 @@
         "operatingMargin": 8.42,
         "netMargin": 6.72,
         "note": "累季",
-        "revenueYoY": 17.09
+        "revenueYoY": 17.09,
+        "roe": null,
+        "roa": null,
+        "currentRatio": null,
+        "debtRatio": null,
+        "ocf": null,
+        "fcf": null
       },
       {
         "year": 2025,
@@ -43,7 +49,13 @@
         "grossMargin": 12.45,
         "operatingMargin": 7.67,
         "netMargin": 6.16,
-        "revenueYoY": 11.2
+        "revenueYoY": 11.2,
+        "roe": 24.94,
+        "roa": 9.38,
+        "currentRatio": 111.86,
+        "debtRatio": 62.41,
+        "ocf": 605062000.0,
+        "fcf": 577888000.0
       },
       {
         "year": 2024,
@@ -55,7 +67,13 @@
         "grossMargin": 12.91,
         "operatingMargin": 7.54,
         "netMargin": 6.2,
-        "revenueYoY": 15.06
+        "revenueYoY": 15.06,
+        "roe": 24.96,
+        "roa": 8.84,
+        "currentRatio": 105.84,
+        "debtRatio": 64.59,
+        "ocf": 130068000.0,
+        "fcf": -1655615000.0
       },
       {
         "year": 2023,
@@ -67,7 +85,13 @@
         "grossMargin": 13.72,
         "operatingMargin": 8.04,
         "netMargin": 8.22,
-        "revenueYoY": 5.02
+        "revenueYoY": 5.02,
+        "roe": 31.63,
+        "roa": 11.04,
+        "currentRatio": 152.24,
+        "debtRatio": 65.09,
+        "ocf": 497490000.0,
+        "fcf": 493017000.0
       },
       {
         "year": 2022,
@@ -79,7 +103,13 @@
         "grossMargin": 13.41,
         "operatingMargin": 7.21,
         "netMargin": 6.08,
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": 24.53,
+        "roa": 8.1,
+        "currentRatio": 147.31,
+        "debtRatio": 66.98,
+        "ocf": 556961000.0,
+        "fcf": 556750000.0
       },
       {
         "year": 2021,
@@ -92,7 +122,13 @@
         "operatingMargin": 5.84,
         "netMargin": 4.57,
         "note": "累季",
-        "revenueYoY": 14.27
+        "revenueYoY": 14.27,
+        "roe": 32.13,
+        "roa": 6.88,
+        "currentRatio": 124.48,
+        "debtRatio": 78.58,
+        "ocf": 318250000.0,
+        "fcf": 315993000.0
       },
       {
         "year": 2020,
@@ -105,7 +141,13 @@
         "operatingMargin": 5.55,
         "netMargin": 4.27,
         "note": "累季",
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": 31.0,
+        "roa": 6.82,
+        "currentRatio": 125.71,
+        "debtRatio": 78.01,
+        "ocf": null,
+        "fcf": null
       }
     ],
     "quarterly": [
@@ -15351,9 +15393,9 @@
         "dealer_net_buy": 1.0,
         "code": "6811",
         "foreign_ratio": 1.38,
-        "trust_ratio": 0.255736,
-        "dealer_ratio": 0.002413,
-        "three_inst_ratio": 1.638149
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.149581,
+        "three_inst_ratio": 1.529581
       },
       "2026-02-24": {
         "dealer_self_buy": 0.0,
@@ -15370,9 +15412,9 @@
         "dealer_net_buy": -10.0,
         "code": "6811",
         "foreign_ratio": 1.18,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.399547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.305455
       },
       "2026-02-25": {
         "dealer_self_buy": 0.0,
@@ -15389,9 +15431,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.33,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.549547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.455455
       },
       "2026-02-26": {
         "dealer_self_buy": 0.0,
@@ -15408,9 +15450,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.55,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.769547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.675455
       },
       "2026-03-02": {
         "dealer_self_buy": 0.0,
@@ -15427,9 +15469,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.63,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.849547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.755455
       },
       "2026-03-03": {
         "dealer_self_buy": 0.0,
@@ -15446,9 +15488,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.56,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.779547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.685455
       },
       "2026-03-04": {
         "dealer_self_buy": 0.0,
@@ -15465,9 +15507,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.51,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.729547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.635455
       },
       "2026-03-05": {
         "dealer_self_buy": 0.0,
@@ -15484,9 +15526,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.52,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.739547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.645455
       },
       "2026-03-06": {
         "dealer_self_buy": 0.0,
@@ -15503,9 +15545,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.59,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.809547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.715455
       },
       "2026-03-09": {
         "dealer_self_buy": 0.0,
@@ -15522,9 +15564,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.58,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.799547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.705455
       },
       "2026-03-10": {
         "dealer_self_buy": 0.0,
@@ -15541,9 +15583,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.72,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.939547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.845455
       },
       "2026-03-11": {
         "dealer_self_buy": 0.0,
@@ -15560,9 +15602,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.84,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.059547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.965455
       },
       "2026-03-12": {
         "dealer_self_buy": 0.0,
@@ -15579,9 +15621,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.76,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.979547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.885455
       },
       "2026-03-13": {
         "dealer_self_buy": 0.0,
@@ -15598,9 +15640,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.67,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.889547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.795455
       },
       "2026-03-16": {
         "dealer_self_buy": 0.0,
@@ -15617,9 +15659,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.66,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.879547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.785455
       },
       "2026-03-17": {
         "dealer_self_buy": 0.0,
@@ -15636,9 +15678,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.67,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.889547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.795455
       },
       "2026-03-18": {
         "dealer_self_buy": 0.0,
@@ -15655,9 +15697,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.71,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.929547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.835455
       },
       "2026-03-19": {
         "dealer_self_buy": 0.0,
@@ -15674,9 +15716,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.67,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.889547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.795455
       },
       "2026-03-20": {
         "dealer_self_buy": 0.0,
@@ -15693,9 +15735,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.59,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.809547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.715455
       },
       "2026-03-23": {
         "dealer_self_buy": 0.0,
@@ -15712,9 +15754,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.53,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.749547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.655455
       },
       "2026-03-24": {
         "dealer_self_buy": 0.0,
@@ -15731,9 +15773,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.6,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.819547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.725455
       },
       "2026-03-25": {
         "dealer_self_buy": 0.0,
@@ -15750,9 +15792,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.69,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.909547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.815455
       },
       "2026-03-26": {
         "dealer_self_buy": 0.0,
@@ -15769,9 +15811,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.73,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.949547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.855455
       },
       "2026-03-27": {
         "dealer_self_buy": 0.0,
@@ -15788,9 +15830,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.76,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.979547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.885455
       },
       "2026-03-30": {
         "dealer_self_buy": 0.0,
@@ -15807,9 +15849,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.74,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.959547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.865455
       },
       "2026-03-31": {
         "dealer_self_buy": 0.0,
@@ -15826,9 +15868,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.79,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.009547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.915455
       },
       "2026-04-01": {
         "dealer_self_buy": 0.0,
@@ -15845,9 +15887,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.83,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.049547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.955455
       },
       "2026-04-02": {
         "dealer_self_buy": 0.0,
@@ -15864,9 +15906,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.83,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.049547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.955455
       },
       "2026-04-07": {
         "dealer_self_buy": 0.0,
@@ -15883,9 +15925,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.84,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.059547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.965455
       },
       "2026-04-08": {
         "dealer_self_buy": 0.0,
@@ -15902,9 +15944,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.92,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.139547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.045455
       },
       "2026-04-09": {
         "dealer_self_buy": 0.0,
@@ -15921,9 +15963,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.88,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.099547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.005455
       },
       "2026-04-10": {
         "dealer_self_buy": 0.0,
@@ -15940,9 +15982,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.89,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.109547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.015455
       },
       "2026-04-13": {
         "dealer_self_buy": 0.0,
@@ -15959,9 +16001,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.9,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.119547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.025455
       },
       "2026-04-14": {
         "dealer_self_buy": 0.0,
@@ -15978,9 +16020,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.97,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.189547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.095455
       },
       "2026-04-15": {
         "dealer_self_buy": 0.0,
@@ -15997,9 +16039,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.99,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.209547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.115455
       },
       "2026-04-16": {
         "dealer_self_buy": 0.0,
@@ -16016,9 +16058,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.39,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.609547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.515455
       },
       "2022-08-08": {
         "foreign_ratio": 0.48,
@@ -16091,9 +16133,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.37,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.589547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.495455
       },
       "2026-04-20": {
         "dealer_self_buy": 0.0,
@@ -16110,9 +16152,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.35,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.569547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.475455
       },
       "2026-04-21": {
         "dealer_self_buy": 0.0,
@@ -16129,9 +16171,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.41,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.629547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.535455
       },
       "2026-04-22": {
         "dealer_self_buy": 0.0,
@@ -16148,9 +16190,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.41,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.629547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.535455
       },
       "2026-04-23": {
         "dealer_self_buy": 0.0,
@@ -16167,9 +16209,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.25,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.469547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.375455
       },
       "2026-04-24": {
         "dealer_self_buy": 0.0,
@@ -16186,9 +16228,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.27,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.489547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.395455
       },
       "2026-04-27": {
         "dealer_self_buy": 0.0,
@@ -16205,9 +16247,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.23,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.449547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.355455
       },
       "2026-04-28": {
         "dealer_self_buy": 0.0,
@@ -16224,9 +16266,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.3,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.519547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.425455
       },
       "2026-04-29": {
         "dealer_self_buy": 0.0,
@@ -16243,9 +16285,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.33,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.549547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.455455
       },
       "2026-04-30": {
         "dealer_self_buy": 0.0,
@@ -16262,9 +16304,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.39,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.609547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.515455
       },
       "2026-05-04": {
         "dealer_self_buy": 0.0,
@@ -16281,9 +16323,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.5,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.719547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.625455
       },
       "2026-05-05": {
         "dealer_self_buy": 0.0,
@@ -16300,9 +16342,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.52,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.739547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.645455
       },
       "2026-05-06": {
         "dealer_self_buy": 0.0,
@@ -16319,9 +16361,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.53,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.749547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.655455
       },
       "2026-05-07": {
         "dealer_self_buy": 0.0,
@@ -16338,9 +16380,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.38,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.599547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.505455
       },
       "2026-05-08": {
         "dealer_self_buy": 0.0,
@@ -16357,9 +16399,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.46,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.679547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.585455
       },
       "2026-05-11": {
         "dealer_self_buy": 0.0,
@@ -16376,9 +16418,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.47,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.689547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.595455
       },
       "2026-05-12": {
         "dealer_self_buy": 0.0,
@@ -16395,9 +16437,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.48,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.699547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.605455
       },
       "2026-05-13": {
         "dealer_self_buy": 0.0,
@@ -16414,9 +16456,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.46,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.679547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.585455
       },
       "2026-05-14": {
         "dealer_self_buy": 0.0,
@@ -16433,9 +16475,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.58,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.799547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.705455
       },
       "2026-05-15": {
         "dealer_self_buy": 0.0,
@@ -16452,9 +16494,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.64,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.859547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.765455
       },
       "2026-05-18": {
         "dealer_self_buy": 0.0,
@@ -16471,9 +16513,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.71,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.929547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.835455
       },
       "2026-05-19": {
         "dealer_self_buy": 0.0,
@@ -16490,9 +16532,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.84,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.059547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 1.965455
       },
       "2026-05-20": {
         "dealer_self_buy": 0.0,
@@ -16509,9 +16551,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.91,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.129547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.035455
       },
       "2026-05-21": {
         "dealer_self_buy": 0.0,
@@ -16528,9 +16570,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.94,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.159547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.065455
       },
       "2021-01-19": {
         "dealer_self_buy": null,
@@ -16611,9 +16653,9 @@
         "dealer_net_buy": 0.0,
         "code": "6811",
         "foreign_ratio": 1.99,
-        "trust_ratio": 0.219547,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 2.209547
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.125455,
+        "three_inst_ratio": 2.115455
       }
     },
     "marginTrading": {
@@ -17011,7 +17053,7 @@
       }
     }
   },
-  "lastUpdated": "2026-05-24",
+  "lastUpdated": "2026-05-25",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
