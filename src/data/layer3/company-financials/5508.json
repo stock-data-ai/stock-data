@@ -11,11 +11,11 @@
     "netMargin": 25.44,
     "eps": 0.87,
     "dividendFrequency": "年",
-    "marketCap": 10273477632,
-    "pe": 15.39088,
-    "pb": 1.9496596,
-    "dividendYield": 3011.0,
-    "marginBalance": 2983,
+    "marketCap": 10240863232,
+    "pe": 15.342019,
+    "pb": 1.9434701,
+    "dividendYield": 3069.0,
+    "marginBalance": 2986,
     "shortBalance": 6
   },
   "historical": {
@@ -5759,8 +5759,8 @@
         "code": "5508",
         "foreign_ratio": 7.71,
         "trust_ratio": 0.428187,
-        "dealer_ratio": 0.00046,
-        "three_inst_ratio": 8.138647
+        "dealer_ratio": 0.0,
+        "three_inst_ratio": 8.138187
       },
       "2026-02-26": {
         "dealer_self_buy": 0.0,
@@ -25895,6 +25895,25 @@
       "2026-02-13": {
         "foreign_ratio": 8.03,
         "three_inst_ratio": 8.03
+      },
+      "2026-05-26": {
+        "dealer_self_buy": 0.0,
+        "foreign_buy": 69.0,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": 0.0,
+        "foreign_net_buy": -24.0,
+        "trust_net_buy": 0.0,
+        "dealer_self_sell": 0.0,
+        "foreign_sell": 93.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 0.0,
+        "dealer_sell": 0.0,
+        "dealer_net_buy": 0.0,
+        "code": "5508",
+        "foreign_ratio": 3.47,
+        "trust_ratio": 0.329764,
+        "dealer_ratio": 0.005519,
+        "three_inst_ratio": 3.805283
       }
     },
     "marginTrading": {
@@ -26297,10 +26316,18 @@
         "shortBuy": 26,
         "shortSell": 1,
         "shortBalance": 6
+      },
+      "2026-05-26": {
+        "marginBuy": 12,
+        "marginSell": 9,
+        "marginBalance": 2986,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 6
       }
     }
   },
-  "lastUpdated": "2026-05-25",
+  "lastUpdated": "2026-05-26",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
