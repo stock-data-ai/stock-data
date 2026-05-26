@@ -5,7 +5,7 @@ compatibility_date = "2024-01-29"
 [triggers]
 crons = [
   "0 8 * * *",   # etf-active-daily      台灣 16:00 每天
-  "0 10 * * *",  # etf-active-daily      台灣 18:00 每天
+  "30 11 * * *", # etf-active-daily      台灣 19:30 每天
   "30 10 * * *", # daily-update          台灣 18:30 每天
   "30 14 * * *", # daily-update          台灣 22:30 每天
   "0 11 * * *",  # scraper-mops          台灣 19:00 每天

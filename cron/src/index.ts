@@ -11,7 +11,7 @@ interface CronJob {
 
 const CRON_MAP: Record<string, CronJob> = {
   '0 8 * * *':   { workflow: 'etf-active-daily.yml' },                                   // 台灣 16:00
-  '0 10 * * *':  { workflow: 'etf-active-daily.yml' },                                   // 台灣 18:00
+  '30 11 * * *': { workflow: 'etf-active-daily.yml' },                                   // 台灣 19:30
   '30 10 * * *': { workflow: 'daily-update.yml', inputs: { force: 'true' } },            // 台灣 18:30
   '30 14 * * *': { workflow: 'daily-update.yml', inputs: { force: 'true' } },            // 台灣 22:30
   '0 11 * * *':  { workflow: 'scraper-mops.yml' },                                       // 台灣 19:00
