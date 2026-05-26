@@ -21,6 +21,7 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 1 * * 7':   { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:00 週六
   '0 3 * * 7':   { workflow: 'weekly-dividend-update.yml' },                             // 台灣 11:00 週六
   '0 1 * * 1':   { workflow: 'weekly-full-update.yml' },                                 // 台灣 09:00 週日
+  '0 3 * * 1':   { workflow: 'weekly-balance-sheet-update.yml' },                        // 台灣 11:00 週一
   '0 19 * * 1':  { workflow: 'cleanup-workflow-runs.yml' },                              // 台灣 03:00 週日
 };
 
