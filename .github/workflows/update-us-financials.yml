@@ -1,0 +1,51 @@
+name: Update US Financials
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # 每週日 UTC 02:00（台灣時間週日 10:00）
+  workflow_dispatch:
+    inputs:
+      codes:
+        description: '指定 ticker（空白=全量，多個用空格分隔，e.g. ARM NVDA）'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Fetch US financials
+        run: |
+          if [ -n "${{ github.event.inputs.codes }}" ]; then
+            uv run finance_tools/us_financials/fetch_us_financials.py ${{ github.event.inputs.codes }}
+          else
+            uv run finance_tools/us_financials/fetch_us_financials.py --all-topics --delay 1.5
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials-us/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "每週更新美股財務資料 $(date -u +%Y-%m-%d)"
+          git pull --rebase -X theirs origin main
+          git push
