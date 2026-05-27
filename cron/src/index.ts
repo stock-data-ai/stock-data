@@ -50,6 +50,23 @@ async function dispatch(job: CronJob, token: string) {
   }
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+async function dispatchWithRetry(job: CronJob, token: string, maxRetries = 3) {
+  const delays = [0, 5000, 10000];
+  let lastErr: Error | undefined;
+  for (let i = 0; i < maxRetries; i++) {
+    if (delays[i]) await sleep(delays[i]);
+    try {
+      await dispatch(job, token);
+      return;
+    } catch (err) {
+      lastErr = err as Error;
+    }
+  }
+  throw lastErr;
+}
+
 async function alertError(message: string, brevoKey: string) {
   await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -74,7 +91,7 @@ export default {
       throw new Error(`Unknown cron: ${event.cron}`);
     }
     try {
-      await dispatch(job, env.GH_TOKEN);
+      await dispatchWithRetry(job, env.GH_TOKEN);
     } catch (err) {
       await alertError(String(err), env.BREVO_API_KEY);
       throw err;
