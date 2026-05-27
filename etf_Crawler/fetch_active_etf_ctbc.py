@@ -41,7 +41,7 @@ except ImportError:
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 
-API_BASE = "https://www.ctbcinvestments.com.tw/API"
+API_BASE = "https://www.ctbcinvestments.com/API"
 INITIAL_TOKEN = "www.ctbcinvestments.com"
 
 HEADERS = {
