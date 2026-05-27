@@ -14,7 +14,7 @@
     "marketCap": 2007990016,
     "pe": 20.24316,
     "pb": 2.16304,
-    "marginBalance": 85,
+    "marginBalance": 86,
     "shortBalance": 0
   },
   "historical": {
@@ -5025,10 +5025,10 @@
         "dealer_sell": 0.121,
         "dealer_net_buy": -0.121,
         "code": "7642",
+        "foreign_ratio": 0.42,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.002577,
-        "foreign_ratio": 0.41,
-        "three_inst_ratio": 0.412577
+        "three_inst_ratio": 0.422577
       }
     },
     "marginTrading": {
@@ -5436,6 +5436,14 @@
         "marginBuy": 1,
         "marginSell": 1,
         "marginBalance": 85,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
+      },
+      "2026-05-27": {
+        "marginBuy": 1,
+        "marginSell": 0,
+        "marginBalance": 86,
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 0

@@ -14,8 +14,8 @@
     "marketCap": 1927902464,
     "pe": 0.0,
     "pb": 3.0385242,
-    "marginBalance": 4082,
-    "shortBalance": 108
+    "marginBalance": 4136,
+    "shortBalance": 208
   },
   "historical": {
     "annual": [
@@ -6242,10 +6242,10 @@
         "dealer_sell": 10.0,
         "dealer_net_buy": -10.0,
         "code": "2061",
+        "foreign_ratio": 4.61,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.177768,
-        "foreign_ratio": 4.27,
-        "three_inst_ratio": 4.447768
+        "three_inst_ratio": 4.787768
       }
     },
     "marginTrading": {
@@ -6656,6 +6656,14 @@
         "shortBuy": 14,
         "shortSell": 91,
         "shortBalance": 108
+      },
+      "2026-05-27": {
+        "marginBuy": 754,
+        "marginSell": 700,
+        "marginBalance": 4136,
+        "shortBuy": 8,
+        "shortSell": 108,
+        "shortBalance": 208
       }
     }
   },
