@@ -30,6 +30,7 @@ import json
 import sys
 import time
 from datetime import date, timedelta
+from etf_utils import record_unchanged_snapshot
 from pathlib import Path
 from typing import Optional
 
@@ -217,8 +218,10 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
             if current_date == prev_date and prev_holdings:
                 _key = lambda x: x.get("code") or x.get("name", "")
                 if sorted([_clean_snapshot(h) for h in holdings], key=_key) == sorted([_clean_snapshot(h) for h in prev_holdings], key=_key):
-                    print(f"  [SKIP] {etf_code} 數據無變化（{current_date}），跳過寫入")
-                    return True
+                    return record_unchanged_snapshot(
+                        json_path, data, etf_code,
+                        [_clean_snapshot(h) for h in holdings], current_date
+                    )
 
             # 舊 topHoldings 補存歷史
             if prev_date and prev_holdings and prev_date not in data["holdingsHistory"]:

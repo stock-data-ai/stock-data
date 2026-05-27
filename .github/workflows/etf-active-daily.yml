@@ -115,12 +115,12 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_ctbc.py
           fi
 
-      - name: Run active ETF crawler (復華投信 — 00991A)
+      - name: Run active ETF crawler (復華投信 — 00991A 00998A)
         id: fuhwa
         continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A)$" | tr '\n' ' ' | xargs)
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A|00998A)$" | tr '\n' ' ' | xargs)
             if [ -n "$FILTERED" ]; then
               uv run python etf_Crawler/fetch_active_etf_fuhwa.py $FILTERED
             else
@@ -227,7 +227,7 @@ jobs:
           echo "| 野村投信 | 00980A 00985A 00999A | $(status '${{ steps.nomura.outcome }}' '${{ steps.nomura.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 元大投信 | 00990A | $(status '${{ steps.yuanta.outcome }}' '${{ steps.yuanta.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 中信投信 | 00983A 00995A | $(status '${{ steps.ctbc.outcome }}' '${{ steps.ctbc.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
-          echo "| 復華投信 | 00991A | $(status '${{ steps.fuhwa.outcome }}' '${{ steps.fuhwa.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 復華投信 | 00991A 00998A | $(status '${{ steps.fuhwa.outcome }}' '${{ steps.fuhwa.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 安聯投信 | 00984A 00993A | $(status '${{ steps.allianz.outcome }}' '${{ steps.allianz.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 台新投信 | 00986A 00987A | $(status '${{ steps.taishin.outcome }}' '${{ steps.taishin.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY
           echo "| 第一金投信 | 00994A | $(status '${{ steps.first_financial.outcome }}' '${{ steps.first_financial.outputs.SKIPPED }}') |" >> $GITHUB_STEP_SUMMARY

@@ -27,6 +27,8 @@ fetch_active_etf_allianz.py
 import json
 import sys
 import time
+from datetime import date
+from etf_utils import record_unchanged_snapshot
 from pathlib import Path
 from typing import Optional
 
@@ -206,8 +208,10 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> 
             if sorted([_clean_snapshot(h) for h in holdings], key=_key) == sorted(
                 [_clean_snapshot(h) for h in prev_holdings], key=_key
             ):
-                print(f"  [SKIP] {etf_code} 數據無變化（{current_date}），跳過寫入")
-                return True
+                return record_unchanged_snapshot(
+                    json_path, data, etf_code,
+                    [_clean_snapshot(h) for h in holdings], current_date
+                )
 
         if "holdingsHistory" not in data:
             data["holdingsHistory"] = {}
