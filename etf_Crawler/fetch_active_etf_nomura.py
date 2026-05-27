@@ -30,14 +30,12 @@ import json
 import sys
 import time
 from datetime import date, timedelta
-from etf_utils import record_unchanged_snapshot
+from etf_utils import create_session, write_holdings_update
 from pathlib import Path
 from typing import Optional
 
 try:
     import requests
-    from requests.adapters import HTTPAdapter
-    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -65,23 +63,6 @@ NOMURA_ACTIVE_ETFS = [
 
 STATUS_NO_DATA = 5  # API 回傳「此搜尋條件尚無相關資料」
 
-
-def create_session() -> requests.Session:
-    session = requests.Session()
-    retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        backoff_factor=1.5,
-        status_forcelist=[408, 429, 500, 502, 503, 504],
-        allowed_methods=["POST"],
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    return session
-
-
 session = create_session()
 
 
@@ -92,17 +73,6 @@ def _parse_date(nav_date: str) -> Optional[str]:
         return f"{parts[0]}-{parts[1].zfill(2)}-{parts[2].zfill(2)}"
     except Exception:
         return None
-
-
-def _clean_snapshot(h: dict) -> dict:
-    """只保留歷史快照應有的欄位，去除比較欄位。"""
-    clean: dict = {"name": h["name"], "weight": h["weight"]}
-    if h.get("shares") is not None:
-        clean["shares"] = h["shares"]
-    if h.get("code"):
-        clean["code"] = h["code"]
-    return clean
-
 
 def fetch_holdings(etf_code: str, search_date: Optional[str] = None) -> tuple:
     """
@@ -186,83 +156,12 @@ def fetch_holdings(etf_code: str, search_date: Optional[str] = None) -> tuple:
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
                     history_only: bool = False) -> bool:
-    """
-    history_only=True: 只補 holdingsHistory，不更新 topHoldings / lastUpdated。
-    history_only=False: 同時更新 topHoldings（附比較欄位）與 lastUpdated。
-    """
-    json_path = ETF_DATA_DIR / f"{etf_code}.json"
-    if not json_path.exists():
-        print(f"  [WARN] 找不到 {json_path.name}")
-        return False
+    return write_holdings_update(
+        ETF_DATA_DIR / f"{etf_code}.json",
+        etf_code, holdings, tran_date,
+        history_only=history_only,
+    )
 
-    try:
-        with open(json_path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        if not tran_date:
-            print(f"  [SKIP] 無法取得資料日期，跳過寫入")
-            return False
-
-        current_date = tran_date
-
-        if "holdingsHistory" not in data:
-            data["holdingsHistory"] = {}
-
-        if history_only:
-            # 只寫歷史，不動 topHoldings
-            data["holdingsHistory"][current_date] = [_clean_snapshot(h) for h in holdings]
-        else:
-            prev_holdings = data.get("topHoldings", [])
-            prev_date = data.get("lastUpdated")
-
-            if current_date == prev_date and prev_holdings:
-                _key = lambda x: x.get("code") or x.get("name", "")
-                if sorted([_clean_snapshot(h) for h in holdings], key=_key) == sorted([_clean_snapshot(h) for h in prev_holdings], key=_key):
-                    return record_unchanged_snapshot(
-                        json_path, data, etf_code,
-                        [_clean_snapshot(h) for h in holdings], current_date
-                    )
-
-            # 舊 topHoldings 補存歷史
-            if prev_date and prev_holdings and prev_date not in data["holdingsHistory"]:
-                data["holdingsHistory"][prev_date] = [_clean_snapshot(h) for h in prev_holdings]
-
-            # 計算比較欄位
-            prev_map = {h.get("code") or h.get("name"): h for h in prev_holdings}
-            for h in holdings:
-                key = h.get("code") or h.get("name")
-                prev = prev_map.get(key)
-                if prev:
-                    prev_w = prev.get("weight", 0)
-                    h["previousWeight"] = prev_w
-                    h["weightChange"] = round(h["weight"] - prev_w, 2)
-                    prev_s = prev.get("shares") or 0
-                    h["previousShares"] = prev_s
-                    h["sharesChange"] = (h["shares"] - prev_s) if h["shares"] is not None and prev_s else 0
-                else:
-                    h["previousWeight"] = 0
-                    h["weightChange"] = h["weight"]
-                    h["previousShares"] = 0
-                    h["sharesChange"] = h["shares"] or 0
-
-            data["topHoldings"] = holdings
-            data["holdingsHistory"][current_date] = [_clean_snapshot(h) for h in holdings]
-            data["lastUpdated"] = current_date
-
-        # 保留最近 30 天
-        sorted_dates = sorted(data["holdingsHistory"].keys(), reverse=True)
-        for old_d in sorted_dates[30:]:
-            del data["holdingsHistory"][old_d]
-
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
-        return True
-    except Exception as e:
-        print(f"  [ERROR] 寫入失敗: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
 
 
 def _has_shares(etf_code: str, dt: str) -> bool:

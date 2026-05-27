@@ -24,14 +24,12 @@ import json
 import sys
 import time
 from datetime import date
-from etf_utils import record_unchanged_snapshot
+from etf_utils import create_session, write_holdings_update
 from pathlib import Path
 from typing import Optional
 
 try:
     import requests
-    from requests.adapters import HTTPAdapter
-    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests")
     sys.exit(1)
@@ -55,35 +53,12 @@ CATHAY_ACTIVE_ETFS = {
     "00400A": "EA",  # 國泰台股動能高息主動式ETF基金
 }
 
-
-def create_session() -> requests.Session:
-    session = requests.Session()
-    retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        backoff_factor=1.5,
-        status_forcelist=[408, 429, 500, 502, 503, 504],
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("https://", adapter)
-    return session
-
-
 session = create_session()
 
 
 def _clean_name(name: str) -> str:
     """去除股票名稱中的多餘空白。"""
     return " ".join(name.split())
-
-
-def _clean_snapshot(h: dict) -> dict:
-    clean: dict = {"name": h["name"], "weight": h["weight"]}
-    if h.get("code"):
-        clean["code"] = h["code"]
-    return clean
-
 
 def fetch_holdings(etf_code: str, fund_code: str) -> tuple:
     """
@@ -152,69 +127,11 @@ def fetch_holdings(etf_code: str, fund_code: str) -> tuple:
 
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> bool:
-    json_path = ETF_DATA_DIR / f"{etf_code}.json"
-    if not json_path.exists():
-        print(f"  [WARN] 找不到 {json_path.name}")
-        return False
+    return write_holdings_update(
+        ETF_DATA_DIR / f"{etf_code}.json",
+        etf_code, holdings, tran_date,
+    )
 
-    try:
-        with open(json_path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        if not tran_date:
-            print(f"  [SKIP] 無法取得資料日期，跳過寫入")
-            return False
-
-        prev_holdings = data.get("topHoldings", [])
-        prev_date = data.get("lastUpdated")
-
-        if tran_date == prev_date and prev_holdings:
-            _key = lambda x: x.get("code") or x.get("name", "")
-            if sorted([_clean_snapshot(h) for h in holdings], key=_key) == \
-               sorted([_clean_snapshot(h) for h in prev_holdings], key=_key):
-                return record_unchanged_snapshot(
-                    json_path, data, etf_code,
-                    [_clean_snapshot(h) for h in holdings], tran_date
-                )
-
-        if "holdingsHistory" not in data:
-            data["holdingsHistory"] = {}
-
-        if prev_date and prev_holdings and prev_date not in data["holdingsHistory"]:
-            data["holdingsHistory"][prev_date] = [_clean_snapshot(h) for h in prev_holdings]
-
-        prev_map = {h.get("code") or h.get("name"): h for h in prev_holdings}
-        for h in holdings:
-            key = h.get("code") or h.get("name")
-            prev = prev_map.get(key)
-            if prev:
-                prev_w = prev.get("weight", 0)
-                h["previousWeight"] = prev_w
-                h["weightChange"] = round(h["weight"] - prev_w, 2)
-            else:
-                h["previousWeight"] = 0
-                h["weightChange"] = h["weight"]
-
-        data["topHoldings"] = holdings
-        data["holdingsHistory"][tran_date] = [_clean_snapshot(h) for h in holdings]
-
-        sorted_dates = sorted(data["holdingsHistory"].keys(), reverse=True)
-        for old_d in sorted_dates[30:]:
-            del data["holdingsHistory"][old_d]
-
-        data["lastUpdated"] = tran_date
-
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
-        print(f"  [OK] {etf_code} — {len(holdings)} 筆持股，資料日期 {tran_date}")
-        return True
-
-    except Exception as e:
-        print(f"  [ERROR] 寫入失敗: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
 
 
 def main():

@@ -34,7 +34,7 @@ import json
 import sys
 import time
 from datetime import date, timedelta
-from etf_utils import record_unchanged_snapshot
+from etf_utils import create_session, write_holdings_update
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -42,8 +42,6 @@ try:
     import requests
     import pandas as pd
     from bs4 import BeautifulSoup
-    from requests.adapters import HTTPAdapter
-    from urllib3.util.retry import Retry
 except ImportError:
     print("缺少依賴，請先執行：uv add requests pandas beautifulsoup4 lxml openpyxl")
     sys.exit(1)
@@ -66,34 +64,7 @@ HEADERS = {
     ),
 }
 
-
-def create_session() -> requests.Session:
-    session = requests.Session()
-    retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        backoff_factor=1.5,
-        status_forcelist=[408, 429, 500, 502, 503, 504],
-        allowed_methods=["GET"],
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    return session
-
-
 session = create_session()
-
-
-def _clean_snapshot(h: dict) -> dict:
-    clean: dict = {"name": h["name"], "weight": h["weight"]}
-    if h.get("shares") is not None:
-        clean["shares"] = h["shares"]
-    if h.get("code"):
-        clean["code"] = h["code"]
-    return clean
-
 
 def _parse_excel(content: bytes) -> List[dict]:
     """從 Excel bytes 解析持股清單（跳過頁首、期貨段）。"""
@@ -204,77 +175,12 @@ def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = Non
 
 def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
                     history_only: bool = False) -> bool:
-    json_path = ETF_DATA_DIR / f"{etf_code}.json"
-    if not json_path.exists():
-        print(f"  [WARN] 找不到 {json_path.name}")
-        return False
+    return write_holdings_update(
+        ETF_DATA_DIR / f"{etf_code}.json",
+        etf_code, holdings, tran_date,
+        history_only=history_only,
+    )
 
-    try:
-        with open(json_path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        if not tran_date:
-            print(f"  [SKIP] 無資料日期，跳過寫入")
-            return False
-
-        if "holdingsHistory" not in data:
-            data["holdingsHistory"] = {}
-
-        if history_only:
-            # 只補 holdingsHistory，不動 topHoldings / lastUpdated
-            if tran_date in data["holdingsHistory"]:
-                print(f"  [SKIP] {tran_date} 已存在")
-                return True
-            data["holdingsHistory"][tran_date] = [_clean_snapshot(h) for h in holdings]
-        else:
-            prev_holdings = data.get("topHoldings", [])
-            prev_date = data.get("lastUpdated")
-
-            if tran_date == prev_date and prev_holdings:
-                _key = lambda x: x.get("code") or x.get("name", "")
-                if (sorted([_clean_snapshot(h) for h in holdings], key=_key) ==
-                        sorted([_clean_snapshot(h) for h in prev_holdings], key=_key)):
-                    return record_unchanged_snapshot(
-                        json_path, data, etf_code,
-                        [_clean_snapshot(h) for h in holdings], tran_date
-                    )
-
-            if prev_date and prev_holdings and prev_date not in data["holdingsHistory"]:
-                data["holdingsHistory"][prev_date] = [_clean_snapshot(h) for h in prev_holdings]
-
-            prev_map = {h.get("code") or h.get("name"): h for h in prev_holdings}
-            for h in holdings:
-                key = h.get("code") or h.get("name")
-                prev = prev_map.get(key)
-                if prev:
-                    h["previousWeight"] = prev.get("weight", 0)
-                    h["weightChange"] = round(h["weight"] - h["previousWeight"], 2)
-                    prev_s = prev.get("shares") or 0
-                    h["previousShares"] = prev_s
-                    h["sharesChange"] = (h["shares"] - prev_s) if h["shares"] is not None and prev_s else 0
-                else:
-                    h["previousWeight"] = 0
-                    h["weightChange"] = h["weight"]
-                    h["previousShares"] = 0
-                    h["sharesChange"] = h["shares"] or 0
-
-            data["topHoldings"] = holdings
-            data["holdingsHistory"][tran_date] = [_clean_snapshot(h) for h in holdings]
-            data["lastUpdated"] = tran_date
-
-        sorted_dates = sorted(data["holdingsHistory"].keys(), reverse=True)
-        for old_d in sorted_dates[30:]:
-            del data["holdingsHistory"][old_d]
-
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
-        print(f"  [OK] {etf_code} — {len(holdings)} 筆持股，{tran_date}")
-        return True
-
-    except Exception as e:
-        print(f"  [ERROR] 寫入失敗: {e}")
-        return False
 
 
 def run_backfill(targets: list, days: int) -> None:
