@@ -1,5 +1,6 @@
 interface Env {
   GH_TOKEN: string;
+  BREVO_API_KEY: string;
 }
 
 const REPO = 'stock-data-ai/stock-data';
@@ -49,10 +50,34 @@ async function dispatch(job: CronJob, token: string) {
   }
 }
 
+async function alertError(message: string, brevoKey: string) {
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': brevoKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { name: 'Stock Data Cron', email: 'noreply@aistockmap.com' },
+      to: [{ email: 'ricky.wu@whalechip.com' }],
+      subject: '⚠️ Stock Data Cron 失敗通知',
+      textContent: message,
+    }),
+  });
+}
+
 export default {
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
     const job = CRON_MAP[event.cron];
-    if (!job) throw new Error(`Unknown cron: ${event.cron}`);
-    await dispatch(job, env.GH_TOKEN);
+    if (!job) {
+      await alertError(`Unknown cron: ${event.cron}`, env.BREVO_API_KEY);
+      throw new Error(`Unknown cron: ${event.cron}`);
+    }
+    try {
+      await dispatch(job, env.GH_TOKEN);
+    } catch (err) {
+      await alertError(String(err), env.BREVO_API_KEY);
+      throw err;
+    }
   },
 };
