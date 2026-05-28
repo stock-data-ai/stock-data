@@ -52,7 +52,7 @@ jobs:
       delay_minutes: ${{ inputs.delay_minutes || '0' }}
       batch: ${{ inputs.batch || '0' }}
       force: ${{ github.event_name == 'schedule' || inputs.force || false }}
-      rerun_delay_minutes: '15'
+      rerun_delay_minutes: '65'
     secrets: inherit
 
   market-sentiment:
