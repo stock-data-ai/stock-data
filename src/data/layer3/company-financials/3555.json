@@ -15,7 +15,7 @@
     "pe": 166.92914,
     "pb": 11.991628,
     "marginBalance": 1049,
-    "shortBalance": 2
+    "shortBalance": 1
   },
   "historical": {
     "annual": [
@@ -4767,10 +4767,10 @@
         "dealer_sell": 4.582,
         "dealer_net_buy": 0.41800000000000015,
         "code": "3555",
+        "foreign_ratio": 1.66,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.0075,
-        "foreign_ratio": 1.69,
-        "three_inst_ratio": 1.6975
+        "three_inst_ratio": 1.6675
       }
     },
     "marginTrading": {
@@ -5189,6 +5189,14 @@
         "shortBuy": 0,
         "shortSell": 1,
         "shortBalance": 2
+      },
+      "2026-05-28": {
+        "marginBuy": 11,
+        "marginSell": 11,
+        "marginBalance": 1049,
+        "shortBuy": 1,
+        "shortSell": 0,
+        "shortBalance": 1
       }
     }
   },
