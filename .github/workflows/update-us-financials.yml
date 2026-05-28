@@ -1,8 +1,6 @@
 name: Update US Financials
 
 on:
-  schedule:
-    - cron: '0 2 * * 0'  # 每週日 UTC 02:00（台灣時間週日 10:00）
   workflow_dispatch:
     inputs:
       codes:

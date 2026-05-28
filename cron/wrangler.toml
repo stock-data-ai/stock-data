@@ -15,6 +15,7 @@ crons = [
   "0 1 * * 7",   # weekly-shareholder    台灣 09:00 週六
   "0 3 * * 7",   # weekly-dividend       台灣 11:00 週六
   "0 1 * * 1",   # weekly-full-update    台灣 09:00 週日
-  "0 3 * * 1",   # weekly-balance-sheet  台灣 11:00 週一
-  "0 19 * * 1",  # cleanup               台灣 03:00 週日
+  "0 3 * * 1",   # weekly-balance-sheet  台灣 11:00 週日
+  "0 19 * * 1",  # cleanup               台灣 03:00 週一
+  "0 2 * * 1",   # update-us-financials  台灣 10:00 週日
 ]
