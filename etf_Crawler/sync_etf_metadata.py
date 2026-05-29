@@ -305,7 +305,7 @@ def build_metadata_for_code(etf_code: str, basic_map: dict, value_map: dict, div
     book_value = value.get("bookValue")
     fund_size = None
     if shares and book_value:
-        fund_size = round((shares * book_value) / 1_000_000, 2)
+        fund_size = round((shares * book_value) / 100_000_000, 2)
     if mgmt_fee is not None and (mgmt_fee < 0 or mgmt_fee > 5):
         mgmt_fee = None
     metadata = {

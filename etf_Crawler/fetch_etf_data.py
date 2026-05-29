@@ -180,7 +180,7 @@ def _update_index(basic_list: list, value_list: list, dividend_list: list) -> No
         inception = d.get("listingDate", "")[:10] if d.get("listingDate") else None
 
         dynamic = {
-            "fundSize":        round(v["fundSize"], 2) if v.get("fundSize") else None,
+            "fundSize":        round(v["fundSize"] / 100, 2) if v.get("fundSize") else None,
             "managementFee":   round(mgmt_fee, 4) if mgmt_fee else None,
             "trailingYield":   v.get("last4SeasonYR"),
             "issuer":          _issuer(b["manager"]) if b.get("manager") else None,
