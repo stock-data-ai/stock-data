@@ -316,21 +316,16 @@ class MarketSentimentFetcher:
         result: Dict = {}
 
         twse_inst = self.fetch_twse_institutional(date_str)
-        tpex_inst = self.fetch_tpex_institutional()
+        # tpex_inst = self.fetch_tpex_institutional()  # 上櫃暫停，只顯示上市
 
-        if twse_inst or tpex_inst:
+        if twse_inst:
             inst: Dict = {"date": formatted_date}
-            if twse_inst:
-                inst["twse"] = twse_inst
-            else:
-                logger.warning("TWSE institutional data unavailable for %s", date_str)
-            if tpex_inst:
-                inst["tpex"] = tpex_inst
-            else:
-                logger.warning("TPEx institutional data unavailable")
+            inst["twse"] = twse_inst
+            # if tpex_inst:
+            #     inst["tpex"] = tpex_inst
             result["institutional"] = inst
         else:
-            logger.warning("All institutional data unavailable for %s", date_str)
+            logger.warning("TWSE institutional data unavailable for %s", date_str)
 
         twse_margin = self.fetch_twse_margin(date_str)
         tpex_margin = self.fetch_tpex_margin(date_str)

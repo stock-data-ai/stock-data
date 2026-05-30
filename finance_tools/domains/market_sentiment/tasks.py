@@ -66,11 +66,10 @@ def run_update_market_sentiment(args):
         logger.error("無法取得任何市場情緒數據，中止。")
         sys.exit(1)
 
-    # institutional 兩個來源都必須成功才寫入
+    # TWSE 必須成功才寫入（TPEX 上櫃暫停）
     inst = data.get("institutional", {})
-    if inst.get("twse") is None or inst.get("tpex") is None:
-        missing = [s for s in ("twse", "tpex") if inst.get(s) is None]
-        logger.error("institutional 資料不完整，缺少 %s，中止不寫入。", missing)
+    if inst.get("twse") is None:
+        logger.error("institutional 資料不完整，缺少 twse，中止不寫入。")
         sys.exit(1)
 
     # margin 抓失敗時保留現有資料（非強制）
