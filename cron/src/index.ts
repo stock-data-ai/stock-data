@@ -15,6 +15,8 @@ const CRON_MAP: Record<string, CronJob> = {
   '30 11 * * *': { workflow: 'etf-active-daily.yml' },                                   // 台灣 19:30
   '30 10 * * *': { workflow: 'daily-update.yml', inputs: { force: 'true' } },            // 台灣 18:30
   '30 14 * * *': { workflow: 'daily-update.yml', inputs: { force: 'true' } },            // 台灣 22:30
+  '35 10 * * 1-5': { workflow: 'market-sentiment.yml' },                                  // 台灣 18:35 週一到週五（第一次）
+  '0 13 * * 1-5':  { workflow: 'market-sentiment.yml' },                                  // 台灣 21:00 週一到週五（第二次備援）
   '0 11 * * *':  { workflow: 'scraper-mops.yml' },                                       // 台灣 19:00
   '0 23 * * *':  { workflow: 'scraper-economic-daily.yml' },                             // 台灣 07:00
   '0 15 * * *':  { workflow: 'scraper-economic-daily.yml' },                             // 台灣 23:00

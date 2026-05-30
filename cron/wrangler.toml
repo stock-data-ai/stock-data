@@ -8,6 +8,8 @@ crons = [
   "30 11 * * *", # etf-active-daily      台灣 19:30 每天
   "30 10 * * *", # daily-update          台灣 18:30 每天
   "30 14 * * *", # daily-update          台灣 22:30 每天
+  "35 10 * * 1-5", # market-sentiment      台灣 18:35 週一到週五（第一次）
+  "0 13 * * 1-5",  # market-sentiment      台灣 21:00 週一到週五（第二次備援）
   "0 11 * * *",  # scraper-mops          台灣 19:00 每天
   "0 23 * * *",  # scraper-economic-daily 台灣 07:00 每天
   "0 15 * * *",  # scraper-economic-daily 台灣 23:00 每天
