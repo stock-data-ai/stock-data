@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class MarketSentimentFetcher:
     INSTITUTIONAL_URL = (
-        "https://www.twse.com.tw/fund/BFI82U"
+        "https://www.twse.com.tw/zh/fund/BFI82U"
         "?response=json&dayDate={date}&type=day"
     )
     TPEX_INSTITUTIONAL_URL = (
