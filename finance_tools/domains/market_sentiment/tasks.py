@@ -66,6 +66,18 @@ def run_update_market_sentiment(args):
         logger.error("無法取得任何市場情緒數據，中止。")
         sys.exit(1)
 
+    # institutional 兩個來源都必須成功才寫入
+    inst = data.get("institutional", {})
+    if inst.get("twse") is None or inst.get("tpex") is None:
+        missing = [s for s in ("twse", "tpex") if inst.get(s) is None]
+        logger.error("institutional 資料不完整，缺少 %s，中止不寫入。", missing)
+        sys.exit(1)
+
+    # margin 抓失敗時保留現有資料（非強制）
+    if "margin" not in data and "margin" in existing:
+        logger.warning("margin fetch 失敗，保留現有資料")
+        data["margin"] = existing["margin"]
+
     # 判斷是否為同日重跑
     existing_date = (
         existing.get("institutional", {}).get("date")
@@ -73,18 +85,11 @@ def run_update_market_sentiment(args):
     )
     same_day = existing_date == formatted_date
 
-    # Preserve existing sections that failed to fetch this run
-    for section in ("institutional", "margin"):
-        if section not in data and section in existing:
-            logger.warning("%s fetch 失敗，保留現有資料", section)
-            data[section] = existing[section]
-
     for section in ("institutional", "margin"):
         if section not in data:
             continue
         if section in existing:
             if same_day:
-                # 同日重跑：直接沿用現有 history
                 data[section]["history"] = existing[section].get("history", [])
                 # 保留 existing 中有、但本次 API 失敗而缺少的子欄位（twse/tpex）
                 for sub in ("twse", "tpex"):
@@ -94,12 +99,10 @@ def run_update_market_sentiment(args):
                         )
                         data[section][sub] = existing[section][sub]
             else:
-                # 新的一天：把昨天資料 push 進 history
                 data[section]["history"] = _merge_history(
                     existing[section], HISTORY_LIMIT
                 )
         else:
-            # 第一次出現此 section：確保 history 欄位存在
             data[section]["history"] = []
 
     SENTIMENT_FILE.parent.mkdir(parents=True, exist_ok=True)

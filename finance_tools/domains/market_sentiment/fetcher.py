@@ -77,34 +77,40 @@ class MarketSentimentFetcher:
             "foreignDealer": inst_map.get("外資自營商", zero),
         }
 
-    def fetch_twse_institutional(self, date_str: str) -> Optional[Dict]:
+    def fetch_twse_institutional(self, date_str: str, retries: int = 3, retry_delay: int = 10) -> Optional[Dict]:
         """
         Fetch TWSE (上市) institutional investors aggregate from BFI82U.
         Both BFI82U and TPEx OpenAPI return amounts in 元 directly.
         BFI82U ignores date when market is closed; returns latest trading day.
+        Retries up to `retries` times with `retry_delay` seconds between attempts.
         """
         url = self.INSTITUTIONAL_URL.format(date=date_str)
-        try:
-            resp = requests.get(url, headers=self.headers, timeout=15)
-            resp.raise_for_status()
-            data = resp.json()
+        for attempt in range(retries):
+            try:
+                resp = requests.get(url, headers=self.headers, timeout=15)
+                resp.raise_for_status()
+                data = resp.json()
 
-            if data.get("stat") != "OK":
-                logger.warning("BFI82U stat=%s for %s", data.get("stat"), date_str)
-                return None
+                if data.get("stat") != "OK":
+                    logger.warning("BFI82U stat=%s for %s (attempt %d/%d)", data.get("stat"), date_str, attempt + 1, retries)
+                else:
+                    inst_map = {
+                        row[0]: {
+                            "buy": self._parse_yuan(row[1]),
+                            "sell": self._parse_yuan(row[2]),
+                            "net": self._parse_yuan(row[3]),
+                        }
+                        for row in data.get("data", [])
+                    }
+                    return self._map_inst_rows(inst_map, "外資及陸資(不含外資自營商)")
+            except Exception:
+                logger.warning("Error fetching BFI82U for %s (attempt %d/%d)", date_str, attempt + 1, retries, exc_info=True)
 
-            inst_map = {
-                row[0]: {
-                    "buy": self._parse_yuan(row[1]),
-                    "sell": self._parse_yuan(row[2]),
-                    "net": self._parse_yuan(row[3]),
-                }
-                for row in data.get("data", [])
-            }
-            return self._map_inst_rows(inst_map, "外資及陸資(不含外資自營商)")
-        except Exception:
-            logger.exception("Error fetching BFI82U for %s", date_str)
-            return None
+            if attempt < retries - 1:
+                time.sleep(retry_delay)
+
+        logger.error("BFI82U fetch failed after %d attempts for %s", retries, date_str)
+        return None
 
     def fetch_tpex_institutional(self) -> Optional[Dict]:
         """
