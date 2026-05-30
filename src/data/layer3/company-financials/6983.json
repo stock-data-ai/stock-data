@@ -471,7 +471,19 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2025,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 3.0,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0,
+        "payoutDate": "2026-03-13",
+        "periodRange": "2025-01-01~2025-12-31",
+        "status": "董事會決議"
+      }
+    ],
     "institutionalInvestors": {
       "2026-02-23": {
         "dealer_self_buy": null,
@@ -3781,5 +3793,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-05-30"
 }
