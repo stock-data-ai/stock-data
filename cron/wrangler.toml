@@ -2,22 +2,24 @@ name = "stock-data-cron"
 main = "src/index.ts"
 compatibility_date = "2024-01-29"
 
+# Cloudflare day-of-week: 1=Sun 2=Mon 3=Tue 4=Wed 5=Thu 6=Fri 7=Sat
+# Ranges (e.g. 1-5) are NOT supported — use comma-separated values only
+
 [triggers]
 crons = [
-  "0 8 * * *",   # etf-active-daily      台灣 16:00 每天
-  "30 11 * * *", # etf-active-daily      台灣 19:30 每天
-  "30 10 * * *", # daily-update          台灣 18:30 每天
-  "30 14 * * *", # daily-update          台灣 22:30 每天
-  "35 10 * * 1-5", # market-sentiment      台灣 18:35 週一到週五（第一次）
-  "0 13 * * 1-5",  # market-sentiment      台灣 21:00 週一到週五（第二次備援）
-  "0 11 * * *",  # scraper-mops          台灣 19:00 每天
-  "0 23 * * *",  # scraper-economic-daily 台灣 07:00 每天
-  "0 15 * * *",  # scraper-economic-daily 台灣 23:00 每天
-  "0 0 * * 7",   # etf-holdings-update   台灣 08:00 週六
-  "0 1 * * 7",   # weekly-shareholder    台灣 09:00 週六
-  "0 3 * * 7",   # weekly-dividend       台灣 11:00 週六
-  "0 1 * * 1",   # weekly-full-update    台灣 09:00 週日
-  "0 3 * * 1",   # weekly-balance-sheet  台灣 11:00 週日
-  "0 19 * * 1",  # cleanup               台灣 03:00 週一
-  "0 2 * * 1",   # update-us-financials  台灣 10:00 週日
+  "0 23 * * *",           # scraper-economic-daily    台灣 07:00 每天
+  "0 0 * * 7",            # etf-holdings-update       台灣 08:00 週六
+  "0 1 * * 7",            # weekly-shareholder-update 台灣 09:00 週六
+  "0 1 * * 1",            # weekly-full-update        台灣 09:00 週日
+  "0 2 * * 1",            # update-us-financials      台灣 10:00 週日
+  "0 3 * * 7",            # weekly-dividend-update    台灣 11:00 週六
+  "0 3 * * 1",            # weekly-balance-sheet      台灣 11:00 週日
+  "0 8 * * *",            # etf-active-daily          台灣 16:00 每天
+  "30 10 * * *",          # daily-update              台灣 18:30 每天
+  "35 10 * * 2,3,4,5,6", # market-sentiment          台灣 18:35 週一到週五（第一次）
+  "0 11 * * *",           # scraper-mops              台灣 19:00 每天
+  "30 11 * * *",          # etf-active-daily          台灣 19:30 每天
+  "0 13 * * 2,3,4,5,6",  # market-sentiment          台灣 21:00 週一到週五（第二次備援）
+  "30 13 * * *",          # scraper-economic-daily    台灣 21:30 每天
+  "0 19 * * 2",           # cleanup-workflow-runs     台灣 03:00 週一
 ]
