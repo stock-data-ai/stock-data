@@ -24,10 +24,8 @@ fetch_active_etf_allianz.py
     uv run etf_Crawler/fetch_active_etf_allianz.py 00993A   # 更新指定
 """
 
-import json
 import sys
 import time
-from datetime import date
 from etf_utils import create_session, write_holdings_update
 from pathlib import Path
 from typing import Optional
@@ -66,18 +64,7 @@ ALLIANZ_ACTIVE_ETFS = {
 
 def _create_session() -> tuple[requests.Session, str]:
     """建立 session 並取得 XSRF token。回傳 (session, xsrf_token)。"""
-    session = requests.Session()
-    retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        backoff_factor=1.5,
-        status_forcelist=[408, 429, 500, 502, 503, 504],
-        allowed_methods=["GET", "POST"],
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
+    session = create_session()
 
     resp = session.get(ANTIFORGERY_URL, headers=HEADERS, timeout=45)
     resp.raise_for_status()
