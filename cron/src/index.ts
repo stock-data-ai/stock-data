@@ -34,64 +34,129 @@ const CRON_MAP: Record<string, CronJob> = {
 // ── Health check (台灣 23:00 = UTC 15:00) ─────────────────────────────────────
 
 const HEALTH_CHECK_CRON = '0 15 * * *';
+const TAIWAN_OFFSET_MS = 8 * 60 * 60 * 1000;
 
-// UTC getUTCDay(): 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
-const CHECK_DAILY    = ['Active ETF Holdings Update (Daily)', 'Daily Update', 'MOPS Scraper', 'Economic Daily Scraper'];
-const CHECK_WEEKDAY  = ['Market Sentiment Update'];
-const CHECK_SATURDAY = ['ETF Holdings Update (Weekly)', 'Weekly Shareholder Update (Saturday)', 'Weekly Dividend Update (Saturday)'];
-const CHECK_SUNDAY   = ['Weekly Full Update (Sunday)', 'Update US Financials', 'Weekly Balance Sheet Update (Monday)'];
+// Taiwan day via getUTCDay(): 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+interface CheckJob {
+  label: string;
+  workflowName: string;
+  twHour: number;
+  twMinute: number;
+  days?: number[];
+}
+
+const CHECK_JOBS: CheckJob[] = [
+  { label: '07:00 Economic Daily Scraper', workflowName: 'Economic Daily Scraper', twHour: 7, twMinute: 0 },
+  { label: '16:00 Active ETF Holdings Update (Daily)', workflowName: 'Active ETF Holdings Update (Daily)', twHour: 16, twMinute: 0 },
+  { label: '18:30 Daily Update', workflowName: 'Daily Update', twHour: 18, twMinute: 30 },
+  { label: '19:00 MOPS Scraper', workflowName: 'MOPS Scraper', twHour: 19, twMinute: 0 },
+  { label: '19:30 Active ETF Holdings Update (Daily)', workflowName: 'Active ETF Holdings Update (Daily)', twHour: 19, twMinute: 30 },
+  { label: '21:30 Economic Daily Scraper', workflowName: 'Economic Daily Scraper', twHour: 21, twMinute: 30 },
+  { label: '18:35 Market Sentiment Update', workflowName: 'Market Sentiment Update', twHour: 18, twMinute: 35, days: [1, 2, 3, 4, 5] },
+  { label: '21:00 Market Sentiment Update', workflowName: 'Market Sentiment Update', twHour: 21, twMinute: 0, days: [1, 2, 3, 4, 5] },
+  { label: '週六 08:00 ETF Holdings Update (Weekly)', workflowName: 'ETF Holdings Update (Weekly)', twHour: 8, twMinute: 0, days: [6] },
+  { label: '週六 09:00 Weekly Shareholder Update (Saturday)', workflowName: 'Weekly Shareholder Update (Saturday)', twHour: 9, twMinute: 0, days: [6] },
+  { label: '週六 11:00 Weekly Dividend Update (Saturday)', workflowName: 'Weekly Dividend Update (Saturday)', twHour: 11, twMinute: 0, days: [6] },
+  { label: '週日 09:00 Weekly Full Update (Sunday)', workflowName: 'Weekly Full Update (Sunday)', twHour: 9, twMinute: 0, days: [0] },
+  { label: '週日 10:00 Update US Financials', workflowName: 'Update US Financials', twHour: 10, twMinute: 0, days: [0] },
+  { label: '週日 11:00 Weekly Balance Sheet Update (Monday)', workflowName: 'Weekly Balance Sheet Update (Monday)', twHour: 11, twMinute: 0, days: [0] },
+  { label: '週一 03:00 Cleanup old workflow runs', workflowName: 'Cleanup old workflow runs', twHour: 3, twMinute: 0, days: [1] },
+];
 
 interface WorkflowRun {
   name: string;
   status: string;
   conclusion: string | null;
   html_url: string;
+  created_at: string;
+}
+
+function toGithubTimestamp(date: Date): string {
+  return date.toISOString().replace(/\.\d+Z$/, 'Z');
+}
+
+function getTaiwanCheckWindow(now: Date) {
+  const taiwanNow = new Date(now.getTime() + TAIWAN_OFFSET_MS);
+  const twDate = taiwanNow.toISOString().slice(0, 10);
+  const [year, month, day] = twDate.split('-').map(Number);
+  const twStartUtc = new Date(Date.UTC(year, month - 1, day) - TAIWAN_OFFSET_MS);
+
+  return {
+    since: toGithubTimestamp(twStartUtc),
+    until: toGithubTimestamp(now),
+    twDate,
+    twDay: taiwanNow.getUTCDay(),
+    twStartUtc,
+    taiwanYmd: { year, month, day },
+  };
+}
+
+function getJobStartUtc(job: CheckJob, ymd: { year: number; month: number; day: number }): Date {
+  return new Date(Date.UTC(ymd.year, ymd.month - 1, ymd.day, job.twHour - 8, job.twMinute));
+}
+
+function getExpectedJobs(twDay: number): CheckJob[] {
+  return CHECK_JOBS.filter(job => !job.days || job.days.includes(twDay));
+}
+
+function getJobWindow(job: CheckJob, expected: CheckJob[], ymd: { year: number; month: number; day: number }, until: string) {
+  const start = getJobStartUtc(job, ymd);
+  const nextSameWorkflow = expected
+    .filter(candidate => candidate.workflowName === job.workflowName)
+    .map(candidate => getJobStartUtc(candidate, ymd))
+    .filter(candidateStart => candidateStart.getTime() > start.getTime())
+    .sort((a, b) => a.getTime() - b.getTime())[0];
+
+  return {
+    start,
+    end: nextSameWorkflow ?? new Date(until),
+  };
 }
 
 async function runHealthCheck(env: Env): Promise<void> {
-  const now = new Date();
-  const since = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().replace(/\.\d+Z$/, 'Z');
-  const twDate = new Date(now.getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const utcDay = now.getUTCDay();
+  const { since, until, twDate, twDay, taiwanYmd } = getTaiwanCheckWindow(new Date());
+  const workflowRuns: WorkflowRun[] = [];
 
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/actions/runs?created=>=${since}&per_page=100`,
-    {
+  for (let page = 1; page <= 5; page++) {
+    const runsUrl = new URL(`https://api.github.com/repos/${REPO}/actions/runs`);
+    runsUrl.searchParams.set('created', `${since}..${until}`);
+    runsUrl.searchParams.set('per_page', '100');
+    runsUrl.searchParams.set('page', String(page));
+
+    const res = await fetch(runsUrl.toString(), {
       headers: {
         Authorization: `Bearer ${env.GH_TOKEN}`,
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
         'User-Agent': 'stock-data-cron',
       },
+    });
+
+    if (!res.ok) {
+      await alertError(`健康檢查失敗：無法讀取 GitHub Actions runs: ${res.status}`, env.BREVO_API_KEY);
+      return;
     }
-  );
 
-  if (!res.ok) {
-    await alertError(`健康檢查失敗：無法讀取 GitHub Actions runs: ${res.status}`, env.BREVO_API_KEY);
-    return;
+    const data = await res.json() as { workflow_runs: WorkflowRun[] };
+    workflowRuns.push(...data.workflow_runs);
+    if (data.workflow_runs.length < 100) break;
   }
 
-  const data = await res.json() as { workflow_runs: WorkflowRun[] };
-  const idx: Record<string, { success: boolean; url: string }> = {};
-  for (const run of data.workflow_runs) {
-    if (run.status !== 'completed') continue;
-    if (!idx[run.name]) idx[run.name] = { success: false, url: run.html_url };
-    if (run.conclusion === 'success') idx[run.name].success = true;
-  }
-
-  const required = [
-    ...CHECK_DAILY,
-    ...(utcDay >= 1 && utcDay <= 5 ? CHECK_WEEKDAY  : []),
-    ...(utcDay === 6               ? CHECK_SATURDAY : []),
-    ...(utcDay === 0               ? CHECK_SUNDAY   : []),
-  ];
-
+  const required = getExpectedJobs(twDay);
   const ok: string[] = [], failed: string[] = [], missing: string[] = [];
-  for (const name of required) {
-    const entry = idx[name];
-    if (!entry)             missing.push(name);
-    else if (entry.success) ok.push(name);
-    else                    failed.push(`${name}\n  ${entry.url}`);
+  for (const job of required) {
+    const { start, end } = getJobWindow(job, required, taiwanYmd, until);
+    const runs = workflowRuns.filter(run => {
+      const created = new Date(run.created_at);
+      return run.name === job.workflowName && created >= start && created < end;
+    });
+    const success = runs.find(run => run.status === 'completed' && run.conclusion === 'success');
+    const completedFailure = runs.find(run => run.status === 'completed' && run.conclusion !== 'success');
+
+    if (success)       ok.push(job.label);
+    else if (runs.length === 0) missing.push(job.label);
+    else if (completedFailure) failed.push(`${job.label}\n  ${completedFailure.html_url}`);
+    else              missing.push(`${job.label}（尚未完成）`);
   }
 
   const allGood = failed.length === 0 && missing.length === 0;
@@ -176,5 +241,16 @@ export default {
       await alertError(String(err), env.BREVO_API_KEY);
       throw err;
     }
+  },
+
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname !== '/health-check') return new Response('Not Found', { status: 404 });
+
+    const auth = request.headers.get('Authorization');
+    if (auth !== `Bearer ${env.GH_TOKEN}`) return new Response('Unauthorized', { status: 401 });
+
+    await runHealthCheck(env);
+    return new Response('Health check triggered, email sent.', { status: 200 });
   },
 };
