@@ -34,6 +34,7 @@ const CRON_MAP: Record<string, CronJob> = {
 // ── Health check (台灣 23:00 = UTC 15:00) ─────────────────────────────────────
 
 const HEALTH_CHECK_CRON = '0 15 * * *';
+const HEALTH_CHECK_JOB: CronJob = { workflow: 'health-check.yml' };
 const TAIWAN_OFFSET_MS = 8 * 60 * 60 * 1000;
 
 // Taiwan day via getUTCDay(): 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
@@ -226,8 +227,13 @@ async function alertError(message: string, brevoKey: string, subject = '⚠️ S
 export default {
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
     if (event.cron === HEALTH_CHECK_CRON) {
-      await runHealthCheck(env);
-      return;
+      try {
+        await dispatchWithRetry(HEALTH_CHECK_JOB, env.GH_TOKEN);
+        return;
+      } catch (err) {
+        await alertError(String(err), env.BREVO_API_KEY);
+        throw err;
+      }
     }
 
     const job = CRON_MAP[event.cron];
