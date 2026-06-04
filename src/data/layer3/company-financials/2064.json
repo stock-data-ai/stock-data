@@ -18426,10 +18426,29 @@
         "dealer_sell": 0.0,
         "dealer_net_buy": 0.0,
         "code": "2064",
+        "foreign_ratio": 0.1,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.002885,
-        "foreign_ratio": 0.09,
-        "three_inst_ratio": 0.092885
+        "three_inst_ratio": 0.102885
+      },
+      "2026-06-04": {
+        "dealer_self_buy": 2.0,
+        "foreign_buy": 3.0,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": 2.0,
+        "foreign_net_buy": -18.0,
+        "trust_net_buy": 0.0,
+        "dealer_self_sell": 0.0,
+        "foreign_sell": 21.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 2.0,
+        "dealer_sell": 0.0,
+        "dealer_net_buy": 2.0,
+        "code": "2064",
+        "trust_ratio": 0.0,
+        "dealer_ratio": 0.00577,
+        "foreign_ratio": 0.1,
+        "three_inst_ratio": 0.10577
       }
     },
     "annual": [
@@ -19711,7 +19730,7 @@
       }
     }
   },
-  "lastUpdated": "2026-06-03",
+  "lastUpdated": "2026-06-04",
   "latest": {
     "year": 2026,
     "quarter": 1,
@@ -19722,9 +19741,9 @@
     "netMargin": -0.04,
     "eps": 0.0,
     "dividendFrequency": "年",
-    "marketCap": 1037486976,
+    "marketCap": 1040968512,
     "pe": 0.0,
-    "pb": 1.1123552,
+    "pb": 1.116088,
     "marginBalance": 14,
     "shortBalance": 0
   },

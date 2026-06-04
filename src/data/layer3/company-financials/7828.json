@@ -10,11 +10,11 @@
     "operatingMargin": 25.3,
     "netMargin": 24.5,
     "eps": 1.02,
-    "marketCap": 65802608640,
+    "marketCap": 63980380160,
     "dividendFrequency": "年",
-    "pe": 265.08972,
-    "pb": 57.266705,
-    "dividendYield": 30.0
+    "pe": 255.66344,
+    "pb": 55.68086,
+    "dividendYield": 28.000000000000004
   },
   "historical": {
     "annual": [
@@ -4289,10 +4289,10 @@
       "2026-06-03": {
         "dealer_self_buy": 3.1,
         "foreign_buy": 8.066,
-        "trust_buy": 0.0,
+        "trust_buy": 92.0,
         "dealer_self_net_buy": -0.8999999999999999,
         "foreign_net_buy": 3.0660000000000007,
-        "trust_net_buy": 0.0,
+        "trust_net_buy": 92.0,
         "dealer_self_sell": 4.0,
         "foreign_sell": 5.0,
         "trust_sell": 0.0,
@@ -4300,14 +4300,33 @@
         "dealer_sell": 4.0,
         "dealer_net_buy": -0.8999999999999999,
         "code": "7828",
-        "trust_ratio": 0.733444,
+        "foreign_ratio": 22.52,
+        "trust_ratio": 0.960638,
         "dealer_ratio": 0.216284,
-        "foreign_ratio": 22.51,
-        "three_inst_ratio": 23.459728
+        "three_inst_ratio": 23.696922
+      },
+      "2026-06-04": {
+        "dealer_self_buy": 4.2,
+        "foreign_buy": 6.019,
+        "trust_buy": 0.0,
+        "dealer_self_net_buy": -2.8,
+        "foreign_net_buy": -2.0809999999999995,
+        "trust_net_buy": 0.0,
+        "dealer_self_sell": 7.0,
+        "foreign_sell": 8.1,
+        "trust_sell": 0.0,
+        "dealer_buy": 4.2,
+        "dealer_sell": 7.0,
+        "dealer_net_buy": -2.8,
+        "code": "7828",
+        "trust_ratio": 0.960638,
+        "dealer_ratio": 0.20937,
+        "foreign_ratio": 22.52,
+        "three_inst_ratio": 23.690008
       }
     }
   },
-  "lastUpdated": "2026-06-03",
+  "lastUpdated": "2026-06-04",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
