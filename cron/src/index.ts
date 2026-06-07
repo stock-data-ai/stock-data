@@ -28,7 +28,7 @@ const CRON_MAP: Record<string, CronJob> = {
   '30 11 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 19:30 每天
   '0 13 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 21:00 週一到週五（第二次備援）
   '30 13 * * *':          { workflow: 'scraper-economic-daily.yml' },                               // 台灣 21:30 每天
-  '0 19 * * 2':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一
+  '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };
 
 // ── Health check (台灣 23:00 = UTC 15:00) ─────────────────────────────────────

@@ -132,7 +132,8 @@ def compute_for_threshold(raw: list[dict], min_lots: int) -> list[dict]:
             "toDate": main_to,
             "totalAnalyzed": len(results),
             "topGainers": results[:TOP_N],
-            "topLosers": list(reversed(results[-TOP_N:])),
+            # Ensure gainers and losers never overlap when len(results) < 2*TOP_N
+            "topLosers": list(reversed(results[max(TOP_N, len(results) - TOP_N):])),
         })
 
         print(
