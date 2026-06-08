@@ -24,6 +24,7 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 8 * * *':            { workflow: 'etf-active-daily.yml' },                                     // 台灣 16:00 每天
   '30 10 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 18:30 每天
   '35 10 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 18:35 週一到週五（第一次）
+  '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
   '30 11 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 19:30 每天
   '0 13 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 21:00 週一到週五（第二次備援）
@@ -55,6 +56,7 @@ const CHECK_JOBS: CheckJob[] = [
   { label: '21:30 Economic Daily Scraper', workflowName: 'Economic Daily Scraper', twHour: 21, twMinute: 30 },
   { label: '18:35 Market Sentiment Update', workflowName: 'Market Sentiment Update', twHour: 18, twMinute: 35, days: [1, 2, 3, 4, 5] },
   { label: '21:00 Market Sentiment Update', workflowName: 'Market Sentiment Update', twHour: 21, twMinute: 0, days: [1, 2, 3, 4, 5] },
+  { label: '20:00 Generate Chip Topic', workflowName: 'Generate Chip Topic', twHour: 20, twMinute: 0, days: [1, 2, 3, 4, 5] },
   { label: '週六 08:00 ETF Holdings Update (Weekly)', workflowName: 'ETF Holdings Update (Weekly)', twHour: 8, twMinute: 0, days: [6] },
   { label: '週六 09:00 Weekly Shareholder Update (Saturday)', workflowName: 'Weekly Shareholder Update (Saturday)', twHour: 9, twMinute: 0, days: [6] },
   { label: '週六 11:00 Weekly Dividend Update (Saturday)', workflowName: 'Weekly Dividend Update (Saturday)', twHour: 11, twMinute: 0, days: [6] },

@@ -56,6 +56,7 @@ from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
 from finance_tools.domains.market_sentiment.tasks import run_update_market_sentiment
 from finance_tools.scripts.compute_weekly_big_holders import run as run_compute_big_holders
+from finance_tools.scripts.generate_chip_topic import run as run_generate_chip_topic
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -135,6 +136,14 @@ def main():
         help="從 TDCC 股權分散表計算大戶加碼排行，輸出 weekly_big_holders.json。",
     )
     parser_big_holders.set_defaults(func=lambda args: run_compute_big_holders())
+
+    # --- 'generate-chip-topic' command ---
+    parser_chip = subparsers.add_parser(
+        "generate-chip-topic",
+        help="聚合三大法人 + 大股東持股訊號，輸出 chip-topic.json 並推送至 stock_map。",
+    )
+    parser_chip.add_argument("--dry-run", action="store_true", help="產出至 /tmp 但不推送至 stock_map。")
+    parser_chip.set_defaults(func=lambda args: run_generate_chip_topic(dry_run=args.dry_run))
 
     args = parser.parse_args()
     
