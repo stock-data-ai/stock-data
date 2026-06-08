@@ -3,21 +3,6 @@ name: Weekly Shareholder Update (Saturday)
 on:
   workflow_dispatch:
     inputs:
-      task:
-        description: 'Task identifier (for rerun chaining)'
-        required: false
-        default: 'shareholder-weekly'
-        type: string
-      rerun_round:
-        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
-        required: false
-        default: '0'
-        type: string
-      batch:
-        description: 'Batch number (0=all batches, 1-4=specific batch)'
-        required: false
-        default: '0'
-        type: string
       force:
         description: 'Force update even if already updated today'
         required: false
@@ -33,23 +18,41 @@ permissions:
   actions: write
 
 jobs:
-  pipeline:
-    uses: ./.github/workflows/_reusable-data-job.yml
-    with:
-      commands_json: '[{"id":"shareholder","cli":"fetch-shareholder-data","label":"TDCC 股權分散表"}]'
-      artifact_prefix: weekly-shareholder
-      commit_message: "每週更新 TDCC 股權分散數據 (API)"
-      caller_workflow: weekly-shareholder-update.yml
-      caller_task: shareholder-weekly
-      summary_title: "TDCC 每週更新"
-      rerun_round: ${{ inputs.rerun_round || '0' }}
-      batch: '1'
-      force: ${{ github.event_name == 'schedule' || inputs.force || true }}
-    secrets: inherit
+  fetch-tdcc:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Fetch TDCC shareholding data
+        run: uv run finance_tools/cli.py fetch-shareholder-data --force
+
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "每週更新 TDCC 股權分散數據 $(date -u +%Y-%m-%d)"
+          git pull --rebase -X ours origin main
+          git push
 
   compute-big-holders:
-    needs: pipeline
-    if: always() && needs.pipeline.result != 'failure'
+    needs: fetch-tdcc
+    if: always() && needs.fetch-tdcc.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
