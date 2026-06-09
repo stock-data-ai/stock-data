@@ -127,7 +127,7 @@ class TWSEInstitutionalFetcher:
                     Dealer_hedging_sell   = _parse_int(row[16]),
                 )
                 for row in data["data"]
-                if row[0].strip()
+                if row[0].strip() and len(row) >= 19  # 欄數不足為衍生商品，略過
             }
         except Exception as e:
             logger.error(f"TWSE T86 error: {e}")
