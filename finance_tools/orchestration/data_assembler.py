@@ -85,10 +85,10 @@ class DataAssembler:
         return existing_data
 
     @staticmethod
-    def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any], margin_trading_data: Dict[str, Any] = None):
+    def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any]):
         """Constructs the final data dictionary to be saved."""
         final_data = existing_data if existing_data else {}
-        
+
         # Ensure 'latest' exists and preserve existing fields (like marketCap)
         if 'latest' not in final_data:
             final_data['latest'] = {}
@@ -100,9 +100,6 @@ class DataAssembler:
         })
         if 'historical' not in final_data:
             final_data['historical'] = {}
-
-        if margin_trading_data:
-            final_data = DataAssembler.merge_margin_trading(final_data, margin_trading_data)
 
         # The 'monthly' data is already a list of dicts from the fetcher
         monthly_list = monthly if monthly else None

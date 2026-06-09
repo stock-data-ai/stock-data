@@ -187,13 +187,13 @@ class CompanyProcessor:
             logger.exception(f"  ❌ 處理 {code} 三大法人資料時發生未預期錯誤：")
             return False, status
 
-    def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False, margin_trading_data: Dict[str, Any] = None) -> tuple[bool, dict]:
+    def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False) -> tuple[bool, dict]:
         """
-        每日更新：市值（Yahoo）+ 三大法人（FinMind）+ 融資融券（傳入資料）合併為單次 load/save。
-        成功條件：所有必要 API 都拿到資料 AND 存檔成功。
-        任一缺失 → 仍嘗試儲存已取得的部分，但回傳 False（進 rerun queue）。
+        每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。
+        成功條件：兩者都拿到資料 AND 存檔成功。
+        任一缺失 → 儲存已取得部分 + 進 rerun queue。
         """
-        status = {"marketcap": False, "inst": False, "margin": bool(margin_trading_data), "skipped": False}
+        status = {"marketcap": False, "inst": False, "skipped": False}
 
         if not force_update and self.file_mgr.is_updated_today(code):
             logger.info(f"  ✓ Skipping {code} (already updated today)")
@@ -215,26 +215,22 @@ class CompanyProcessor:
             if not inst_success:
                 logger.warning(f"  ⚠️ {code}: 無法從 FinMind 取得三大法人資料。")
 
-            # 3. 三者都失敗 → 不寫檔
-            if not status["marketcap"] and not status["inst"] and not status["margin"]:
+            # 兩者都失敗 → 不寫檔
+            if not status["marketcap"] and not status["inst"]:
                 logger.warning(f"  ❌ {code} {name}: 每日更新相關資料均無法取得，略過儲存。")
                 return False, status
 
-            # 4. 讀一次 → 合併有取得的部分 → 存一次
+            # 讀一次 → 合併有取得的部分 → 存一次
             existing_data = self.file_mgr.load_financial_data(code)
             if status["marketcap"]:
                 existing_data = self.assembler.merge_valuation(existing_data, valuation_stats)
             if status["inst"]:
                 existing_data = self.assembler.merge_institutional_investors(existing_data, ratios)
-            if status["margin"]:
-                existing_data = self.assembler.merge_margin_trading(existing_data, margin_trading_data)
 
             if not self._save_cleaned(code, existing_data):
                 logger.error(f"  ❌ 儲存 {code} 的每日更新資料失敗。")
                 return False, status
 
-            # 5. 市值+法人都成功才算完成；margin 為附加資料，不影響 rerun 判斷
-            #    （非融資券股票不在 margin_lookup → margin_data=None → 不算失敗）
             overall_success = status["marketcap"] and status["inst"]
             if overall_success:
                 logger.debug(f"  ✔️ {code} {name}: 每日更新完畢。")
