@@ -5,7 +5,7 @@ Usage:
   uv run finance_tools/cli.py [COMMAND] [OPTIONS]
 
 Commands:
-  update-daily          - 每日更新：市值（Yahoo）+ 三大法人（FinMind）。
+  update-marketcap-inst - 每日更新：市值（Yahoo）+ 三大法人（FinMind）。
   full-update           - 全量更新：財務報表、營收。
   update-revenue        - 僅更新月營收。
   import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
@@ -47,7 +47,7 @@ logging.basicConfig(
 
 # Import the run functions from the newly created task modules
 from finance_tools.orchestration.full_update import run_full_update
-from finance_tools.orchestration.daily_update import run_update_daily
+from finance_tools.orchestration.marketcap_inst_update import run_update_marketcap_inst
 from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
 from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
@@ -78,10 +78,10 @@ def main():
     
     subparsers = parser.add_subparsers(dest="command", required=True, help="可用的指令")
 
-    # --- 'update-daily' command ---
-    parser_daily = subparsers.add_parser("update-daily", help="每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。")
+    # --- 'update-marketcap-inst' command ---
+    parser_daily = subparsers.add_parser("update-marketcap-inst", help="每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。")
     add_common_arguments(parser_daily, include_force=True, include_rerun=True)
-    parser_daily.set_defaults(func=run_update_daily)
+    parser_daily.set_defaults(func=run_update_marketcap_inst)
 
     # --- 'full-update' command ---
     parser_full = subparsers.add_parser("full-update", help="更新財務報表、營收和股利。")

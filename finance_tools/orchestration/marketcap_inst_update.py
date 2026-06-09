@@ -39,7 +39,7 @@ def _load_json(path: Path) -> dict:
         return {}
 
 
-def run_update_daily(args):
+def run_update_marketcap_inst(args):
     """
     每日更新任務：市值（Yahoo Finance）+ 三大法人（FinMind）。
     每家公司一次 load/save，兩者都成功才移出 rerun queue。
