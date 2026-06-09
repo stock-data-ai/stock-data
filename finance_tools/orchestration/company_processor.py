@@ -185,45 +185,10 @@ class CompanyProcessor:
             logger.exception(f"  ❌ 處理 {code} 時發生未預期錯誤：")
             return False, status
 
-    def process_institutional_investors_only(self, code: str, name: str, start_date: str, force_update: bool = False) -> tuple[bool, dict]:
-        """
-        Only updates institutional investors data (ratios + buy/sell shares).
-        Returns (success, status).
-        """
-        status = {"inst": False, "skipped": False}
-        if not force_update and self.file_mgr.is_updated_today(code):
-            logger.info(f"  ✓ Skipping {code} (already updated today)")
-            status["skipped"] = True
-            return True, status
-
-        logger.debug(f"正在處理 {code} {name} 的三大法人資料...")
-        try:
-            # 1. 擷取並整合三大法人資料
-            ratios, inst_success = self._build_ratios(code, start_date)
-            status["inst"] = inst_success
-
-            # 3. 讀取現有資料，只更新三大法人欄位
-            existing_data = self.file_mgr.load_financial_data(code)
-            final_data = self.assembler.merge_institutional_investors(existing_data, ratios)
-
-            # 4. 儲存
-            if self._save_cleaned(code, final_data):
-                logger.debug(f"  ✔️  三大法人資料處理完畢 {code} {name}。")
-                return True, status
-            else:
-                logger.error(f"  ❌ 儲存 {code} 的三大法人資料失敗。")
-                return False, status
-
-        except ApiExhaustedError:
-            raise
-        except Exception:
-            logger.exception(f"  ❌ 處理 {code} 三大法人資料時發生未預期錯誤：")
-            return False, status
-
     def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False,
                            pre_inst=None, pre_shareholding=None) -> tuple[bool, dict]:
         """
-        每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。
+        每日更新：市值（Yahoo）+ 三大法人（TWSE/TPEx），單次 load/save。
         成功條件：兩者都拿到資料 AND 存檔成功。
         任一缺失 → 儲存已取得部分 + 進 rerun queue。
         """
@@ -247,7 +212,7 @@ class CompanyProcessor:
             ratios, inst_success = self._build_ratios(code, start_date, pre_inst, pre_shareholding)
             status["inst"] = inst_success
             if not inst_success:
-                logger.warning(f"  ⚠️ {code}: 無法從 FinMind 取得三大法人資料。")
+                logger.warning(f"  ⚠️ {code}: 無法取得三大法人資料。")
 
             # 兩者都失敗 → 不寫檔
             if not status["marketcap"] and not status["inst"]:
@@ -279,42 +244,4 @@ class CompanyProcessor:
             logger.exception(f"  ❌ 處理 {code} {name} 每日更新時發生未預期錯誤：")
             return False, status
 
-    def process_marketcap_only(self, code: str, name: str, force_update: bool = False) -> tuple[bool, dict]:
-        """
-        Only updates market cap and valuation data (PE, PB, Yield) using Yahoo Finance.
-        Returns (success, status).
-        """
-        status = {"marketcap": False, "skipped": False}
-        if not force_update and self.file_mgr.is_updated_today(code):
-            logger.info(f"  ✓ Skipping {code} (already updated today)")
-            status["skipped"] = True
-            return True, status
 
-        logger.debug(f"正在處理 {code} {name} 的市值與估值資料...")
-        try:
-            # 直接從 Yahoo 取得完整估值統計數據
-            valuation_stats = self.fetch_orchestrator.fetch_valuation_stats(code)
-
-            if valuation_stats and valuation_stats.get("marketCap"):
-                status["marketcap"] = True
-            else:
-                logger.warning(f"  ⚠️ 無法從 Yahoo 取得 {code} 的完整估值數據。")
-                return False, status
-
-            # 3. 讀取現有資料，更新市值與估值指標
-            existing_data = self.file_mgr.load_financial_data(code)
-            final_data = self.assembler.merge_valuation(existing_data, valuation_stats)
-
-            # 4. 儲存
-            if self._save_cleaned(code, final_data):
-                logger.debug(f"  ✔️ 從 Yahoo 取得市值與估值並處理完畢 {code} {name}。")
-                return True, status
-            else:
-                logger.error(f"  ❌ 儲存 {code} 的市值估值資料失敗。")
-                return False, status
-
-        except ApiExhaustedError:
-            raise
-        except Exception:
-            logger.exception(f"  ❌ 處理 {code} 市值資料時發生未預期錯誤：")
-            return False, status

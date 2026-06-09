@@ -9,29 +9,14 @@ TWSE / TPEx 三大法人買賣超 — 一次全市場批次撈取。
 """
 import json
 import logging
-import time
 import urllib.request
 from typing import Dict, Optional
 
 import requests
 
+from finance_tools.utils.retry import retry as _retry
+
 logger = logging.getLogger(__name__)
-
-_RETRY_DELAYS = (5, 15, 30)  # 秒，最多 3 次重試
-
-
-def _retry(fn, label: str):
-    """執行 fn()，失敗時最多重試 3 次（5s/15s/30s）。成功回傳結果，全部失敗回傳 None。"""
-    for attempt, delay in enumerate(_RETRY_DELAYS, 1):
-        result = fn()
-        if result is not None:
-            return result
-        logger.warning(f"{label} 第 {attempt} 次失敗，{delay}s 後重試...")
-        time.sleep(delay)
-    result = fn()  # 最後一次嘗試
-    if result is None:
-        logger.error(f"{label} 全部重試失敗")
-    return result
 
 # Keys used by company_processor to build FinMind-compatible DataFrame
 class InstitutionalRecord:

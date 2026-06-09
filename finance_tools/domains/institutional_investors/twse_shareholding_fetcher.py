@@ -8,28 +8,14 @@ TWSE / TPEx 外資持股比例 — 一次全市場批次撈取。
 """
 import json
 import logging
-import time
 import urllib.request
 from typing import Dict, Optional
 
 import requests
 
+from finance_tools.utils.retry import retry as _retry
+
 logger = logging.getLogger(__name__)
-
-_RETRY_DELAYS = (5, 15, 30)
-
-
-def _retry(fn, label: str):
-    for attempt, delay in enumerate(_RETRY_DELAYS, 1):
-        result = fn()
-        if result is not None:
-            return result
-        logger.warning(f"{label} 第 {attempt} 次失敗，{delay}s 後重試...")
-        time.sleep(delay)
-    result = fn()
-    if result is None:
-        logger.error(f"{label} 全部重試失敗")
-    return result
 
 
 class TWSEShareholdingFetcher:
