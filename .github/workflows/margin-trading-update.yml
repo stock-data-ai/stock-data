@@ -1,0 +1,60 @@
+name: Margin Trading Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Target date (YYYYMMDD, default: auto)'
+        required: false
+        default: ''
+      backfill_from:
+        description: 'Backfill from date to today (YYYYMMDD), e.g. 20260529'
+        required: false
+        default: ''
+
+concurrency:
+  group: margin-trading-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Update margin trading data
+        run: |
+          BACKFILL="${{ inputs.backfill_from }}"
+          DATE="${{ inputs.date }}"
+          if [ -n "$BACKFILL" ]; then
+            uv run finance_tools/cli.py update-margin --backfill-from "$BACKFILL"
+          elif [ -n "$DATE" ]; then
+            uv run finance_tools/cli.py update-margin --date "$DATE"
+          else
+            uv run finance_tools/cli.py update-margin
+          fi
+
+      - name: Commit margin trading data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "更新融資融券數據 $(date -u +%Y-%m-%d)"
+          git pull --rebase -X ours origin main
+          git push
