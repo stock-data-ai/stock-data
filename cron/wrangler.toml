@@ -20,6 +20,7 @@ crons = [
   "0 11 * * *",           # scraper-mops              台灣 19:00 每天
   "30 11 * * *",          # etf-active-daily          台灣 19:30 每天
   "0 13 * * 2,3,4,5,6",  # market-sentiment          台灣 21:00 週一到週五（第二次備援）
+  "30 13 * * 2,3,4,5,6", # margin-trading-update     台灣 21:30 週一到週五
   "30 13 * * *",          # scraper-economic-daily    台灣 21:30 每天
   "0 19 * * 1",           # cleanup-workflow-runs     台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
   "0 15 * * *",           # health-check              台灣 23:00 每天
