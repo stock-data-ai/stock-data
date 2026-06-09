@@ -93,40 +93,14 @@ def run_update_daily(args):
     )
 
     start_date = (now_tw() - timedelta(days=config.DEFAULT_FETCH_DAYS)).strftime("%Y-%m-%d")
-    
-    # --- [New] Fetch all margin trading data for today/target date ---
-    # Determine target date for margin (same logic as in margin_trading/tasks.py)
-    now = now_tw()
-    if now.hour < 18: 
-        margin_target_date = (now - timedelta(days=1)).strftime("%Y%m%d")
-    else:
-        margin_target_date = now.strftime("%Y%m%d")
-    
-    margin_df = company_processor.fetch_orchestrator.fetch_all_margin_trading(margin_target_date)
-    margin_lookup = {}
-    margin_fetch_ok = False
-    if margin_df is not None and not margin_df.empty:
-        formatted_margin_date = f"{margin_target_date[:4]}-{margin_target_date[4:6]}-{margin_target_date[6:]}"
-        for _, row in margin_df.iterrows():
-            margin_lookup[str(row['stock_id'])] = {**row.to_dict(), "date": formatted_margin_date}
-        margin_fetch_ok = True
-        logger.info(f"已預抓 {len(margin_lookup)} 筆融資融券資料（{formatted_margin_date}）。")
-    else:
-        logger.warning(f"無法取得 {margin_target_date} 的融資融券資料，本次跳過資券更新。")
-    # --- [End New] ---
 
     success_count = 0
     failed_companies = []
     quality_issues = []
-    if not margin_fetch_ok:
-        quality_issues.append(f"融資融券(TWSE/TPEx) 整批 API 失敗，{margin_target_date} 資料未更新")
 
     for idx, company in enumerate(companies, 1):
         code = company["code"]
         name = company.get("name", code)
-        
-        # Get pre-fetched margin data for this specific stock
-        margin_data = margin_lookup.get(code)
 
         try:
             success, status = company_processor.process_daily_only(
@@ -134,7 +108,6 @@ def run_update_daily(args):
                 name=name,
                 start_date=start_date,
                 force_update=is_force_update,
-                margin_trading_data=margin_data
             )
 
             if status.get("skipped"):
