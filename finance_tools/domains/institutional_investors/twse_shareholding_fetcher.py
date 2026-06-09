@@ -8,12 +8,28 @@ TWSE / TPEx 外資持股比例 — 一次全市場批次撈取。
 """
 import json
 import logging
+import time
 import urllib.request
 from typing import Dict, Optional
 
 import requests
 
 logger = logging.getLogger(__name__)
+
+_RETRY_DELAYS = (5, 15, 30)
+
+
+def _retry(fn, label: str):
+    for attempt, delay in enumerate(_RETRY_DELAYS, 1):
+        result = fn()
+        if result is not None:
+            return result
+        logger.warning(f"{label} 第 {attempt} 次失敗，{delay}s 後重試...")
+        time.sleep(delay)
+    result = fn()
+    if result is None:
+        logger.error(f"{label} 全部重試失敗")
+    return result
 
 
 class TWSEShareholdingFetcher:
@@ -32,14 +48,14 @@ class TWSEShareholdingFetcher:
         """
         result: Dict[str, float] = {}
 
-        listed = self._fetch_listed()
+        listed = _retry(self._fetch_listed, "TWSE MI_QFIIS")
         if listed is not None:
             result.update(listed)
             logger.info(f"TWSE MI_QFIIS: {len(listed)} 支上市股票外資持股比例")
         else:
             logger.warning("TWSE MI_QFIIS: 無法取得資料")
 
-        otc = self._fetch_otc()
+        otc = _retry(self._fetch_otc, "TPEx tpex_3insti_qfii")
         if otc is not None:
             result.update(otc)
             logger.info(f"TPEx tpex_3insti_qfii: {len(otc)} 支上櫃股票外資持股比例")

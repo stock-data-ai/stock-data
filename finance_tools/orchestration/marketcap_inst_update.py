@@ -6,9 +6,6 @@ import logging
 import json
 from pathlib import Path
 
-from loguru import logger as loguru_logger
-loguru_logger.disable("FinMind")
-
 from finance_tools.core import FinMindClient, DataProcessor, FileManager
 from finance_tools.core.exceptions import ApiExhaustedError
 from finance_tools.core.timezone import now_tw
@@ -43,10 +40,9 @@ def _load_json(path: Path) -> dict:
 
 def run_update_marketcap_inst(args):
     """
-    每日更新任務：市值（Yahoo Finance）+ 三大法人（FinMind）。
+    每日更新任務：市值（Yahoo Finance）+ 三大法人（TWSE/TPEx）。
     每家公司一次 load/save，兩者都成功才移出 rerun queue。
-    任一 API 回傳空資料（可能為暫時性問題）→ 儲存已取得部分 + 進 rerun queue。
-    FinMind ApiExhaustedError → 立即 exit，等 GitHub Actions 觸發下一輪重試。
+    任一 API 回傳空資料 → 儲存已取得部分 + 進 rerun queue。
     """
     logger.info("正在執行每日更新（市值 + 三大法人）...")
 
@@ -57,7 +53,7 @@ def run_update_marketcap_inst(args):
     processor_data = DataProcessor()
     file_mgr = FileManager()
 
-    # ── TWSE/TPEx 批次預撈（一次取回全市場，取代 FinMind per-stock）────────
+    # ── TWSE/TPEx 批次預撈 ───────────────────────────────────────────────
     today_str = now_tw().strftime("%Y%m%d")
     inst_fetcher = TWSEInstitutionalFetcher()
     shareholding_fetcher_twse = TWSEShareholdingFetcher()
@@ -69,11 +65,10 @@ def run_update_marketcap_inst(args):
     if use_twse:
         logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}")
     else:
-        logger.warning("⚠️  TWSE/TPEx 批次撈取失敗，退回 FinMind per-stock 模式")
+        logger.warning("⚠️  TWSE/TPEx 批次撈取失敗（含重試），退回 FinMind per-stock 模式")
         pre_inst = None
         pre_shareholding = None
 
-    # FinMind 僅在 fallback 模式下使用（TWSE 失敗時）
     client = FinMindClient() if not use_twse else None
     if not use_twse and client:
         user_count, api_limit = client.check_api_usage()
@@ -95,9 +90,8 @@ def run_update_marketcap_inst(args):
         return
 
     is_force_update = args.force or args.code is not None or args.rerun
-    logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}，TWSE={'是' if use_twse else '否/fallback'}）。")
+    logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}，三大法人來源={'TWSE' if use_twse else 'FinMind'}）。")
 
-    # fallback 模式下 client 才會是非 None
     finmind_shares = (lambda sid, sd: fetch_institutional_investors_shares(client, sid, sd)) if client else None
     finmind_shareholding = (lambda sid, sd: fetch_shareholding(client, sid, sd)) if client else None
 
@@ -146,7 +140,7 @@ def run_update_marketcap_inst(args):
                 if not status.get("marketcap"):
                     missing.append("市值(Yahoo)")
                 if not status.get("inst"):
-                    missing.append("三大法人(FinMind)")
+                    missing.append("三大法人(TWSE)")
                 if missing:
                     quality_issues.append(f"{code} {name}: 缺失 {', '.join(missing)}")
 

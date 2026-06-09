@@ -59,8 +59,8 @@ class CompanyProcessor:
         擷取並整合三大法人持股比例與買賣超資料，回傳 (ratios_dict, inst_success)。
 
         pre_inst / pre_shareholding（來自 TWSEInstitutionalFetcher / TWSEShareholdingFetcher）:
-          - 有傳入 → 使用 TWSE/TPEx 預先批次撈取的資料（無 FinMind 呼叫）
-          - None   → 退回 FinMind per-stock 呼叫（full_update、測試等情境）
+          - 有傳入 → 使用 TWSE/TPEx 預先批次撈取的資料
+          - None   → FinMind per-stock 呼叫（full_update 路徑）
         """
         if pre_inst is not None:
             # ── TWSE/TPEx 路徑 ─────────────────────────────────────
@@ -79,7 +79,7 @@ class CompanyProcessor:
             else:
                 foreign_ratios = {}
         else:
-            # ── FinMind 路徑（fallback）────────────────────────────
+            # ── FinMind 路徑（full_update）─────────────────────────
             shareholding_df, _ = self.fetch_orchestrator.fetch_shareholding(code, start_date)
             shares_df, shares_success = self.fetch_orchestrator.fetch_institutional_investors_shares(code, start_date)
             foreign_ratios = self.inst_ratio_calculator.calculate_foreign_ratio(shareholding_df)
@@ -243,7 +243,7 @@ class CompanyProcessor:
 
             time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
-            # 2. 三大法人（TWSE pre-fetched 或 FinMind fallback）
+            # 2. 三大法人
             ratios, inst_success = self._build_ratios(code, start_date, pre_inst, pre_shareholding)
             status["inst"] = inst_success
             if not inst_success:
