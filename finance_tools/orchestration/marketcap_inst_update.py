@@ -6,11 +6,8 @@ import logging
 import json
 from pathlib import Path
 
-from finance_tools.core import FinMindClient, DataProcessor, FileManager
-from finance_tools.core.exceptions import ApiExhaustedError
+from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.timezone import now_tw
-from finance_tools.domains.shareholder.shareholding_fetcher import fetch_shareholding
-from finance_tools.domains.institutional_investors.shares_fetcher import fetch_institutional_investors_shares
 from finance_tools.domains.institutional_investors.twse_fetcher import TWSEInstitutionalFetcher
 from finance_tools.domains.institutional_investors.twse_shareholding_fetcher import TWSEShareholdingFetcher
 from finance_tools.orchestration.company_processor import CompanyProcessor
@@ -18,7 +15,6 @@ from finance_tools.domains.institutional_investors.calculator import InstRatioCa
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.rerun_manager import RerunManager
 from finance_tools.utils.quality_report import save_quality_report
-from finance_tools.utils.task_helpers import handle_api_exhausted
 import finance_tools.config as config
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -55,30 +51,14 @@ def run_update_marketcap_inst(args):
 
     # ── TWSE/TPEx 批次預撈 ───────────────────────────────────────────────
     today_str = now_tw().strftime("%Y%m%d")
-    inst_fetcher = TWSEInstitutionalFetcher()
-    shareholding_fetcher_twse = TWSEShareholdingFetcher()
+    pre_inst = TWSEInstitutionalFetcher().fetch_all(today_str)
+    pre_shareholding = TWSEShareholdingFetcher().fetch_all()
 
-    pre_inst = inst_fetcher.fetch_all(today_str)
-    pre_shareholding = shareholding_fetcher_twse.fetch_all()
+    if not pre_inst:
+        logger.error("❌ TWSE/TPEx 三大法人批次撈取失敗（含重試），中止執行。")
+        sys.exit(1)
 
-    use_twse = bool(pre_inst)
-    if use_twse:
-        logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}")
-    else:
-        logger.warning("⚠️  TWSE/TPEx 批次撈取失敗（含重試），退回 FinMind per-stock 模式")
-        pre_inst = None
-        pre_shareholding = None
-
-    client = FinMindClient() if not use_twse else None
-    if not use_twse and client:
-        user_count, api_limit = client.check_api_usage()
-        if user_count is not None and api_limit is not None:
-            logger.info(f"FinMind API 用量: {user_count}/{api_limit}")
-            if user_count >= api_limit * 0.9:
-                logger.warning("⚠️  FinMind API 用量接近上限，提前退出。")
-                companies_for_queue = load_companies_for_processing(args, file_mgr, read_mgr)
-                write_mgr.save([c["code"] for c in companies_for_queue])
-                sys.exit(1)
+    logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}")
 
     seeds = _load_json(_SEEDS_FILE)
     companies_data = _load_json(_COMPANIES_FILE)
@@ -90,20 +70,17 @@ def run_update_marketcap_inst(args):
         return
 
     is_force_update = args.force or args.code is not None or args.rerun
-    logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}，三大法人來源={'TWSE' if use_twse else 'FinMind'}）。")
-
-    finmind_shares = (lambda sid, sd: fetch_institutional_investors_shares(client, sid, sd)) if client else None
-    finmind_shareholding = (lambda sid, sd: fetch_shareholding(client, sid, sd)) if client else None
+    logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}）。")
 
     company_processor = CompanyProcessor(
         processor=processor_data,
         file_mgr=file_mgr,
-        finmind_client=client,
+        finmind_client=None,
         financials_fetcher=None,
         revenue_fetcher=None,
         all_companies_details=companies_data,
-        institutional_investors_shares_fetcher=finmind_shares,
-        shareholding_fetcher=finmind_shareholding,
+        institutional_investors_shares_fetcher=None,
+        shareholding_fetcher=None,
         inst_ratio_calculator=inst_ratio_calc,
     )
 
@@ -135,7 +112,6 @@ def run_update_marketcap_inst(args):
                 success_count += 1
             else:
                 failed_companies.append(code)
-                # 記錄是哪一部分缺失
                 missing = []
                 if not status.get("marketcap"):
                     missing.append("市值(Yahoo)")
@@ -146,12 +122,6 @@ def run_update_marketcap_inst(args):
 
             logger.info(f"[{idx}/{len(companies)}] {'✔' if success else '✘'} {code} {name}")
 
-        except ApiExhaustedError:
-            handle_api_exhausted(
-                "daily", batch, write_mgr,
-                failed_companies, code, companies[idx:],
-                success_count, len(companies), quality_issues,
-            )
         except Exception:
             logger.exception(f"  ❌ 處理公司 {code} 時發生未預期錯誤:")
             failed_companies.append(code)
@@ -169,9 +139,4 @@ def run_update_marketcap_inst(args):
         write_mgr.save(failed_companies)
     else:
         write_mgr.clear()
-
-    if client:
-        user_count, api_limit = client.check_api_usage()
-        if user_count is not None and api_limit is not None:
-            logger.info(f"最終 FinMind API 用量: {user_count}/{api_limit}")
     logger.info(f"{'='*60}\n")
