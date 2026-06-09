@@ -42,15 +42,48 @@ class CompanyProcessor:
         cleaned = self.processor.clean_nan(data)
         return self.file_mgr.save_financial_data(code, cleaned)
 
-    def _build_ratios(self, code: str, start_date: str) -> tuple[dict, bool]:
+    def _make_finmind_df(self, code: str, record) -> pd.DataFrame:
+        """TWSE InstitutionalRecord → FinMind 相容 DataFrame（date, stock_id, name, buy, sell）"""
+        rows = [
+            {"date": record.date, "stock_id": code, "name": "Foreign_Investor",  "buy": record.Foreign_Investor_buy,  "sell": record.Foreign_Investor_sell},
+            {"date": record.date, "stock_id": code, "name": "Foreign_Dealer",    "buy": record.Foreign_Dealer_buy,    "sell": record.Foreign_Dealer_sell},
+            {"date": record.date, "stock_id": code, "name": "Investment_Trust",  "buy": record.Investment_Trust_buy,  "sell": record.Investment_Trust_sell},
+            {"date": record.date, "stock_id": code, "name": "Dealer_self",       "buy": record.Dealer_self_buy,       "sell": record.Dealer_self_sell},
+            {"date": record.date, "stock_id": code, "name": "Dealer_hedging",    "buy": record.Dealer_hedging_buy,    "sell": record.Dealer_hedging_sell},
+        ]
+        return pd.DataFrame(rows)
+
+    def _build_ratios(self, code: str, start_date: str,
+                      pre_inst=None, pre_shareholding=None) -> tuple[dict, bool]:
         """
         擷取並整合三大法人持股比例與買賣超資料，回傳 (ratios_dict, inst_success)。
-        外資比例來自 TaiwanStockShareholding，投信/自營商從累積推估。
-        """
-        shareholding_df, _ = self.fetch_orchestrator.fetch_shareholding(code, start_date)
-        shares_df, shares_success = self.fetch_orchestrator.fetch_institutional_investors_shares(code, start_date)
 
-        foreign_ratios = self.inst_ratio_calculator.calculate_foreign_ratio(shareholding_df)
+        pre_inst / pre_shareholding（來自 TWSEInstitutionalFetcher / TWSEShareholdingFetcher）:
+          - 有傳入 → 使用 TWSE/TPEx 預先批次撈取的資料（無 FinMind 呼叫）
+          - None   → 退回 FinMind per-stock 呼叫（full_update、測試等情境）
+        """
+        if pre_inst is not None:
+            # ── TWSE/TPEx 路徑 ─────────────────────────────────────
+            inst_record = pre_inst.get(code)
+            if inst_record:
+                shares_df = self._make_finmind_df(code, inst_record)
+                shares_success = True
+            else:
+                shares_df = pd.DataFrame()
+                shares_success = False
+
+            if pre_shareholding is not None:
+                ratio = pre_shareholding.get(code)
+                inst_date = inst_record.date if inst_record else None
+                foreign_ratios = {inst_date: ratio} if ratio is not None and inst_date else {}
+            else:
+                foreign_ratios = {}
+        else:
+            # ── FinMind 路徑（fallback）────────────────────────────
+            shareholding_df, _ = self.fetch_orchestrator.fetch_shareholding(code, start_date)
+            shares_df, shares_success = self.fetch_orchestrator.fetch_institutional_investors_shares(code, start_date)
+            foreign_ratios = self.inst_ratio_calculator.calculate_foreign_ratio(shareholding_df)
+
         trust_dealer_ratios = self.inst_ratio_calculator.calculate_trust_dealer_ratio(code, shares_df) if shares_success else {}
 
         ratios: dict = {}
@@ -187,7 +220,8 @@ class CompanyProcessor:
             logger.exception(f"  ❌ 處理 {code} 三大法人資料時發生未預期錯誤：")
             return False, status
 
-    def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False) -> tuple[bool, dict]:
+    def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False,
+                           pre_inst=None, pre_shareholding=None) -> tuple[bool, dict]:
         """
         每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。
         成功條件：兩者都拿到資料 AND 存檔成功。
@@ -209,8 +243,8 @@ class CompanyProcessor:
 
             time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
-            # 2. FinMind 三大法人
-            ratios, inst_success = self._build_ratios(code, start_date)
+            # 2. 三大法人（TWSE pre-fetched 或 FinMind fallback）
+            ratios, inst_success = self._build_ratios(code, start_date, pre_inst, pre_shareholding)
             status["inst"] = inst_success
             if not inst_success:
                 logger.warning(f"  ⚠️ {code}: 無法從 FinMind 取得三大法人資料。")

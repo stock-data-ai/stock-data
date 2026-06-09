@@ -56,8 +56,11 @@ class FinancialCalculator:
         df['net_buy'] = df['buy'] - df['sell']
 
         name_map = {
-            'Foreign_Investor': 'foreign', 'Investment_Trust': 'trust',
-            'Dealer_self': 'dealer_self', 'Dealer_hedging': 'dealer_hedging'
+            'Foreign_Investor': 'foreign',
+            'Foreign_Dealer':   'foreign_dealer',  # 外資自營商（T86 col[5-7]）
+            'Investment_Trust': 'trust',
+            'Dealer_self':      'dealer_self',
+            'Dealer_hedging':   'dealer_hedging',
         }
         df['inst_type'] = df['name'].map(name_map)
         df.dropna(subset=['inst_type'], inplace=True)

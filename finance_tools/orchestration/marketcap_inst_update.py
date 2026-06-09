@@ -14,6 +14,8 @@ from finance_tools.core.exceptions import ApiExhaustedError
 from finance_tools.core.timezone import now_tw
 from finance_tools.domains.shareholder.shareholding_fetcher import fetch_shareholding
 from finance_tools.domains.institutional_investors.shares_fetcher import fetch_institutional_investors_shares
+from finance_tools.domains.institutional_investors.twse_fetcher import TWSEInstitutionalFetcher
+from finance_tools.domains.institutional_investors.twse_shareholding_fetcher import TWSEShareholdingFetcher
 from finance_tools.orchestration.company_processor import CompanyProcessor
 from finance_tools.domains.institutional_investors.calculator import InstRatioCalculator
 from finance_tools.utils.company_list_loader import load_companies_for_processing
@@ -52,21 +54,36 @@ def run_update_marketcap_inst(args):
     read_mgr = RerunManager("daily")
     write_mgr = RerunManager("daily", batch)
 
-    client = FinMindClient()
     processor_data = DataProcessor()
     file_mgr = FileManager()
 
-    # API 用量預檢
-    user_count, api_limit = client.check_api_usage()
-    if user_count is not None and api_limit is not None:
-        logger.info(f"FinMind API 用量: {user_count}/{api_limit}")
-        if user_count >= api_limit * 0.9:
-            logger.warning("⚠️  API 用量接近上限，提前退出。")
-            companies_for_queue = load_companies_for_processing(args, file_mgr, read_mgr)
-            write_mgr.save([c["code"] for c in companies_for_queue])
-            sys.exit(1)
+    # ── TWSE/TPEx 批次預撈（一次取回全市場，取代 FinMind per-stock）────────
+    today_str = now_tw().strftime("%Y%m%d")
+    inst_fetcher = TWSEInstitutionalFetcher()
+    shareholding_fetcher_twse = TWSEShareholdingFetcher()
+
+    pre_inst = inst_fetcher.fetch_all(today_str)
+    pre_shareholding = shareholding_fetcher_twse.fetch_all()
+
+    use_twse = bool(pre_inst)
+    if use_twse:
+        logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}")
     else:
-        logger.warning("無法取得 FinMind API 用量資訊。")
+        logger.warning("⚠️  TWSE/TPEx 批次撈取失敗，退回 FinMind per-stock 模式")
+        pre_inst = None
+        pre_shareholding = None
+
+    # FinMind 僅在 fallback 模式下使用（TWSE 失敗時）
+    client = FinMindClient() if not use_twse else None
+    if not use_twse and client:
+        user_count, api_limit = client.check_api_usage()
+        if user_count is not None and api_limit is not None:
+            logger.info(f"FinMind API 用量: {user_count}/{api_limit}")
+            if user_count >= api_limit * 0.9:
+                logger.warning("⚠️  FinMind API 用量接近上限，提前退出。")
+                companies_for_queue = load_companies_for_processing(args, file_mgr, read_mgr)
+                write_mgr.save([c["code"] for c in companies_for_queue])
+                sys.exit(1)
 
     seeds = _load_json(_SEEDS_FILE)
     companies_data = _load_json(_COMPANIES_FILE)
@@ -78,7 +95,11 @@ def run_update_marketcap_inst(args):
         return
 
     is_force_update = args.force or args.code is not None or args.rerun
-    logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}）。")
+    logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}，TWSE={'是' if use_twse else '否/fallback'}）。")
+
+    # fallback 模式下 client 才會是非 None
+    finmind_shares = (lambda sid, sd: fetch_institutional_investors_shares(client, sid, sd)) if client else None
+    finmind_shareholding = (lambda sid, sd: fetch_shareholding(client, sid, sd)) if client else None
 
     company_processor = CompanyProcessor(
         processor=processor_data,
@@ -87,8 +108,8 @@ def run_update_marketcap_inst(args):
         financials_fetcher=None,
         revenue_fetcher=None,
         all_companies_details=companies_data,
-        institutional_investors_shares_fetcher=lambda stock_id, start_date: fetch_institutional_investors_shares(client, stock_id, start_date),
-        shareholding_fetcher=lambda stock_id, start_date: fetch_shareholding(client, stock_id, start_date),
+        institutional_investors_shares_fetcher=finmind_shares,
+        shareholding_fetcher=finmind_shareholding,
         inst_ratio_calculator=inst_ratio_calc,
     )
 
@@ -108,6 +129,8 @@ def run_update_marketcap_inst(args):
                 name=name,
                 start_date=start_date,
                 force_update=is_force_update,
+                pre_inst=pre_inst,
+                pre_shareholding=pre_shareholding,
             )
 
             if status.get("skipped"):
@@ -153,7 +176,8 @@ def run_update_marketcap_inst(args):
     else:
         write_mgr.clear()
 
-    user_count, api_limit = client.check_api_usage()
-    if user_count is not None and api_limit is not None:
-        logger.info(f"最終 FinMind API 用量: {user_count}/{api_limit}")
+    if client:
+        user_count, api_limit = client.check_api_usage()
+        if user_count is not None and api_limit is not None:
+            logger.info(f"最終 FinMind API 用量: {user_count}/{api_limit}")
     logger.info(f"{'='*60}\n")
