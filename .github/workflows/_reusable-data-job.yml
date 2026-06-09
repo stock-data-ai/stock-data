@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       commands_json:
-        description: 'JSON array of commands, e.g. [{"id":"daily","cli":"update-daily","label":"市值+三大法人"}]'
+        description: 'JSON array of commands, e.g. [{"id":"daily","cli":"update-marketcap-inst","label":"市值+三大法人"}]'
         required: true
         type: string
       artifact_prefix:

@@ -140,9 +140,9 @@ class TestImports(unittest.TestCase):
         from finance_tools.orchestration.full_update import run_full_update
         self.assertIsNotNone(run_full_update)
 
-    def test_import_update_daily(self):
-        from finance_tools.orchestration.daily_update import run_update_daily
-        self.assertIsNotNone(run_update_daily)
+    def test_import_update_marketcap_inst(self):
+        from finance_tools.orchestration.marketcap_inst_update import run_update_marketcap_inst
+        self.assertIsNotNone(run_update_marketcap_inst)
 
     def test_import_fetch_shareholder_data(self):
         from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
