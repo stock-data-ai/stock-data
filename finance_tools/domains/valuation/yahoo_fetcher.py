@@ -1,3 +1,4 @@
+import time
 import yfinance as yf
 import pandas as pd
 import logging
@@ -73,42 +74,37 @@ class YahooFetcher:
             return float(df['Close'].iloc[-1])
         return None
 
+    def _get_ticker_info(self, symbol: str) -> Optional[dict]:
+        ticker = yf.Ticker(symbol)
+        info = ticker.info
+        return info if info and "marketCap" in info else None
+
     def fetch_market_stats(self, stock_id: str) -> Dict[str, Any]:
-        """
-        Fetches key statistics like market cap, PE, PB from Yahoo.
-        """
+        """Fetches market cap, PE, PB from Yahoo. Retries 3x, returns {} on all failures."""
         symbol = self.to_yahoo_symbol(stock_id)
-        
-        def get_info(s):
+        alt_symbol = symbol.replace(".TW", ".TWO") if symbol.endswith(".TW") else None
+
+        info = None
+        for attempt in range(3):
             try:
-                ticker = yf.Ticker(s)
-                info = ticker.info
-                if not info or 'marketCap' not in info:
-                    return None
-                return info
-            except Exception:
-                return None
+                info = self._get_ticker_info(symbol)
+                if info is None and alt_symbol:
+                    info = self._get_ticker_info(alt_symbol)
+                if info:
+                    break
+            except Exception as e:
+                logger.debug(f"Yahoo {stock_id} attempt {attempt + 1}/3: {e}")
+            if attempt < 2:
+                time.sleep(2 ** attempt)
 
-        try:
-            info = get_info(symbol)
-            
-            # If failed and it's a 4-digit code, try .TWO (OTC)
-            if not info and symbol.endswith(".TW"):
-                alt_symbol = symbol.replace(".TW", ".TWO")
-                logger.debug(f"No info for {symbol}, trying {alt_symbol}")
-                info = get_info(alt_symbol)
-
-            if not info:
-                return {}
-
-            return {
-                "marketCap": info.get("marketCap"),
-                "trailingPE": info.get("trailingPE"),
-                "priceToBook": info.get("priceToBook"),
-                "dividendYield": info.get("dividendYield"),
-                "beta": info.get("beta"),
-                "currentPrice": info.get("currentPrice") or info.get("regularMarketPrice"),
-            }
-        except Exception as e:
-            logger.debug(f"Error fetching Yahoo market stats for {stock_id}: {e}")
+        if not info:
             return {}
+
+        return {
+            "marketCap": info.get("marketCap"),
+            "trailingPE": info.get("trailingPE"),
+            "priceToBook": info.get("priceToBook"),
+            "dividendYield": info.get("dividendYield"),
+            "beta": info.get("beta"),
+            "currentPrice": info.get("currentPrice") or info.get("regularMarketPrice"),
+        }

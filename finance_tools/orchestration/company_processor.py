@@ -188,9 +188,8 @@ class CompanyProcessor:
     def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False,
                            pre_inst=None, pre_shareholding=None) -> tuple[bool, dict]:
         """
-        每日更新：市值（Yahoo）+ 三大法人（TWSE/TPEx），單次 load/save。
-        成功條件：兩者都拿到資料 AND 存檔成功。
-        任一缺失 → 儲存已取得部分 + 進 rerun queue。
+        每日更新：市值（Yahoo，3次retry）+ 三大法人（TWSE/TPEx批次lookup）。
+        找不到 = 今日無資料，不算失敗，不進 rerun queue。
         """
         status = {"marketcap": False, "inst": False, "skipped": False}
 
@@ -200,43 +199,28 @@ class CompanyProcessor:
             return True, status
 
         try:
-            # 1. Yahoo Finance
+            # 1. Yahoo Finance（YahooFetcher 內建 3 次 retry）
             valuation_stats = self.fetch_orchestrator.fetch_valuation_stats(code)
             status["marketcap"] = bool(valuation_stats.get("marketCap"))
-            if not status["marketcap"]:
-                logger.warning(f"  ⚠️ {code}: 無法從 Yahoo 取得市值。")
 
             time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
-            # 2. 三大法人
-            ratios, inst_success = self._build_ratios(code, start_date, pre_inst, pre_shareholding)
-            status["inst"] = inst_success
-            if not inst_success:
-                logger.warning(f"  ⚠️ {code}: 無法取得三大法人資料。")
+            # 2. 三大法人批次 lookup（找不到 = 今日無法人交易，非失敗）
+            ratios, _ = self._build_ratios(code, start_date, pre_inst, pre_shareholding)
+            status["inst"] = bool(ratios)
 
-            # 兩者都失敗 → 不寫檔
+            # 今日無任何資料可更新 → 略過儲存（正常情況，非失敗）
             if not status["marketcap"] and not status["inst"]:
-                logger.warning(f"  ❌ {code} {name}: 每日更新相關資料均無法取得，略過儲存。")
-                return False, status
+                logger.debug(f"  ⏭ {code} {name}: 今日無市值或法人資料，略過。")
+                return True, status
 
-            # 讀一次 → 合併有取得的部分 → 存一次
             existing_data = self.file_mgr.load_financial_data(code)
             if status["marketcap"]:
                 existing_data = self.assembler.merge_valuation(existing_data, valuation_stats)
             if status["inst"]:
                 existing_data = self.assembler.merge_institutional_investors(existing_data, ratios)
-
-            if not self._save_cleaned(code, existing_data):
-                logger.error(f"  ❌ 儲存 {code} 的每日更新資料失敗。")
-                return False, status
-
-            overall_success = status["marketcap"] and status["inst"]
-            if overall_success:
-                logger.debug(f"  ✔️ {code} {name}: 每日更新完畢。")
-            else:
-                missing = [k for k in ("marketcap", "inst") if not status[k]]
-                logger.warning(f"  ⚠️ {code} {name}: 部分缺失 {missing}，已儲存現有資料，列入重試。")
-            return overall_success, status
+            self._save_cleaned(code, existing_data)
+            return True, status
 
         except ApiExhaustedError:
             raise

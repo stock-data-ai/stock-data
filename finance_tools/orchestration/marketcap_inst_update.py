@@ -13,7 +13,6 @@ from finance_tools.domains.institutional_investors.twse_shareholding_fetcher imp
 from finance_tools.orchestration.company_processor import CompanyProcessor
 from finance_tools.domains.institutional_investors.calculator import InstRatioCalculator
 from finance_tools.utils.company_list_loader import load_companies_for_processing
-from finance_tools.utils.rerun_manager import RerunManager
 from finance_tools.utils.quality_report import save_quality_report
 import finance_tools.config as config
 
@@ -36,20 +35,17 @@ def _load_json(path: Path) -> dict:
 
 def run_update_marketcap_inst(args):
     """
-    每日更新任務：市值（Yahoo Finance）+ 三大法人（TWSE/TPEx）。
-    每家公司一次 load/save，兩者都成功才移出 rerun queue。
-    任一 API 回傳空資料 → 儲存已取得部分 + 進 rerun queue。
+    每日更新：市值（Yahoo，3次retry）+ 三大法人（TWSE/TPEx批次）。
+    找不到資料 = 今日無交易，不算失敗，不產生 rerun queue。
     """
     logger.info("正在執行每日更新（市值 + 三大法人）...")
 
     batch = args.batch.split("/")[0] if getattr(args, "batch", None) else None
-    read_mgr = RerunManager("daily")
-    write_mgr = RerunManager("daily", batch)
 
     processor_data = DataProcessor()
     file_mgr = FileManager()
 
-    # ── TWSE/TPEx 批次預撈 ───────────────────────────────────────────────
+    # ── TWSE/TPEx 批次預撈（全市場一次，取代 per-stock API）───────────────
     today_str = now_tw().strftime("%Y%m%d")
     pre_inst = TWSEInstitutionalFetcher().fetch_all(today_str)
     pre_shareholding = TWSEShareholdingFetcher().fetch_all()
@@ -64,12 +60,12 @@ def run_update_marketcap_inst(args):
     companies_data = _load_json(_COMPANIES_FILE)
     inst_ratio_calc = InstRatioCalculator(seeds=seeds, companies_data=companies_data)
 
-    companies = load_companies_for_processing(args, file_mgr, read_mgr)
+    companies = load_companies_for_processing(args, file_mgr)
     if not companies:
         logger.info("沒有待處理的公司，退出。")
         return
 
-    is_force_update = args.force or args.code is not None or args.rerun
+    is_force_update = args.force or args.code is not None
     logger.info(f"正在處理 {len(companies)} 家公司（force={is_force_update}）。")
 
     company_processor = CompanyProcessor(
@@ -86,16 +82,15 @@ def run_update_marketcap_inst(args):
 
     start_date = (now_tw() - timedelta(days=config.DEFAULT_FETCH_DAYS)).strftime("%Y-%m-%d")
 
-    success_count = 0
-    failed_companies = []
-    quality_issues = []
+    processed = 0
+    no_marketcap = []
 
     for idx, company in enumerate(companies, 1):
         code = company["code"]
         name = company.get("name", code)
 
         try:
-            success, status = company_processor.process_daily_only(
+            _, status = company_processor.process_daily_only(
                 code=code,
                 name=name,
                 start_date=start_date,
@@ -104,39 +99,24 @@ def run_update_marketcap_inst(args):
                 pre_shareholding=pre_shareholding,
             )
 
-            if status.get("skipped"):
-                success_count += 1
-                continue
-
-            if success:
-                success_count += 1
-            else:
-                failed_companies.append(code)
-                missing = []
+            if not status.get("skipped"):
+                processed += 1
                 if not status.get("marketcap"):
-                    missing.append("市值(Yahoo)")
-                if not status.get("inst"):
-                    missing.append("三大法人(TWSE)")
-                if missing:
-                    quality_issues.append(f"{code} {name}: 缺失 {', '.join(missing)}")
+                    no_marketcap.append(f"{code} {name}")
 
-            logger.info(f"[{idx}/{len(companies)}] {'✔' if success else '✘'} {code} {name}")
+            logger.info(f"[{idx}/{len(companies)}] ✔ {code} {name}"
+                        + (" [無市值]" if not status.get("skipped") and not status.get("marketcap") else ""))
 
         except Exception:
             logger.exception(f"  ❌ 處理公司 {code} 時發生未預期錯誤:")
-            failed_companies.append(code)
 
         if idx < len(companies):
             time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
-    save_quality_report("daily", batch, quality_issues)
+    save_quality_report("daily", batch, no_marketcap)
 
     logger.info(f"\n{'='*60}")
-    logger.info(f"每日更新完成: {success_count}/{len(companies)} 家公司")
-    if failed_companies:
-        unique_failed = sorted(set(failed_companies))
-        logger.warning(f"失敗/重試: {len(unique_failed)} 家公司 (前10): {', '.join(unique_failed[:10])}{'...' if len(unique_failed) > 10 else ''}")
-        write_mgr.save(failed_companies)
-    else:
-        write_mgr.clear()
+    logger.info(f"每日更新完成: {processed}/{len(companies)} 家公司")
+    if no_marketcap:
+        logger.info(f"今日無市值資料 (Yahoo): {len(no_marketcap)} 家（記錄於 quality report）")
     logger.info(f"{'='*60}\n")
