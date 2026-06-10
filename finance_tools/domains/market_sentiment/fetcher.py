@@ -77,11 +77,9 @@ class MarketSentimentFetcher:
             "foreignDealer": inst_map.get("外資自營商", zero),
         }
 
-    def fetch_twse_institutional(self, date_str: str, retries: int = 3, retry_delay: int = 10) -> Optional[Dict]:
+    def fetch_twse_institutional(self, date_str: str, retries: int = 3, retry_delay: int = 30) -> Optional[Dict]:
         """
         Fetch TWSE (上市) institutional investors aggregate from BFI82U.
-        Both BFI82U and TPEx OpenAPI return amounts in 元 directly.
-        BFI82U ignores date when market is closed; returns latest trading day.
         Retries up to `retries` times with `retry_delay` seconds between attempts.
         """
         url = self.INSTITUTIONAL_URL.format(date=date_str)
