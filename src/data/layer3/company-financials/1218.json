@@ -39,7 +39,7 @@
         "grossProfit": 1778756000.0,
         "operatingIncome": 419776000.0,
         "netIncome": 772856000.0,
-        "eps": 1.59,
+        "eps": 2.0,
         "grossMargin": 17.59,
         "operatingMargin": 4.15,
         "netMargin": 7.64,
@@ -127,7 +127,7 @@
         "grossProfit": 392731000.0,
         "operatingIncome": 61780000.0,
         "netIncome": 253068000.0,
-        "eps": 0.52,
+        "eps": 0.93,
         "grossMargin": 16.49,
         "operatingMargin": 2.59,
         "netMargin": 10.62
@@ -422,6 +422,12 @@
       }
     ],
     "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 5,
+        "revenue": 821022000.0,
+        "yoy": -1.42
+      },
       {
         "year": 2026,
         "month": 4,
@@ -26024,51 +26030,39 @@
         "dealer_sell": 1.0,
         "dealer_net_buy": 19.0,
         "code": "1218",
+        "foreign_ratio": 4.21,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.0042,
-        "foreign_ratio": 4.1,
-        "three_inst_ratio": 4.1042
+        "three_inst_ratio": 4.2142
       },
       "2026-06-09": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 331.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": -11.001,
         "foreign_net_buy": -380.163,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 11.001,
         "foreign_sell": 711.163,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 11.001,
         "dealer_net_buy": -11.001,
         "code": "1218",
-        "foreign_ratio": 4.21,
+        "foreign_ratio": 4.09,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 4.21
+        "dealer_ratio": 0.002,
+        "three_inst_ratio": 4.092
       },
       "2026-06-10": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 15.0,
         "foreign_buy": 458.996,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 5.369999999999999,
         "foreign_net_buy": -24.480000000000018,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 9.63,
         "foreign_sell": 483.476,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 15.0,
         "dealer_sell": 9.63,
@@ -26076,58 +26070,46 @@
         "code": "1218",
         "foreign_ratio": 4.06,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.001074,
-        "three_inst_ratio": 4.061074
+        "dealer_ratio": 0.003074,
+        "three_inst_ratio": 4.063074
       },
       "2026-06-11": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 23.0,
         "foreign_buy": 420.098,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 11.613,
         "foreign_net_buy": -585.067,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 11.387,
         "foreign_sell": 1005.165,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 23.0,
         "dealer_sell": 11.387,
         "dealer_net_buy": 11.613,
         "code": "1218",
-        "foreign_ratio": 4.06,
+        "foreign_ratio": 3.95,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.002323,
-        "three_inst_ratio": 4.062323
+        "dealer_ratio": 0.005396,
+        "three_inst_ratio": 3.955396
       },
       "2026-06-12": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 11.0,
         "foreign_buy": 275.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 8.0,
         "foreign_net_buy": -1360.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 3.0,
         "foreign_sell": 1635.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 11.0,
         "dealer_sell": 3.0,
         "dealer_net_buy": 8.0,
         "code": "1218",
-        "foreign_ratio": 3.95,
+        "foreign_ratio": 3.69,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0016,
-        "three_inst_ratio": 3.9516
+        "dealer_ratio": 0.006996,
+        "three_inst_ratio": 3.696996
       }
     },
     "marginTrading": {
@@ -26645,7 +26627,7 @@
       }
     }
   },
-  "lastUpdated": "2026-06-13",
+  "lastUpdated": "2026-06-14",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
