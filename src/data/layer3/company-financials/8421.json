@@ -399,6 +399,12 @@
     "monthlyRevenue": [
       {
         "year": 2026,
+        "month": 5,
+        "revenue": 111474000.0,
+        "yoy": 8.86
+      },
+      {
+        "year": 2026,
         "month": 4,
         "revenue": 124385000.0,
         "yoy": 29.28
@@ -22022,26 +22028,20 @@
         "dealer_sell": 0.041,
         "dealer_net_buy": -0.041,
         "code": "8421",
+        "foreign_ratio": 0.56,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.005473,
-        "foreign_ratio": 0.56,
         "three_inst_ratio": 0.565473
       },
       "2026-06-09": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 1.0,
         "foreign_buy": 1.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 1.0,
         "foreign_net_buy": -6.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 7.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 1.0,
         "dealer_sell": 0.0,
@@ -22049,24 +22049,18 @@
         "code": "8421",
         "foreign_ratio": 0.55,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.001824,
-        "three_inst_ratio": 0.551824
+        "dealer_ratio": 0.007297,
+        "three_inst_ratio": 0.557297
       },
       "2026-06-10": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 1.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": -7.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 8.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -22074,24 +22068,18 @@
         "code": "8421",
         "foreign_ratio": 0.54,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 0.54
+        "dealer_ratio": 0.007297,
+        "three_inst_ratio": 0.547297
       },
       "2026-06-11": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 0.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": -4.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 4.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -22099,24 +22087,18 @@
         "code": "8421",
         "foreign_ratio": 0.53,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 0.53
+        "dealer_ratio": 0.007297,
+        "three_inst_ratio": 0.537297
       },
       "2026-06-12": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 7.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": 7.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 0.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -22124,8 +22106,8 @@
         "code": "8421",
         "foreign_ratio": 0.54,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 0.54
+        "dealer_ratio": 0.007297,
+        "three_inst_ratio": 0.547297
       }
     },
     "marginTrading": {
@@ -22619,7 +22601,7 @@
       }
     }
   },
-  "lastUpdated": "2026-06-13",
+  "lastUpdated": "2026-06-14",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [

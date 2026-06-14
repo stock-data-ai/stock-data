@@ -38,7 +38,7 @@
         "grossProfit": 26476000.0,
         "operatingIncome": -60498000.0,
         "netIncome": -33828000.0,
-        "eps": -0.19,
+        "eps": -0.27,
         "grossMargin": 32.59,
         "operatingMargin": -74.47,
         "netMargin": -41.64,
@@ -126,7 +126,7 @@
         "grossProfit": 11222000.0,
         "operatingIncome": -9379000.0,
         "netIncome": -9656000.0,
-        "eps": -0.1,
+        "eps": -0.18,
         "grossMargin": 46.9,
         "operatingMargin": -39.2,
         "netMargin": -40.35
@@ -397,6 +397,12 @@
       }
     ],
     "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 5,
+        "revenue": 37758000.0,
+        "yoy": 863.71
+      },
       {
         "year": 2026,
         "month": 4,
@@ -1740,8 +1746,8 @@
         "code": "4806",
         "foreign_ratio": 1.88,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.88
+        "dealer_ratio": 0.001001,
+        "three_inst_ratio": 1.881001
       },
       "2026-03-24": {
         "dealer_self_buy": 0.0,
@@ -8849,20 +8855,14 @@
         "three_inst_ratio": 1.88
       },
       "2026-06-10": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 0.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": -0.001,
         "foreign_net_buy": 0.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.001,
         "foreign_sell": 0.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.001,
@@ -8870,24 +8870,18 @@
         "code": "4806",
         "foreign_ratio": 1.88,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.88
+        "dealer_ratio": 0.00096,
+        "three_inst_ratio": 1.88096
       },
       "2026-06-11": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 78.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": 78.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 0.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -8895,24 +8889,18 @@
         "code": "4806",
         "foreign_ratio": 1.96,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.96
+        "dealer_ratio": 0.00096,
+        "three_inst_ratio": 1.96096
       },
       "2026-06-12": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 1.0,
         "foreign_buy": 0.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.77,
         "foreign_net_buy": -78.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.23,
         "foreign_sell": 78.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 1.0,
         "dealer_sell": 0.23,
@@ -8920,8 +8908,16 @@
         "code": "4806",
         "foreign_ratio": 1.88,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.00077,
-        "three_inst_ratio": 1.88077
+        "dealer_ratio": 0.00173,
+        "three_inst_ratio": 1.88173
+      },
+      "2026-06-08": {
+        "foreign_ratio": 1.88,
+        "three_inst_ratio": 1.88
+      },
+      "2026-06-09": {
+        "foreign_ratio": 1.88,
+        "three_inst_ratio": 1.88
       }
     },
     "marginTrading": {
@@ -9415,7 +9411,7 @@
       }
     }
   },
-  "lastUpdated": "2026-06-13",
+  "lastUpdated": "2026-06-14",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
