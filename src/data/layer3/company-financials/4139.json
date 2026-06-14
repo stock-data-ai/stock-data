@@ -399,6 +399,12 @@
     "monthlyRevenue": [
       {
         "year": 2026,
+        "month": 5,
+        "revenue": 96282000.0,
+        "yoy": 6.18
+      },
+      {
+        "year": 2026,
         "month": 4,
         "revenue": 91628000.0,
         "yoy": -0.46
@@ -4721,8 +4727,8 @@
         "code": "4139",
         "foreign_ratio": 19.94,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 19.94
+        "dealer_ratio": 4e-06,
+        "three_inst_ratio": 19.940004
       },
       "2026-03-10": {
         "dealer_self_buy": 0.0,
@@ -4740,8 +4746,8 @@
         "code": "4139",
         "foreign_ratio": 19.94,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 19.94
+        "dealer_ratio": 4e-06,
+        "three_inst_ratio": 19.940004
       },
       "2026-03-16": {
         "dealer_self_buy": 0.0,
@@ -4759,8 +4765,8 @@
         "code": "4139",
         "foreign_ratio": 19.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 19.93
+        "dealer_ratio": 4e-06,
+        "three_inst_ratio": 19.930004
       },
       "2026-03-17": {
         "dealer_self_buy": 0.001,
@@ -4778,8 +4784,8 @@
         "code": "4139",
         "foreign_ratio": 19.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 2e-06,
-        "three_inst_ratio": 19.930002
+        "dealer_ratio": 7e-06,
+        "three_inst_ratio": 19.930007
       },
       "2026-03-19": {
         "dealer_self_buy": 0.0,
@@ -4797,8 +4803,8 @@
         "code": "4139",
         "foreign_ratio": 19.94,
         "trust_ratio": 0.0,
-        "dealer_ratio": 2e-06,
-        "three_inst_ratio": 19.940002
+        "dealer_ratio": 7e-06,
+        "three_inst_ratio": 19.940007
       },
       "2026-03-20": {
         "dealer_self_buy": 0.0,
@@ -4816,8 +4822,8 @@
         "code": "4139",
         "foreign_ratio": 19.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 2e-06,
-        "three_inst_ratio": 19.930002
+        "dealer_ratio": 7e-06,
+        "three_inst_ratio": 19.930007
       },
       "2026-03-25": {
         "dealer_self_buy": 0.0,
@@ -4835,8 +4841,8 @@
         "code": "4139",
         "foreign_ratio": 19.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 2e-06,
-        "three_inst_ratio": 19.930002
+        "dealer_ratio": 7e-06,
+        "three_inst_ratio": 19.930007
       },
       "2026-03-27": {
         "dealer_self_buy": 0.0,
@@ -4854,8 +4860,8 @@
         "code": "4139",
         "foreign_ratio": 19.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 2e-06,
-        "three_inst_ratio": 19.930002
+        "dealer_ratio": 7e-06,
+        "three_inst_ratio": 19.930007
       },
       "2026-03-30": {
         "dealer_self_buy": 0.004,
@@ -4873,8 +4879,8 @@
         "code": "4139",
         "foreign_ratio": 19.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 1.1e-05,
-        "three_inst_ratio": 19.930011
+        "dealer_ratio": 1.6e-05,
+        "three_inst_ratio": 19.930016
       },
       "2026-03-31": {
         "dealer_self_buy": 0.0,
@@ -20303,26 +20309,20 @@
         "dealer_sell": 0.0,
         "dealer_net_buy": 0.0,
         "code": "4139",
+        "foreign_ratio": 16.91,
         "trust_ratio": 0.0,
         "dealer_ratio": 0.0,
-        "foreign_ratio": 16.91,
         "three_inst_ratio": 16.91
       },
       "2026-06-09": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 1.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": 1.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 0.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -20334,20 +20334,14 @@
         "three_inst_ratio": 16.92
       },
       "2026-06-10": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 0.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": -1.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 1.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -20359,20 +20353,14 @@
         "three_inst_ratio": 16.91
       },
       "2026-06-12": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.002,
         "foreign_buy": 0.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.002,
         "foreign_net_buy": 0.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 0.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.002,
         "dealer_sell": 0.0,
@@ -20382,6 +20370,10 @@
         "trust_ratio": 0.0,
         "dealer_ratio": 4e-06,
         "three_inst_ratio": 16.910004
+      },
+      "2026-06-11": {
+        "foreign_ratio": 16.91,
+        "three_inst_ratio": 16.91
       }
     },
     "marginTrading": {
@@ -20875,7 +20867,7 @@
       }
     }
   },
-  "lastUpdated": "2026-06-13",
+  "lastUpdated": "2026-06-14",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
