@@ -15941,23 +15941,29 @@
         "three_inst_ratio": 1.62
       },
       "2026-06-12": {
-        "dealer_self_buy": 0.0,
+        "dealer_hedging_buy": 0.0,
+        "dealer_self_buy": 0.016,
         "foreign_buy": 4.0,
+        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_self_net_buy": 0.0,
+        "dealer_hedging_net_buy": 0.0,
+        "dealer_self_net_buy": 0.016,
         "foreign_net_buy": -23.0,
+        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
+        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 27.0,
+        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
-        "dealer_buy": 0.0,
+        "dealer_buy": 0.016,
         "dealer_sell": 0.0,
-        "dealer_net_buy": 0.0,
+        "dealer_net_buy": 0.016,
         "code": "3073",
         "foreign_ratio": 1.56,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.0,
-        "three_inst_ratio": 1.56
+        "dealer_ratio": 4e-05,
+        "three_inst_ratio": 1.56004
       }
     },
     "marginTrading": {
