@@ -16,11 +16,13 @@ fetch_active_etf_ctbc.py
   再呼叫 etf/ETFHoldingWeight 取得持股清單。
 
 支援 ETF：
+  00406A  中國信託台灣收益成長主動式ETF基金
+  00983A  中國信託ARK創新主動式ETF基金
   00995A  中國信託台灣卓越成長主動式ETF基金
 
 用法：
     uv run etf_Crawler/fetch_active_etf_ctbc.py          # 更新全部
-    uv run etf_Crawler/fetch_active_etf_ctbc.py 00995A   # 更新指定
+    uv run etf_Crawler/fetch_active_etf_ctbc.py 00406A   # 更新指定
 """
 
 import json
@@ -41,8 +43,8 @@ except ImportError:
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 
-API_BASE = "https://www.ctbcinvestments.com/API"
-INITIAL_TOKEN = "www.ctbcinvestments.com"
+API_BASE = "https://www.ctbcinvestments.com.tw/API"
+INITIAL_TOKEN = "www.ctbcinvestments.com.tw"
 
 HEADERS = {
     "User-Agent": (
@@ -51,13 +53,14 @@ HEADERS = {
         "Chrome/122.0.0.0 Safari/537.36"
     ),
     "Content-Type": "application/json; charset=utf-8",
-    "Referer": "https://www.ctbcinvestments.com/",
-    "Origin": "https://www.ctbcinvestments.com",
+    "Referer": "https://www.ctbcinvestments.com.tw/",
+    "Origin": "https://www.ctbcinvestments.com.tw",
 }
 
 # 中信投信主動型 ETF 清單：{ETF代號: FID}
 # FID 可由 etf/ETFList API 查得
 CTBC_ACTIVE_ETFS = {
+    "00406A": "E0038",  # 中國信託台灣收益成長主動式ETF基金
     "00983A": "E0034",  # 中國信託ARK創新主動式ETF基金
     "00995A": "E0036",  # 中國信託台灣卓越成長主動式ETF基金
 }
