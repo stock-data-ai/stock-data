@@ -31,7 +31,12 @@
         "operatingMargin": 10.69,
         "netMargin": 7.8,
         "note": "累季",
-        "revenueYoY": 9.38
+        "revenueYoY": 9.38,
+        "roe": null,
+        "roa": null,
+        "ocf": null,
+        "fcf": null,
+        "debtRatio": null
       },
       {
         "year": 2025,
@@ -43,7 +48,12 @@
         "grossMargin": 17.29,
         "operatingMargin": 5.99,
         "netMargin": 3.72,
-        "revenueYoY": 11.89
+        "revenueYoY": 11.89,
+        "roe": 14.14,
+        "roa": 2.18,
+        "ocf": 3226593000.0,
+        "fcf": 1908673000.0,
+        "debtRatio": 84.56
       },
       {
         "year": 2024,
@@ -55,7 +65,12 @@
         "grossMargin": 16.15,
         "operatingMargin": 5.36,
         "netMargin": 3.58,
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": 11.23,
+        "roa": 2.03,
+        "ocf": 2712739000.0,
+        "fcf": 1385751000.0,
+        "debtRatio": 81.93
       },
       {
         "year": 2023,
@@ -68,7 +83,12 @@
         "operatingMargin": 5.42,
         "netMargin": 3.71,
         "note": "累季",
-        "revenueYoY": 6.38
+        "revenueYoY": 6.38,
+        "roe": null,
+        "roa": null,
+        "ocf": 2383480000.0,
+        "fcf": 1505399000.0,
+        "debtRatio": null
       },
       {
         "year": 2022,
@@ -81,7 +101,12 @@
         "operatingMargin": 5.48,
         "netMargin": 3.43,
         "note": "累季",
-        "revenueYoY": 13.13
+        "revenueYoY": 13.13,
+        "roe": null,
+        "roa": null,
+        "ocf": 2312250000.0,
+        "fcf": 1288920000.0,
+        "debtRatio": null
       },
       {
         "year": 2021,
@@ -94,7 +119,12 @@
         "operatingMargin": 1.74,
         "netMargin": 0.41,
         "note": "累季",
-        "revenueYoY": null
+        "revenueYoY": null,
+        "roe": 1.1,
+        "roa": 0.18,
+        "ocf": null,
+        "fcf": null,
+        "debtRatio": 83.84
       }
     ],
     "quarterly": [
@@ -108,7 +138,9 @@
         "eps": 2.01,
         "grossMargin": 21.78,
         "operatingMargin": 10.69,
-        "netMargin": 7.8
+        "netMargin": 7.8,
+        "currentRatio": 28.63,
+        "debtRatio": 85.5
       },
       {
         "year": 2025,
@@ -120,7 +152,9 @@
         "eps": 1.53,
         "grossMargin": 20.78,
         "operatingMargin": 8.61,
-        "netMargin": 5.8
+        "netMargin": 5.8,
+        "currentRatio": 29.84,
+        "debtRatio": 84.56
       },
       {
         "year": 2025,
@@ -132,7 +166,9 @@
         "eps": 1.04,
         "grossMargin": 16.71,
         "operatingMargin": 6.14,
-        "netMargin": 4.01
+        "netMargin": 4.01,
+        "currentRatio": 30.25,
+        "debtRatio": 84.92
       },
       {
         "year": 2025,
@@ -144,7 +180,9 @@
         "eps": 0.73,
         "grossMargin": 15.84,
         "operatingMargin": 5.26,
-        "netMargin": 2.94
+        "netMargin": 2.94,
+        "currentRatio": 30.75,
+        "debtRatio": 85.0
       },
       {
         "year": 2025,
@@ -156,7 +194,9 @@
         "eps": 0.45,
         "grossMargin": 15.55,
         "operatingMargin": 3.67,
-        "netMargin": 1.92
+        "netMargin": 1.92,
+        "currentRatio": 30.67,
+        "debtRatio": 82.71
       },
       {
         "year": 2024,
@@ -168,7 +208,9 @@
         "eps": 0.55,
         "grossMargin": 15.43,
         "operatingMargin": 4.33,
-        "netMargin": 2.38
+        "netMargin": 2.38,
+        "currentRatio": 26.73,
+        "debtRatio": 81.93
       },
       {
         "year": 2024,
@@ -180,7 +222,9 @@
         "eps": 0.57,
         "grossMargin": 15.23,
         "operatingMargin": 3.99,
-        "netMargin": 2.55
+        "netMargin": 2.55,
+        "currentRatio": 38.01,
+        "debtRatio": 80.48
       },
       {
         "year": 2024,
@@ -219,6 +263,18 @@
         "netMargin": 3.71
       },
       {
+        "year": 2023,
+        "quarter": 2,
+        "currentRatio": 26.7,
+        "debtRatio": 87.29
+      },
+      {
+        "year": 2023,
+        "quarter": 1,
+        "currentRatio": 32.09,
+        "debtRatio": 84.47
+      },
+      {
         "year": 2022,
         "quarter": 4,
         "revenue": 8862771000.0,
@@ -240,7 +296,15 @@
         "eps": 0.67,
         "grossMargin": 13.16,
         "operatingMargin": 1.74,
-        "netMargin": 0.41
+        "netMargin": 0.41,
+        "currentRatio": 37.93,
+        "debtRatio": 83.84
+      },
+      {
+        "year": 2020,
+        "quarter": 4,
+        "currentRatio": 20.0,
+        "debtRatio": 102.71
       }
     ],
     "monthlyRevenue": [
