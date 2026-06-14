@@ -46,6 +46,7 @@ def build_reverse_index(etf_index: dict[str, dict]) -> dict[str, list]:
 
         etf_code = etf_data.get("code", path.stem)
         etf_name = etf_data.get("name", etf_code)
+        etf_last_updated = etf_data.get("lastUpdated")
         meta = etf_index.get(etf_code, {})
 
         for holding in etf_data.get("topHoldings", []):
@@ -71,6 +72,7 @@ def build_reverse_index(etf_index: dict[str, dict]) -> dict[str, list]:
                 "etfName": etf_name,
                 "categoryId": meta.get("categoryId"),
                 "issuer": meta.get("issuer"),
+                "lastUpdated": etf_last_updated,
                 "weight": weight,
                 "weightChange": weight_change,
                 "shares": shares,
