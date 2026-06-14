@@ -263,6 +263,34 @@ jobs:
             git push
           fi
 
+      - name: Fetch stock_map ETF index.json (for categoryId/issuer)
+        continue-on-error: true
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
+          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
+
+      - name: Regenerate stock-to-ETF reverse index
+        continue-on-error: true
+        run: uv run python etf_Crawler/generate_stock_etf_index.py
+
+      - name: Commit & push reverse index
+        continue-on-error: true
+        run: |
+          git add src/data/etf-by-stock/
+          if git diff --cached --quiet; then
+            echo "No changes to reverse index"
+          else
+            git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
+            git pull --rebase -X ours origin main
+            git push
+          fi
+
       - name: Fail if any crawler failed
         if: always()
         run: |

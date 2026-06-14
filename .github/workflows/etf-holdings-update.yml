@@ -71,6 +71,20 @@ jobs:
       - name: Regenerate index.json from updated holdings
         run: uv run python etf_Crawler/generate_etf_index.py
 
+      - name: Regenerate stock-to-ETF reverse index
+        run: uv run python etf_Crawler/generate_stock_etf_index.py
+
+      - name: Commit & push reverse index
+        run: |
+          git add src/data/etf-by-stock/
+          if git diff --cached --quiet; then
+            echo "No changes to reverse index"
+          else
+            git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
+            git pull --rebase -X ours origin main
+            git push
+          fi
+
       - name: Push updated index.json to stock_map
         env:
           PAT: ${{ secrets.STOCK_MAP_PAT }}
