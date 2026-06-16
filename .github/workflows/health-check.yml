@@ -29,7 +29,8 @@ jobs:
           CHECK_JOBS = [
               {'label': '07:00 Economic Daily Scraper', 'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲', 'hour': 7, 'minute': 0},
               {'label': '16:00 Active ETF Holdings Update (Daily)', 'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', 'hour': 16, 'minute': 0},
-              {'label': '18:30 Daily Update', 'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）', 'hour': 18, 'minute': 30},
+              {'label': '19:05 Daily Update（第一次）', 'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）', 'hour': 19, 'minute': 5},
+              {'label': '21:05 Daily Update（第二次備援）', 'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）', 'hour': 21, 'minute': 5},
               {'label': '19:00 MOPS Scraper', 'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲', 'hour': 19, 'minute': 0},
               {'label': '19:30 Active ETF Holdings Update (Daily)', 'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', 'hour': 19, 'minute': 30},
               {'label': '21:30 Economic Daily Scraper', 'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲', 'hour': 21, 'minute': 30},

@@ -185,10 +185,30 @@ class CompanyProcessor:
             logger.exception(f"  ❌ 處理 {code} 時發生未預期錯誤：")
             return False, status
 
+    def _build_valuation(self, code: str, pre_valuation) -> dict:
+        """TWSE/TPEx 批次估值資料 → market cap / pe / pb / dividend yield（相容 merge_valuation 介面）。"""
+        if not pre_valuation:
+            return {}
+        record = pre_valuation.get(code)
+        if not record:
+            return {}
+
+        company = self.all_companies_details.get(code, {})
+        issued_shares = company.get("gov", {}).get("capital", {}).get("issuedCommonShares")
+        market_cap = record.close * issued_shares if issued_shares else None
+
+        return {
+            "marketCap": market_cap,
+            "trailingPE": record.pe,
+            "priceToBook": record.pb,
+            # TWSE/TPEx 殖利率為百分比（e.g. 1.84），merge_valuation 預期 decimal（e.g. 0.0184）
+            "dividendYield": record.dividend_yield / 100 if record.dividend_yield is not None else None,
+        }
+
     def process_daily_only(self, code: str, name: str, start_date: str, force_update: bool = False,
-                           pre_inst=None, pre_shareholding=None) -> tuple[bool, dict]:
+                           pre_inst=None, pre_shareholding=None, pre_valuation=None) -> tuple[bool, dict]:
         """
-        每日更新：市值（Yahoo，3次retry）+ 三大法人（TWSE/TPEx批次lookup）。
+        每日更新：市值（TWSE/TPEx批次lookup）+ 三大法人（TWSE/TPEx批次lookup）。
         找不到 = 今日無資料，不算失敗，不進 rerun queue。
         """
         status = {"marketcap": False, "inst": False, "skipped": False}
@@ -199,11 +219,9 @@ class CompanyProcessor:
             return True, status
 
         try:
-            # 1. Yahoo Finance（YahooFetcher 內建 3 次 retry）
-            valuation_stats = self.fetch_orchestrator.fetch_valuation_stats(code)
+            # 1. 市值/估值批次 lookup（找不到 = 今日無資料，非失敗）
+            valuation_stats = self._build_valuation(code, pre_valuation)
             status["marketcap"] = bool(valuation_stats.get("marketCap"))
-
-            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
             # 2. 三大法人批次 lookup（找不到 = 今日無法人交易，非失敗）
             ratios, _ = self._build_ratios(code, start_date, pre_inst, pre_shareholding)

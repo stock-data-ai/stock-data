@@ -19,9 +19,9 @@ on:
         default: '0'
         type: string
       batch:
-        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        description: 'Batch number (0=all 4 parallel batches, 1-4=specific batch). 改用 TWSE/TPEx 批次 API 後不需要平行分批，預設單一 job。'
         required: false
-        default: '0'
+        default: '1'
         type: string
       force:
         description: 'Force update even if already updated today'
@@ -50,7 +50,7 @@ jobs:
       summary_title: "每日更新"
       rerun_round: ${{ inputs.rerun_round || '0' }}
       delay_minutes: ${{ inputs.delay_minutes || '0' }}
-      batch: ${{ inputs.batch || '0' }}
+      batch: ${{ inputs.batch || '1' }}
       force: ${{ github.event_name == 'schedule' || inputs.force || false }}
       rerun_delay_minutes: '65'
     secrets: inherit

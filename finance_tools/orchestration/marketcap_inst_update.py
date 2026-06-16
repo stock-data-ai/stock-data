@@ -1,6 +1,4 @@
 import sys
-import time
-import random
 from datetime import timedelta
 import logging
 import json
@@ -10,6 +8,7 @@ from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.timezone import now_tw
 from finance_tools.domains.institutional_investors.twse_fetcher import TWSEInstitutionalFetcher
 from finance_tools.domains.institutional_investors.twse_shareholding_fetcher import TWSEShareholdingFetcher
+from finance_tools.domains.valuation.twse_valuation_fetcher import TWSEValuationFetcher
 from finance_tools.orchestration.company_processor import CompanyProcessor
 from finance_tools.domains.institutional_investors.calculator import InstRatioCalculator
 from finance_tools.utils.company_list_loader import load_companies_for_processing
@@ -35,7 +34,7 @@ def _load_json(path: Path) -> dict:
 
 def run_update_marketcap_inst(args):
     """
-    每日更新：市值（Yahoo，3次retry）+ 三大法人（TWSE/TPEx批次）。
+    每日更新：市值/估值 + 三大法人（皆為 TWSE/TPEx 批次，全市場一次撈取）。
     找不到資料 = 今日無交易，不算失敗，不產生 rerun queue。
     """
     logger.info("正在執行每日更新（市值 + 三大法人）...")
@@ -49,12 +48,13 @@ def run_update_marketcap_inst(args):
     today_str = now_tw().strftime("%Y%m%d")
     pre_inst = TWSEInstitutionalFetcher().fetch_all(today_str)
     pre_shareholding = TWSEShareholdingFetcher().fetch_all()
+    pre_valuation = TWSEValuationFetcher().fetch_all()
 
     if not pre_inst:
         logger.error("❌ TWSE/TPEx 三大法人批次撈取失敗（含重試），中止執行。")
         sys.exit(1)
 
-    logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}")
+    logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}, valuation={len(pre_valuation)}")
 
     seeds = _load_json(_SEEDS_FILE)
     companies_data = _load_json(_COMPANIES_FILE)
@@ -97,6 +97,7 @@ def run_update_marketcap_inst(args):
                 force_update=is_force_update,
                 pre_inst=pre_inst,
                 pre_shareholding=pre_shareholding,
+                pre_valuation=pre_valuation,
             )
 
             if not status.get("skipped"):
@@ -110,13 +111,10 @@ def run_update_marketcap_inst(args):
         except Exception:
             logger.exception(f"  ❌ 處理公司 {code} 時發生未預期錯誤:")
 
-        if idx < len(companies):
-            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
-
     save_quality_report("daily", batch, no_marketcap)
 
     logger.info(f"\n{'='*60}")
     logger.info(f"每日更新完成: {processed}/{len(companies)} 家公司")
     if no_marketcap:
-        logger.info(f"今日無市值資料 (Yahoo): {len(no_marketcap)} 家（記錄於 quality report）")
+        logger.info(f"今日無市值資料: {len(no_marketcap)} 家（記錄於 quality report）")
     logger.info(f"{'='*60}\n")

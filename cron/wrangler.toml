@@ -15,7 +15,8 @@ crons = [
   "0 3 * * 7",            # weekly-dividend-update    台灣 11:00 週六
   "0 3 * * 1",            # weekly-balance-sheet      台灣 11:00 週日
   "0 8 * * *",            # etf-active-daily          台灣 16:00 每天
-  "30 10 * * *",          # daily-update              台灣 18:30 每天
+  "05 11 * * *",          # daily-update              台灣 19:05 每天（第一次）
+  "05 13 * * *",          # daily-update              台灣 21:05 每天（第二次，TWSE資料結算延遲備援）
   "35 10 * * 2,3,4,5,6", # market-sentiment          台灣 18:35 週一到週五（第一次）
   "0 12 * * 2,3,4,5,6",  # generate-chip-topic       台灣 20:00 週一到週五
   "0 11 * * *",           # scraper-mops              台灣 19:00 每天

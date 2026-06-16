@@ -5,7 +5,7 @@ Usage:
   uv run finance_tools/cli.py [COMMAND] [OPTIONS]
 
 Commands:
-  update-marketcap-inst - 每日更新：市值（Yahoo）+ 三大法人（FinMind）。
+  update-marketcap-inst - 每日更新：市值估值 + 三大法人（皆為 TWSE/TPEx 批次）。
   full-update           - 全量更新：財務報表、營收。
   update-revenue        - 僅更新月營收。
   import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
@@ -79,7 +79,7 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True, help="可用的指令")
 
     # --- 'update-marketcap-inst' command ---
-    parser_daily = subparsers.add_parser("update-marketcap-inst", help="每日更新：市值（Yahoo）+ 三大法人（FinMind），單次 load/save。")
+    parser_daily = subparsers.add_parser("update-marketcap-inst", help="每日更新：市值估值 + 三大法人（皆為 TWSE/TPEx 批次），單次 load/save。")
     add_common_arguments(parser_daily, include_force=True, include_rerun=True)
     parser_daily.set_defaults(func=run_update_marketcap_inst)
 

@@ -22,7 +22,8 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 3 * * 7':            { workflow: 'weekly-dividend-update.yml' },                               // 台灣 11:00 週六
   '0 3 * * 1':            { workflow: 'weekly-balance-sheet-update.yml' },                          // 台灣 11:00 週日
   '0 8 * * *':            { workflow: 'etf-active-daily.yml' },                                     // 台灣 16:00 每天
-  '30 10 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 18:30 每天
+  '05 11 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 19:05 每天（第一次）
+  '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（第二次，TWSE資料結算延遲備援）
   '35 10 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 18:35 週一到週五（第一次）
   '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
@@ -51,7 +52,8 @@ interface CheckJob {
 const CHECK_JOBS: CheckJob[] = [
   { label: '07:00 Economic Daily Scraper｜爬取經濟日報（早）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 7, twMinute: 0 },
   { label: '16:00 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第一次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 16, twMinute: 0 },
-  { label: '18:30 Daily Update｜每日更新（市值 + 三大法人）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 18, twMinute: 30 },
+  { label: '19:05 Daily Update｜每日更新（市值 + 三大法人，第一次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 19, twMinute: 5 },
+  { label: '21:05 Daily Update｜每日更新（市值 + 三大法人，第二次備援）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 21, twMinute: 5 },
   { label: '19:00 MOPS Scraper｜爬取公開資訊觀測站重訊', workflowName: 'MOPS Scraper｜公開資訊觀測站爬蟲', twHour: 19, twMinute: 0 },
   { label: '19:30 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第二次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 19, twMinute: 30 },
   { label: '21:30 Economic Daily Scraper｜爬取經濟日報（晚）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 21, twMinute: 30 },

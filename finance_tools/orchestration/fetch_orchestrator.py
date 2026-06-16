@@ -1,10 +1,9 @@
 # finance_tools/processing/fetch_orchestrator.py
 import logging
-from typing import Dict, Any, Callable, Tuple, Optional
+from typing import Callable, Tuple, Optional
 import pandas as pd
 
 from finance_tools.core.api_client import FinMindClient
-from finance_tools.domains.valuation.yahoo_fetcher import YahooFetcher
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +24,6 @@ class FetchOrchestrator:
         self.revenue_fetcher = revenue_fetcher
         self.institutional_investors_shares_fetcher = institutional_investors_shares_fetcher
         self.shareholding_fetcher = shareholding_fetcher
-        self._yahoo = YahooFetcher()
 
     def fetch_financials(self, code: str, start_date: str) -> Tuple[list, list, bool]:
         logger.debug(f"正在擷取 {code} 的財務報表...")
@@ -51,14 +49,5 @@ class FetchOrchestrator:
             return pd.DataFrame(), False
         logger.debug(f"正在擷取 {code} 的外資持股比例...")
         return self.shareholding_fetcher(code, start_date)
-
-    def fetch_valuation_stats(self, code: str) -> Dict[str, Any]:
-        """Fetches full valuation stats (market cap, PE, PB, Yield) from Yahoo Finance."""
-        logger.debug(f"正在為 {code} 從 Yahoo 擷取估值數據...")
-        try:
-            return self._yahoo.fetch_market_stats(code)
-        except Exception as e:
-            logger.error(f"從 Yahoo 擷取 {code} 估值時發生錯誤： {e}")
-            return {}
 
 
