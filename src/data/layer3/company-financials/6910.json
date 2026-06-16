@@ -14,7 +14,9 @@
     "marketCap": 854588032,
     "pe": 14.141414,
     "pb": 2.46,
-    "dividendYield": 610.0
+    "dividendYield": 610.0,
+    "marginBalance": 0,
+    "shortBalance": 0
   },
   "historical": {
     "annual": [
@@ -6272,6 +6274,16 @@
         "trust_ratio": 0.0,
         "dealer_ratio": 0.0,
         "three_inst_ratio": 4.7
+      }
+    },
+    "marginTrading": {
+      "2026-06-16": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 0,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     }
   },
