@@ -103,7 +103,11 @@ jobs:
             # 外資持股
             if grep -q "外資持股比例合計" "$LOG"; then
               N=$(grep "外資持股比例合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
-              echo "| 外資持股比例 | ✅ | $N |"
+              if grep -q "tpex_3insti_qfii: 無法取得資料" "$LOG"; then
+                echo "| 外資持股比例 | ⚠️ 僅 TWSE（TPEx 失敗）| $N |"
+              else
+                echo "| 外資持股比例 | ✅ | $N |"
+              fi
             else
               echo "| 外資持股比例 | ❌ 失敗 | — |"
             fi
@@ -111,7 +115,11 @@ jobs:
             # 收盤價/PE/PB/殖利率
             if grep -q "市值估值合計" "$LOG"; then
               N=$(grep "市值估值合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
-              echo "| 收盤價／PE／PB／殖利率 | ✅ | $N |"
+              if grep -q "tpex_mainboard_quotes.*無法取得資料" "$LOG"; then
+                echo "| 收盤價／PE／PB／殖利率 | ⚠️ 僅 TWSE（TPEx 失敗）| $N |"
+              else
+                echo "| 收盤價／PE／PB／殖利率 | ✅ | $N |"
+              fi
             else
               echo "| 收盤價／PE／PB／殖利率 | ❌ 失敗 | — |"
             fi
