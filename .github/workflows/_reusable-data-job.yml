@@ -148,7 +148,7 @@ jobs:
               uv run finance_tools/cli.py $CLI --rerun $FORCE_FLAG --batch ${BATCH}/4 || true
             else
               echo "--- Batch ${BATCH}/4 — Initial Run for ${LABEL} ---"
-              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/4 || true
+              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/4
             fi
           done
 
