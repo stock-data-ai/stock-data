@@ -93,45 +93,42 @@ class TWSEInstitutionalFetcher:
     # TWSE T86  (上市)
     # ──────────────────────────────────────────────────────────────
     def _fetch_listed(self, date_str: str) -> Optional[Dict[str, InstitutionalRecord]]:
+        """網路錯誤直接拋出（由 retry 重試後 re-raise）；stat != OK 代表非交易日，回傳 None。"""
         url = self.TWSE_URL.format(date=date_str)
-        try:
-            resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-            resp.raise_for_status()
-            data = resp.json()
+        resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        resp.raise_for_status()
+        data = resp.json()
 
-            if data.get("stat") != "OK" or not data.get("data"):
-                return None
-
-            # T86 欄位索引:
-            # [0] code  [1] name
-            # [2-4]  外陸資（不含外資自營商）: buy, sell, net
-            # [5-7]  外資自營商: buy, sell, net
-            # [8-10] 投信: buy, sell, net
-            # [11]   自營商合計 net
-            # [12-14] 自營商（自行買賣）: buy, sell, net
-            # [15-17] 自營商（避險）: buy, sell, net
-            # [18]   三大法人合計 net
-            date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-            return {
-                row[0].strip(): InstitutionalRecord(
-                    date=date_iso,
-                    Foreign_Investor_buy  = _parse_int(row[2]),
-                    Foreign_Investor_sell = _parse_int(row[3]),
-                    Foreign_Dealer_buy    = _parse_int(row[5]),
-                    Foreign_Dealer_sell   = _parse_int(row[6]),
-                    Investment_Trust_buy  = _parse_int(row[8]),
-                    Investment_Trust_sell = _parse_int(row[9]),
-                    Dealer_self_buy       = _parse_int(row[12]),
-                    Dealer_self_sell      = _parse_int(row[13]),
-                    Dealer_hedging_buy    = _parse_int(row[15]),
-                    Dealer_hedging_sell   = _parse_int(row[16]),
-                )
-                for row in data["data"]
-                if row[0].strip() and len(row) >= 19  # 欄數不足為衍生商品，略過
-            }
-        except Exception as e:
-            logger.error(f"TWSE T86 error: {e}")
+        if data.get("stat") != "OK" or not data.get("data"):
             return None
+
+        # T86 欄位索引:
+        # [0] code  [1] name
+        # [2-4]  外陸資（不含外資自營商）: buy, sell, net
+        # [5-7]  外資自營商: buy, sell, net
+        # [8-10] 投信: buy, sell, net
+        # [11]   自營商合計 net
+        # [12-14] 自營商（自行買賣）: buy, sell, net
+        # [15-17] 自營商（避險）: buy, sell, net
+        # [18]   三大法人合計 net
+        date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+        return {
+            row[0].strip(): InstitutionalRecord(
+                date=date_iso,
+                Foreign_Investor_buy  = _parse_int(row[2]),
+                Foreign_Investor_sell = _parse_int(row[3]),
+                Foreign_Dealer_buy    = _parse_int(row[5]),
+                Foreign_Dealer_sell   = _parse_int(row[6]),
+                Investment_Trust_buy  = _parse_int(row[8]),
+                Investment_Trust_sell = _parse_int(row[9]),
+                Dealer_self_buy       = _parse_int(row[12]),
+                Dealer_self_sell      = _parse_int(row[13]),
+                Dealer_hedging_buy    = _parse_int(row[15]),
+                Dealer_hedging_sell   = _parse_int(row[16]),
+            )
+            for row in data["data"]
+            if row[0].strip() and len(row) >= 19  # 欄數不足為衍生商品，略過
+        }
 
     # ──────────────────────────────────────────────────────────────
     # TPEx tpex_3insti_daily_trading  (上櫃)

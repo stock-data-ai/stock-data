@@ -81,6 +81,7 @@ def main():
     # --- 'update-marketcap-inst' command ---
     parser_daily = subparsers.add_parser("update-marketcap-inst", help="每日更新：市值估值 + 三大法人（皆為 TWSE/TPEx 批次），單次 load/save。")
     add_common_arguments(parser_daily, include_force=True, include_rerun=True)
+    parser_daily.add_argument("--date", type=str, help="指定日期 (YYYYMMDD 或 YYYY-MM-DD)，預設為今天。")
     parser_daily.set_defaults(func=run_update_marketcap_inst)
 
     # --- 'full-update' command ---

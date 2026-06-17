@@ -45,8 +45,16 @@ def run_update_marketcap_inst(args):
     file_mgr = FileManager()
 
     # ── TWSE/TPEx 批次預撈（全市場一次，取代 per-stock API）───────────────
-    today_str = now_tw().strftime("%Y%m%d")
-    pre_inst = TWSEInstitutionalFetcher().fetch_all(today_str)
+    raw_date = getattr(args, "date", None)
+    if raw_date:
+        today_str = raw_date.replace("-", "")
+    else:
+        today_str = now_tw().strftime("%Y%m%d")
+    try:
+        pre_inst = TWSEInstitutionalFetcher().fetch_all(today_str)
+    except Exception as e:
+        logger.error(f"❌ TWSE T86 批次撈取失敗（含重試）: {e}，中止執行。")
+        sys.exit(1)
     pre_shareholding = TWSEShareholdingFetcher().fetch_all()
     pre_valuation = TWSEValuationFetcher().fetch_all()
 
