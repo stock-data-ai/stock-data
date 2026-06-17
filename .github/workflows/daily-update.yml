@@ -106,12 +106,12 @@ jobs:
               echo "| 外資持股比例 | ❌ 失敗 | — |"
             fi
 
-            # 市值估值
+            # 收盤價/PE/PB/殖利率
             if grep -q "市值估值合計" "$LOG"; then
               N=$(grep "市值估值合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
-              echo "| 市值估值 | ✅ | $N |"
+              echo "| 收盤價／PE／PB／殖利率 | ✅ | $N |"
             else
-              echo "| 市值估值 | ❌ 失敗 | — |"
+              echo "| 收盤價／PE／PB／殖利率 | ❌ 失敗 | — |"
             fi
 
             echo ""
