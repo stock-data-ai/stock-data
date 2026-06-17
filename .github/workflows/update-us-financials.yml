@@ -45,5 +45,7 @@ jobs:
           git add src/data/layer3/company-financials-us/
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "每週更新美股財務資料 $(date -u +%Y-%m-%d)"
-          git pull --rebase -X theirs origin main
-          git push
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && break
+            sleep $((i * 5))
+          done

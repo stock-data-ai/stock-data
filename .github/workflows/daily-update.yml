@@ -65,8 +65,10 @@ jobs:
           DATE_LABEL="${{ inputs.date || '' }}"
           [ -z "$DATE_LABEL" ] && DATE_LABEL=$(date -u +%Y-%m-%d)
           git commit -m "每日更新市值+三大法人數據 $DATE_LABEL"
-          git pull --rebase -X ours origin main
-          git push
+          for i in 1 2 3; do
+            git pull --rebase -X ours origin main && git push && break
+            sleep $((i * 5))
+          done
 
       - name: 執行摘要
         if: always()

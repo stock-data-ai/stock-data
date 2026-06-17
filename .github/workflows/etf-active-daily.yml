@@ -259,8 +259,10 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "主動型 ETF 持股更新 $(date +%Y-%m-%d)"
-            git pull --rebase -X ours origin main
-            git push
+            for i in 1 2 3; do
+              git pull --rebase -X ours origin main && git push && break
+              sleep $((i * 5))
+            done
           fi
 
       - name: Fetch stock_map ETF index.json (for categoryId/issuer)
@@ -287,8 +289,10 @@ jobs:
             echo "No changes to reverse index"
           else
             git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
-            git pull --rebase -X ours origin main
-            git push
+            for i in 1 2 3; do
+              git pull --rebase -X ours origin main && git push && break
+              sleep $((i * 5))
+            done
           fi
 
       - name: Fail if any crawler failed

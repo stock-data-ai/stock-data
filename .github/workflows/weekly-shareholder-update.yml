@@ -47,8 +47,10 @@ jobs:
           git add src/data/layer3/company-financials/
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "每週更新 TDCC 股權分散數據 $(date -u +%Y-%m-%d)"
-          git pull --rebase -X ours origin main
-          git push
+          for i in 1 2 3; do
+            git pull --rebase -X ours origin main && git push && break
+            sleep $((i * 5))
+          done
 
   compute-big-holders:
     needs: fetch-tdcc
@@ -83,5 +85,7 @@ jobs:
           git add src/data/market/weekly_big_holders.json
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "更新大戶加碼排行 $(date -u +%Y-%m-%d)"
-          git pull --rebase -X ours origin main
-          git push
+          for i in 1 2 3; do
+            git pull --rebase -X ours origin main && git push && break
+            sleep $((i * 5))
+          done

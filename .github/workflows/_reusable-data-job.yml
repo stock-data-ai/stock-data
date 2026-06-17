@@ -328,25 +328,28 @@ jobs:
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "${{ inputs.commit_message }} $(date -u +%Y-%m-%d) [round ${ROUND}]"
 
-          # Pull with rebase, but abort if JSON files get corrupted by text merge
-          git pull --rebase -X ours origin main
+          for i in 1 2 3; do
+            # Pull with rebase, but abort if JSON files get corrupted by text merge
+            git pull --rebase -X ours origin main
 
-          # Post-rebase validation: ensure rebase didn't corrupt JSON
-          REBASE_ERRORS=0
-          for f in $(git diff --name-only HEAD~1 -- src/data/layer3/company-financials/); do
-            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null || {
-              echo "::error::Rebase corrupted $f — taking our version"
-              git show HEAD~1:"$f" > "$f" || git checkout HEAD -- "$f"
-              REBASE_ERRORS=$((REBASE_ERRORS + 1))
-            }
+            # Post-rebase validation: ensure rebase didn't corrupt JSON
+            REBASE_ERRORS=0
+            for f in $(git diff --name-only HEAD~1 -- src/data/layer3/company-financials/); do
+              python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null || {
+                echo "::error::Rebase corrupted $f — taking our version"
+                git show HEAD~1:"$f" > "$f" || git checkout HEAD -- "$f"
+                REBASE_ERRORS=$((REBASE_ERRORS + 1))
+              }
+            done
+            if [ "$REBASE_ERRORS" -gt 0 ]; then
+              echo "::warning::Fixed ${REBASE_ERRORS} files corrupted by git rebase merge"
+              git add src/data/layer3/company-financials/
+              git commit --amend --no-edit
+            fi
+
+            git push && break
+            sleep $((i * 5))
           done
-          if [ "$REBASE_ERRORS" -gt 0 ]; then
-            echo "::warning::Fixed ${REBASE_ERRORS} files corrupted by git rebase merge"
-            git add src/data/layer3/company-financials/
-            git commit --amend --no-edit
-          fi
-
-          git push
 
       - name: Trigger rerun if needed
         env:
