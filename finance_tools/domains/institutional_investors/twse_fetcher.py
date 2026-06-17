@@ -54,6 +54,14 @@ def _roc_date_to_iso(roc: str) -> str:
         return ""
 
 
+_BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.twse.com.tw/zh/trading/fund/T86.html",
+}
+
+
 class TWSEInstitutionalFetcher:
     """
     一次取回全市場三大法人買賣超（上市 + 上櫃）。
@@ -95,7 +103,7 @@ class TWSEInstitutionalFetcher:
     def _fetch_listed(self, date_str: str) -> Optional[Dict[str, InstitutionalRecord]]:
         """網路錯誤直接拋出（由 retry 重試後 re-raise）；stat != OK 代表非交易日，回傳 None。"""
         url = self.TWSE_URL.format(date=date_str)
-        resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        resp = requests.get(url, timeout=20, headers=_BROWSER_HEADERS)
         resp.raise_for_status()
         data = resp.json()
 

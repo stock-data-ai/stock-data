@@ -19,6 +19,13 @@ from finance_tools.utils.retry import retry as _retry
 
 logger = logging.getLogger(__name__)
 
+_BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.twse.com.tw/",
+}
+
 
 class ValuationRecord:
     __slots__ = ("close", "pe", "pb", "dividend_yield")
@@ -79,7 +86,7 @@ class TWSEValuationFetcher:
     # ──────────────────────────────────────────────────────────────
     def _fetch_listed(self) -> Optional[Dict[str, ValuationRecord]]:
         try:
-            close_resp = requests.get(self.STOCK_DAY_ALL_URL, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+            close_resp = requests.get(self.STOCK_DAY_ALL_URL, timeout=20, headers=_BROWSER_HEADERS)
             close_resp.raise_for_status()
             close_data = close_resp.json()
             if close_data.get("stat") != "OK" or not close_data.get("data"):
@@ -88,7 +95,7 @@ class TWSEValuationFetcher:
             # TWSE 對同一連線的連續請求有速率限制，緊接著打第二個 API 會被卡住 timeout
             time.sleep(3)
 
-            ratio_resp = requests.get(self.BWIBBU_ALL_URL, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+            ratio_resp = requests.get(self.BWIBBU_ALL_URL, timeout=20, headers=_BROWSER_HEADERS)
             ratio_resp.raise_for_status()
             ratio_data = ratio_resp.json()
             ratios = {}
@@ -166,6 +173,6 @@ class TWSEValuationFetcher:
 
     @staticmethod
     def _fetch_tpex_json(url: str):
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        req = urllib.request.Request(url, headers=_BROWSER_HEADERS)
         with urllib.request.urlopen(req, timeout=30) as resp:
             return json.loads(resp.read().decode("utf-8"))

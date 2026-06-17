@@ -17,6 +17,13 @@ from finance_tools.utils.retry import retry as _retry
 
 logger = logging.getLogger(__name__)
 
+_BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.twse.com.tw/",
+}
+
 
 class TWSEShareholdingFetcher:
     """
@@ -53,7 +60,7 @@ class TWSEShareholdingFetcher:
 
     def _fetch_listed(self) -> Optional[Dict[str, float]]:
         try:
-            resp = requests.get(self.TWSE_URL, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+            resp = requests.get(self.TWSE_URL, timeout=20, headers=_BROWSER_HEADERS)
             resp.raise_for_status()
             data = resp.json()
             if data.get("stat") != "OK":
@@ -70,7 +77,7 @@ class TWSEShareholdingFetcher:
 
     def _fetch_otc(self) -> Optional[Dict[str, float]]:
         try:
-            req = urllib.request.Request(self.TPEX_URL, headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(self.TPEX_URL, headers=_BROWSER_HEADERS)
             with urllib.request.urlopen(req, timeout=30) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             # 欄位: SecuritiesCompanyCode, PercentageOfSharesOC/FMIHeld = "87.8%"
