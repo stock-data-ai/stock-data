@@ -1,57 +1,140 @@
-name: Daily Update｜每日更新（市值＋三大法人）
+name: 每日更新｜市值＋三大法人
 
 on:
   workflow_dispatch:
     inputs:
-      task:
-        description: 'Task identifier (for rerun chaining)'
+      date:
+        description: '補跑日期 (YYYYMMDD)，留空 = 今天'
         required: false
-        default: 'daily'
-        type: string
-      rerun_round:
-        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
-        required: false
-        default: '0'
-        type: string
-      delay_minutes:
-        description: 'Minutes to wait before start (for API quota reset)'
-        required: false
-        default: '0'
-        type: string
-      batch:
-        description: 'Batch number (0=all 4 parallel batches, 1-4=specific batch). 改用 TWSE/TPEx 批次 API 後不需要平行分批，預設單一 job。'
-        required: false
-        default: '1'
-        type: string
+        default: ''
       force:
-        description: 'Force update even if already updated today'
+        description: '強制重新更新（跳過已更新今日的公司）'
         required: false
         default: false
         type: boolean
 
 concurrency:
-  group: data-pipeline
+  group: daily-update
   cancel-in-progress: false
 
 permissions:
   contents: write
-  actions: write
 
 jobs:
-  pipeline:
-    uses: ./.github/workflows/_reusable-data-job.yml
-    with:
-      commands_json: '[{"id":"daily","cli":"update-marketcap-inst","label":"每日更新(市值+三大法人)"}]'
-      artifact_prefix: daily
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
-      commit_message: "每日更新市值+三大法人數據"
-      caller_workflow: daily-update.yml
-      caller_task: daily
-      summary_title: "每日更新"
-      rerun_round: ${{ inputs.rerun_round || '0' }}
-      delay_minutes: ${{ inputs.delay_minutes || '0' }}
-      batch: ${{ inputs.batch || '1' }}
-      force: ${{ github.event_name == 'schedule' || inputs.force || false }}
-      rerun_delay_minutes: '65'
-    secrets: inherit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
 
+      - name: 取得 companies-all.json（用於計算市值）
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          mkdir -p src/data/layer3/companies
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/layer3/companies/companies-all.json?ref=publish_cloudflare" \
+            -o src/data/layer3/companies/companies-all.json
+          echo "✅ companies-all.json 取得完成"
+
+      - name: Setup uv + Python
+        uses: astral-sh/setup-uv@v8.0.0
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: pyproject.toml
+      - run: uv sync --all-extras --dev
+
+      - name: 執行每日更新
+        run: |
+          ARGS=""
+          [ -n "${{ inputs.date }}" ] && ARGS="$ARGS --date ${{ inputs.date }}"
+          [ "${{ inputs.force }}" = "true" ] && ARGS="$ARGS --force"
+          set -o pipefail
+          uv run finance_tools/cli.py update-marketcap-inst $ARGS 2>&1 | tee /tmp/run.log
+
+      - name: 提交變更
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "沒有變更需要提交。"; exit 0; }
+          DATE_LABEL="${{ inputs.date || '' }}"
+          [ -z "$DATE_LABEL" ] && DATE_LABEL=$(date -u +%Y-%m-%d)
+          git commit -m "每日更新市值+三大法人數據 $DATE_LABEL"
+          git pull --rebase -X ours origin main
+          git push
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          [ ! -f "$LOG" ] && echo "（無 log，更新前步驟即失敗）" >> $GITHUB_STEP_SUMMARY && exit 0
+
+          {
+            TARGET="${{ inputs.date }}"
+            [ -z "$TARGET" ] && TARGET=$(date -u +%Y-%m-%d)
+            echo "## 每日更新｜$TARGET"
+            echo ""
+            echo "| 資料來源 | 狀態 | 筆數 |"
+            echo "|---------|:----:|-----:|"
+
+            # TWSE T86 上市三大法人
+            if grep -q "TWSE T86:.*支上市股票" "$LOG"; then
+              N=$(grep "TWSE T86:.*支上市股票" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              echo "| TWSE 上市三大法人 | ✅ | $N |"
+            else
+              echo "| TWSE 上市三大法人 | ⚠️ 無資料（非交易日或 API 失敗）| — |"
+            fi
+
+            # TPEx 上櫃三大法人
+            if grep -q "TPEx:.*支上櫃股票" "$LOG"; then
+              N=$(grep "TPEx:.*支上櫃股票" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              echo "| TPEx 上櫃三大法人 | ✅ | $N |"
+            else
+              echo "| TPEx 上櫃三大法人 | ❌ 失敗 | — |"
+            fi
+
+            # 外資持股
+            if grep -q "外資持股比例合計" "$LOG"; then
+              N=$(grep "外資持股比例合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              echo "| 外資持股比例 | ✅ | $N |"
+            else
+              echo "| 外資持股比例 | ❌ 失敗 | — |"
+            fi
+
+            # 市值估值
+            if grep -q "市值估值合計" "$LOG"; then
+              N=$(grep "市值估值合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              echo "| 市值估值 | ✅ | $N |"
+            else
+              echo "| 市值估值 | ❌ 失敗 | — |"
+            fi
+
+            echo ""
+
+            # 公司更新結果
+            if grep -q "每日更新完成" "$LOG"; then
+              RESULT=$(grep "每日更新完成" "$LOG" | grep -o '[0-9]*/[0-9]*' | head -1)
+              echo "**公司更新完成：$RESULT 家**"
+            fi
+
+            # 無市值
+            if grep -q "今日無市值資料" "$LOG"; then
+              N=$(grep "今日無市值資料" "$LOG" | grep -o '[0-9]* 家' | head -1)
+              echo "> ⚠️ 無市值資料：$N（記錄於 quality report）"
+            fi
+
+            # 失敗原因
+            if grep -q "❌.*中止執行" "$LOG"; then
+              echo ""
+              echo "### ❌ 批次撈取失敗"
+              echo '```'
+              grep "❌" "$LOG"
+              echo '```'
+            fi
+
+          } >> $GITHUB_STEP_SUMMARY
