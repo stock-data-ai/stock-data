@@ -38,7 +38,24 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Fetch TDCC shareholding data
-        run: uv run finance_tools/cli.py fetch-shareholder-data --force
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py fetch-shareholder-data --force 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          RESULT=$(grep -oP 'OK 完成: \K\d+/\d+(?= 間)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 股東結構更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 更新公司數 | $RESULT |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Commit result
         run: |
@@ -76,7 +93,23 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Compute big holders ranking
-        run: uv run finance_tools/cli.py compute-big-holders
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py compute-big-holders 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          WRITTEN=$(grep "written →" /tmp/run.log 2>/dev/null | tail -1 | sed 's/.*written → //' || echo "—")
+          {
+            echo "## 大戶加碼排行計算 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 輸出檔案 | $WRITTEN |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Commit result
         run: |

@@ -32,11 +32,32 @@ jobs:
 
       - name: Fetch US financials
         run: |
+          set -o pipefail
           if [ -n "${{ github.event.inputs.codes }}" ]; then
-            uv run finance_tools/us_financials/fetch_us_financials.py ${{ github.event.inputs.codes }}
+            uv run finance_tools/us_financials/fetch_us_financials.py ${{ github.event.inputs.codes }} 2>&1 | tee /tmp/run.log
           else
-            uv run finance_tools/us_financials/fetch_us_financials.py --all-topics --delay 1.5
+            uv run finance_tools/us_financials/fetch_us_financials.py --all-topics --delay 1.5 2>&1 | tee /tmp/run.log
           fi
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          # "Done: X saved, Y skipped, Z errors → ..."
+          SAVED=$(grep -oP 'Done: \K\d+(?= saved)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          SKIPPED=$(grep -oP '\d+(?= skipped)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          ERRORS=$(grep -oP '\d+(?= errors)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 美股財務更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 儲存 | $SAVED |"
+            echo "| 跳過 | $SKIPPED |"
+            echo "| 錯誤 | $ERRORS |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Commit and push
         run: |

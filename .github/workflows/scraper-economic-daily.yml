@@ -56,4 +56,30 @@ jobs:
           CLOUDFLARE_DATABASE_ID: ${{ secrets.CLOUDFLARE_DATABASE_ID }}
           CLOUDFLARE_CRAWLER_DB_ID: ${{ secrets.CLOUDFLARE_CRAWLER_DB_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: uv run python -m Web_Crawler.money_udn.init_database --rotate
+        run: |
+          set -o pipefail
+          uv run python -m Web_Crawler.money_udn.init_database --rotate 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          # "本次主題: {name} ({id})" and "進度: N/M" and "主題 [X] 完成: 成功 A, 失敗 B"
+          TOPIC=$(grep -oP '本次主題: \K[^\n]+' "$LOG" 2>/dev/null | tail -1 | sed 's/ *$//' || echo "—")
+          PROGRESS=$(grep -oP '進度: \K\d+/\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          SUCCESS=$(grep -oP '完成: 成功 \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          FAIL=$(grep -oP '完成: 成功 \d+, 失敗 \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          NEXT=$(grep "下次將執行:" "$LOG" 2>/dev/null | sed 's/下次將執行: //' | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 經濟日報爬蟲 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 本次主題 | $TOPIC |"
+            echo "| 輪替進度 | $PROGRESS |"
+            echo "| 成功公司數 | $SUCCESS |"
+            echo "| 失敗公司數 | $FAIL |"
+            echo "| 下次主題 | $NEXT |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY

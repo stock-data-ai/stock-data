@@ -41,13 +41,44 @@ jobs:
         run: |
           BACKFILL="${{ inputs.backfill_from }}"
           DATE="${{ inputs.date }}"
+          set -o pipefail
           if [ -n "$BACKFILL" ]; then
-            uv run finance_tools/cli.py update-margin --backfill-from "$BACKFILL"
+            uv run finance_tools/cli.py update-margin --backfill-from "$BACKFILL" 2>&1 | tee /tmp/run.log
           elif [ -n "$DATE" ]; then
-            uv run finance_tools/cli.py update-margin --date "$DATE"
+            uv run finance_tools/cli.py update-margin --date "$DATE" 2>&1 | tee /tmp/run.log
           else
-            uv run finance_tools/cli.py update-margin
+            uv run finance_tools/cli.py update-margin 2>&1 | tee /tmp/run.log
           fi
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          # Single-date mode: "Target Date: YYYYMMDD" + "[YYYYMMDD] 完成 X 家公司"
+          # Backfill mode: "補齊融資融券：YYYYMMDD ~ YYYYMMDD，共 N 個交易日" + "補齊完成，總計 X 筆"
+          BACKFILL="${{ inputs.backfill_from }}"
+          if [ -n "$BACKFILL" ]; then
+            DATE_RANGE=$(grep -oP '補齊融資融券：\K[^\n]+(?=，)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+            TOTAL=$(grep -oP '補齊完成，總計 \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+            MODE="補齊模式"
+            DETAIL="| 日期範圍 | $DATE_RANGE |"$'\n'"| 總計更新筆數 | $TOTAL |"
+          else
+            TARGET=$(grep -oP 'Target Date: \K\d{8}' "$LOG" 2>/dev/null | tail -1 || echo "")
+            [ -n "$TARGET" ] && TARGET="${TARGET:0:4}-${TARGET:4:2}-${TARGET:6:2}"
+            COUNT=$(grep -oP '完成 \K\d+(?= 家公司)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+            MODE="單日模式"
+            DETAIL="| 目標日期 | ${TARGET:-—} |"$'\n'"| 更新公司數 | $COUNT |"
+          fi
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 融資融券更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 模式 | $MODE |"
+            echo "$DETAIL"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Commit margin trading data
         run: |
