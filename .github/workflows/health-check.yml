@@ -5,6 +5,7 @@ on:
 
 permissions:
   actions: read
+  checks: read
   contents: read
 
 jobs:
@@ -18,7 +19,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           python3 << 'PYEOF'
-          import os, json, urllib.parse, urllib.request, sys
+          import os, json, re, urllib.parse, urllib.request, sys
           from datetime import datetime, timedelta, timezone
 
           GH_TOKEN          = os.environ['GH_TOKEN']
@@ -62,16 +63,94 @@ jobs:
               'User-Agent': 'stock-data-health-check',
           }
 
+          def gh_get(path):
+              url = f'https://api.github.com{path}' if path.startswith('/') else path
+              req = urllib.request.Request(url, headers=GH_HEADERS)
+              with urllib.request.urlopen(req) as resp:
+                  return json.loads(resp.read())
+
+          # ── Fetch today's workflow runs ──────────────────────────────────────
           workflow_runs = []
           for page in range(1, 6):
               query = urllib.parse.urlencode({'created': f'{since}..{until}', 'per_page': '100', 'page': str(page)})
-              req = urllib.request.Request(f'https://api.github.com/repos/{REPO}/actions/runs?{query}', headers=GH_HEADERS)
-              with urllib.request.urlopen(req) as resp:
-                  page_runs = json.loads(resp.read())['workflow_runs']
+              page_runs = gh_get(f'/repos/{REPO}/actions/runs?{query}')['workflow_runs']
               workflow_runs.extend(page_runs)
               if len(page_runs) < 100:
                   break
 
+          # ── Fetch GITHUB_STEP_SUMMARY content for a run via check-runs API ──
+          def get_job_summary(run_id):
+              """
+              Each Actions job is a check run. output.text stores the
+              GITHUB_STEP_SUMMARY markdown content written during the run.
+              Returns concatenated non-empty summaries from all jobs, or None.
+              """
+              try:
+                  jobs = gh_get(f'/repos/{REPO}/actions/runs/{run_id}/jobs').get('jobs', [])
+                  parts = []
+                  for job in jobs:
+                      try:
+                          cr = gh_get(f'/repos/{REPO}/check-runs/{job["id"]}')
+                          text = (cr.get('output') or {}).get('text') or ''
+                          if text.strip():
+                              parts.append(text.strip())
+                      except Exception:
+                          pass
+                  return '\n\n'.join(parts) if parts else None
+              except Exception:
+                  return None
+
+          # ── markdown → HTML (handles headings + tables) ──────────────────────
+          def md_to_html(md):
+              lines = md.split('\n')
+              out = []
+              in_table = False
+              header_done = False
+
+              TD  = 'style="padding:5px 12px;border:1px solid #e2e8f0"'
+              TH  = 'style="padding:6px 12px;text-align:left;border:1px solid #e2e8f0;background:#f8fafc;white-space:nowrap"'
+              TBL = 'style="border-collapse:collapse;width:100%;font-size:13px;margin:6px 0 14px"'
+
+              def close_table():
+                  nonlocal in_table, header_done
+                  if in_table:
+                      out.append('</tbody></table>')
+                      in_table = False
+                      header_done = False
+
+              for raw in lines:
+                  line = raw.rstrip()
+
+                  if line.startswith('## '):
+                      close_table()
+                      out.append(f'<h3 style="margin:20px 0 8px;color:#111827;font-size:15px">{line[3:]}</h3>')
+                  elif line.startswith('### '):
+                      close_table()
+                      out.append(f'<h4 style="margin:14px 0 6px;color:#374151;font-size:14px">{line[4:]}</h4>')
+                  elif line.startswith('|'):
+                      # separator row  |----|:---:|
+                      if all(c in '|- :' for c in line.replace('|', '')):
+                          continue
+                      cells = [c.strip() for c in line.split('|')[1:-1]]
+                      if not in_table:
+                          in_table = True
+                          header_done = False
+                          out.append(f'<table {TBL}>')
+                      if not header_done:
+                          out.append(f'<thead><tr>{"".join(f"<th {TH}>{c}</th>" for c in cells)}</tr></thead><tbody>')
+                          header_done = True
+                      else:
+                          out.append(f'<tr>{"".join(f"<td {TD}>{c}</td>" for c in cells)}</tr>')
+                  else:
+                      close_table()
+                      if line.strip():
+                          text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
+                          out.append(f'<p style="margin:3px 0;font-size:13px">{text}</p>')
+
+              close_table()
+              return '\n'.join(out)
+
+          # ── Build result rows ────────────────────────────────────────────────
           def job_start_utc(job):
               return datetime(taiwan_now.year, taiwan_now.month, taiwan_now.day,
                               job['hour'], job['minute'], tzinfo=timezone.utc) - timedelta(hours=8)
@@ -96,7 +175,6 @@ jobs:
               secs  = max(0, int((end - start).total_seconds()))
               return f"{secs // 60}m{secs % 60:02d}s"
 
-          # Build result rows
           results = []
           for job in required:
               start, end = job_window(job)
@@ -105,9 +183,9 @@ jobs:
                   if r['name'] == job['workflow_name']
                   and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end
               ]
-              success_run  = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] == 'success'), None)
-              failed_run   = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] != 'success'), None)
-              running_run  = next((r for r in runs if r['status'] in ('in_progress', 'queued', 'waiting')), None)
+              success_run = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] == 'success'), None)
+              failed_run  = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] != 'success'), None)
+              running_run = next((r for r in runs if r['status'] in ('in_progress', 'queued', 'waiting')), None)
 
               if success_run:
                   status, run = 'ok', success_run
@@ -120,24 +198,43 @@ jobs:
 
               started_at = (run or {}).get('run_started_at') or (run or {}).get('created_at')
               results.append({
-                  'label':     job['label'],
-                  'sched':     f"{job['hour']:02d}:{job['minute']:02d}",
-                  'status':    status,
-                  'run_time':  fmt_tw_time(started_at) if started_at else '—',
-                  'duration':  fmt_duration(started_at, run['updated_at']) if started_at and run and run['status'] == 'completed' else ('進行中' if status == 'running' else '—'),
-                  'url':       (run or {}).get('html_url'),
+                  'label':    job['label'],
+                  'sched':    f"{job['hour']:02d}:{job['minute']:02d}",
+                  'status':   status,
+                  'run_time': fmt_tw_time(started_at) if started_at else '—',
+                  'duration': (fmt_duration(started_at, run['updated_at'])
+                               if started_at and run and run['status'] == 'completed' else
+                               ('進行中' if status == 'running' else '—')),
+                  'url':      (run or {}).get('html_url'),
+                  'run_id':   (run or {}).get('id'),
               })
 
-          ok_n    = sum(1 for r in results if r['status'] == 'ok')
-          fail_n  = sum(1 for r in results if r['status'] == 'failed')
-          miss_n  = sum(1 for r in results if r['status'] in ('missing', 'running'))
+          ok_n   = sum(1 for r in results if r['status'] == 'ok')
+          fail_n = sum(1 for r in results if r['status'] == 'failed')
+          miss_n = sum(1 for r in results if r['status'] in ('missing', 'running'))
           all_good = fail_n == 0 and miss_n == 0
 
-          STATUS_EMOJI  = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄'}
-          STATUS_LABEL  = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中'}
-          ROW_COLOR     = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb', 'running': '#eff6ff'}
+          STATUS_EMOJI = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄'}
+          STATUS_LABEL = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中'}
+          ROW_COLOR    = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb', 'running': '#eff6ff'}
 
-          # ── GITHUB_STEP_SUMMARY (Markdown) ──────────────────────────────────
+          # ── Fetch per-workflow summaries (deduplicated by run_id) ────────────
+          print('撈取各 workflow 詳細摘要...')
+          seen_run_ids = set()
+          workflow_summaries = []  # list of (label, url, summary_md)
+          for r in results:
+              rid = r.get('run_id')
+              if rid and rid not in seen_run_ids:
+                  seen_run_ids.add(rid)
+                  print(f"  {r['label']} (run {rid})...")
+                  summary_md = get_job_summary(rid)
+                  if summary_md:
+                      workflow_summaries.append((r['label'], r['url'], summary_md))
+                      print(f"    → {len(summary_md)} chars")
+                  else:
+                      print(f"    → 無 summary")
+
+          # ── Build GITHUB_STEP_SUMMARY (Markdown) ────────────────────────────
           md  = f"## stock_data 健康檢查 — {tw_date}\n\n"
           md += f"✅ **{ok_n}** 成功　❌ **{fail_n}** 失敗　⚠️ **{miss_n}** 未執行 / 進行中\n\n"
           md += "| 排程 | 任務 | 狀態 | 執行時間（台灣） | 耗時 |\n"
@@ -146,29 +243,43 @@ jobs:
               name = f"[{r['label']}]({r['url']})" if r['url'] else r['label']
               md += f"| {r['sched']} | {name} | {STATUS_EMOJI[r['status']]} {STATUS_LABEL[r['status']]} | {r['run_time']} | {r['duration']} |\n"
 
+          if workflow_summaries:
+              md += "\n---\n\n## 各任務詳細摘要\n\n"
+              for label, url, content in workflow_summaries:
+                  link = f"[{label}]({url})" if url else label
+                  md += f"### 📋 {link}\n\n{content}\n\n---\n\n"
+
           if STEP_SUMMARY_PATH:
               with open(STEP_SUMMARY_PATH, 'a', encoding='utf-8') as f:
                   f.write(md)
           print(md)
 
-          # ── HTML Email ───────────────────────────────────────────────────────
+          # ── Build HTML Email ─────────────────────────────────────────────────
           rows_html = ''
           for r in results:
               color = ROW_COLOR[r['status']]
-              e     = STATUS_EMOJI[r['status']]
-              lbl   = STATUS_LABEL[r['status']]
               name  = f'<a href="{r["url"]}" style="color:#1d4ed8">{r["label"]}</a>' if r['url'] else r['label']
               rows_html += (
                   f'<tr style="background:{color};border-bottom:1px solid #e2e8f0">'
                   f'<td style="padding:7px 14px;font-family:monospace;white-space:nowrap">{r["sched"]}</td>'
                   f'<td style="padding:7px 14px">{name}</td>'
-                  f'<td style="padding:7px 14px;text-align:center;white-space:nowrap">{e} {lbl}</td>'
+                  f'<td style="padding:7px 14px;text-align:center;white-space:nowrap">{STATUS_EMOJI[r["status"]]} {STATUS_LABEL[r["status"]]}</td>'
                   f'<td style="padding:7px 14px;font-family:monospace;text-align:center">{r["run_time"]}</td>'
                   f'<td style="padding:7px 14px;font-family:monospace;text-align:center">{r["duration"]}</td>'
                   f'</tr>\n'
               )
 
-          html = f'''<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;max-width:820px;margin:24px auto;padding:0 16px">
+          detail_sections_html = ''
+          for label, url, content in workflow_summaries:
+              link = f'<a href="{url}" style="color:#1d4ed8">{label}</a>' if url else label
+              detail_sections_html += (
+                  f'<div style="margin-top:28px;border-top:2px solid #e2e8f0;padding-top:16px">'
+                  f'<h3 style="margin:0 0 10px;font-size:15px;color:#111827">📋 {link}</h3>'
+                  f'{md_to_html(content)}'
+                  f'</div>\n'
+              )
+
+          html = f'''<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;max-width:860px;margin:24px auto;padding:0 16px">
           <h2 style="border-bottom:2px solid #e2e8f0;padding-bottom:10px;margin-bottom:16px">
             stock_data 健康檢查 — {tw_date}
           </h2>
@@ -177,7 +288,7 @@ jobs:
             ❌ <strong>{fail_n}</strong> 失敗 &nbsp;
             ⚠️ <strong>{miss_n}</strong> 未執行 / 進行中
           </p>
-          <table style="border-collapse:collapse;width:100%;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+          <table style="border-collapse:collapse;width:100%;font-size:13px;border:1px solid #e2e8f0">
             <thead>
               <tr style="background:#f8fafc">
                 <th style="padding:9px 14px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap">排程</th>
@@ -191,6 +302,7 @@ jobs:
           {rows_html}
             </tbody>
           </table>
+          {detail_sections_html}
           </body></html>'''
 
           subj = (f"✅ [{tw_date}] stock_data 全部正常" if all_good
