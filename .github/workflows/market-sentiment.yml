@@ -47,20 +47,8 @@ jobs:
           INST_TWSE="—"
           MARGIN_BAL="—"
           if [ -f src/data/market/sentiment.json ]; then
-            INST_TWSE=$(python3 -c "
-import json,sys
-d=json.load(open('src/data/market/sentiment.json'))
-inst=d.get('institutional',{}).get('twse',{})
-net=inst.get('net_buy_sell',0)
-print(f'{net:+,.0f} 元' if net else '—')
-" 2>/dev/null || echo "—")
-            MARGIN_BAL=$(python3 -c "
-import json,sys
-d=json.load(open('src/data/market/sentiment.json'))
-m=d.get('margin',{}).get('twse',{})
-bal=m.get('marginBalance',0)
-print(f'{bal:,} 張' if bal else '—')
-" 2>/dev/null || echo "—")
+            INST_TWSE=$(python3 -c "import json; d=json.load(open('src/data/market/sentiment.json')); inst=d.get('institutional',{}).get('twse',{}); net=inst.get('net_buy_sell',0); print(f'{net:+,.0f} 元' if net else '—')" 2>/dev/null || echo "—")
+            MARGIN_BAL=$(python3 -c "import json; d=json.load(open('src/data/market/sentiment.json')); m=d.get('margin',{}).get('twse',{}); bal=m.get('marginBalance',0); print(f'{bal:,} 張' if bal else '—')" 2>/dev/null || echo "—")
           fi
           STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
           {
