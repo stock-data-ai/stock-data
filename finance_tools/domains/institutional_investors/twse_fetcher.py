@@ -143,7 +143,7 @@ class TWSEInstitutionalFetcher:
     # ──────────────────────────────────────────────────────────────
     def _fetch_otc(self) -> Optional[Dict[str, InstitutionalRecord]]:
         try:
-            req = urllib.request.Request(self.TPEX_URL, headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(self.TPEX_URL, headers=_BROWSER_HEADERS)
             with urllib.request.urlopen(req, timeout=30) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             if not data:
