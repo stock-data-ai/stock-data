@@ -3,7 +3,7 @@
 # dependencies = [
 #   "requests",
 #   "pandas",
-#   "beautifulsoup4",
+#   "beautifulsoup4",  # unused, kept for compatibility
 #   "lxml",
 #   "openpyxl",
 # ]
@@ -127,23 +127,9 @@ def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = Non
                 tran_date = search_date
                 print(f"  指定日期: {tran_date}")
             else:
-                page_url = BASE_URL.format(fund_id=fund_id)
-                print(f"  抓取 {page_url}")
-                resp = session.get(page_url, headers=HEADERS, timeout=45)
-                resp.raise_for_status()
-                soup = BeautifulSoup(resp.text, 'html.parser')
-
-                excel_link = soup.find('a', href=lambda h: h and 'assetsExcel' in h)
-                if not excel_link:
-                    print(f"  [ERROR] 找不到 Excel 下載連結（第 {attempt}/{max_attempts} 次）")
-                    if attempt < max_attempts:
-                        time.sleep(attempt * 10)
-                        continue
-                    return [], None
-
-                date_compact = excel_link['href'].split('/')[-1]
-                tran_date = f"{date_compact[:4]}-{date_compact[4:6]}-{date_compact[6:]}"
-                print(f"  資料日期: {tran_date}")
+                tran_date = date.today().isoformat()
+                date_compact = date.today().strftime('%Y%m%d')
+                print(f"  查詢日期: {tran_date}")
 
             excel_url = EXCEL_URL.format(fund_id=fund_id, date_compact=date_compact)
             print(f"  下載 {excel_url}")
