@@ -24,7 +24,7 @@ import json
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, write_holdings_update
+from etf_utils import create_session, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import Optional
 
@@ -142,7 +142,8 @@ def main():
         print(f"支援清單：{', '.join(CATHAY_ACTIVE_ETFS.keys())}")
         sys.exit(1)
 
-    success, failed = 0, []
+    success, failed, unchanged = 0, [], 0
+    results: dict = {}
 
     for i, etf_code in enumerate(targets):
         fund_code = CATHAY_ACTIVE_ETFS[etf_code]
@@ -150,17 +151,25 @@ def main():
 
         holdings, tran_date = fetch_holdings(etf_code, fund_code)
         if holdings:
-            if update_etf_json(etf_code, holdings, tran_date):
+            result = update_etf_json(etf_code, holdings, tran_date)
+            if result is True:
                 success += 1
+                results[etf_code] = ("updated", tran_date or "")
+            elif result == "unchanged":
+                unchanged += 1
+                results[etf_code] = ("unchanged", tran_date or "")
             else:
                 failed.append(etf_code)
+                results[etf_code] = ("failed", "")
         else:
             failed.append(etf_code)
+            results[etf_code] = ("failed", "")
 
         if i < len(targets) - 1:
             time.sleep(1)
 
-    print(f"\n國泰投信主動 ETF 更新完成 — 成功: {success}/{len(targets)}")
+    write_github_output(results)
+    print(f"\n國泰投信主動 ETF 更新完成 — 已更新: {success}，無變化: {unchanged}，失敗: {len(failed)}/{len(targets)}")
     if failed:
         print(f"失敗: {', '.join(failed)}")
         sys.exit(1)

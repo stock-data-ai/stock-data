@@ -34,7 +34,7 @@ import json
 import sys
 import time
 from datetime import date, timedelta
-from etf_utils import create_session, write_holdings_update
+from etf_utils import create_session, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -261,23 +261,33 @@ def main():
         run_backfill(targets, backfill_days)
         return
 
-    success, failed = 0, []
+    success, failed, unchanged = 0, [], 0
+    results: dict = {}
+
     for i, etf_code in enumerate(targets):
         fund_id = FUHWA_ACTIVE_ETFS[etf_code]
         print(f"\n[{i+1}/{len(targets)}] {etf_code}")
         holdings, tran_date = fetch_holdings(etf_code, fund_id, search_date=search_date)
         if holdings:
-            if update_etf_json(etf_code, holdings, tran_date):
+            result = update_etf_json(etf_code, holdings, tran_date)
+            if result is True:
                 success += 1
+                results[etf_code] = ("updated", tran_date or "")
+            elif result == "unchanged":
+                unchanged += 1
+                results[etf_code] = ("unchanged", tran_date or "")
             else:
                 failed.append(etf_code)
+                results[etf_code] = ("failed", "")
         else:
             failed.append(etf_code)
+            results[etf_code] = ("failed", "")
 
         if i < len(targets) - 1:
             time.sleep(1)
 
-    print(f"\n復華投信主動 ETF 更新完成 — 成功: {success}/{len(targets)}")
+    write_github_output(results)
+    print(f"\n復華投信主動 ETF 更新完成 — 已更新: {success}，無變化: {unchanged}，失敗: {len(failed)}/{len(targets)}")
     if failed:
         print(f"失敗: {', '.join(failed)}")
         sys.exit(1)

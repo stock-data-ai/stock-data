@@ -6,12 +6,14 @@ etf_utils.py — 主動式 ETF 爬蟲共用工具
   clean_snapshot()           提取持股乾淨欄位
   write_holdings_update()    統一寫入 topHoldings / holdingsHistory
   record_unchanged_snapshot() 無更新時仍記錄當日快照
+  write_github_output()      輸出逐筆 ETF 狀態到 GITHUB_OUTPUT
 """
 
 import json
+import os
 from datetime import date
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -78,7 +80,7 @@ def record_unchanged_snapshot(
         print(f"  [OK] {etf_code} 來源未更新，記錄 {today} 快照（持股同 {source_date}）")
     else:
         print(f"  [SKIP] {etf_code} 數據無變化（{source_date}），今日已有記錄")
-    return True
+    return "unchanged"
 
 
 def write_holdings_update(
@@ -174,3 +176,19 @@ def write_holdings_update(
         import traceback
         traceback.print_exc()
         return False
+
+
+def write_github_output(results: Dict[str, Tuple[str, str]]) -> None:
+    """
+    輸出逐筆 ETF 狀態到 GITHUB_OUTPUT。
+    results: {etf_code: (status, date)}
+      status: "updated" | "unchanged" | "failed"
+      date:   "YYYY-MM-DD" 或 ""
+    """
+    gho = os.environ.get("GITHUB_OUTPUT")
+    if not gho:
+        return
+    with open(gho, "a", encoding="utf-8") as f:
+        for code, (status, tran_date) in results.items():
+            f.write(f"ETF_{code}_STATUS={status}\n")
+            f.write(f"ETF_{code}_DATE={tran_date}\n")
