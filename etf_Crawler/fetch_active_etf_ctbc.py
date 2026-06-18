@@ -97,8 +97,7 @@ def fetch_holdings(etf_code: str, fid: str, token: str) -> tuple:
     holdings: [{"name": ..., "weight": ..., "code": ..., "shares": ...}, ...]
     data_date: "2026-04-09" 或 None
     """
-    # 預設查詢昨日（若今日尚未更新則往前找最近一筆）
-    query_date = (date.today() - timedelta(days=1)).isoformat()
+    query_date = date.today().isoformat()
     url = f"{API_BASE}/etf/ETFHoldingWeight"
 
     print(f"  抓取 {url}  FID={fid}  StartDate={query_date}")

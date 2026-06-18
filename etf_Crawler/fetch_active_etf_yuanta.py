@@ -92,7 +92,7 @@ if (!wd) {
   process.exit(1);
 }
 
-const trandate = (wd.PCF && wd.PCF.trandate) || '';
+const trandate = (wd.PCF && wd.PCF.predate) || (wd.PCF && wd.PCF.trandate) || '';
 const sw = (wd.FundWeights && wd.FundWeights.StockWeights) || [];
 
 process.stdout.write(JSON.stringify({ trandate, stocks: sw }));
