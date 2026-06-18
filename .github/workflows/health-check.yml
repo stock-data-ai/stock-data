@@ -21,54 +21,51 @@ jobs:
           import os, json, urllib.parse, urllib.request, sys
           from datetime import datetime, timedelta, timezone
 
-          GH_TOKEN     = os.environ['GH_TOKEN']
-          BREVO_API_KEY = os.environ['BREVO_API_KEY']
-          REPO         = os.environ['REPO']
+          GH_TOKEN          = os.environ['GH_TOKEN']
+          BREVO_API_KEY     = os.environ['BREVO_API_KEY']
+          REPO              = os.environ['REPO']
+          STEP_SUMMARY_PATH = os.environ.get('GITHUB_STEP_SUMMARY', '')
 
-          # Mirror cron/src/index.ts CHECK_JOBS exactly
           CHECK_JOBS = [
-              {'label': '07:00 Economic Daily Scraper', 'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲', 'hour': 7, 'minute': 0},
-              {'label': '16:00 Active ETF Holdings Update (Daily)', 'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', 'hour': 16, 'minute': 0},
-              {'label': '19:05 Daily Update（第一次）', 'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）', 'hour': 19, 'minute': 5},
-              {'label': '21:05 Daily Update（第二次備援）', 'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）', 'hour': 21, 'minute': 5},
-              {'label': '19:00 MOPS Scraper', 'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲', 'hour': 19, 'minute': 0},
-              {'label': '19:30 Active ETF Holdings Update (Daily)', 'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', 'hour': 19, 'minute': 30},
-              {'label': '21:30 Economic Daily Scraper', 'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲', 'hour': 21, 'minute': 30},
-              {'label': '18:35 Market Sentiment Update', 'workflow_name': 'Market Sentiment Update｜市場情緒更新', 'hour': 18, 'minute': 35, 'days': [1, 2, 3, 4, 5]},
-              {'label': '20:00 Generate Chip Topic', 'workflow_name': 'Generate Chip Topic｜生成籌碼題材', 'hour': 20, 'minute': 0, 'days': [1, 2, 3, 4, 5]},
-              {'label': '21:00 Market Sentiment Update', 'workflow_name': 'Market Sentiment Update｜市場情緒更新', 'hour': 21, 'minute': 0, 'days': [1, 2, 3, 4, 5]},
-              {'label': '21:30 Margin Trading Update', 'workflow_name': 'Margin Trading Update｜融資融券更新', 'hour': 21, 'minute': 30, 'days': [1, 2, 3, 4, 5]},
-              {'label': '週六 08:00 ETF Holdings Update (Weekly)', 'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）', 'hour': 8, 'minute': 0, 'days': [6]},
-              {'label': '週六 09:00 Weekly Shareholder Update (Saturday)', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）', 'hour': 9, 'minute': 0, 'days': [6]},
-              {'label': '週六 11:00 Weekly Dividend Update (Saturday)', 'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）', 'hour': 11, 'minute': 0, 'days': [6]},
-              {'label': '週日 09:00 Weekly Full Update (Sunday)', 'workflow_name': 'Weekly Full Update (Sunday)｜完整財務更新（週日）', 'hour': 9, 'minute': 0, 'days': [0]},
-              {'label': '週日 10:00 Update US Financials', 'workflow_name': 'Update US Financials｜美股財務更新', 'hour': 10, 'minute': 0, 'days': [0]},
-              {'label': '週日 11:00 Weekly Balance Sheet Update (Monday)', 'workflow_name': 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）', 'hour': 11, 'minute': 0, 'days': [0]},
-              {'label': '週一 03:00 Cleanup old workflow runs', 'workflow_name': 'Cleanup old workflow runs｜清理舊 workflow 記錄', 'hour': 3, 'minute': 0, 'days': [1]},
+              {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
+              {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
+              {'label': '19:05 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 5},
+              {'label': '21:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
+              {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
+              {'label': '19:30 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 19, 'minute': 30},
+              {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
+              {'label': '18:35 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 18, 'minute': 35, 'days': [1,2,3,4,5]},
+              {'label': '20:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 20, 'minute': 0,  'days': [1,2,3,4,5]},
+              {'label': '21:00 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 0,  'days': [1,2,3,4,5]},
+              {'label': '21:30 Margin Trading Update',               'workflow_name': 'Margin Trading Update｜融資融券更新',                          'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
+              {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
+              {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
+              {'label': '週六 11:00 Weekly Dividend Update',         'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）',           'hour': 11, 'minute': 0,  'days': [6]},
+              {'label': '週日 09:00 Weekly Full Update',             'workflow_name': 'Weekly Full Update (Sunday)｜完整財務更新（週日）',             'hour': 9,  'minute': 0,  'days': [0]},
+              {'label': '週日 10:00 Update US Financials',           'workflow_name': 'Update US Financials｜美股財務更新',                           'hour': 10, 'minute': 0,  'days': [0]},
+              {'label': '週日 11:00 Weekly Balance Sheet Update',    'workflow_name': 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）',        'hour': 11, 'minute': 0,  'days': [0]},
+              {'label': '週一 03:00 Cleanup old workflow runs',      'workflow_name': 'Cleanup old workflow runs｜清理舊 workflow 記錄',              'hour': 3,  'minute': 0,  'days': [1]},
           ]
 
           now        = datetime.now(timezone.utc)
           taiwan_now = now + timedelta(hours=8)
           tw_date    = taiwan_now.strftime('%Y-%m-%d')
-          tw_day     = int(taiwan_now.strftime('%w'))  # 0=Sun 1=Mon … 6=Sat
-          tw_start_utc = datetime(
-              taiwan_now.year, taiwan_now.month, taiwan_now.day,
-              tzinfo=timezone.utc,
-          ) - timedelta(hours=8)
+          tw_day     = int(taiwan_now.strftime('%w'))
+          tw_start_utc = datetime(taiwan_now.year, taiwan_now.month, taiwan_now.day, tzinfo=timezone.utc) - timedelta(hours=8)
           since = tw_start_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
           until = now.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-          # Fetch completed runs created during the current Taiwan day.
+          GH_HEADERS = {
+              'Authorization': f'Bearer {GH_TOKEN}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+              'User-Agent': 'stock-data-health-check',
+          }
+
           workflow_runs = []
           for page in range(1, 6):
               query = urllib.parse.urlencode({'created': f'{since}..{until}', 'per_page': '100', 'page': str(page)})
-              url = f'https://api.github.com/repos/{REPO}/actions/runs?{query}'
-              req = urllib.request.Request(url, headers={
-                  'Authorization': f'Bearer {GH_TOKEN}',
-                  'Accept': 'application/vnd.github+json',
-                  'X-GitHub-Api-Version': '2022-11-28',
-                  'User-Agent': 'stock-data-health-check',
-              })
+              req = urllib.request.Request(f'https://api.github.com/repos/{REPO}/actions/runs?{query}', headers=GH_HEADERS)
               with urllib.request.urlopen(req) as resp:
                   page_runs = json.loads(resp.read())['workflow_runs']
               workflow_runs.extend(page_runs)
@@ -76,61 +73,134 @@ jobs:
                   break
 
           def job_start_utc(job):
-              return datetime(
-                  taiwan_now.year, taiwan_now.month, taiwan_now.day,
-                  job['hour'], job['minute'], tzinfo=timezone.utc,
-              ) - timedelta(hours=8)
+              return datetime(taiwan_now.year, taiwan_now.month, taiwan_now.day,
+                              job['hour'], job['minute'], tzinfo=timezone.utc) - timedelta(hours=8)
 
           required = [job for job in CHECK_JOBS if 'days' not in job or tw_day in job['days']]
 
           def job_window(job):
               start = job_start_utc(job)
-              next_same = sorted(
-                  candidate_start
-                  for candidate in required
-                  if candidate['workflow_name'] == job['workflow_name']
-                  for candidate_start in [job_start_utc(candidate)]
-                  if candidate_start > start
+              next_starts = sorted(
+                  job_start_utc(c) for c in required
+                  if c['workflow_name'] == job['workflow_name'] and job_start_utc(c) > start
               )
-              return start, next_same[0] if next_same else now
+              return start, next_starts[0] if next_starts else now
 
-          ok, failed, missing = [], [], []
+          def fmt_tw_time(iso_str):
+              dt = datetime.fromisoformat(iso_str.replace('Z', '+00:00')) + timedelta(hours=8)
+              return dt.strftime('%H:%M')
+
+          def fmt_duration(start_iso, end_iso):
+              start = datetime.fromisoformat(start_iso.replace('Z', '+00:00'))
+              end   = datetime.fromisoformat(end_iso.replace('Z', '+00:00'))
+              secs  = max(0, int((end - start).total_seconds()))
+              return f"{secs // 60}m{secs % 60:02d}s"
+
+          # Build result rows
+          results = []
           for job in required:
               start, end = job_window(job)
               runs = [
-                  run for run in workflow_runs
-                  if run['name'] == job['workflow_name']
-                  and start <= datetime.fromisoformat(run['created_at'].replace('Z', '+00:00')) < end
+                  r for r in workflow_runs
+                  if r['name'] == job['workflow_name']
+                  and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end
               ]
-              success = next((run for run in runs if run['status'] == 'completed' and run['conclusion'] == 'success'), None)
-              completed_failure = next((run for run in runs if run['status'] == 'completed' and run['conclusion'] != 'success'), None)
-              if success:
-                  ok.append(job['label'])
-              elif not runs:
-                  missing.append(job['label'])
-              elif completed_failure:
-                  failed.append(f"{job['label']}\n  {completed_failure['html_url']}")
+              success_run  = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] == 'success'), None)
+              failed_run   = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] != 'success'), None)
+              running_run  = next((r for r in runs if r['status'] in ('in_progress', 'queued', 'waiting')), None)
+
+              if success_run:
+                  status, run = 'ok', success_run
+              elif failed_run:
+                  status, run = 'failed', failed_run
+              elif running_run:
+                  status, run = 'running', running_run
               else:
-                  missing.append(f"{job['label']}（尚未完成）")
+                  status, run = 'missing', None
 
-          all_good = not failed and not missing
-          subject  = f"✅ [{tw_date}] stock_data 更新完成 (手動檢查)" if all_good \
-                     else f"⚠️ [{tw_date}] stock_data 更新異常 (手動檢查)"
+              started_at = (run or {}).get('run_started_at') or (run or {}).get('created_at')
+              results.append({
+                  'label':     job['label'],
+                  'sched':     f"{job['hour']:02d}:{job['minute']:02d}",
+                  'status':    status,
+                  'run_time':  fmt_tw_time(started_at) if started_at else '—',
+                  'duration':  fmt_duration(started_at, run['updated_at']) if started_at and run and run['status'] == 'completed' else ('進行中' if status == 'running' else '—'),
+                  'url':       (run or {}).get('html_url'),
+              })
 
-          body = f"stock_data 健康檢查｜{tw_date}（手動觸發）\n\n"
-          if ok:      body += f"✅ 成功 ({len(ok)})\n"  + '\n'.join(f"  • {w}" for w in ok)      + "\n\n"
-          if failed:  body += f"❌ 失敗\n"              + '\n'.join(f"  • {w}" for w in failed)   + "\n\n"
-          if missing: body += f"⚠️ 未執行\n"            + '\n'.join(f"  • {w}" for w in missing)  + "\n\n"
+          ok_n    = sum(1 for r in results if r['status'] == 'ok')
+          fail_n  = sum(1 for r in results if r['status'] == 'failed')
+          miss_n  = sum(1 for r in results if r['status'] in ('missing', 'running'))
+          all_good = fail_n == 0 and miss_n == 0
 
-          print(subject)
-          print(body)
+          STATUS_EMOJI  = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄'}
+          STATUS_LABEL  = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中'}
+          ROW_COLOR     = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb', 'running': '#eff6ff'}
 
-          # Send via Brevo
+          # ── GITHUB_STEP_SUMMARY (Markdown) ──────────────────────────────────
+          md  = f"## stock_data 健康檢查 — {tw_date}\n\n"
+          md += f"✅ **{ok_n}** 成功　❌ **{fail_n}** 失敗　⚠️ **{miss_n}** 未執行 / 進行中\n\n"
+          md += "| 排程 | 任務 | 狀態 | 執行時間（台灣） | 耗時 |\n"
+          md += "|------|------|:----:|:--------------:|:----:|\n"
+          for r in results:
+              name = f"[{r['label']}]({r['url']})" if r['url'] else r['label']
+              md += f"| {r['sched']} | {name} | {STATUS_EMOJI[r['status']]} {STATUS_LABEL[r['status']]} | {r['run_time']} | {r['duration']} |\n"
+
+          if STEP_SUMMARY_PATH:
+              with open(STEP_SUMMARY_PATH, 'a', encoding='utf-8') as f:
+                  f.write(md)
+          print(md)
+
+          # ── HTML Email ───────────────────────────────────────────────────────
+          rows_html = ''
+          for r in results:
+              color = ROW_COLOR[r['status']]
+              e     = STATUS_EMOJI[r['status']]
+              lbl   = STATUS_LABEL[r['status']]
+              name  = f'<a href="{r["url"]}" style="color:#1d4ed8">{r["label"]}</a>' if r['url'] else r['label']
+              rows_html += (
+                  f'<tr style="background:{color};border-bottom:1px solid #e2e8f0">'
+                  f'<td style="padding:7px 14px;font-family:monospace;white-space:nowrap">{r["sched"]}</td>'
+                  f'<td style="padding:7px 14px">{name}</td>'
+                  f'<td style="padding:7px 14px;text-align:center;white-space:nowrap">{e} {lbl}</td>'
+                  f'<td style="padding:7px 14px;font-family:monospace;text-align:center">{r["run_time"]}</td>'
+                  f'<td style="padding:7px 14px;font-family:monospace;text-align:center">{r["duration"]}</td>'
+                  f'</tr>\n'
+              )
+
+          html = f'''<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;max-width:820px;margin:24px auto;padding:0 16px">
+          <h2 style="border-bottom:2px solid #e2e8f0;padding-bottom:10px;margin-bottom:16px">
+            stock_data 健康檢查 — {tw_date}
+          </h2>
+          <p style="font-size:16px;margin-bottom:20px">
+            ✅ <strong>{ok_n}</strong> 成功 &nbsp;
+            ❌ <strong>{fail_n}</strong> 失敗 &nbsp;
+            ⚠️ <strong>{miss_n}</strong> 未執行 / 進行中
+          </p>
+          <table style="border-collapse:collapse;width:100%;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+            <thead>
+              <tr style="background:#f8fafc">
+                <th style="padding:9px 14px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap">排程</th>
+                <th style="padding:9px 14px;text-align:left;border-bottom:2px solid #e2e8f0">任務</th>
+                <th style="padding:9px 14px;text-align:center;border-bottom:2px solid #e2e8f0;white-space:nowrap">狀態</th>
+                <th style="padding:9px 14px;text-align:center;border-bottom:2px solid #e2e8f0;white-space:nowrap">執行時間</th>
+                <th style="padding:9px 14px;text-align:center;border-bottom:2px solid #e2e8f0;white-space:nowrap">耗時</th>
+              </tr>
+            </thead>
+            <tbody>
+          {rows_html}
+            </tbody>
+          </table>
+          </body></html>'''
+
+          subj = (f"✅ [{tw_date}] stock_data 全部正常" if all_good
+                  else f"⚠️ [{tw_date}] stock_data 異常 — {fail_n} 失敗 {miss_n} 未執行")
+
           payload = json.dumps({
               'sender':      {'name': 'Stock Data Cron', 'email': 'noreply@aistockmap.com'},
               'to':          [{'email': 'ricky.wu@whalechip.com'}],
-              'subject':     subject,
-              'textContent': body,
+              'subject':     subj,
+              'htmlContent': html,
           }).encode()
           req = urllib.request.Request(
               'https://api.brevo.com/v3/smtp/email',
@@ -139,7 +209,7 @@ jobs:
               method='POST',
           )
           with urllib.request.urlopen(req) as resp:
-              print(f'Brevo response: {resp.status}')
+              print(f'Brevo: {resp.status}')
 
           if not all_good:
               sys.exit(1)
