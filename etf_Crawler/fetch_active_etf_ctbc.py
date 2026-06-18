@@ -29,7 +29,7 @@ import json
 import sys
 import time
 import urllib.parse
-from datetime import date, timedelta
+from datetime import date
 from etf_utils import create_session, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import Optional
