@@ -35,7 +35,10 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      # ── 官網爬蟲（暫停觀察，以 CMoney 為主）─────────────────────────────
+
       - name: Run active ETF crawler (統一投信 — 00403A 00981A 00988A)
+        if: false
         id: unipres
         continue-on-error: true
         run: |
@@ -51,6 +54,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (群益投信 — 00982A 00992A 00997A)
+        if: false
         id: capital
         continue-on-error: true
         run: |
@@ -66,6 +70,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (野村投信 — 00980A 00985A 00999A)
+        if: false
         id: nomura
         continue-on-error: true
         run: |
@@ -81,11 +86,13 @@ jobs:
           fi
 
       - name: Set up Node.js (for 元大投信 NUXT parser)
+        if: false
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Run active ETF crawler (元大投信 — 00990A)
+        if: false
         id: yuanta
         continue-on-error: true
         run: |
@@ -101,6 +108,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (中信投信 — 00406A 00983A 00995A)
+        if: false
         id: ctbc
         continue-on-error: true
         run: |
@@ -116,6 +124,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (復華投信 — 00991A 00998A)
+        if: false
         id: fuhwa
         continue-on-error: true
         run: |
@@ -131,6 +140,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (安聯投信 — 00984A 00993A)
+        if: false
         id: allianz
         continue-on-error: true
         run: |
@@ -146,6 +156,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (台新投信 — 00986A 00987A)
+        if: false
         id: taishin
         continue-on-error: true
         run: |
@@ -161,6 +172,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (第一金投信 — 00994A)
+        if: false
         id: first_financial
         continue-on-error: true
         run: |
@@ -176,6 +188,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (兆豐投信 — 00996A)
+        if: false
         id: mega
         continue-on-error: true
         run: |
@@ -191,6 +204,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (國泰投信 — 00400A)
+        if: false
         id: cathay
         continue-on-error: true
         run: |
@@ -206,6 +220,7 @@ jobs:
           fi
 
       - name: Run active ETF crawler (富邦投信 — 00405A)
+        if: false
         id: fubon
         continue-on-error: true
         run: |
@@ -220,7 +235,9 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_fubon.py
           fi
 
-      - name: CMoney API 補漏（官網未更新的 ETF）
+      # ── CMoney（主力來源）────────────────────────────────────────────────
+
+      - name: CMoney API 主力更新（23 支主動型 ETF）
         if: always()
         id: cmoney
         continue-on-error: true
@@ -229,57 +246,47 @@ jobs:
       - name: Job Summary
         if: always()
         run: |
-          echo "## 主動型 ETF 持股更新結果" >> $GITHUB_STEP_SUMMARY
+          echo "## 主動型 ETF 持股更新結果（CMoney 主力）" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| ETF | 投信 | 官網狀態 | 官網日期 | CMoney日期 | 同步 |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----|------|---------|---------|-----------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ETF | 投信 | 狀態 | 資料日期 |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|------|------|---------|" >> $GITHUB_STEP_SUMMARY
 
           etf_row() {
-            local code=$1 issuer=$2 status=$3 off_date=$4 cm_date=$5 step_outcome=$6
-            local emoji sync
+            local code=$1 issuer=$2 status=$3 date=$4
+            local emoji
             case "$status" in
               updated)   emoji="✅ 已更新" ;;
               unchanged) emoji="⏸ 無更新" ;;
               failed)    emoji="❌ 失敗" ;;
-              "")
-                if [ "$step_outcome" = "failure" ]; then emoji="❌ 失敗"
-                else emoji="⏭️ 略過"
-                fi ;;
-              *) emoji="❓" ;;
+              "")        emoji="⏭️ 略過" ;;
+              *)         emoji="❓" ;;
             esac
-            if [ -z "$cm_date" ]; then
-              sync="—"
-            elif [ "$off_date" = "$cm_date" ]; then
-              sync="✅"
-            else
-              sync="⚠️ 落差"
-            fi
-            echo "| $code | $issuer | $emoji | $off_date | $cm_date | $sync |" >> $GITHUB_STEP_SUMMARY
+            echo "| $code | $issuer | $emoji | $date |" >> $GITHUB_STEP_SUMMARY
           }
 
-          etf_row "00403A" "統一投信" "${{ steps.unipres.outputs.ETF_00403A_STATUS }}" "${{ steps.unipres.outputs.ETF_00403A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00403A_DATE }}" "${{ steps.unipres.outcome }}"
-          etf_row "00981A" "統一投信" "${{ steps.unipres.outputs.ETF_00981A_STATUS }}" "${{ steps.unipres.outputs.ETF_00981A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00981A_DATE }}" "${{ steps.unipres.outcome }}"
-          etf_row "00988A" "統一投信" "${{ steps.unipres.outputs.ETF_00988A_STATUS }}" "${{ steps.unipres.outputs.ETF_00988A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00988A_DATE }}" "${{ steps.unipres.outcome }}"
-          etf_row "00982A" "群益投信" "${{ steps.capital.outputs.ETF_00982A_STATUS }}" "${{ steps.capital.outputs.ETF_00982A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00982A_DATE }}" "${{ steps.capital.outcome }}"
-          etf_row "00992A" "群益投信" "${{ steps.capital.outputs.ETF_00992A_STATUS }}" "${{ steps.capital.outputs.ETF_00992A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00992A_DATE }}" "${{ steps.capital.outcome }}"
-          etf_row "00997A" "群益投信" "${{ steps.capital.outputs.ETF_00997A_STATUS }}" "${{ steps.capital.outputs.ETF_00997A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00997A_DATE }}" "${{ steps.capital.outcome }}"
-          etf_row "00980A" "野村投信" "${{ steps.nomura.outputs.ETF_00980A_STATUS }}" "${{ steps.nomura.outputs.ETF_00980A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00980A_DATE }}" "${{ steps.nomura.outcome }}"
-          etf_row "00985A" "野村投信" "${{ steps.nomura.outputs.ETF_00985A_STATUS }}" "${{ steps.nomura.outputs.ETF_00985A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00985A_DATE }}" "${{ steps.nomura.outcome }}"
-          etf_row "00999A" "野村投信" "${{ steps.nomura.outputs.ETF_00999A_STATUS }}" "${{ steps.nomura.outputs.ETF_00999A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00999A_DATE }}" "${{ steps.nomura.outcome }}"
-          etf_row "00990A" "元大投信" "${{ steps.yuanta.outputs.ETF_00990A_STATUS }}" "${{ steps.yuanta.outputs.ETF_00990A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00990A_DATE }}" "${{ steps.yuanta.outcome }}"
-          etf_row "00406A" "中信投信" "${{ steps.ctbc.outputs.ETF_00406A_STATUS }}" "${{ steps.ctbc.outputs.ETF_00406A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00406A_DATE }}" "${{ steps.ctbc.outcome }}"
-          etf_row "00983A" "中信投信" "${{ steps.ctbc.outputs.ETF_00983A_STATUS }}" "${{ steps.ctbc.outputs.ETF_00983A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00983A_DATE }}" "${{ steps.ctbc.outcome }}"
-          etf_row "00995A" "中信投信" "${{ steps.ctbc.outputs.ETF_00995A_STATUS }}" "${{ steps.ctbc.outputs.ETF_00995A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00995A_DATE }}" "${{ steps.ctbc.outcome }}"
-          etf_row "00991A" "復華投信" "${{ steps.fuhwa.outputs.ETF_00991A_STATUS }}" "${{ steps.fuhwa.outputs.ETF_00991A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00991A_DATE }}" "${{ steps.fuhwa.outcome }}"
-          etf_row "00998A" "復華投信" "${{ steps.fuhwa.outputs.ETF_00998A_STATUS }}" "${{ steps.fuhwa.outputs.ETF_00998A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00998A_DATE }}" "${{ steps.fuhwa.outcome }}"
-          etf_row "00984A" "安聯投信" "${{ steps.allianz.outputs.ETF_00984A_STATUS }}" "${{ steps.allianz.outputs.ETF_00984A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00984A_DATE }}" "${{ steps.allianz.outcome }}"
-          etf_row "00993A" "安聯投信" "${{ steps.allianz.outputs.ETF_00993A_STATUS }}" "${{ steps.allianz.outputs.ETF_00993A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00993A_DATE }}" "${{ steps.allianz.outcome }}"
-          etf_row "00986A" "台新投信" "${{ steps.taishin.outputs.ETF_00986A_STATUS }}" "${{ steps.taishin.outputs.ETF_00986A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00986A_DATE }}" "${{ steps.taishin.outcome }}"
-          etf_row "00987A" "台新投信" "${{ steps.taishin.outputs.ETF_00987A_STATUS }}" "${{ steps.taishin.outputs.ETF_00987A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00987A_DATE }}" "${{ steps.taishin.outcome }}"
-          etf_row "00994A" "第一金投信" "${{ steps.first_financial.outputs.ETF_00994A_STATUS }}" "${{ steps.first_financial.outputs.ETF_00994A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00994A_DATE }}" "${{ steps.first_financial.outcome }}"
-          etf_row "00996A" "兆豐投信" "${{ steps.mega.outputs.ETF_00996A_STATUS }}" "${{ steps.mega.outputs.ETF_00996A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00996A_DATE }}" "${{ steps.mega.outcome }}"
-          etf_row "00400A" "國泰投信" "${{ steps.cathay.outputs.ETF_00400A_STATUS }}" "${{ steps.cathay.outputs.ETF_00400A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00400A_DATE }}" "${{ steps.cathay.outcome }}"
-          etf_row "00405A" "富邦投信" "${{ steps.fubon.outputs.ETF_00405A_STATUS }}" "${{ steps.fubon.outputs.ETF_00405A_DATE }}" "${{ steps.cmoney.outputs.CMONEY_00405A_DATE }}" "${{ steps.fubon.outcome }}"
+          etf_row "00403A" "統一投信"   "${{ steps.cmoney.outputs.CMONEY_00403A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00403A_DATE }}"
+          etf_row "00981A" "統一投信"   "${{ steps.cmoney.outputs.CMONEY_00981A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00981A_DATE }}"
+          etf_row "00988A" "統一投信"   "${{ steps.cmoney.outputs.CMONEY_00988A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00988A_DATE }}"
+          etf_row "00982A" "群益投信"   "${{ steps.cmoney.outputs.CMONEY_00982A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00982A_DATE }}"
+          etf_row "00992A" "群益投信"   "${{ steps.cmoney.outputs.CMONEY_00992A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00992A_DATE }}"
+          etf_row "00997A" "群益投信"   "${{ steps.cmoney.outputs.CMONEY_00997A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00997A_DATE }}"
+          etf_row "00980A" "野村投信"   "${{ steps.cmoney.outputs.CMONEY_00980A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00980A_DATE }}"
+          etf_row "00985A" "野村投信"   "${{ steps.cmoney.outputs.CMONEY_00985A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00985A_DATE }}"
+          etf_row "00999A" "野村投信"   "${{ steps.cmoney.outputs.CMONEY_00999A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00999A_DATE }}"
+          etf_row "00990A" "元大投信"   "${{ steps.cmoney.outputs.CMONEY_00990A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00990A_DATE }}"
+          etf_row "00406A" "中信投信"   "${{ steps.cmoney.outputs.CMONEY_00406A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00406A_DATE }}"
+          etf_row "00983A" "中信投信"   "${{ steps.cmoney.outputs.CMONEY_00983A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00983A_DATE }}"
+          etf_row "00995A" "中信投信"   "${{ steps.cmoney.outputs.CMONEY_00995A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00995A_DATE }}"
+          etf_row "00991A" "復華投信"   "${{ steps.cmoney.outputs.CMONEY_00991A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00991A_DATE }}"
+          etf_row "00998A" "復華投信"   "${{ steps.cmoney.outputs.CMONEY_00998A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00998A_DATE }}"
+          etf_row "00984A" "安聯投信"   "${{ steps.cmoney.outputs.CMONEY_00984A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00984A_DATE }}"
+          etf_row "00993A" "安聯投信"   "${{ steps.cmoney.outputs.CMONEY_00993A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00993A_DATE }}"
+          etf_row "00986A" "台新投信"   "${{ steps.cmoney.outputs.CMONEY_00986A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00986A_DATE }}"
+          etf_row "00987A" "台新投信"   "${{ steps.cmoney.outputs.CMONEY_00987A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00987A_DATE }}"
+          etf_row "00994A" "第一金投信" "${{ steps.cmoney.outputs.CMONEY_00994A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00994A_DATE }}"
+          etf_row "00996A" "兆豐投信"   "${{ steps.cmoney.outputs.CMONEY_00996A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00996A_DATE }}"
+          etf_row "00400A" "國泰投信"   "${{ steps.cmoney.outputs.CMONEY_00400A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00400A_DATE }}"
+          etf_row "00405A" "富邦投信"   "${{ steps.cmoney.outputs.CMONEY_00405A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00405A_DATE }}"
 
       - name: Commit & push updated ETF data
         run: |
@@ -326,30 +333,11 @@ jobs:
             done
           fi
 
-      - name: Fail if any crawler failed
+      - name: Fail if CMoney failed
         if: always()
         run: |
-          FAILED=""
-          check() {
-            local name=$1 result=$2 skipped=$3
-            if [ "$skipped" != "true" ] && [ "$result" != "success" ]; then
-              FAILED="$FAILED $name"
-            fi
-          }
-          check "統一投信" "${{ steps.unipres.outcome }}" "${{ steps.unipres.outputs.SKIPPED }}"
-          check "群益投信" "${{ steps.capital.outcome }}" "${{ steps.capital.outputs.SKIPPED }}"
-          check "野村投信" "${{ steps.nomura.outcome }}" "${{ steps.nomura.outputs.SKIPPED }}"
-          check "元大投信" "${{ steps.yuanta.outcome }}" "${{ steps.yuanta.outputs.SKIPPED }}"
-          check "中信投信" "${{ steps.ctbc.outcome }}" "${{ steps.ctbc.outputs.SKIPPED }}"
-          check "復華投信" "${{ steps.fuhwa.outcome }}" "${{ steps.fuhwa.outputs.SKIPPED }}"
-          check "安聯投信" "${{ steps.allianz.outcome }}" "${{ steps.allianz.outputs.SKIPPED }}"
-          check "台新投信" "${{ steps.taishin.outcome }}" "${{ steps.taishin.outputs.SKIPPED }}"
-          check "第一金投信" "${{ steps.first_financial.outcome }}" "${{ steps.first_financial.outputs.SKIPPED }}"
-          check "兆豐投信" "${{ steps.mega.outcome }}" "${{ steps.mega.outputs.SKIPPED }}"
-          check "國泰投信" "${{ steps.cathay.outcome }}" "${{ steps.cathay.outputs.SKIPPED }}"
-          check "富邦投信" "${{ steps.fubon.outcome }}" "${{ steps.fubon.outputs.SKIPPED }}"
-          if [ -n "$FAILED" ]; then
-            echo "❌ 以下投信爬蟲失敗：$FAILED"
+          if [ "${{ steps.cmoney.outcome }}" != "success" ]; then
+            echo "❌ CMoney 爬蟲失敗"
             exit 1
           fi
-          echo "✅ 所有爬蟲成功"
+          echo "✅ CMoney 更新成功"
