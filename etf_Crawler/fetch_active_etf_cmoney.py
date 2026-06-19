@@ -63,63 +63,80 @@ CMONEY_ACTIVE_ETFS = [
 session = create_session()
 
 
-def fetch_holdings(etf_code: str) -> tuple:
-    """回傳 (holdings, tran_date)。"""
-    print(f"  抓取 CMoney API ({etf_code})", end=" ... ", flush=True)
+def _parse_rows(rows: list) -> dict:
+    """把 API rows 依日期分組，回傳 {date_str: [holdings]}，日期由舊到新排序。"""
+    from collections import defaultdict
+    by_date: dict = defaultdict(list)
+    for row in rows:
+        raw_date = str(row[0])
+        tran_date = f"{raw_date[:4]}-{raw_date[4:6]}-{raw_date[6:]}"
+        code_raw = str(row[1]).strip()
+        name = str(row[2]).strip()
+        try:
+            weight = round(float(row[3]), 2)
+        except (ValueError, TypeError):
+            continue
+        if weight <= 0:
+            continue
+        try:
+            shares = int(float(row[4])) if row[4] else None
+        except (ValueError, TypeError):
+            shares = None
+        entry: dict = {"name": name, "weight": weight, "shares": shares}
+        if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+            entry["code"] = code_raw
+        elif code_raw:
+            entry["foreignCode"] = code_raw
+        by_date[tran_date].append(entry)
+    return dict(sorted(by_date.items()))
+
+
+def fetch_holdings(etf_code: str, dtrange: int = 1) -> tuple:
+    """回傳 (holdings, tran_date)，只取最新一天。"""
+    all_dates = fetch_holdings_all_dates(etf_code, dtrange)
+    if not all_dates:
+        return [], None
+    latest = max(all_dates)
+    return all_dates[latest], latest
+
+
+def fetch_holdings_all_dates(etf_code: str, dtrange: int = 30) -> dict:
+    """回傳 {date_str: [holdings]} for DTRange 個交易日。"""
+    print(f"  抓取 CMoney ({etf_code}, DTRange={dtrange})", end=" ... ", flush=True)
     try:
         resp = session.get(
             API_URL,
             params={
                 "action": "getdtnodata",
                 "DtNo": DTNO,
-                "ParamStr": f"AssignID={etf_code};MTPeriod=0;DTMode=0;DTRange=1;DTOrder=1;MajorTable=M722;",
+                "ParamStr": f"AssignID={etf_code};MTPeriod=0;DTMode=0;DTRange={dtrange};DTOrder=1;MajorTable=M722;",
                 "FilterNo": "0",
             },
             headers=HEADERS,
             timeout=30,
         )
         resp.raise_for_status()
-        data = resp.json()
-        rows = data.get("Data", [])
+        rows = resp.json().get("Data", [])
         if not rows:
             print("無資料")
-            return [], None
-
-        tran_date_raw = rows[0][0]  # "20260618"
-        tran_date = f"{tran_date_raw[:4]}-{tran_date_raw[4:6]}-{tran_date_raw[6:]}"
-
-        holdings = []
-        for row in rows:
-            code_raw = str(row[1]).strip()
-            name = str(row[2]).strip()
-            try:
-                weight = round(float(row[3]), 2)
-            except (ValueError, TypeError):
-                continue
-            if weight <= 0:
-                continue
-            try:
-                shares = int(float(row[4])) if row[4] else None
-            except (ValueError, TypeError):
-                shares = None
-
-            entry: dict = {"name": name, "weight": weight, "shares": shares}
-            if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                entry["code"] = code_raw
-            elif code_raw:
-                entry["foreignCode"] = code_raw
-            holdings.append(entry)
-
-        print(f"{len(holdings)} 筆，{tran_date}")
-        return holdings, tran_date
-
+            return {}
+        by_date = _parse_rows(rows)
+        print(f"{len(by_date)} 個交易日，{min(by_date)} ～ {max(by_date)}")
+        return by_date
     except Exception as e:
         print(f"失敗: {e}")
-        return [], None
+        return {}
 
 
 def needs_update(etf_code: str, tran_date: str) -> bool:
-    """檢查本地 JSON 的 lastUpdated 是否已是 tran_date，若已是則不需更新。"""
+    """
+    判斷是否需要用 CMoney 資料更新本地 JSON。
+
+    規則：
+    1. 本地日期為未來日期（官網誤植） → 強制用 CMoney 修正
+    2. CMoney 日期 > 本地日期 → 補漏，寫入
+    3. CMoney 日期 <= 本地日期 → 本地已是最新或更新，跳過
+    """
     json_path = ETF_DATA_DIR / f"{etf_code}.json"
     if not json_path.exists():
         return True
@@ -127,13 +144,71 @@ def needs_update(etf_code: str, tran_date: str) -> bool:
         import json
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
-        return data.get("lastUpdated") != tran_date
+        last = data.get("lastUpdated", "")
+        if not last:
+            return True
+        today = date.today().isoformat()
+        if last > today:
+            print(f"  [WARN] {etf_code} 本地日期 {last} 為未來日期，CMoney（{tran_date}）覆蓋修正")
+            return True
+        return tran_date > last
     except Exception:
         return True
 
 
+def run_backfill(targets: list, dtrange: int = 30) -> None:
+    """從 CMoney 抓過去 dtrange 個交易日，清洗並重寫所有 ETF JSON。"""
+    print(f"\n=== CMoney Backfill 模式：過去 {dtrange} 個交易日 ===\n")
+    failed = []
+    for i, etf_code in enumerate(targets):
+        print(f"\n[{i+1}/{len(targets)}] {etf_code}")
+        all_dates = fetch_holdings_all_dates(etf_code, dtrange)
+        if not all_dates:
+            failed.append(etf_code)
+            if i < len(targets) - 1:
+                time.sleep(0.5)
+            continue
+
+        sorted_dates = sorted(all_dates.keys())
+        latest_date = sorted_dates[-1]
+
+        # 歷史日期：只補 holdingsHistory
+        for d in sorted_dates[:-1]:
+            write_holdings_update(
+                ETF_DATA_DIR / f"{etf_code}.json",
+                etf_code, all_dates[d], d,
+                history_only=True,
+            )
+
+        # 最新日期：完整寫入（更新 topHoldings + lastUpdated，修正異常日期）
+        write_holdings_update(
+            ETF_DATA_DIR / f"{etf_code}.json",
+            etf_code, all_dates[latest_date], latest_date,
+        )
+
+        if i < len(targets) - 1:
+            time.sleep(0.5)
+
+    print(f"\nBackfill 完成 — 失敗: {failed or '無'}")
+    if failed:
+        sys.exit(1)
+
+
 def main():
-    targets = sys.argv[1:] if len(sys.argv) > 1 else CMONEY_ACTIVE_ETFS
+    args = sys.argv[1:]
+
+    # --backfill 模式
+    if "--backfill" in args:
+        args = [a for a in args if a != "--backfill"]
+        targets = args if args else CMONEY_ACTIVE_ETFS
+        unknown = [t for t in targets if t not in CMONEY_ACTIVE_ETFS]
+        if unknown:
+            print(f"[ERROR] 不支援的 ETF：{', '.join(unknown)}")
+            sys.exit(1)
+        run_backfill(targets)
+        return
+
+    targets = args if args else CMONEY_ACTIVE_ETFS
     unknown = [t for t in targets if t not in CMONEY_ACTIVE_ETFS]
     if unknown:
         print(f"[ERROR] 不支援的 ETF：{', '.join(unknown)}")
