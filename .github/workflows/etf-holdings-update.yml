@@ -47,13 +47,13 @@ jobs:
             -o src/data/etf/index.json
           echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
 
-      - name: Run ETF holdings crawler
+      - name: Run ETF holdings crawler (CMoney)
         run: |
           set -o pipefail
           if [ -n "${{ inputs.codes }}" ]; then
-            uv run python etf_Crawler/fetch_etf_holdings.py ${{ inputs.codes }} 2>&1 | tee /tmp/run.log
+            uv run python etf_Crawler/fetch_etf_holdings_cmoney.py ${{ inputs.codes }} 2>&1 | tee /tmp/run.log
           else
-            uv run python etf_Crawler/fetch_etf_holdings.py 2>&1 | tee /tmp/run.log
+            uv run python etf_Crawler/fetch_etf_holdings_cmoney.py 2>&1 | tee /tmp/run.log
           fi
 
       - name: 執行摘要
