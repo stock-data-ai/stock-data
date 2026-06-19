@@ -178,7 +178,14 @@ def main():
         if i < len(targets) - 1:
             time.sleep(0.3)
 
-    write_github_output(results)
+    # 用 CMONEY_ 前綴輸出，讓 Job Summary 可與官網日期對比
+    gho = __import__("os").environ.get("GITHUB_OUTPUT")
+    if gho:
+        with open(gho, "a", encoding="utf-8") as f:
+            for code, (status, tran_date) in results.items():
+                f.write(f"CMONEY_{code}_STATUS={status}\n")
+                f.write(f"CMONEY_{code}_DATE={tran_date}\n")
+
     print(f"\nCMoney 補漏完成 — 已更新: {success}，略過: {skipped}，失敗: {len(failed)}/{len(targets)}")
     if failed:
         print(f"失敗: {', '.join(failed)}")
