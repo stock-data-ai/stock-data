@@ -40,7 +40,13 @@ jobs:
       - name: Fetch TDCC shareholding data
         run: |
           set -o pipefail
-          uv run finance_tools/cli.py fetch-shareholder-data --force 2>&1 | tee /tmp/run.log
+          MAX=3
+          for attempt in $(seq 1 $MAX); do
+            if uv run finance_tools/cli.py fetch-shareholder-data --force 2>&1 | tee /tmp/run.log; then
+              break
+            fi
+            [ $attempt -lt $MAX ] && { echo "Attempt $attempt 失敗，30 秒後重試..."; sleep 30; } || exit 1
+          done
 
       - name: 執行摘要
         if: always()

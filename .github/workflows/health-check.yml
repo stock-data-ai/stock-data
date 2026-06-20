@@ -310,7 +310,7 @@ jobs:
 
           payload = json.dumps({
               'sender':      {'name': 'Stock Data Cron', 'email': 'noreply@aistockmap.com'},
-              'to':          [{'email': 'ricky.wu@whalechip.com'}],
+              'to':          [{'email': 'rf9550106@gmail.com'}],
               'subject':     subj,
               'htmlContent': html,
           }).encode()

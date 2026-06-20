@@ -223,7 +223,7 @@ async function alertError(message: string, brevoKey: string, subject = '⚠️ S
     headers: { 'api-key': brevoKey, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       sender: { name: 'Stock Data Cron', email: 'noreply@aistockmap.com' },
-      to: [{ email: 'ricky.wu@whalechip.com' }],
+      to: [{ email: 'rf9550106@gmail.com' }],
       subject,
       textContent: message,
     }),
