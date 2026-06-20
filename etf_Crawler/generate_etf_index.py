@@ -93,7 +93,11 @@ def main():
     existing_index = load_existing_index()
     details = load_detail_files()
 
-    all_codes_ordered = list(existing_index.keys())
+    # 保留有 detail JSON 的 code；已刪除的 JSON 從 index 移除
+    removed_codes = [c for c in existing_index if c not in details]
+    if removed_codes:
+        print(f"  移除 ETF（JSON 已刪）: {', '.join(sorted(removed_codes))}")
+    all_codes_ordered = [c for c in existing_index if c in details]
 
     # Append new codes found in detail files but not yet in index
     new_codes = [c for c in details if c not in existing_index]

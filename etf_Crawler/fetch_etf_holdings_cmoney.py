@@ -45,8 +45,7 @@ HEADERS = {
     "Referer": "https://www.cmoney.tw/etf/tw/",
 }
 
-# CMoney 無持股資料（境外掛牌型）
-UNSUPPORTED = {"00625K", "00636K", "00643K", "00657K", "00668K"}
+UNSUPPORTED: set = set()  # 目前無不支援的 ETF
 
 session = create_session()
 
