@@ -13,30 +13,32 @@
   "references": [],
   "topHoldings": [
     {
-      "name": "CNO Financial Group 5.125% SUB D",
-      "weight": 189.38,
-      "shares": 62600,
-      "previousWeight": 191.36,
-      "weightChange": -1.98,
-      "previousShares": 61300,
-      "sharesChange": 1300
+      "name": "富時中國A50指數期貨",
+      "weight": 190.18,
+      "shares": 63500,
+      "foreignCode": "202606CN",
+      "previousWeight": 0,
+      "weightChange": 190.18,
+      "previousShares": 0,
+      "sharesChange": 63500
     },
     {
-      "name": "華夏滬深三百",
-      "weight": 8.57,
+      "name": "CHINAAMC ETF SERIES - CH-HKD",
+      "weight": 8.68,
       "shares": 6000000,
-      "previousWeight": 8.94,
-      "weightChange": -0.37,
-      "previousShares": 6000000,
-      "sharesChange": 0
+      "foreignCode": "3188 HK",
+      "previousWeight": 0,
+      "weightChange": 8.68,
+      "previousShares": 0,
+      "sharesChange": 6000000
     },
     {
       "name": "元大寶滬深",
-      "weight": 1.45,
+      "weight": 1.46,
       "shares": 9511000,
       "code": "0061",
-      "previousWeight": 1.53,
-      "weightChange": -0.08,
+      "previousWeight": 1.45,
+      "weightChange": 0.01,
       "previousShares": 9511000,
       "sharesChange": 0
     }
@@ -308,7 +310,25 @@
         "shares": 9511000,
         "code": "0061"
       }
+    ],
+    "2026-06-18": [
+      {
+        "name": "富時中國A50指數期貨",
+        "weight": 190.18,
+        "shares": 63500
+      },
+      {
+        "name": "CHINAAMC ETF SERIES - CH-HKD",
+        "weight": 8.68,
+        "shares": 6000000
+      },
+      {
+        "name": "元大寶滬深",
+        "weight": 1.46,
+        "shares": 9511000,
+        "code": "0061"
+      }
     ]
   },
-  "lastUpdated": "2026-06-12"
+  "lastUpdated": "2026-06-18"
 }

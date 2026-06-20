@@ -15,19 +15,51 @@
   "topHoldings": [
     {
       "name": "MSCI中國",
-      "weight": 192.92,
-      "previousWeight": 0,
-      "weightChange": 192.92,
+      "weight": 192.71,
+      "shares": 13733,
+      "foreignCode": "202609MUR",
+      "previousWeight": 192.92,
+      "weightChange": -0.21,
       "previousShares": 0,
       "sharesChange": 0
     },
     {
-      "name": "中信中國50",
-      "weight": 8.31,
+      "name": "MARGIN",
+      "weight": 69.41,
+      "shares": 149335648,
+      "foreignCode": "M_USD",
+      "previousWeight": 0,
+      "weightChange": 69.41,
+      "previousShares": 0,
+      "sharesChange": 149335648
+    },
+    {
+      "name": "CASH",
+      "weight": 13.23,
+      "shares": 898218477,
+      "foreignCode": "C_NTD",
+      "previousWeight": 0,
+      "weightChange": 13.23,
+      "previousShares": 0,
+      "sharesChange": 898218477
+    },
+    {
+      "name": "CASH",
+      "weight": 9.18,
+      "shares": 19757743,
+      "foreignCode": "C_USD",
+      "previousWeight": 0,
+      "weightChange": 9.18,
+      "previousShares": 0,
+      "sharesChange": 19757743
+    },
+    {
+      "name": "中國信託MSCI中外資自由50 ETF",
+      "weight": 8.13,
       "shares": 24760000,
       "code": "00752",
-      "previousWeight": 7.93,
-      "weightChange": 0.38,
+      "previousWeight": 8.31,
+      "weightChange": -0.18,
       "previousShares": 24760000,
       "sharesChange": 0
     }
@@ -155,7 +187,35 @@
         "shares": 24760000,
         "code": "00752"
       }
+    ],
+    "2026-06-17": [
+      {
+        "name": "MSCI中國",
+        "weight": 192.71,
+        "shares": 13733
+      },
+      {
+        "name": "MARGIN",
+        "weight": 69.41,
+        "shares": 149335648
+      },
+      {
+        "name": "CASH",
+        "weight": 13.23,
+        "shares": 898218477
+      },
+      {
+        "name": "CASH",
+        "weight": 9.18,
+        "shares": 19757743
+      },
+      {
+        "name": "中國信託MSCI中外資自由50 ETF",
+        "weight": 8.13,
+        "shares": 24760000,
+        "code": "00752"
+      }
     ]
   },
-  "lastUpdated": "2026-06-11"
+  "lastUpdated": "2026-06-17"
 }

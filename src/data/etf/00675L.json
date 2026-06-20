@@ -13,27 +13,22 @@
   "references": [],
   "topHoldings": [
     {
-      "name": "2026/06台股指數期貨",
-      "weight": 182.83,
-      "previousWeight": 200.24,
-      "weightChange": -17.41,
-      "previousShares": 0,
-      "sharesChange": 0
-    },
-    {
-      "name": "2026/07台股指數期貨",
-      "weight": 17.47,
+      "name": "台股指數期貨",
+      "weight": 199.41,
+      "shares": 7974,
+      "foreignCode": "202607WTXN6F",
       "previousWeight": 0,
-      "weightChange": 17.47,
+      "weightChange": 199.41,
       "previousShares": 0,
-      "sharesChange": 0
+      "sharesChange": 7974
     },
     {
       "name": "富邦吉祥貨幣市場",
-      "weight": 3.14,
+      "weight": 3.0,
       "shares": 67139533,
-      "previousWeight": 3.22,
-      "weightChange": -0.08,
+      "foreignCode": "97980579",
+      "previousWeight": 3.14,
+      "weightChange": -0.14,
       "previousShares": 67139533,
       "sharesChange": 0
     }
@@ -206,7 +201,19 @@
         "weight": 3.14,
         "shares": 67139533
       }
+    ],
+    "2026-06-18": [
+      {
+        "name": "台股指數期貨",
+        "weight": 199.41,
+        "shares": 7974
+      },
+      {
+        "name": "富邦吉祥貨幣市場",
+        "weight": 3.0,
+        "shares": 67139533
+      }
     ]
   },
-  "lastUpdated": "2026-06-12"
+  "lastUpdated": "2026-06-18"
 }

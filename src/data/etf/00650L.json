@@ -13,12 +13,44 @@
   "description": null,
   "topHoldings": [
     {
-      "name": "202606 恆生指數期貨",
-      "weight": 199.19,
-      "previousWeight": 200.15,
-      "weightChange": -0.96,
+      "name": "恆生指數期貨",
+      "weight": 198.83,
+      "shares": 799,
+      "foreignCode": "202606HSI",
+      "previousWeight": 0,
+      "weightChange": 198.83,
       "previousShares": 0,
-      "sharesChange": 0
+      "sharesChange": 799
+    },
+    {
+      "name": "MARGIN",
+      "weight": 80.0,
+      "shares": 384044515,
+      "foreignCode": "M_HKD",
+      "previousWeight": 0,
+      "weightChange": 80.0,
+      "previousShares": 0,
+      "sharesChange": 384044515
+    },
+    {
+      "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+      "weight": 19.88,
+      "shares": 384562879,
+      "foreignCode": "DA_NTD",
+      "previousWeight": 0,
+      "weightChange": 19.88,
+      "previousShares": 0,
+      "sharesChange": 384562879
+    },
+    {
+      "name": "MARGIN",
+      "weight": 0.21,
+      "shares": 4154746,
+      "foreignCode": "M_NTD",
+      "previousWeight": 0,
+      "weightChange": 0.21,
+      "previousShares": 0,
+      "sharesChange": 4154746
     }
   ],
   "holdingsHistory": {
@@ -87,7 +119,29 @@
         "name": "202606 恆生指數期貨",
         "weight": 199.19
       }
+    ],
+    "2026-06-18": [
+      {
+        "name": "恆生指數期貨",
+        "weight": 198.83,
+        "shares": 799
+      },
+      {
+        "name": "MARGIN",
+        "weight": 80.0,
+        "shares": 384044515
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 19.88,
+        "shares": 384562879
+      },
+      {
+        "name": "MARGIN",
+        "weight": 0.21,
+        "shares": 4154746
+      }
     ]
   },
-  "lastUpdated": "2026-06-12"
+  "lastUpdated": "2026-06-18"
 }
