@@ -736,7 +736,18 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2024,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 0.8,
+        "stockDividend": 0.0,
+        "totalDividend": 0.8,
+        "exDividendDate": "2024-09-02",
+        "payoutDate": "2024-09-25"
+      }
+    ],
     "institutionalInvestors": {
       "2026-02-26": {
         "foreign_buy": 1.0,
@@ -8600,5 +8611,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-06-20"
 }

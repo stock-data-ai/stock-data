@@ -11,7 +11,7 @@
     "netMargin": -10.04,
     "eps": -0.79,
     "marketCap": 776792512,
-    "dividendFrequency": "季",
+    "dividendFrequency": "年",
     "pb": 2.1735475,
     "dividendYield": 74.0
   },
@@ -730,7 +730,48 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2024,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.2001,
+        "stockDividend": 0.0,
+        "totalDividend": 0.2001,
+        "exDividendDate": "2025-07-28",
+        "payoutDate": "2025-08-15"
+      },
+      {
+        "year": 2023,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.3,
+        "stockDividend": 0.0,
+        "totalDividend": 0.3,
+        "exDividendDate": "2024-06-24",
+        "payoutDate": "2024-07-19"
+      },
+      {
+        "year": 2022,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 1.25,
+        "stockDividend": 0.0,
+        "totalDividend": 1.25,
+        "exDividendDate": "2023-06-26",
+        "payoutDate": "2023-07-14"
+      },
+      {
+        "year": 2021,
+        "period": "第4季",
+        "sequence": 4,
+        "cashDividend": 0.5,
+        "stockDividend": 0.0,
+        "totalDividend": 0.5,
+        "exDividendDate": "2022-07-13",
+        "payoutDate": "2022-08-15"
+      }
+    ],
     "institutionalInvestors": {
       "2026-02-26": {
         "foreign_buy": 0.0,
@@ -4724,5 +4765,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-06-20"
 }

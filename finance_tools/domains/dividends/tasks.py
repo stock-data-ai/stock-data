@@ -90,11 +90,8 @@ def run_import_historical_dividends(args):
 
 
 def run_update_mops_dividends(args):
-    """【定期執行】從 MOPS 更新 2025+ 股利。
-    各年度的 MOPS 資料若齊全（季配4期、半年配2期、年配1期），
-    則用 MOPS 詳細記錄取代 CSV 合計；若不齊，保留 CSV 合計不動。
-    """
-    logger.info("Starting MOPS dividend update (2025+)...")
+    """【定期執行】從 MOPS 更新股利。MOPS 有什麼就寫什麼，不再依賴 CSV。"""
+    logger.info("Starting MOPS dividend update...")
 
     file_mgr = FileManager()
 
@@ -107,7 +104,6 @@ def run_update_mops_dividends(args):
 
     success_count = 0
     skip_count = 0
-    incomplete_count = 0
     failed = []
 
     for code, records in mops_data.items():
@@ -119,38 +115,15 @@ def run_update_mops_dividends(args):
         financial_data.setdefault("historical", {})
         financial_data.setdefault("latest", {})
 
-        freq = (
-            freq_map.get(code)
-            or financial_data["latest"].get("dividendFrequency")
-        )
+        freq = freq_map.get(code) or financial_data["latest"].get("dividendFrequency")
 
-        # 依年度分組 MOPS 記錄，各年獨立判斷
-        from itertools import groupby
+        # MOPS 只含最近公告，用 (year, sequence) 粒度 upsert。
+        # 不主動移除年度合計，讓前端 chart 過濾不完整年份。
+        mops_keys = {(r["year"], r["sequence"]) for r in records}
         existing = financial_data["historical"].get("dividends") or []
-        existing_years = {d["year"] for d in existing}
-
-        records_sorted = sorted(records, key=lambda r: r["year"])
-        years_to_replace = set()
-        for year, grp in groupby(records_sorted, key=lambda r: r["year"]):
-            year_records = list(grp)
-            if _mops_year_complete(year_records, freq):
-                # 完整 → 直接用 MOPS
-                years_to_replace.add(year)
-            elif year not in existing_years:
-                # 不完整，但 CSV 也沒有這年 → 還是寫入 MOPS（有比沒有好）
-                years_to_replace.add(year)
-            else:
-                # 不完整且 CSV 有合計 → 保留 CSV
-                incomplete_count += 1
-                logger.debug(f"  [{code}] {year}年 MOPS 不完整（{freq}），保留 CSV 合計")
-
-        if not years_to_replace:
-            continue
-
-        complete_records = [r for r in records if r["year"] in years_to_replace]
-        kept = [d for d in existing if d["year"] not in years_to_replace]
+        kept = [d for d in existing if (d["year"], d.get("sequence", 1)) not in mops_keys]
         financial_data["historical"]["dividends"] = sorted(
-            complete_records + kept,
+            records + kept,
             key=lambda r: (r["year"], r.get("sequence", 1)),
             reverse=True,
         ) or None
@@ -169,7 +142,7 @@ def run_update_mops_dividends(args):
             failed.append(code)
 
     logger.info(f"\n{'='*60}")
-    logger.info(f"OK MOPS dividend update: {success_count} 更新, {skip_count} 跳過（無 JSON）, {incomplete_count} 年份保留 CSV")
+    logger.info(f"OK MOPS dividend update: {success_count} 更新, {skip_count} 跳過（無 JSON）")
     if failed:
         logger.error(f"X Failed ({len(failed)}): {failed[:20]}")
     logger.info(f"{'='*60}\n")

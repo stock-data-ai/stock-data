@@ -347,33 +347,64 @@
     "dividends": [
       {
         "year": 2025,
-        "period": "年度",
-        "sequence": 1,
-        "cashDividend": 1.9,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 1.0,
         "stockDividend": 0.0,
-        "totalDividend": 1.9,
-        "payoutDate": "2026-05-05",
-        "exDividendDate": "2026-04-07"
+        "totalDividend": 1.0,
+        "payoutDate": "2026-03-12",
+        "periodRange": "2025-07-01~2025-12-31",
+        "status": "董事會決議"
+      },
+      {
+        "year": 2025,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 0.9,
+        "stockDividend": 0.0,
+        "totalDividend": 0.9,
+        "exDividendDate": "2025-10-28",
+        "payoutDate": "2025-11-17"
       },
       {
         "year": 2024,
-        "period": "年度",
-        "sequence": 1,
-        "cashDividend": 4.5,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 3.15,
         "stockDividend": 0.0,
-        "totalDividend": 4.5,
-        "payoutDate": "2025-05-05",
-        "exDividendDate": "2025-04-01"
+        "totalDividend": 3.15,
+        "exDividendDate": "2025-04-01",
+        "payoutDate": "2025-05-05"
+      },
+      {
+        "year": 2024,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 1.35,
+        "stockDividend": 0.0,
+        "totalDividend": 1.35,
+        "exDividendDate": "2024-11-18",
+        "payoutDate": "2024-12-06"
       },
       {
         "year": 2023,
-        "period": "年度",
-        "sequence": 1,
-        "cashDividend": 3.0,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 1.65,
         "stockDividend": 0.0,
-        "totalDividend": 3.0,
-        "payoutDate": "2024-06-25",
-        "exDividendDate": "2024-05-30"
+        "totalDividend": 1.65,
+        "exDividendDate": "2024-05-30",
+        "payoutDate": "2024-06-25"
+      },
+      {
+        "year": 2023,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 1.35,
+        "stockDividend": 0.0,
+        "totalDividend": 1.35,
+        "exDividendDate": "2023-11-10",
+        "payoutDate": "2023-12-07"
       }
     ],
     "institutionalInvestors": {
@@ -4198,5 +4229,5 @@
       "ratio_pct": 0.0
     }
   ],
-  "dividendsUpdated": "2026-05-12"
+  "dividendsUpdated": "2026-06-20"
 }

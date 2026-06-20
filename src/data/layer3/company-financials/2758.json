@@ -723,7 +723,88 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2025,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 1.0,
+        "stockDividend": 0.0,
+        "totalDividend": 1.0,
+        "exDividendDate": "2026-06-25",
+        "payoutDate": "2026-07-14"
+      },
+      {
+        "year": 2025,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 1.0,
+        "stockDividend": 0.0,
+        "totalDividend": 1.0,
+        "exDividendDate": "2026-01-15",
+        "payoutDate": "2026-02-12"
+      },
+      {
+        "year": 2024,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 1.5,
+        "stockDividend": 0.0,
+        "totalDividend": 1.5,
+        "exDividendDate": "2025-06-18",
+        "payoutDate": "2025-07-14"
+      },
+      {
+        "year": 2024,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 3.0,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0,
+        "exDividendDate": "2025-01-09",
+        "payoutDate": "2025-02-14"
+      },
+      {
+        "year": 2023,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 1.5,
+        "stockDividend": 0.0,
+        "totalDividend": 1.5,
+        "exDividendDate": "2024-06-13",
+        "payoutDate": "2024-07-05"
+      },
+      {
+        "year": 2023,
+        "period": "上半年",
+        "sequence": 1,
+        "cashDividend": 3.0,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0,
+        "exDividendDate": "2024-03-04",
+        "payoutDate": "2024-03-28"
+      },
+      {
+        "year": 2022,
+        "period": "下半年",
+        "sequence": 2,
+        "cashDividend": 3.0,
+        "stockDividend": 0.0,
+        "totalDividend": 3.0,
+        "exDividendDate": "2023-06-29",
+        "payoutDate": "2023-07-31"
+      },
+      {
+        "year": 2021,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 6.0,
+        "stockDividend": 0.0,
+        "totalDividend": 6.0,
+        "exDividendDate": "2022-09-07",
+        "payoutDate": "2022-10-05"
+      }
+    ],
     "institutionalInvestors": {
       "2026-03-16": {
         "foreign_buy": 0.001,
@@ -5557,5 +5638,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-06-20"
 }

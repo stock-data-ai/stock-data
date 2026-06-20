@@ -49,6 +49,7 @@ logging.basicConfig(
 from finance_tools.orchestration.full_update import run_full_update
 from finance_tools.orchestration.marketcap_inst_update import run_update_marketcap_inst
 from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
+from finance_tools.domains.dividends.finmind_backfill import run_backfill_finmind_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
 from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
 from finance_tools.orchestration.check_quality import run_check_quality
@@ -96,6 +97,10 @@ def main():
     # --- 'update-dividends' command (ongoing via GitHub Actions) ---
     parser_mops_div = subparsers.add_parser("update-dividends", help="【定期】從 MOPS 抓取 2025+ 股利並 merge 至 JSON。")
     parser_mops_div.set_defaults(func=run_update_mops_dividends)
+
+    # --- 'backfill-dividends' command (one-time) ---
+    parser_backfill = subparsers.add_parser("backfill-dividends", help="【一次性】從 FinMind 補齊季配/半年配公司 2021-2025 每期明細，取代 CSV 年度合計。")
+    parser_backfill.set_defaults(func=run_backfill_finmind_dividends)
 
     # --- 'update-balance-sheet' command ---
     parser_bs = subparsers.add_parser("update-balance-sheet", help="【定期】從 FinMind 抓取資產負債表 + 現金流量表，計算 ROE/ROA/流動比率/負債比率/OCF/FCF。")
