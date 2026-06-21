@@ -27384,23 +27384,29 @@
         "three_inst_ratio": 3.754939
       },
       "2026-06-18": {
-        "dealer_self_buy": 0.0,
+        "dealer_hedging_buy": 0.0,
+        "dealer_self_buy": 1.0,
         "foreign_buy": 299.242,
+        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_self_net_buy": 0.0,
+        "dealer_hedging_net_buy": 0.0,
+        "dealer_self_net_buy": -0.667,
         "foreign_net_buy": 56.24200000000002,
+        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_self_sell": 0.0,
+        "dealer_hedging_sell": 0.0,
+        "dealer_self_sell": 1.667,
         "foreign_sell": 243.0,
+        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
-        "dealer_buy": 0.0,
-        "dealer_sell": 0.0,
-        "dealer_net_buy": 0.0,
+        "dealer_buy": 1.0,
+        "dealer_sell": 1.667,
+        "dealer_net_buy": -0.667,
         "code": "6425",
         "foreign_ratio": 3.93,
         "trust_ratio": 0.0,
-        "dealer_ratio": 0.014939,
-        "three_inst_ratio": 3.944939
+        "dealer_ratio": 0.0,
+        "three_inst_ratio": 3.93
       }
     },
     "marginTrading": {
