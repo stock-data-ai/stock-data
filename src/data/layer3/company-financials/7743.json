@@ -29,12 +29,7 @@
         "operatingMargin": 0.24,
         "netMargin": 1.13,
         "note": "累季",
-        "revenueYoY": 28.74,
-        "roe": null,
-        "roa": null,
-        "ocf": null,
-        "fcf": null,
-        "debtRatio": null
+        "revenueYoY": 28.74
       },
       {
         "year": 2025,
@@ -46,12 +41,7 @@
         "grossMargin": 28.47,
         "operatingMargin": 5.3,
         "netMargin": 2.98,
-        "revenueYoY": null,
-        "roe": 2.72,
-        "roa": 1.91,
-        "ocf": 24082000.0,
-        "fcf": -5772000.0,
-        "debtRatio": 29.91
+        "revenueYoY": null
       },
       {
         "year": 2024,
@@ -64,12 +54,7 @@
         "operatingMargin": 9.69,
         "netMargin": 9.61,
         "note": "累季",
-        "revenueYoY": 11.34,
-        "roe": 10.83,
-        "roa": 6.47,
-        "ocf": 74366000.0,
-        "fcf": 64091000.0,
-        "debtRatio": 40.24
+        "revenueYoY": 11.34
       },
       {
         "year": 2023,
@@ -82,12 +67,7 @@
         "operatingMargin": 9.47,
         "netMargin": 8.19,
         "note": "累季",
-        "revenueYoY": 14.02,
-        "roe": null,
-        "roa": null,
-        "ocf": 94974000.0,
-        "fcf": 63737000.0,
-        "debtRatio": null
+        "revenueYoY": 14.02
       },
       {
         "year": 2022,
@@ -100,12 +80,7 @@
         "operatingMargin": 9.21,
         "netMargin": 9.0,
         "note": "累季",
-        "revenueYoY": null,
-        "roe": null,
-        "roa": null,
-        "ocf": 67924000.0,
-        "fcf": 9700000.0,
-        "debtRatio": null
+        "revenueYoY": null
       }
     ],
     "quarterly": [
@@ -119,9 +94,7 @@
         "eps": 0.05,
         "grossMargin": 22.58,
         "operatingMargin": 0.24,
-        "netMargin": 1.13,
-        "currentRatio": 305.78,
-        "debtRatio": 34.71
+        "netMargin": 1.13
       },
       {
         "year": 2025,
@@ -133,9 +106,7 @@
         "eps": -0.01,
         "grossMargin": 25.02,
         "operatingMargin": -1.07,
-        "netMargin": 0.05,
-        "currentRatio": 431.83,
-        "debtRatio": 29.91
+        "netMargin": 0.05
       },
       {
         "year": 2025,
@@ -147,9 +118,7 @@
         "eps": 0.53,
         "grossMargin": 26.34,
         "operatingMargin": 8.67,
-        "netMargin": 8.6,
-        "currentRatio": 338.87,
-        "debtRatio": 36.05
+        "netMargin": 8.6
       },
       {
         "year": 2025,
@@ -161,9 +130,7 @@
         "eps": -0.09,
         "grossMargin": 33.21,
         "operatingMargin": 9.48,
-        "netMargin": -1.69,
-        "currentRatio": 361.72,
-        "debtRatio": 36.35
+        "netMargin": -1.69
       },
       {
         "year": 2025,
@@ -175,9 +142,7 @@
         "eps": 0.12,
         "grossMargin": 29.74,
         "operatingMargin": 0.99,
-        "netMargin": 3.45,
-        "currentRatio": 253.86,
-        "debtRatio": 43.81
+        "netMargin": 3.45
       },
       {
         "year": 2024,
@@ -189,9 +154,7 @@
         "eps": 0.77,
         "grossMargin": 39.14,
         "operatingMargin": 10.9,
-        "netMargin": 13.12,
-        "currentRatio": 327.4,
-        "debtRatio": 40.24
+        "netMargin": 13.12
       },
       {
         "year": 2024,
@@ -203,9 +166,7 @@
         "eps": 0.45,
         "grossMargin": 31.84,
         "operatingMargin": 12.53,
-        "netMargin": 8.22,
-        "currentRatio": 308.25,
-        "debtRatio": 42.05
+        "netMargin": 8.22
       },
       {
         "year": 2024,
@@ -2721,20 +2682,14 @@
         "three_inst_ratio": 2.87
       },
       "2026-06-18": {
-        "dealer_hedging_buy": 0.0,
         "dealer_self_buy": 0.0,
         "foreign_buy": 0.0,
-        "foreign_dealer_buy": 0.0,
         "trust_buy": 0.0,
-        "dealer_hedging_net_buy": 0.0,
         "dealer_self_net_buy": 0.0,
         "foreign_net_buy": -1.0,
-        "foreign_dealer_net_buy": 0.0,
         "trust_net_buy": 0.0,
-        "dealer_hedging_sell": 0.0,
         "dealer_self_sell": 0.0,
         "foreign_sell": 1.0,
-        "foreign_dealer_sell": 0.0,
         "trust_sell": 0.0,
         "dealer_buy": 0.0,
         "dealer_sell": 0.0,
@@ -2744,10 +2699,22 @@
         "trust_ratio": 0.0,
         "dealer_ratio": 0.0,
         "three_inst_ratio": 2.87
+      },
+      "2026-06-15": {
+        "foreign_ratio": 2.87,
+        "three_inst_ratio": 2.87
+      },
+      "2026-06-16": {
+        "foreign_ratio": 2.87,
+        "three_inst_ratio": 2.87
+      },
+      "2026-06-17": {
+        "foreign_ratio": 2.87,
+        "three_inst_ratio": 2.87
       }
     }
   },
-  "lastUpdated": "2026-06-20",
+  "lastUpdated": "2026-06-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
