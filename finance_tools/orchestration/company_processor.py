@@ -80,8 +80,8 @@ class CompanyProcessor:
                 foreign_ratios = {}
         else:
             # ── FinMind 路徑（full_update）─────────────────────────
-            shares_df, shares_success = self.fetch_orchestrator.fetch_institutional_investors_shares(code, start_date)
-            # foreign_ratio 由 daily-update TWSE 批次維護，full-update 不寫入，避免覆蓋正確值
+            # 三大法人買賣超張數由 daily-update TWSE T86 批次每日維護，full-update 不重抓
+            shares_df, shares_success = pd.DataFrame(), False
 
         ratios: dict = {}
         if shares_success:
