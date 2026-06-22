@@ -7,6 +7,7 @@ Balance Sheet & Cash Flow Update Task
 """
 
 import logging
+import os
 import time
 import random
 from datetime import timedelta
@@ -85,10 +86,20 @@ def run_update_balance_sheet(args):
     else:
         write_mgr.clear()
 
+    _save_stats("balance_sheet", batch, success_count, len(companies))
+
     user_count, api_limit = client.check_api_usage()
     if user_count is not None and api_limit is not None:
         logger.info(f"最終 FinMind API 使用量: {user_count}/{api_limit}")
     logger.info(f"{'='*60}\n")
+
+
+def _save_stats(task_name: str, batch, success: int, total: int) -> None:
+    """寫出統計數字，供 merge job 彙整後顯示於 GitHub Summary。"""
+    suffix = f"_{batch}" if batch else ""
+    stats_path = os.path.join(str(config.RERUN_DIR), f"stats_{task_name}{suffix}.txt")
+    with open(stats_path, "w", encoding="utf-8") as f:
+        f.write(f"fin=0\nrev=0\nsuccess={success}\ntotal={total}\n")
 
 
 def _update_one(
