@@ -15,7 +15,6 @@ from pathlib import Path
 
 from finance_tools.domains.financials.fetcher import FinancialsFetcher
 from finance_tools.domains.revenue.fetcher import RevenueFetcher
-from finance_tools.domains.shareholder.shareholding_fetcher import fetch_shareholding
 from finance_tools.domains.institutional_investors.shares_fetcher import fetch_institutional_investors_shares
 from finance_tools.orchestration.company_processor import CompanyProcessor
 from finance_tools.domains.institutional_investors.calculator import InstRatioCalculator
@@ -93,7 +92,7 @@ def run_full_update(args):
         finmind_client=client,
         all_companies_details=companies_data,
         institutional_investors_shares_fetcher=lambda stock_id, start_date: fetch_institutional_investors_shares(client, stock_id, start_date),
-        shareholding_fetcher=lambda stock_id, start_date: fetch_shareholding(client, stock_id, start_date),
+        shareholding_fetcher=None,
         inst_ratio_calculator=inst_ratio_calc,
     )
 

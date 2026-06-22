@@ -84,7 +84,8 @@ class CompanyProcessor:
             shares_df, shares_success = self.fetch_orchestrator.fetch_institutional_investors_shares(code, start_date)
             foreign_ratios = self.inst_ratio_calculator.calculate_foreign_ratio(shareholding_df)
 
-        trust_dealer_ratios = self.inst_ratio_calculator.calculate_trust_dealer_ratio(code, shares_df) if shares_success else {}
+        # [DEPRECATED] trust_ratio/dealer_ratio 為種子值推估，資料不準確且前端已不維護，暫停計算
+        # trust_dealer_ratios = self.inst_ratio_calculator.calculate_trust_dealer_ratio(code, shares_df) if shares_success else {}
 
         ratios: dict = {}
         if shares_success:
@@ -97,11 +98,12 @@ class CompanyProcessor:
         for date, foreign_ratio in foreign_ratios.items():
             ratios.setdefault(date, {})["foreign_ratio"] = foreign_ratio
 
-        # 合併投信/自營商比例
-        for date, td in trust_dealer_ratios.items():
-            ratios.setdefault(date, {}).update(td)
+        # [DEPRECATED] 投信/自營商持股比例（推估值，暫停寫入）
+        # for date, td in trust_dealer_ratios.items():
+        #     ratios.setdefault(date, {}).update(td)
 
-        # 計算 three_inst_ratio（foreign_ratio 有 1 天延遲，前向填充最近已知值）
+        # [DEPRECATED] three_inst_ratio 依賴 trust/dealer ratio，暫停計算
+        # 僅保留 foreign_ratio 前向填充（供現有資料相容）
         last_foreign: float = 0.0
         for date in sorted(ratios.keys()):
             entry = ratios[date]
@@ -110,11 +112,6 @@ class CompanyProcessor:
                 last_foreign = fr
             else:
                 entry["foreign_ratio"] = last_foreign
-                fr = last_foreign
-            tr = entry.get("trust_ratio") or 0.0
-            dr = entry.get("dealer_ratio") or 0.0
-            if fr or tr or dr:
-                entry["three_inst_ratio"] = round(fr + tr + dr, 6)
 
         inst_success = bool(foreign_ratios or shares_success)
         return ratios, inst_success

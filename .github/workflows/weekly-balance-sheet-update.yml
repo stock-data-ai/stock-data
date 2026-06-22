@@ -30,7 +30,7 @@ on:
         type: boolean
 
 concurrency:
-  group: data-pipeline
+  group: data-pipeline-balance-sheet
   cancel-in-progress: false
 
 permissions:
