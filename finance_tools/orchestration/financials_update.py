@@ -45,6 +45,15 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_SLEEP_RANGE = config.DEFAULT_SLEEP_RANGE
 
+
+def _save_stats(task_name: str, batch, fin: int, rev: int, success: int, total: int) -> None:
+    """每個 batch 寫出統計數字，供 merge job 彙整後顯示於 GitHub Summary。"""
+    suffix = f"_{batch}" if batch else ""
+    stats_path = os.path.join(str(config.RERUN_DIR), f"stats_{task_name}{suffix}.txt")
+    with open(stats_path, "w", encoding="utf-8") as f:
+        f.write(f"fin={fin}\nrev={rev}\nsuccess={success}\ntotal={total}\n")
+
+
 def run_financials_update(args):
     """
     處理財務報表更新任務 (損益表、月營收)
@@ -98,6 +107,8 @@ def run_financials_update(args):
 
     start_date = (now_tw() - timedelta(days=config.FULL_UPDATE_DAYS)).strftime("%Y-%m-%d")
     success_count = 0
+    fin_count = 0
+    rev_count = 0
     failed_companies = []
     quality_issues = []
 
@@ -106,11 +117,8 @@ def run_financials_update(args):
         name = company.get("name", code)
         logger.debug(f"\n{'='*60}")
         logger.debug(f"[{idx}/{len(companies)}] 準備處理公司代碼: {code}, 名稱: {name}")
-        logger.debug(f"  處理流程: 檢查資料、處理財務報表/營收/股利、更新季度數據/年成長率、整合法人持股、清理 NaN 值並儲存。")
         logger.debug(f"{'-'*60}")
 
-
-        # 全量更新抓取的資料維度不同，不應受限於「今日已更新」檢查
         is_force_update = True
 
         try:
@@ -124,15 +132,14 @@ def run_financials_update(args):
             if success:
                 success_count += 1
                 if not status.get("skipped"):
-                    # 紀錄資料缺失情況
+                    if status.get("fin"): fin_count += 1
+                    if status.get("rev"): rev_count += 1
                     missings = []
                     if not status.get("fin"): missings.append("財報")
                     if not status.get("rev"): missings.append("營收")
-                    if not status.get("inst"): missings.append("法人")
-                    
                     if missings:
                         quality_issues.append(f"{code} {name}: 缺失 {', '.join(missings)}")
-                
+
                 logger.info(f"[{idx}/{len(companies)}] ✔️  {code} {name}")
             else:
                 logger.warning(f"[{idx}/{len(companies)}] ❌  {code} {name} 處理失敗")
@@ -147,15 +154,15 @@ def run_financials_update(args):
             logger.exception(f"  X 處理公司 {code} 時發生未預期錯誤:")
             failed_companies.append(code)
 
-
         if idx < len(companies):
-             time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
+            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
-    # 最終儲存品質報告
+    # 儲存品質報告 + 統計數字
     save_quality_report("financials_update", batch, quality_issues)
+    _save_stats("financials_update", batch, fin_count, rev_count, success_count, len(companies))
 
     logger.info(f"\n{'='*60}")
-    logger.info(f"更新完成: {success_count}/{len(companies)} 家公司")
+    logger.info(f"更新完成: {success_count}/{len(companies)} 家公司 (損益表 {fin_count} / 月營收 {rev_count})")
     if failed_companies:
         logger.warning(f"失敗/剩餘: {len(failed_companies)} 家公司")
         logger.warning(f"   失敗/剩餘公司代碼 (前10個): {', '.join(sorted(list(set(failed_companies)))[:10])}{'...' if len(set(failed_companies)) > 10 else ''}")

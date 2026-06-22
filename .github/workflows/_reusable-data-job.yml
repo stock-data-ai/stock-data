@@ -165,8 +165,8 @@ jobs:
             fi
           done
           cd "$GITHUB_WORKSPACE"
-          # Copy rerun queue and quality report files
-          for f in finance_tools/rerun_queue_*_${{ matrix.batch }}.txt finance_tools/quality_report_*_${{ matrix.batch }}.txt; do
+          # Copy rerun queue, quality report, and stats files
+          for f in finance_tools/rerun_queue_*_${{ matrix.batch }}.txt finance_tools/quality_report_*_${{ matrix.batch }}.txt finance_tools/stats_*_${{ matrix.batch }}.txt; do
             if [ -f "$f" ]; then
               cp "$f" /tmp/batch-results/
             fi
@@ -222,9 +222,10 @@ jobs:
             echo "Applying ${COUNT} changed JSON files from batch artifacts"
             cp /tmp/all-batch-results/company-financials/*.json src/data/layer3/company-financials/ 2>/dev/null || true
           fi
-          # Copy rerun queue and quality report files
+          # Copy rerun queue, quality report, and stats files
           cp /tmp/all-batch-results/rerun_queue_*.txt finance_tools/ 2>/dev/null || true
           cp /tmp/all-batch-results/quality_report_*.txt finance_tools/ 2>/dev/null || true
+          cp /tmp/all-batch-results/stats_*.txt finance_tools/ 2>/dev/null || true
 
       - name: Combine per-batch rerun files and filter permanent failures
         run: |
@@ -257,6 +258,24 @@ jobs:
               fi
               rm -f "$BATCH_QUALITY_FILE"
             done
+
+            # Combine batch files (stats)
+            STATS_COMBINED="finance_tools/stats_${ID}.txt"
+            rm -f "$STATS_COMBINED"
+            S_FIN=0; S_REV=0; S_SUC=0; S_TOT=0
+            for i in 1 2 3 4; do
+              BATCH_STATS="finance_tools/stats_${ID}_${i}.txt"
+              if [ -f "$BATCH_STATS" ]; then
+                S_FIN=$((S_FIN + $(grep "^fin=" "$BATCH_STATS" | cut -d= -f2 || echo 0)))
+                S_REV=$((S_REV + $(grep "^rev=" "$BATCH_STATS" | cut -d= -f2 || echo 0)))
+                S_SUC=$((S_SUC + $(grep "^success=" "$BATCH_STATS" | cut -d= -f2 || echo 0)))
+                S_TOT=$((S_TOT + $(grep "^total=" "$BATCH_STATS" | cut -d= -f2 || echo 0)))
+                rm -f "$BATCH_STATS"
+              fi
+            done
+            if [ "$S_TOT" -gt 0 ]; then
+              printf "fin=%d\nrev=%d\nsuccess=%d\ntotal=%d\n" "$S_FIN" "$S_REV" "$S_SUC" "$S_TOT" > "$STATS_COMBINED"
+            fi
 
             if [ -f "$COMBINED" ] && [ -s "$COMBINED" ]; then
               sort -u -o "$COMBINED" "$COMBINED"
@@ -408,6 +427,27 @@ jobs:
             PERMANENT="finance_tools/permanent_failures_${ID}.txt"
             COMBINED="finance_tools/rerun_queue_${ID}.txt"
             QUALITY="finance_tools/quality_report_${ID}.txt"
+            STATS="finance_tools/stats_${ID}.txt"
+
+            # Stats table (only shown when stats file exists)
+            if [ -f "$STATS" ]; then
+              S_FIN=$(grep "^fin=" "$STATS" | cut -d= -f2)
+              S_REV=$(grep "^rev=" "$STATS" | cut -d= -f2)
+              S_SUC=$(grep "^success=" "$STATS" | cut -d= -f2)
+              S_TOT=$(grep "^total=" "$STATS" | cut -d= -f2)
+              STATUS_ICON=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+              {
+                echo "## ${LABEL} — $(date -u +%Y-%m-%d)"
+                echo ""
+                echo "| 指標 | 值 |"
+                echo "|------|---|"
+                echo "| 損益表更新 | ${S_FIN} |"
+                echo "| 月營收更新 | ${S_REV} |"
+                echo "| 成功公司 | ${S_SUC} / ${S_TOT} |"
+                echo "| 狀態 | ${STATUS_ICON} |"
+                echo ""
+              } >> $GITHUB_STEP_SUMMARY
+            fi
 
             if [ -f "$QUALITY" ] && [ -s "$QUALITY" ]; then
               Q_COUNT=$(wc -l < "$QUALITY")
