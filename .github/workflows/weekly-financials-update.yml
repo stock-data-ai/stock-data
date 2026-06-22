@@ -1,4 +1,4 @@
-name: Weekly Full Update (Sunday)｜完整財務更新（週日）
+name: Weekly Financials Update (Sunday)｜財務報表更新（週日）
 
 on:
   workflow_dispatch:
@@ -41,12 +41,12 @@ jobs:
   pipeline:
     uses: ./.github/workflows/_reusable-data-job.yml
     with:
-      commands_json: '[{"id":"full_update","cli":"full-update","label":"全量更新"}]'
-      artifact_prefix: weekly-full-update
-      commit_message: "全量更新"
-      caller_workflow: weekly-full-update.yml
+      commands_json: '[{"id":"financials_update","cli":"financials-update","label":"財務報表更新"}]'
+      artifact_prefix: weekly-financials-update
+      commit_message: "財務報表更新"
+      caller_workflow: weekly-financials-update.yml
       caller_task: weekly-sunday
-      summary_title: "全量更新"
+      summary_title: "財務報表更新"
       rerun_round: ${{ inputs.rerun_round || '0' }}
       delay_minutes: ${{ inputs.delay_minutes || '0' }}
       batch: ${{ inputs.batch || '0' }}

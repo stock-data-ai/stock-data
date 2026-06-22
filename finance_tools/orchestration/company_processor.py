@@ -60,7 +60,7 @@ class CompanyProcessor:
 
         pre_inst / pre_shareholding（來自 TWSEInstitutionalFetcher / TWSEShareholdingFetcher）:
           - 有傳入 → 使用 TWSE/TPEx 預先批次撈取的資料
-          - None   → FinMind per-stock 呼叫（full_update 路徑）
+          - None   → FinMind per-stock 呼叫（financials_update 路徑）
         """
         if pre_inst is not None:
             # ── TWSE/TPEx 路徑 ─────────────────────────────────────
@@ -79,8 +79,8 @@ class CompanyProcessor:
             else:
                 foreign_ratios = {}
         else:
-            # ── FinMind 路徑（full_update）─────────────────────────
-            # 三大法人買賣超張數由 daily-update TWSE T86 批次每日維護，full-update 不重抓
+            # ── FinMind 路徑（financials_update）──────────────────────
+            # 三大法人買賣超張數由 daily-update TWSE T86 批次每日維護，financials-update 不重抓
             shares_df, shares_success = pd.DataFrame(), False
 
         ratios: dict = {}

@@ -10,7 +10,7 @@ crons = [
   "0 23 * * *",           # scraper-economic-daily    台灣 07:00 每天
   "0 0 * * 7",            # etf-holdings-update       台灣 08:00 週六
   "0 1 * * 7",            # weekly-shareholder-update 台灣 09:00 週六
-  "0 1 * * 1",            # weekly-full-update        台灣 09:00 週日
+  "0 1 * * 1",            # weekly-financials-update  台灣 09:00 週日
   "0 2 * * 1",            # update-us-financials      台灣 10:00 週日
   "0 3 * * 7",            # weekly-dividend-update    台灣 11:00 週六
   "0 3 * * 1",            # weekly-balance-sheet      台灣 11:00 週日

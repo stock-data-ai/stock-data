@@ -42,7 +42,7 @@ jobs:
               {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
               {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
               {'label': '週六 11:00 Weekly Dividend Update',         'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）',           'hour': 11, 'minute': 0,  'days': [6]},
-              {'label': '週日 09:00 Weekly Full Update',             'workflow_name': 'Weekly Full Update (Sunday)｜完整財務更新（週日）',             'hour': 9,  'minute': 0,  'days': [0]},
+              {'label': '週日 09:00 Weekly Financials Update',        'workflow_name': 'Weekly Financials Update (Sunday)｜財務報表更新（週日）',        'hour': 9,  'minute': 0,  'days': [0]},
               {'label': '週日 10:00 Update US Financials',           'workflow_name': 'Update US Financials｜美股財務更新',                           'hour': 10, 'minute': 0,  'days': [0]},
               {'label': '週日 11:00 Weekly Balance Sheet Update',    'workflow_name': 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）',        'hour': 11, 'minute': 0,  'days': [0]},
               {'label': '週一 03:00 Cleanup old workflow runs',      'workflow_name': 'Cleanup old workflow runs｜清理舊 workflow 記錄',              'hour': 3,  'minute': 0,  'days': [1]},

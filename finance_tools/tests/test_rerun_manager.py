@@ -42,8 +42,8 @@ class TestRerunManager(unittest.TestCase):
         self.assertEqual(mgr.file_path, os.path.join(self.test_dir, "rerun_queue_valuation.txt"))
 
     def test_file_path_with_batch(self):
-        mgr = RerunManager("full_update", batch="2")
-        self.assertEqual(mgr.file_path, os.path.join(self.test_dir, "rerun_queue_full_update_2.txt"))
+        mgr = RerunManager("financials_update", batch="2")
+        self.assertEqual(mgr.file_path, os.path.join(self.test_dir, "rerun_queue_financials_update_2.txt"))
 
     # --- save / load ---
 
@@ -136,9 +136,9 @@ class TestImports(unittest.TestCase):
         from finance_tools.utils.company_list_loader import load_companies_for_processing
         self.assertIsNotNone(load_companies_for_processing)
 
-    def test_import_full_update(self):
-        from finance_tools.orchestration.full_update import run_full_update
-        self.assertIsNotNone(run_full_update)
+    def test_import_financials_update(self):
+        from finance_tools.orchestration.financials_update import run_financials_update
+        self.assertIsNotNone(run_financials_update)
 
     def test_import_update_marketcap_inst(self):
         from finance_tools.orchestration.marketcap_inst_update import run_update_marketcap_inst

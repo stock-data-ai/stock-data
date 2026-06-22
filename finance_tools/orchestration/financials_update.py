@@ -45,16 +45,16 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_SLEEP_RANGE = config.DEFAULT_SLEEP_RANGE
 
-def run_full_update(args):
+def run_financials_update(args):
     """
-    處理完整更新任務 (財務、營收、股利)
+    處理財務報表更新任務 (損益表、月營收)
     """
-    logger.info("處理完整更新任務 (財務、營收、股利、法人持股)...")
+    logger.info("處理財務報表更新任務 (損益表、月營收)...")
 
     # RerunManager: 讀取用 combined file，寫入用 per-batch file
     batch = args.batch.split("/")[0] if getattr(args, "batch", None) else None
-    read_mgr = RerunManager("full_update")           # 讀: rerun_queue_full_update.txt
-    write_mgr = RerunManager("full_update", batch)   # 寫: rerun_queue_full_update_N.txt
+    read_mgr = RerunManager("financials_update")           # 讀: rerun_queue_financials_update.txt
+    write_mgr = RerunManager("financials_update", batch)   # 寫: rerun_queue_financials_update_N.txt
 
     client = FinMindClient()
     processor_data = DataProcessor()
@@ -139,7 +139,7 @@ def run_full_update(args):
                 failed_companies.append(code)
         except ApiExhaustedError:
             handle_api_exhausted(
-                "full_update", batch, write_mgr,
+                "financials_update", batch, write_mgr,
                 failed_companies, code, companies[idx:],
                 success_count, len(companies), quality_issues,
             )
@@ -152,7 +152,7 @@ def run_full_update(args):
              time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
     # 最終儲存品質報告
-    save_quality_report("full_update", batch, quality_issues)
+    save_quality_report("financials_update", batch, quality_issues)
 
     logger.info(f"\n{'='*60}")
     logger.info(f"更新完成: {success_count}/{len(companies)} 家公司")

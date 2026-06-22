@@ -21,7 +21,7 @@ class RerunManager:
     def __init__(self, task_name: str, batch: Optional[str] = None):
         """
         Args:
-            task_name: 任務識別名稱，例如 "valuation", "full_update"
+            task_name: 任務識別名稱，例如 "valuation", "financials_update"
             batch: batch 編號字串，例如 "1" (來自 --batch 1/4)，無 batch 時為 None
         """
         self.task_name = task_name

@@ -6,7 +6,7 @@ Usage:
 
 Commands:
   update-marketcap-inst - 每日更新：市值估值 + 三大法人（皆為 TWSE/TPEx 批次）。
-  full-update           - 全量更新：財務報表、營收。
+  financials-update     - 財務報表更新：損益表、月營收。
   update-revenue        - 僅更新月營收。
   import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
   update-dividends      - 【定期】從 MOPS 更新 2025+ 股利。
@@ -46,7 +46,7 @@ logging.basicConfig(
 )
 
 # Import the run functions from the newly created task modules
-from finance_tools.orchestration.full_update import run_full_update
+from finance_tools.orchestration.financials_update import run_financials_update
 from finance_tools.orchestration.marketcap_inst_update import run_update_marketcap_inst
 from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
 from finance_tools.domains.dividends.finmind_backfill import run_backfill_finmind_dividends
@@ -85,10 +85,10 @@ def main():
     parser_daily.add_argument("--date", type=str, help="指定日期 (YYYYMMDD 或 YYYY-MM-DD)，預設為今天。")
     parser_daily.set_defaults(func=run_update_marketcap_inst)
 
-    # --- 'full-update' command ---
-    parser_full = subparsers.add_parser("full-update", help="更新財務報表、營收和股利。")
+    # --- 'financials-update' command ---
+    parser_full = subparsers.add_parser("financials-update", help="更新損益表、月營收。")
     add_common_arguments(parser_full, include_force=True, include_rerun=True)
-    parser_full.set_defaults(func=run_full_update)
+    parser_full.set_defaults(func=run_financials_update)
 
     # --- 'import-historical-dividends' command (one-time) ---
     parser_hist_div = subparsers.add_parser("import-historical-dividends", help="【一次性】從 CSV 匯入 2021–2025 年度合計股利（涵蓋所有 CSV 公司）。")
