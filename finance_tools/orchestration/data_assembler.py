@@ -136,10 +136,18 @@ class DataAssembler:
         else:
             merged_dividends = existing_historical.get('dividends', [])
 
+        # Merge monthly revenue: new months overwrite existing, old months outside fetch window preserved
+        if monthly_list:
+            new_month_keys = {(m['year'], m['month']) for m in monthly_list}
+            old_monthly = [m for m in existing_historical.get('monthlyRevenue') or [] if (m['year'], m['month']) not in new_month_keys]
+            merged_monthly = sorted(monthly_list + old_monthly, key=lambda x: (x['year'], x['month']), reverse=True)[:72]
+        else:
+            merged_monthly = existing_historical.get('monthlyRevenue') or None
+
         final_data['historical'].update({
             "annual": merged_annual,
             "quarterly": merged_quarterly,
-            "monthlyRevenue": monthly_list[:72] if monthly_list else None,
+            "monthlyRevenue": merged_monthly,
             "dividends": merged_dividends if merged_dividends else None,
             "institutionalInvestors": {**(existing_historical.get('institutionalInvestors') or {}), **(institutional_investors_data or {})} or None,
         })
