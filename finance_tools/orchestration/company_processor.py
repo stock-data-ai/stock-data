@@ -80,12 +80,8 @@ class CompanyProcessor:
                 foreign_ratios = {}
         else:
             # ── FinMind 路徑（full_update）─────────────────────────
-            shareholding_df, _ = self.fetch_orchestrator.fetch_shareholding(code, start_date)
             shares_df, shares_success = self.fetch_orchestrator.fetch_institutional_investors_shares(code, start_date)
-            foreign_ratios = self.inst_ratio_calculator.calculate_foreign_ratio(shareholding_df)
-
-        # [DEPRECATED] trust_ratio/dealer_ratio 為種子值推估，資料不準確且前端已不維護，暫停計算
-        # trust_dealer_ratios = self.inst_ratio_calculator.calculate_trust_dealer_ratio(code, shares_df) if shares_success else {}
+            # foreign_ratio 由 daily-update TWSE 批次維護，full-update 不寫入，避免覆蓋正確值
 
         ratios: dict = {}
         if shares_success:
@@ -94,24 +90,9 @@ class CompanyProcessor:
                 ratios[date] = share_info
                 ratios[date]["code"] = code
 
-        # 合併外資比例
+        # TWSE 路徑：合併今日外資比例（daily-update 用）
         for date, foreign_ratio in foreign_ratios.items():
             ratios.setdefault(date, {})["foreign_ratio"] = foreign_ratio
-
-        # [DEPRECATED] 投信/自營商持股比例（推估值，暫停寫入）
-        # for date, td in trust_dealer_ratios.items():
-        #     ratios.setdefault(date, {}).update(td)
-
-        # [DEPRECATED] three_inst_ratio 依賴 trust/dealer ratio，暫停計算
-        # 僅保留 foreign_ratio 前向填充（供現有資料相容）
-        last_foreign: float = 0.0
-        for date in sorted(ratios.keys()):
-            entry = ratios[date]
-            fr = entry.get("foreign_ratio")
-            if fr is not None:
-                last_foreign = fr
-            else:
-                entry["foreign_ratio"] = last_foreign
 
         inst_success = bool(foreign_ratios or shares_success)
         return ratios, inst_success
