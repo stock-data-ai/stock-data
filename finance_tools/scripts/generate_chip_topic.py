@@ -120,11 +120,13 @@ def compute(topics_list: list, companies_index: list) -> dict:
     # 建立 topicId → [codes] 的 mapping（只處理非 ETF 的台股題材）
     active_topic_ids = {t["id"] for t in topics_list if t.get("active", True)}
     topic_companies: dict[str, list[str]] = {tid: [] for tid in active_topic_ids}
+    code_to_name: dict[str, str] = {}
 
     for company in companies_index:
         if company.get("isETF"):
             continue
         code = company["code"]
+        code_to_name[code] = company.get("name", code)
         for tid in company.get("topics", []):
             if tid in topic_companies:
                 topic_companies[tid].append(code)
@@ -139,6 +141,10 @@ def compute(topics_list: list, companies_index: list) -> dict:
         foreign_total = trust_total = lh_total = 0
         lh_deltas: list[float] = []
 
+        foreign_companies: list[dict] = []
+        trust_companies: list[dict] = []
+        lh_companies: list[dict] = []
+
         for code in codes:
             fp = FINANCIALS_DIR / f"{code}.json"
             if not fp.exists():
@@ -149,6 +155,8 @@ def compute(topics_list: list, companies_index: list) -> dict:
             except Exception:
                 continue
 
+            name = code_to_name.get(code, code)
+
             # 三大法人
             inst = data.get("historical", {}).get("institutionalInvestors", {})
             if inst:
@@ -158,10 +166,12 @@ def compute(topics_list: list, companies_index: list) -> dict:
                     foreign_total += 1
                     if bull_f:
                         foreign_bull += 1
+                    foreign_companies.append({"code": code, "name": name, "bull": bull_f})
                 if has_t:
                     trust_total += 1
                     if bull_t:
                         trust_bull += 1
+                    trust_companies.append({"code": code, "name": name, "bull": bull_t})
 
             # 大股東持股
             sh_history = data.get("shareholderDataHistory", {})
@@ -171,13 +181,20 @@ def compute(topics_list: list, companies_index: list) -> dict:
                 if bull_lh:
                     lh_bull += 1
                 lh_deltas.append(delta)
+                lh_companies.append({"code": code, "name": name, "bull": bull_lh})
 
         avg_change = round(sum(lh_deltas) / len(lh_deltas), 4) if lh_deltas else 0.0
 
+        # 多頭公司排前，空頭公司排後，同組內依代碼排序
+        def sort_key(c: dict) -> tuple: return (not c["bull"], c["code"])
+        foreign_companies.sort(key=sort_key)
+        trust_companies.sort(key=sort_key)
+        lh_companies.sort(key=sort_key)
+
         results[topic_id] = {
-            "foreign":     {"bull": foreign_bull, "total": foreign_total},
-            "trust":       {"bull": trust_bull,   "total": trust_total},
-            "largeHolder": {"bull": lh_bull,      "total": lh_total, "avgChange": avg_change},
+            "foreign":     {"bull": foreign_bull, "total": foreign_total, "companies": foreign_companies},
+            "trust":       {"bull": trust_bull,   "total": trust_total,   "companies": trust_companies},
+            "largeHolder": {"bull": lh_bull,      "total": lh_total,      "avgChange": avg_change, "companies": lh_companies},
         }
 
         print(
