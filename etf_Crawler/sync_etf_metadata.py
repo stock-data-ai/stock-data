@@ -297,8 +297,7 @@ def build_metadata_for_code(etf_code: str, basic_map: dict, value_map: dict, div
     value = value_map.get(etf_code, {})
     dividend = dividend_map.get(etf_code, {})
 
-    value_fee = value.get("fee")
-    mgmt_fee = value_fee if value_fee is not None else ((basic.get("managementFee") or 0) + (basic.get("custodyFee") or 0)) or None
+    mgmt_fee = ((basic.get("managementFee") or 0) + (basic.get("custodyFee") or 0)) or None
     inception_raw = dividend.get("listingDate") or basic.get("listingDate")
     inception_date = inception_raw[:10] if inception_raw else None
     shares = basic.get("shares")

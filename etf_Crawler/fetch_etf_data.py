@@ -176,7 +176,7 @@ def _update_index(basic_list: list, value_list: list, dividend_list: list) -> No
         d  = dividend_map.get(code, {})
         ex = existing_map.get(code)
 
-        mgmt_fee  = v.get("fee") or ((b.get("managementFee") or 0) + (b.get("custodyFee") or 0)) or None
+        mgmt_fee  = ((b.get("managementFee") or 0) + (b.get("custodyFee") or 0)) or None
         inception = d.get("listingDate", "")[:10] if d.get("listingDate") else None
 
         dynamic = {
