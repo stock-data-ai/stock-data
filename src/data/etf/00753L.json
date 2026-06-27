@@ -15,53 +15,53 @@
   "topHoldings": [
     {
       "name": "MSCI中國",
-      "weight": 192.71,
-      "shares": 13733,
+      "weight": 193.61,
+      "shares": 13393,
       "foreignCode": "202609MUR",
-      "previousWeight": 192.92,
-      "weightChange": -0.21,
-      "previousShares": 0,
-      "sharesChange": 0
+      "previousWeight": 192.71,
+      "weightChange": 0.9,
+      "previousShares": 13733,
+      "sharesChange": -340
     },
     {
       "name": "MARGIN",
-      "weight": 69.41,
-      "shares": 149335648,
+      "weight": 67.07,
+      "shares": 132201155,
       "foreignCode": "M_USD",
-      "previousWeight": 0,
-      "weightChange": 69.41,
-      "previousShares": 0,
-      "sharesChange": 149335648
+      "previousWeight": 69.41,
+      "weightChange": -2.34,
+      "previousShares": 149335648,
+      "sharesChange": -17134493
     },
     {
       "name": "CASH",
-      "weight": 13.23,
-      "shares": 898218477,
+      "weight": 18.0,
+      "shares": 1130103574,
       "foreignCode": "C_NTD",
-      "previousWeight": 0,
-      "weightChange": 13.23,
-      "previousShares": 0,
-      "sharesChange": 898218477
-    },
-    {
-      "name": "CASH",
-      "weight": 9.18,
-      "shares": 19757743,
-      "foreignCode": "C_USD",
-      "previousWeight": 0,
-      "weightChange": 9.18,
-      "previousShares": 0,
-      "sharesChange": 19757743
+      "previousWeight": 9.18,
+      "weightChange": 8.82,
+      "previousShares": 19757743,
+      "sharesChange": 1110345831
     },
     {
       "name": "中國信託MSCI中外資自由50 ETF",
-      "weight": 8.13,
+      "weight": 8.2,
       "shares": 24760000,
       "code": "00752",
-      "previousWeight": 8.31,
-      "weightChange": -0.18,
+      "previousWeight": 8.13,
+      "weightChange": 0.07,
       "previousShares": 24760000,
       "sharesChange": 0
+    },
+    {
+      "name": "CASH",
+      "weight": 6.99,
+      "shares": 13785952,
+      "foreignCode": "C_USD",
+      "previousWeight": 9.18,
+      "weightChange": -2.19,
+      "previousShares": 19757743,
+      "sharesChange": -5971791
     }
   ],
   "holdingsHistory": {
@@ -215,7 +215,35 @@
         "shares": 24760000,
         "code": "00752"
       }
+    ],
+    "2026-06-25": [
+      {
+        "name": "MSCI中國",
+        "weight": 193.61,
+        "shares": 13393
+      },
+      {
+        "name": "MARGIN",
+        "weight": 67.07,
+        "shares": 132201155
+      },
+      {
+        "name": "CASH",
+        "weight": 18.0,
+        "shares": 1130103574
+      },
+      {
+        "name": "中國信託MSCI中外資自由50 ETF",
+        "weight": 8.2,
+        "shares": 24760000,
+        "code": "00752"
+      },
+      {
+        "name": "CASH",
+        "weight": 6.99,
+        "shares": 13785952
+      }
     ]
   },
-  "lastUpdated": "2026-06-17"
+  "lastUpdated": "2026-06-25"
 }
