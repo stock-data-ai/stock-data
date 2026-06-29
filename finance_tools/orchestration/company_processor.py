@@ -82,6 +82,7 @@ class CompanyProcessor:
             # ── FinMind 路徑（financials_update）──────────────────────
             # 三大法人買賣超張數由 daily-update TWSE T86 批次每日維護，financials-update 不重抓
             shares_df, shares_success = pd.DataFrame(), False
+            foreign_ratios = {}
 
         ratios: dict = {}
         if shares_success:
