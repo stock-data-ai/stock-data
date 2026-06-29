@@ -95,6 +95,48 @@ def run_fetch_shareholder_data(args):
                     for r in tdcc_data_list
                 ]
 
+                # Validate data completeness
+                # Note: TDCC's 合計 row always has holder_count=0 (shares-only summary); use sum of levels instead.
+                non_total_records = [r for r in clean_records if r["holding_range"] != "合計"]
+                total_people = sum(r.get("holder_count", 0) for r in non_total_records)
+
+                if len(non_total_records) < 15:
+                    logger.warning(
+                        f"  ⚠ {code} {name}: 資料不完整，僅取得 {len(non_total_records)}/15 個分級 "
+                        f"(日期 {formatted_date})，跳過此次更新"
+                    )
+                    quality_issues.append(f"{code} {name}: 資料不完整 ({len(non_total_records)}/15 levels, {formatted_date})")
+                    success_count += 1
+                    continue
+
+                if total_people == 0:
+                    logger.warning(
+                        f"  ⚠ {code} {name}: 全部分級人數皆為 0 (日期 {formatted_date})，跳過此次更新"
+                    )
+                    quality_issues.append(f"{code} {name}: 全部分級人數為 0 ({formatted_date})")
+                    success_count += 1
+                    continue
+
+                # Cross-check against previous data to catch extreme drops (>90% in one week)
+                prev_history = financial_data.get('shareholderDataHistory', {})
+                if prev_history:
+                    prev_dates = sorted(prev_history.keys(), reverse=True)
+                    if prev_dates:
+                        prev_records = prev_history[prev_dates[0]]
+                        prev_total = sum(
+                            r.get("holder_count", 0) for r in prev_records if r["holding_range"] != "合計"
+                        )
+                        if prev_total > 100 and total_people < prev_total * 0.1:
+                            logger.warning(
+                                f"  ⚠ {code} {name}: 合計人數異常下降 {prev_total} → {total_people} "
+                                f"(日期 {formatted_date})，跳過此次更新"
+                            )
+                            quality_issues.append(
+                                f"{code} {name}: 人數異常下降 {prev_total}→{total_people} ({formatted_date})"
+                            )
+                            success_count += 1
+                            continue
+
                 financial_data['shareholderDataHistory'][formatted_date] = clean_records
                 financial_data['shareholderDataRecent'] = clean_records
                 financial_data['lastUpdated'] = today_str()
