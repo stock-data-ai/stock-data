@@ -17,7 +17,7 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 23 * * *':           { workflow: 'scraper-economic-daily.yml' },                               // 台灣 07:00 每天
   '0 0 * * 7':            { workflow: 'etf-holdings-update.yml' },                                  // 台灣 08:00 週六
   '0 1 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:00 週六
-  '0 1 * * 1':            { workflow: 'weekly-financials-update.yml' },                             // 台灣 09:00 週日
+  '1 1 * * 1':            { workflow: 'weekly-financials-update.yml' },                             // 台灣 09:01 週日
   '0 2 * * 1':            { workflow: 'update-us-financials.yml' },                                 // 台灣 10:00 週日
   '0 3 * * 7':            { workflow: 'weekly-dividend-update.yml' },                               // 台灣 11:00 週六
   '0 3 * * 1':            { workflow: 'weekly-balance-sheet-update.yml' },                          // 台灣 11:00 週日
@@ -64,7 +64,7 @@ const CHECK_JOBS: CheckJob[] = [
   { label: '週六 08:00 ETF Holdings Update (Weekly)｜每週 ETF 持股更新', workflowName: 'ETF Holdings Update (Weekly)｜ETF持股（週更）', twHour: 8, twMinute: 0, days: [6] },
   { label: '週六 09:00 Weekly Shareholder Update (Saturday)｜每週股東結構更新', workflowName: 'Weekly Shareholder Update (Saturday)｜股東結構（週六）', twHour: 9, twMinute: 0, days: [6] },
   { label: '週六 11:00 Weekly Dividend Update (Saturday)｜每週股利資料更新', workflowName: 'Weekly Dividend Update (Saturday)｜股利資料（週六）', twHour: 11, twMinute: 0, days: [6] },
-  { label: '週日 09:00 Weekly Financials Update (Sunday)｜每週財務報表更新（台股）', workflowName: 'Weekly Financials Update (Sunday)｜財務報表更新（週日）', twHour: 9, twMinute: 0, days: [0] },
+  { label: '週日 09:01 Weekly Financials Update (Sunday)｜每週財務報表更新（台股）', workflowName: 'Weekly Financials Update (Sunday)｜財務報表更新（週日）', twHour: 9, twMinute: 1, days: [0] },
   { label: '週日 10:00 Update US Financials｜更新美股財務資料', workflowName: 'Update US Financials｜美股財務更新', twHour: 10, twMinute: 0, days: [0] },
   { label: '週日 11:00 Weekly Balance Sheet Update (Monday)｜每週資產負債表更新', workflowName: 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）', twHour: 11, twMinute: 0, days: [0] },
   { label: '週一 03:00 Cleanup old workflow runs｜清理舊 workflow 記錄', workflowName: 'Cleanup old workflow runs｜清理舊 workflow 記錄', twHour: 3, twMinute: 0, days: [1] },
