@@ -28,4 +28,4 @@ def handle_api_exhausted(
     write_mgr.save_api_exhausted(failed_companies, current_code, remaining_companies)
     logger.info(f"本輪已完成: {success_count}/{total_count} 間公司。")
     logger.info("退出，等待 GitHub Actions 觸發下一輪重試。")
-    sys.exit(1)
+    sys.exit(2)  # exit 2 = API exhausted (rerun needed), not a real error

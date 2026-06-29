@@ -145,10 +145,10 @@ jobs:
 
             if [ -n "$ROUND" ] && [ "$ROUND" != "0" ]; then
               echo "--- Batch ${BATCH}/4 — RERUN Round ${ROUND} for ${LABEL} ---"
-              uv run finance_tools/cli.py $CLI --rerun $FORCE_FLAG --batch ${BATCH}/4 || true
+              uv run finance_tools/cli.py $CLI --rerun $FORCE_FLAG --batch ${BATCH}/4 || { code=$?; [ $code -eq 2 ] || exit $code; }
             else
               echo "--- Batch ${BATCH}/4 — Initial Run for ${LABEL} ---"
-              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/4
+              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/4 || { code=$?; [ $code -eq 2 ] || exit $code; }
             fi
           done
 
