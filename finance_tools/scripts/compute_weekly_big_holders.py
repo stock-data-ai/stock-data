@@ -70,6 +70,24 @@ def load_raw_company_data(display_names: dict, today: datetime) -> list[dict]:
             continue
 
         code = d.get("companyCode", fp.stem)
+
+        # Skip snapshots where total holders dropped >90% from previous period
+        # (corporate action freeze, TDCC bad data, etc.)
+        latest_snapshot = history[dates[-1]]
+        total_people = sum(
+            e.get("holder_count", 0) for e in latest_snapshot
+            if e.get("holding_range") not in ("合計", "")
+        )
+        if len(dates) >= 2:
+            prev_snapshot = history[dates[-2]]
+            prev_total = sum(
+                e.get("holder_count", 0) for e in prev_snapshot
+                if e.get("holding_range") not in ("合計", "")
+            )
+            if prev_total > 100 and total_people < prev_total * 0.1:
+                print(f"[big_holders] 跳過 {code}: 人數異常下降 {prev_total}→{total_people}，疑似公司行動或壞資料")
+                continue
+
         raw.append({
             "code": code,
             "name": display_names.get(code, d.get("companyName", code)),
