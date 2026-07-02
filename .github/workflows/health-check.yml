@@ -15,17 +15,21 @@ jobs:
       - name: Run health check and send report email
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
           REPO: ${{ github.repository }}
         run: |
           python3 << 'PYEOF'
-          import os, json, re, urllib.parse, urllib.request, sys
+          import os, json, re, urllib.parse, urllib.request, sys, hmac, hashlib
           from datetime import datetime, timedelta, timezone
 
-          GH_TOKEN          = os.environ['GH_TOKEN']
-          BREVO_API_KEY     = os.environ['BREVO_API_KEY']
-          REPO              = os.environ['REPO']
-          STEP_SUMMARY_PATH = os.environ.get('GITHUB_STEP_SUMMARY', '')
+          GH_TOKEN              = os.environ['GH_TOKEN']
+          AWS_ACCESS_KEY_ID     = os.environ.get('AWS_SES_ACCESS_KEY_ID', '')
+          AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SES_SECRET_ACCESS_KEY', '')
+          AWS_REGION            = os.environ.get('AWS_SES_REGION', 'ap-northeast-1')
+          REPO                  = os.environ['REPO']
+          STEP_SUMMARY_PATH     = os.environ.get('GITHUB_STEP_SUMMARY', '')
 
           CHECK_JOBS = [
               {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
@@ -80,11 +84,6 @@ jobs:
 
           # ── Fetch GITHUB_STEP_SUMMARY content for a run via check-runs API ──
           def get_job_summary(run_id):
-              """
-              Each Actions job is a check run. output.text stores the
-              GITHUB_STEP_SUMMARY markdown content written during the run.
-              Returns concatenated non-empty summaries from all jobs, or None.
-              """
               try:
                   jobs = gh_get(f'/repos/{REPO}/actions/runs/{run_id}/jobs').get('jobs', [])
                   parts = []
@@ -128,7 +127,6 @@ jobs:
                       close_table()
                       out.append(f'<h4 style="margin:14px 0 6px;color:#374151;font-size:14px">{line[4:]}</h4>')
                   elif line.startswith('|'):
-                      # separator row  |----|:---:|
                       if all(c in '|- :' for c in line.replace('|', '')):
                           continue
                       cells = [c.strip() for c in line.split('|')[1:-1]]
@@ -221,7 +219,7 @@ jobs:
           # ── Fetch per-workflow summaries (deduplicated by run_id) ────────────
           print('撈取各 workflow 詳細摘要...')
           seen_run_ids = set()
-          workflow_summaries = []  # list of (label, url, summary_md)
+          workflow_summaries = []
           for r in results:
               rid = r.get('run_id')
               if rid and rid not in seen_run_ids:
@@ -308,20 +306,67 @@ jobs:
           subj = (f"✅ [{tw_date}] stock_data 全部正常" if all_good
                   else f"⚠️ [{tw_date}] stock_data 異常 — {fail_n} 失敗 {miss_n} 未執行")
 
-          payload = json.dumps({
-              'sender':      {'name': 'Stock Data Cron', 'email': 'noreply@aistockmap.com'},
-              'to':          [{'email': 'rf9550106@gmail.com'}],
-              'subject':     subj,
-              'htmlContent': html,
-          }).encode()
-          req = urllib.request.Request(
-              'https://api.brevo.com/v3/smtp/email',
-              data=payload,
-              headers={'api-key': BREVO_API_KEY, 'Content-Type': 'application/json'},
-              method='POST',
-          )
-          with urllib.request.urlopen(req) as resp:
-              print(f'Brevo: {resp.status}')
+          # ── AWS SES v2 via SigV4 ────────────────────────────────────────────────
+          def _sign(key, msg):
+              return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
+
+          def _get_signing_key(secret, date_stamp, region, service):
+              k = _sign(('AWS4' + secret).encode('utf-8'), date_stamp)
+              k = _sign(k, region)
+              k = _sign(k, service)
+              return _sign(k, 'aws4_request')
+
+          def send_ses_email(subject, html_body):
+              if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY:
+                  print('[Health Check] AWS SES credentials not set, skipping email')
+                  return
+              service  = 'ses'
+              host     = f'email.{AWS_REGION}.amazonaws.com'
+              endpoint = f'https://{host}/v2/email/outbound-emails'
+              payload  = json.dumps({
+                  'FromEmailAddress': 'noreply@aistockmap.com',
+                  'Destination': {'ToAddresses': ['rf9550106@gmail.com']},
+                  'Content': {
+                      'Simple': {
+                          'Subject': {'Data': subject, 'Charset': 'UTF-8'},
+                          'Body': {'Html': {'Data': html_body, 'Charset': 'UTF-8'}},
+                      }
+                  },
+              }).encode('utf-8')
+              now_dt     = datetime.now(timezone.utc)
+              amz_date   = now_dt.strftime('%Y%m%dT%H%M%SZ')
+              date_stamp = now_dt.strftime('%Y%m%d')
+              payload_hash = hashlib.sha256(payload).hexdigest()
+              canonical_headers = f'content-type:application/json\nhost:{host}\nx-amz-date:{amz_date}\n'
+              signed_headers = 'content-type;host;x-amz-date'
+              canonical_request = '\n'.join([
+                  'POST', '/v2/email/outbound-emails', '',
+                  canonical_headers, signed_headers, payload_hash,
+              ])
+              credential_scope = f'{date_stamp}/{AWS_REGION}/{service}/aws4_request'
+              string_to_sign = '\n'.join([
+                  'AWS4-HMAC-SHA256', amz_date, credential_scope,
+                  hashlib.sha256(canonical_request.encode('utf-8')).hexdigest(),
+              ])
+              signing_key = _get_signing_key(AWS_SECRET_ACCESS_KEY, date_stamp, AWS_REGION, service)
+              signature = hmac.new(signing_key, string_to_sign.encode('utf-8'), hashlib.sha256).hexdigest()
+              auth_header = (
+                  f'AWS4-HMAC-SHA256 Credential={AWS_ACCESS_KEY_ID}/{credential_scope}, '
+                  f'SignedHeaders={signed_headers}, Signature={signature}'
+              )
+              req = urllib.request.Request(
+                  endpoint, data=payload,
+                  headers={
+                      'Content-Type': 'application/json',
+                      'X-Amz-Date': amz_date,
+                      'Authorization': auth_header,
+                  },
+                  method='POST',
+              )
+              with urllib.request.urlopen(req) as resp:
+                  print(f'SES response: {resp.status}')
+
+          send_ses_email(subj, html)
 
           if not all_good:
               sys.exit(1)

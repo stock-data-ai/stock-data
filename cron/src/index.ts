@@ -1,6 +1,8 @@
 interface Env {
   GH_TOKEN: string;
-  BREVO_API_KEY: string;
+  AWS_SES_ACCESS_KEY_ID: string;
+  AWS_SES_SECRET_ACCESS_KEY: string;
+  AWS_SES_REGION: string;
 }
 
 // Cloudflare day-of-week: 1=Sun 2=Mon 3=Tue 4=Wed 5=Thu 6=Fri 7=Sat
@@ -140,7 +142,7 @@ async function runHealthCheck(env: Env): Promise<void> {
     });
 
     if (!res.ok) {
-      await alertError(`健康檢查失敗：無法讀取 GitHub Actions runs: ${res.status}`, env.BREVO_API_KEY);
+      await alertError(`健康檢查失敗：無法讀取 GitHub Actions runs: ${res.status}`, env);
       return;
     }
 
@@ -176,7 +178,7 @@ async function runHealthCheck(env: Env): Promise<void> {
   if (failed.length)  body += `❌ 失敗\n${failed.map(w => `  • ${w}`).join('\n')}\n\n`;
   if (missing.length) body += `⚠️ 未執行\n${missing.map(w => `  • ${w}`).join('\n')}\n\n`;
 
-  await alertError(body, env.BREVO_API_KEY, subject);
+  await alertError(body, env, subject);
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -217,17 +219,63 @@ async function dispatchWithRetry(job: CronJob, token: string, maxRetries = 3) {
   throw lastErr;
 }
 
-async function alertError(message: string, brevoKey: string, subject = '⚠️ Stock Data Cron 失敗通知') {
-  await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'api-key': brevoKey, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      sender: { name: 'Stock Data Cron', email: 'noreply@aistockmap.com' },
-      to: [{ email: 'rf9550106@gmail.com' }],
-      subject,
-      textContent: message,
-    }),
+async function alertError(message: string, env: Env, subject = '⚠️ Stock Data Cron 失敗通知') {
+  const region = env.AWS_SES_REGION || 'ap-northeast-1';
+  const payload = JSON.stringify({
+    FromEmailAddress: 'noreply@aistockmap.com',
+    Destination: { ToAddresses: ['rf9550106@gmail.com'] },
+    Content: {
+      Simple: {
+        Subject: { Data: subject, Charset: 'UTF-8' },
+        Body: { Text: { Data: message, Charset: 'UTF-8' } },
+      },
+    },
   });
+
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:\-]|\.\d{3}/g, '').slice(0, 15) + 'Z';
+  const dateStamp = amzDate.slice(0, 8);
+  const host = `email.${region}.amazonaws.com`;
+  const payloadHash = await sha256hex(payload);
+  const canonicalHeaders = `content-type:application/json\nhost:${host}\nx-amz-date:${amzDate}\n`;
+  const signedHeaders = 'content-type;host;x-amz-date';
+  const canonicalRequest = ['POST', '/v2/email/outbound-emails', '', canonicalHeaders, signedHeaders, payloadHash].join('\n');
+  const credentialScope = `${dateStamp}/${region}/ses/aws4_request`;
+  const stringToSign = ['AWS4-HMAC-SHA256', amzDate, credentialScope, await sha256hex(canonicalRequest)].join('\n');
+  const signingKey = await getSigningKey(env.AWS_SES_SECRET_ACCESS_KEY, dateStamp, region);
+  const signature = await hmacHex(signingKey, stringToSign);
+
+  await fetch(`https://${host}/v2/email/outbound-emails`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Amz-Date': amzDate,
+      Authorization: `AWS4-HMAC-SHA256 Credential=${env.AWS_SES_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
+    },
+    body: payload,
+  });
+}
+
+async function sha256hex(data: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hmacRaw(key: ArrayBuffer | Uint8Array, data: string): Promise<ArrayBuffer> {
+  const k = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return crypto.subtle.sign('HMAC', k, new TextEncoder().encode(data));
+}
+
+async function hmacHex(key: ArrayBuffer, data: string): Promise<string> {
+  const buf = await hmacRaw(key, data);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function getSigningKey(secret: string, dateStamp: string, region: string): Promise<ArrayBuffer> {
+  const k = await hmacRaw(new TextEncoder().encode('AWS4' + secret), dateStamp);
+  const kr = await hmacRaw(k, region);
+  const ks = await hmacRaw(kr, 'ses');
+  return hmacRaw(ks, 'aws4_request');
 }
 
 export default {
@@ -237,20 +285,20 @@ export default {
         await dispatchWithRetry(HEALTH_CHECK_JOB, env.GH_TOKEN);
         return;
       } catch (err) {
-        await alertError(String(err), env.BREVO_API_KEY);
+        await alertError(String(err), env);
         throw err;
       }
     }
 
     const job = CRON_MAP[event.cron];
     if (!job) {
-      await alertError(`Unknown cron: ${event.cron}`, env.BREVO_API_KEY);
+      await alertError(`Unknown cron: ${event.cron}`, env);
       throw new Error(`Unknown cron: ${event.cron}`);
     }
     try {
       await dispatchWithRetry(job, env.GH_TOKEN);
     } catch (err) {
-      await alertError(String(err), env.BREVO_API_KEY);
+      await alertError(String(err), env);
       throw err;
     }
   },
