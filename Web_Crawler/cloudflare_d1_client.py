@@ -142,10 +142,16 @@ class CloudflareD1Client:
         """
         self.execute_query(news_sql)
 
-        # Add company_code index for fast lookup
+        # Composite indexes aligned with stock_map/migrations/optimize_premium_db_indexes.sql.
+        # Do NOT recreate the old single-column idx_economic_daily_news_company_code here:
+        # it was dropped in that migration (redundant with idx_news_company_date).
         self.execute_query("""
-            CREATE INDEX IF NOT EXISTS idx_economic_daily_news_company_code
-            ON economic_daily_news(company_code);
+            CREATE INDEX IF NOT EXISTS idx_news_company_date
+            ON economic_daily_news(company_code, pub_date DESC);
+        """)
+        self.execute_query("""
+            CREATE INDEX IF NOT EXISTS idx_news_pub_date
+            ON economic_daily_news(pub_date DESC);
         """)
 
         print("Tables initialized (if not existed).")
