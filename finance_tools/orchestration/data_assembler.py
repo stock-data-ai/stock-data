@@ -2,6 +2,7 @@
 import logging
 from typing import Dict, Any, List
 import pandas as pd
+from finance_tools.core import DataProcessor
 from finance_tools.core.timezone import today_str
 
 logger = logging.getLogger(__name__)
@@ -104,14 +105,7 @@ class DataAssembler:
         # The 'monthly' data is already a list of dicts from the fetcher
         monthly_list = monthly if monthly else None
 
-        # Merge annual: keep existing records for years not covered by new data
         existing_historical = final_data.get('historical', {})
-        if annual:
-            new_years = {a['year'] for a in annual}
-            old_annual = [a for a in existing_historical.get('annual', []) if a['year'] not in new_years]
-            merged_annual = sorted(annual + old_annual, key=lambda x: x['year'], reverse=True)
-        else:
-            merged_annual = existing_historical.get('annual', [])
 
         # Merge quarterly: keep existing records for (year, quarter) not covered by new data
         if quarterly:
@@ -120,6 +114,26 @@ class DataAssembler:
             merged_quarterly = sorted(quarterly + old_quarterly, key=lambda x: (x['year'], x['quarter']), reverse=True)
         else:
             merged_quarterly = existing_historical.get('quarterly', [])
+
+        # Rebuild annual from the *full* merged quarterly history. Fetching only uses a
+        # ~1yr window (FULL_UPDATE_DAYS), so the freshly-fetched `annual` re-derives recent
+        # years from partial quarters; merging that by year would let a partial (累季) entry
+        # overwrite a complete stored year and desync annual vs quarterly. Recomputing from
+        # merged_quarterly keeps them consistent and self-heals already-corrupted files.
+        # Balance-sheet/cash-flow fields (roe/roa/ocf/fcf…) live only on the existing annual
+        # entries, so preserve them under the recomputed income-statement figures.
+        if merged_quarterly:
+            # 只保留由資產負債表/現金流量表補上的年度欄位；損益數字（含 note/revenueYoY）
+            # 一律以季度重算為準，避免舊的「累季」註記殘留。
+            _PRESERVE = ("roe", "roa", "ocf", "fcf", "currentRatio", "debtRatio")
+            existing_annual_by_year = {a['year']: a for a in existing_historical.get('annual', [])}
+            merged_annual = []
+            for item in DataProcessor.aggregate_quarterly_to_annual(merged_quarterly):
+                old = existing_annual_by_year.get(item['year'], {})
+                item.update({k: old[k] for k in _PRESERVE if k in old})
+                merged_annual.append(item)
+        else:
+            merged_annual = existing_historical.get('annual', [])
 
         # Merge dividends: keep existing records for (year, sequence) not covered by new data
         if dividends:

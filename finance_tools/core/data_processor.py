@@ -29,6 +29,118 @@ class DataProcessor:
             return [DataProcessor.clean_nan(i) for i in obj]
         return obj
 
+    @staticmethod
+    def aggregate_quarterly_to_annual(quarterly_data: List[Dict]) -> List[Dict]:
+        """從季度損益資料加總出年度資料（含累季註記與 YoY）。
+
+        以「完整季度歷史」為輸入時可保證年度與季度一致；抓取視窗只含部分季度時，
+        該年度會被標記為「累季」。金額單位為元，僅四捨五入不做單位轉換。
+        Returns: annual_data，依年份新到舊排序。
+        """
+        annual_map: Dict = {}
+
+        # Determine each year's quarter count — 僅計入具損益資料的季度。
+        # merged quarterly 可能含資產負債表補進、只有 currentRatio/debtRatio 而無 revenue
+        # 的季度，若一併計數會讓「累季」判斷失準（如最舊年度誤判為完整）。
+        quarter_counts: Dict = {}
+        for q in quarterly_data:
+            if q.get("revenue") is None:
+                continue
+            quarter_counts.setdefault(q["year"], set()).add(q["quarter"])
+
+        for q in quarterly_data:
+            year = q["year"]
+            # 僅加總具損益資料的季度（資產負債表補進的季度可能無 revenue）
+            if q.get("revenue") is None:
+                continue
+
+            if year not in annual_map:
+                annual_map[year] = {
+                    "year": year,
+                    "revenue": 0,
+                    "grossProfit": 0,
+                    "operatingIncome": 0,
+                    "netIncome": 0,
+                    "eps": 0,
+                }
+
+            annual_map[year]["revenue"] += q.get("revenue", 0) or 0
+            annual_map[year]["grossProfit"] += q.get("grossProfit", 0) or 0
+            annual_map[year]["operatingIncome"] += q.get("operatingIncome", 0) or 0
+            annual_map[year]["netIncome"] += q.get("netIncome", 0) or 0
+            annual_map[year]["eps"] += q.get("eps", 0) or 0
+
+        # 年度數據後處理（金額單位為元，僅做四捨五入並計算利潤率）
+        annual_data = []
+
+        # Sort by year to make YoY calculation easier
+        sorted_annual_list = sorted(annual_map.values(), key=lambda x: x['year'])
+        annual_map_dict = {item['year']: item for item in sorted_annual_list}
+
+        for year_data in sorted_annual_list:
+            year = year_data['year']
+
+            revenue_ntd = round(year_data["revenue"], 0)
+            gross_ntd = round(year_data["grossProfit"], 0)
+            op_ntd = round(year_data["operatingIncome"], 0)
+            net_ntd = round(year_data["netIncome"], 0)
+
+            if revenue_ntd > 0:
+                gross_margin = round(gross_ntd / revenue_ntd * 100, 2)
+                op_margin = round(op_ntd / revenue_ntd * 100, 2)
+                net_margin = round(net_ntd / revenue_ntd * 100, 2)
+            else:
+                gross_margin = op_margin = net_margin = 0
+
+            item = {
+                "year": year,
+                "revenue": revenue_ntd,
+                "grossProfit": gross_ntd,
+                "operatingIncome": op_ntd,
+                "netIncome": net_ntd,
+                "eps": round(year_data["eps"], 2),
+                "grossMargin": gross_margin,
+                "operatingMargin": op_margin,
+                "netMargin": net_margin,
+            }
+
+            # Add note for partial years
+            num_quarters = len(quarter_counts.get(year, set()))
+            if num_quarters < 4:
+                item["note"] = "累季"
+
+            # Calculate YoY
+            yoy = None
+            prev_year_data_map = annual_map_dict.get(year - 1)
+
+            if prev_year_data_map:
+                current_revenue = item["revenue"]
+
+                # If current year is partial, get partial revenue from previous year
+                if num_quarters < 4:
+                    quarters_to_sum = quarter_counts.get(year, set())
+                    prev_revenue_partial = sum(
+                        q['revenue'] for q in quarterly_data
+                        if q['year'] == (year - 1) and q['quarter'] in quarters_to_sum
+                        and q.get('revenue') is not None
+                    )
+                    if prev_revenue_partial > 0:
+                        yoy = round(((current_revenue - prev_revenue_partial) / prev_revenue_partial) * 100, 2)
+                # Full year comparison
+                else:
+                    prev_revenue_full = round(prev_year_data_map.get("revenue", 0), 0)
+                    # We also need to ensure previous year was a full year
+                    prev_num_quarters = len(quarter_counts.get(year - 1, set()))
+                    if prev_revenue_full > 0 and prev_num_quarters == 4:
+                         yoy = round(((current_revenue - prev_revenue_full) / prev_revenue_full) * 100, 2)
+
+            item["revenueYoY"] = yoy
+
+            annual_data.append(item)
+
+        annual_data.sort(key=lambda x: x["year"], reverse=True)
+        return annual_data
+
     @classmethod
     def process_financials(
         cls, stock_id: str, financials_df: pd.DataFrame
@@ -113,105 +225,7 @@ class DataProcessor:
         quarterly_data.sort(key=lambda x: (x["year"], x["quarter"]))
 
         # 計算年度數據（從季度加總）
-        annual_map = {}
-        
-        # Determine the latest year and its quarter count
-        quarter_counts = {}
-        for q in quarterly_data:
-            year = q["year"]
-            if year not in quarter_counts:
-                quarter_counts[year] = set()
-            quarter_counts[year].add(q["quarter"])
-
-        latest_year = max(quarter_counts.keys()) if quarter_counts else 0
-        
-        for q in quarterly_data:
-            year = q["year"]
-
-            if year not in annual_map:
-                annual_map[year] = {
-                    "year": year,
-                    "revenue": 0,
-                    "grossProfit": 0,
-                    "operatingIncome": 0,
-                    "netIncome": 0,
-                    "eps": 0,
-                }
-
-            annual_map[year]["revenue"] += q["revenue"]
-            annual_map[year]["grossProfit"] += q["grossProfit"]
-            annual_map[year]["operatingIncome"] += q["operatingIncome"]
-            annual_map[year]["netIncome"] += q["netIncome"]
-            annual_map[year]["eps"] += q["eps"]
-
-        # 年度數據後處理（金額單位為元，僅做四捨五入並計算利潤率）
-        annual_data = []
-        
-        # Sort by year to make YoY calculation easier
-        sorted_annual_list = sorted(annual_map.values(), key=lambda x: x['year'])
-        annual_map_dict = {item['year']: item for item in sorted_annual_list}
-
-        for year_data in sorted_annual_list:
-            year = year_data['year']
-            
-            revenue_ntd = round(year_data["revenue"], 0)
-            gross_ntd = round(year_data["grossProfit"], 0)
-            op_ntd = round(year_data["operatingIncome"], 0)
-            net_ntd = round(year_data["netIncome"], 0)
-
-            if revenue_ntd > 0:
-                gross_margin = round(gross_ntd / revenue_ntd * 100, 2)
-                op_margin = round(op_ntd / revenue_ntd * 100, 2)
-                net_margin = round(net_ntd / revenue_ntd * 100, 2)
-            else:
-                gross_margin = op_margin = net_margin = 0
-            
-            item = {
-                "year": year,
-                "revenue": revenue_ntd,
-                "grossProfit": gross_ntd,
-                "operatingIncome": op_ntd,
-                "netIncome": net_ntd,
-                "eps": round(year_data["eps"], 2),
-                "grossMargin": gross_margin,
-                "operatingMargin": op_margin,
-                "netMargin": net_margin,
-            }
-
-            # Add note for partial years
-            num_quarters = len(quarter_counts.get(year, set()))
-            if num_quarters < 4:
-                item["note"] = "累季"
-
-            # Calculate YoY
-            yoy = None
-            prev_year_data_map = annual_map_dict.get(year - 1)
-            
-            if prev_year_data_map:
-                current_revenue = item["revenue"]
-                
-                # If current year is partial, get partial revenue from previous year
-                if num_quarters < 4:
-                    quarters_to_sum = quarter_counts.get(year, set())
-                    prev_revenue_partial = sum(
-                        q['revenue'] for q in quarterly_data 
-                        if q['year'] == (year - 1) and q['quarter'] in quarters_to_sum
-                    )
-                    if prev_revenue_partial > 0:
-                        yoy = round(((current_revenue - prev_revenue_partial) / prev_revenue_partial) * 100, 2)
-                # Full year comparison
-                else:
-                    prev_revenue_full = round(prev_year_data_map.get("revenue", 0), 0)
-                    # We also need to ensure previous year was a full year
-                    prev_num_quarters = len(quarter_counts.get(year - 1, set()))
-                    if prev_revenue_full > 0 and prev_num_quarters == 4:
-                         yoy = round(((current_revenue - prev_revenue_full) / prev_revenue_full) * 100, 2)
-
-            item["revenueYoY"] = yoy
-
-            annual_data.append(item)
-
-        annual_data.sort(key=lambda x: x["year"], reverse=True)
+        annual_data = cls.aggregate_quarterly_to_annual(quarterly_data)
 
         # 季度數據整理（金額單位為元，僅做四捨五入並計算利潤率）
         for q in quarterly_data:
