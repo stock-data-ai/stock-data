@@ -23,15 +23,17 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 2 * * 1':            { workflow: 'update-us-financials.yml' },                                 // 台灣 10:00 週日
   '0 3 * * 7':            { workflow: 'weekly-dividend-update.yml' },                               // 台灣 11:00 週六
   '0 3 * * 1':            { workflow: 'weekly-balance-sheet-update.yml' },                          // 台灣 11:00 週日
-  '0 8 * * *':            { workflow: 'etf-active-daily.yml' },                                     // 台灣 16:00 每天
+  '0 8 * * *':            { workflow: 'etf-active-daily.yml' },                                     // 台灣 16:00 每天（第一次）
+  '55 7 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 15:55 週一到週五（第一次）
+  '55 8 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 16:55 週一到週五（第二次）
+  '55 9 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 17:55 每天（第二次）
   '05 11 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 19:05 每天（第一次）
   '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（第二次，TWSE資料結算延遲備援）
-  '35 10 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 18:35 週一到週五（第一次）
   '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
-  '30 11 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 19:30 每天
-  '0 13 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 21:00 週一到週五（第二次備援）
+  '55 11 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 19:55 週一到週五（第三次）
+  '30 12 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 20:30 每天（第三次）
   '30 13 * * *':          { workflow: 'scraper-economic-daily.yml' },                               // 台灣 21:30 每天
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };
@@ -57,10 +59,12 @@ const CHECK_JOBS: CheckJob[] = [
   { label: '19:05 Daily Update｜每日更新（市值 + 三大法人，第一次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 19, twMinute: 5 },
   { label: '21:05 Daily Update｜每日更新（市值 + 三大法人，第二次備援）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 21, twMinute: 5 },
   { label: '19:00 MOPS Scraper｜爬取公開資訊觀測站重訊', workflowName: 'MOPS Scraper｜公開資訊觀測站爬蟲', twHour: 19, twMinute: 0 },
-  { label: '19:30 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第二次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 19, twMinute: 30 },
+  { label: '17:55 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第二次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 17, twMinute: 55 },
+  { label: '20:30 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第三次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 20, twMinute: 30 },
   { label: '21:30 Economic Daily Scraper｜爬取經濟日報（晚）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 21, twMinute: 30 },
-  { label: '18:35 Market Sentiment Update｜更新市場情緒指標（第一次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 18, twMinute: 35, days: [1, 2, 3, 4, 5] },
-  { label: '21:00 Market Sentiment Update｜更新市場情緒指標（備援）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 21, twMinute: 0, days: [1, 2, 3, 4, 5] },
+  { label: '15:55 Market Sentiment Update｜更新市場情緒指標（第一次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 15, twMinute: 55, days: [1, 2, 3, 4, 5] },
+  { label: '16:55 Market Sentiment Update｜更新市場情緒指標（第二次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 16, twMinute: 55, days: [1, 2, 3, 4, 5] },
+  { label: '19:55 Market Sentiment Update｜更新市場情緒指標（第三次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 19, twMinute: 55, days: [1, 2, 3, 4, 5] },
   { label: '20:00 Generate Chip Topic｜生成籌碼題材標籤', workflowName: 'Generate Chip Topic｜生成籌碼題材', twHour: 20, twMinute: 0, days: [1, 2, 3, 4, 5] },
   { label: '21:30 Margin Trading Update｜更新融資融券數據', workflowName: 'Margin Trading Update｜融資融券更新', twHour: 21, twMinute: 30, days: [1, 2, 3, 4, 5] },
   { label: '週六 08:00 ETF Holdings Update (Weekly)｜每週 ETF 持股更新', workflowName: 'ETF Holdings Update (Weekly)｜ETF持股（週更）', twHour: 8, twMinute: 0, days: [6] },

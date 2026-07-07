@@ -1,7 +1,5 @@
 import json
 import logging
-import sys
-from datetime import timedelta
 from pathlib import Path
 
 from finance_tools.core.timezone import now_tw
@@ -31,8 +29,8 @@ def run_update_market_sentiment(args):
       - margin: 融資融券整體市場加總（TWSE MI_MARGN + TPEx，單位：張）
 
     日期邏輯：
-      18:00 前 → 抓前一日（證交所通常 17-18 時更新）
-      18:00 後 → 抓今日
+      一律抓今日。今日資料尚未公布（或休市）→ 跳過本次更新，保留既有資料。
+      一天排多趟（15:55/16:55/19:55），哪一趟抓到就哪一趟更新。
 
     History 邏輯：
       每次寫入前，把現有資料 push 進 history（最多 HISTORY_LIMIT 筆）。
@@ -40,11 +38,7 @@ def run_update_market_sentiment(args):
     """
     date_str = getattr(args, "date", None)
     if not date_str:
-        now = now_tw()
-        if now.hour < 18:
-            date_str = (now - timedelta(days=1)).strftime("%Y%m%d")
-        else:
-            date_str = now.strftime("%Y%m%d")
+        date_str = now_tw().strftime("%Y%m%d")
     date_str = date_str.replace("-", "")
     formatted_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
 
@@ -63,14 +57,14 @@ def run_update_market_sentiment(args):
     data = fetcher.fetch_all(date_str)
 
     if not data:
-        logger.error("無法取得任何市場情緒數據，中止。")
-        sys.exit(1)
+        logger.warning("目標日期 %s 尚無任何市場情緒數據（尚未公布或休市），跳過本次更新，保留既有資料。", date_str)
+        return
 
     # TWSE 必須成功才寫入（TPEX 上櫃暫停）
     inst = data.get("institutional", {})
     if inst.get("twse") is None:
-        logger.error("institutional 資料不完整，缺少 twse，中止不寫入。")
-        sys.exit(1)
+        logger.warning("目標日期 %s institutional 缺少 twse（尚未公布或休市），跳過本次更新，保留既有資料。", date_str)
+        return
 
     # margin 抓失敗時保留現有資料（非強制）
     if "margin" not in data and "margin" in existing:
