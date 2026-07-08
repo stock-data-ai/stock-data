@@ -30,7 +30,7 @@ def run_update_market_sentiment(args):
 
     日期邏輯：
       一律抓今日。今日資料尚未公布（或休市）→ 跳過本次更新，保留既有資料。
-      一天排多趟（15:55/16:55/19:55/21:40），哪一趟抓到就哪一趟更新。
+      一天排多趟（15:55/16:55/20:55/21:55），哪一趟抓到就哪一趟更新。
 
     History 邏輯：
       每次寫入前，把現有資料 push 進 history（最多 HISTORY_LIMIT 筆）。
@@ -56,19 +56,20 @@ def run_update_market_sentiment(args):
     fetcher = MarketSentimentFetcher()
     data = fetcher.fetch_all(date_str)
 
+    # 法人與資券公布時間不同（法人 ~15:00、資券 ~21:00），成敗各自獨立
+    if data.get("institutional", {}).get("twse") is None:
+        data.pop("institutional", None)
+
     if not data:
         logger.warning("目標日期 %s 尚無任何市場情緒數據（尚未公布或休市），跳過本次更新，保留既有資料。", date_str)
         return
 
-    # TWSE 必須成功才寫入（TPEX 上櫃暫停）
-    inst = data.get("institutional", {})
-    if inst.get("twse") is None:
-        logger.warning("目標日期 %s institutional 缺少 twse（尚未公布或休市），跳過本次更新，保留既有資料。", date_str)
-        return
-
-    # margin 抓失敗時保留現有資料（非強制）
+    # 只有一邊抓到時，另一邊保留現有資料，不互相牽連
+    if "institutional" not in data and "institutional" in existing:
+        logger.warning("目標日期 %s institutional 尚未公布或抓取失敗，保留現有資料", date_str)
+        data["institutional"] = existing["institutional"]
     if "margin" not in data and "margin" in existing:
-        logger.warning("margin fetch 失敗，保留現有資料")
+        logger.warning("目標日期 %s margin 尚未公布或抓取失敗，保留現有資料", date_str)
         data["margin"] = existing["margin"]
 
     # 判斷是否為同日重跑
