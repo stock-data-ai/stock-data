@@ -129,6 +129,26 @@ def classify(price, prev_bid, prev_ask):
     return "n"
 
 
+def estimate_trade(prev, bid, ask):
+    """z="-"（快照沒帶成交價）但 v 有增量時，用委買賣簿位移估價格與方向。
+
+    MIS 快照的 z 極常為 "-"（即使該區間有成交），不估的話大部分量會漏掉。
+    """
+    if prev["ask"] is not None and bid is not None and bid >= prev["ask"]:
+        return prev["ask"], "b"  # 買盤掃穿前次賣一 → 主動買
+    if prev["bid"] is not None and ask is not None and ask <= prev["bid"]:
+        return prev["bid"], "s"  # 賣盤砸穿前次買一 → 主動賣
+    ref_bid = bid if bid is not None else prev["bid"]
+    ref_ask = ask if ask is not None else prev["ask"]
+    if ref_bid is not None and ref_ask is not None:
+        return round((ref_bid + ref_ask) / 2, 2), "n"
+    if ref_bid is not None:
+        return ref_bid, "n"
+    if ref_ask is not None:
+        return ref_ask, "n"
+    return None, "n"
+
+
 def run(out_dir: Path, interval: float, end_at: datetime, ignore_hours: bool):
     channels = resolve_channels(HOT_STOCKS)
     print(f"✅ 已解析 {len(channels)} 支：{sorted(channels.values())}", flush=True)
@@ -165,17 +185,21 @@ def run(out_dir: Path, interval: float, end_at: datetime, ignore_hours: bool):
                     continue
 
                 prev = state.get(code)
-                if prev is not None and z is not None and v != prev["v"]:
+                if prev is not None and v != prev["v"]:
                     dv = v - prev["v"] if v >= prev["v"] else v  # v 變小 = 跨日重置
                     trade_day = datetime.fromtimestamp(tlong / 1000, TPE).strftime("%Y-%m-%d")
                     if dv > 0 and (ignore_hours or trade_day == today):
-                        side = classify(z, prev["bid"], prev["ask"])
-                        f.write(json.dumps({
-                            "code": code, "tlong": tlong, "z": z, "dv": dv,
-                            "side": side, "pb": prev["bid"], "pa": prev["ask"],
-                            "bid": bid, "ask": ask,
-                        }, ensure_ascii=False) + "\n")
-                        events += 1
+                        if z is not None:
+                            price, side, est = z, classify(z, prev["bid"], prev["ask"]), 0
+                        else:
+                            (price, side), est = estimate_trade(prev, bid, ask), 1
+                        if price is not None:
+                            f.write(json.dumps({
+                                "code": code, "tlong": tlong, "z": price, "dv": dv,
+                                "side": side, "est": est, "pb": prev["bid"], "pa": prev["ask"],
+                                "bid": bid, "ask": ask,
+                            }, ensure_ascii=False) + "\n")
+                            events += 1
                 state[code] = {"v": v, "bid": bid, "ask": ask}
 
             f.flush()
@@ -189,7 +213,7 @@ def run(out_dir: Path, interval: float, end_at: datetime, ignore_hours: bool):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="footprint_raw", help="JSONL 輸出目錄")
-    ap.add_argument("--interval", type=float, default=10.0, help="輪詢間隔（秒）")
+    ap.add_argument("--interval", type=float, default=5.0, help="輪詢間隔（秒，MIS 快照每 5 秒更新）")
     ap.add_argument("--minutes", type=float, default=None, help="只跑 N 分鐘（測試用）")
     ap.add_argument("--ignore-hours", action="store_true", help="不等開盤、不檢查成交日（測試用）")
     args = ap.parse_args()
