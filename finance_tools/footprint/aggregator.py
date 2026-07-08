@@ -85,6 +85,12 @@ def aggregate(raw_path: Path, out_dir: Path, date: str) -> int:
         json.dumps({"date": date, "interval": f"{BAR_MINUTES}m", "stocks": index},
                    ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
+    # latest.json：前端進入點（最新日期 + 可用代碼）
+    (out_dir.parent / "latest.json").write_text(
+        json.dumps({"date": date, "interval": f"{BAR_MINUTES}m",
+                    "codes": [s["code"] for s in index]}, ensure_ascii=False) + "\n",
+        encoding="utf-8"
+    )
     return len(index)
 
 
