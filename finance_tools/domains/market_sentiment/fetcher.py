@@ -11,7 +11,7 @@ Data sources:
 
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 import pandas as pd
@@ -155,10 +155,13 @@ class MarketSentimentFetcher:
             "balance": today,
         }
 
-    def fetch_twse_margin(self, date_str: str) -> Optional[Dict]:
+    def fetch_twse_margin(self, date_str: str, retries: int = 3, retry_delay: int = 30) -> Optional[Dict]:
         """
         Fetch TWSE (上市) margin aggregate from MI_MARGN table[0] (信用交易統計).
-        Falls back up to 7 previous days to handle holidays / non-trading days.
+        Only accepts data for the exact requested date — no cross-date fallback,
+        which would silently mislabel a previous day's data as `date_str` when
+        the data is not yet published or a request is rate-limited.
+        Retries the same date up to `retries` times with `retry_delay` seconds between attempts.
         (Unlike BFI82U, MI_MARGN does not auto-return the latest trading day.)
 
         table[0] rows (欄位: 項目, 買進, 賣出, 現金(券)償還, 前日餘額, 今日餘額):
@@ -171,15 +174,13 @@ class MarketSentimentFetcher:
           shortBalance: { change, buy, sell, balance }  — 張
           longAmount:   { change, buy, sell, balance }  — 元 (千元 × 1000)
         """
-        dt = datetime.strptime(date_str, "%Y%m%d")
-        for i in range(8):
-            try_date = (dt - timedelta(days=i)).strftime("%Y%m%d")
-            result = self._fetch_twse_margin_single(try_date)
+        for attempt in range(retries):
+            result = self._fetch_twse_margin_single(date_str)
             if result is not None:
-                if i > 0:
-                    logger.info("TWSE margin: %s no data, using %s instead", date_str, try_date)
                 return result
-        logger.warning("TWSE margin: no data found within 7 days before %s", date_str)
+            if attempt < retries - 1:
+                time.sleep(retry_delay)
+        logger.warning("TWSE margin: no data for %s (尚未公布或休市)", date_str)
         return None
 
     def _fetch_twse_margin_single(self, date_str: str) -> Optional[Dict]:
@@ -217,10 +218,12 @@ class MarketSentimentFetcher:
             logger.exception("Error fetching TWSE margin for %s", date_str)
             return None
 
-    def fetch_tpex_margin(self, date_str: str) -> Optional[Dict]:
+    def fetch_tpex_margin(self, date_str: str, retries: int = 3, retry_delay: int = 30) -> Optional[Dict]:
         """
         Fetch TPEx (上櫃) margin aggregate by summing per-stock data.
-        Falls back up to 7 previous days to handle holidays / non-trading days.
+        Only accepts data for the exact requested date — no cross-date fallback,
+        which would silently mislabel a previous day's data as `date_str`.
+        Retries the same date up to `retries` times with `retry_delay` seconds between attempts.
         TPEx has no server-side aggregate table; per-stock summation is required.
 
         TPEx table[0] fields (confirmed 2026):
@@ -233,14 +236,13 @@ class MarketSentimentFetcher:
             logger.error("Invalid date_str for TPEx: %s", date_str)
             return None
 
-        for i in range(8):
-            try_dt = dt - timedelta(days=i)
-            result = self._fetch_tpex_margin_single(try_dt.strftime("%Y%m%d"), try_dt)
+        for attempt in range(retries):
+            result = self._fetch_tpex_margin_single(date_str, dt)
             if result is not None:
-                if i > 0:
-                    logger.info("TPEx margin: %s no data, using %s instead", date_str, try_dt.strftime("%Y%m%d"))
                 return result
-        logger.warning("TPEx margin: no data found within 7 days before %s", date_str)
+            if attempt < retries - 1:
+                time.sleep(retry_delay)
+        logger.warning("TPEx margin: no data for %s (尚未公布或休市)", date_str)
         return None
 
     def _fetch_tpex_margin_single(self, date_str: str, dt: datetime) -> Optional[Dict]:
