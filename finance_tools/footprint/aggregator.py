@@ -23,6 +23,22 @@ def bar_key(tlong_ms: int) -> str:
     return dt.replace(minute=dt.minute - dt.minute % BAR_MINUTES, second=0).strftime("%H:%M")
 
 
+def clean(evs):
+    """過濾 MIS 落後快照造成的假事件（單筆 dv ≈ 當時累計量）。
+
+    規則：累計量 cum 超過 1000 後，單筆 dv > cum 的一半視為異常丟棄。
+    開盤第一筆（集合競價大單）在 cum 小時不受此規則影響。
+    """
+    out, cum, dropped = [], 0, 0
+    for e in evs:
+        if cum > 1000 and e["dv"] > cum * 0.5:
+            dropped += 1
+            continue
+        cum += e["dv"]
+        out.append(e)
+    return out, dropped
+
+
 def aggregate(raw_path: Path, out_dir: Path, date: str) -> int:
     events = defaultdict(list)  # code -> [event]
     with raw_path.open(encoding="utf-8") as f:
@@ -34,6 +50,9 @@ def aggregate(raw_path: Path, out_dir: Path, date: str) -> int:
     index = []
     for code, evs in sorted(events.items()):
         evs.sort(key=lambda e: e["tlong"])
+        evs, dropped = clean(evs)
+        if dropped:
+            print(f"  {code}: 清掉 {dropped} 筆落後快照假事件")
         bars = {}
         for e in evs:
             key = bar_key(e["tlong"])

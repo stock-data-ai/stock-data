@@ -185,8 +185,10 @@ def run(out_dir: Path, interval: float, end_at: datetime, ignore_hours: bool):
                     continue
 
                 prev = state.get(code)
+                if prev is not None and v < prev["v"]:
+                    continue  # MIS 偶回落後快照（v 變小），丟棄且不更新狀態
                 if prev is not None and v != prev["v"]:
-                    dv = v - prev["v"] if v >= prev["v"] else v  # v 變小 = 跨日重置
+                    dv = v - prev["v"]
                     trade_day = datetime.fromtimestamp(tlong / 1000, TPE).strftime("%Y-%m-%d")
                     if dv > 0 and (ignore_hours or trade_day == today):
                         if z is not None:
