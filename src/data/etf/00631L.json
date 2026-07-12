@@ -15,23 +15,33 @@
   "topHoldings": [
     {
       "name": "臺股期貨",
-      "weight": 161.53,
-      "shares": 43655,
+      "weight": 139.2,
+      "shares": 37445,
       "foreignCode": "202607TX",
-      "previousWeight": 162.84,
-      "weightChange": -1.31,
-      "previousShares": 41250,
-      "sharesChange": 2405
+      "previousWeight": 161.53,
+      "weightChange": -22.33,
+      "previousShares": 43655,
+      "sharesChange": -6210
     },
     {
       "name": "台積電",
-      "weight": 38.4,
+      "weight": 39.23,
       "shares": 39895000,
       "code": "2330",
-      "previousWeight": 37.71,
-      "weightChange": 0.69,
-      "previousShares": 36295000,
-      "sharesChange": 3600000
+      "previousWeight": 38.4,
+      "weightChange": 0.83,
+      "previousShares": 39895000,
+      "sharesChange": 0
+    },
+    {
+      "name": "臺股期貨",
+      "weight": 21.35,
+      "shares": 5705,
+      "foreignCode": "202608TX",
+      "previousWeight": 161.53,
+      "weightChange": -140.18,
+      "previousShares": 43655,
+      "sharesChange": -37950
     }
   ],
   "holdingsHistory": {
@@ -216,7 +226,25 @@
         "shares": 39895000,
         "code": "2330"
       }
+    ],
+    "2026-07-09": [
+      {
+        "name": "臺股期貨",
+        "weight": 139.2,
+        "shares": 37445
+      },
+      {
+        "name": "台積電",
+        "weight": 39.23,
+        "shares": 39895000,
+        "code": "2330"
+      },
+      {
+        "name": "臺股期貨",
+        "weight": 21.35,
+        "shares": 5705
+      }
     ]
   },
-  "lastUpdated": "2026-07-03"
+  "lastUpdated": "2026-07-09"
 }
