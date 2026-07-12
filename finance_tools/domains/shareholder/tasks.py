@@ -1,8 +1,9 @@
 import sys
 import logging
+from datetime import datetime
 
 from finance_tools.core.file_manager import FileManager
-from finance_tools.core.timezone import today_str
+from finance_tools.core.timezone import now_tw, today_str
 from finance_tools.domains.shareholder.fetcher import fetch_all_tdcc_shareholding_via_api
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.quality_report import save_quality_report
@@ -36,6 +37,23 @@ def run_fetch_shareholder_data(args):
     if not tdcc_all_market_data:
         logger.error("無法從 TDCC API 獲取任何資料。終止任務。")
         sys.exit(1)
+
+    # 2.5 檢查資料日期：TDCC 每週五為資料日期、週六發布。若拿到的資料日期距今超過 7 天，
+    # 代表 TDCC 尚未發布新一期（抓到的是上一期舊資料），必須失敗而非假成功。
+    sample_records = next(iter(tdcc_all_market_data.values()))
+    raw_data_date = str(sample_records[0].get("data_date", ""))
+    try:
+        data_date = datetime.strptime(raw_data_date, "%Y%m%d").date()
+    except ValueError:
+        logger.error(f"無法解析 TDCC 資料日期「{raw_data_date}」。終止任務。")
+        sys.exit(1)
+    age_days = (now_tw().date() - data_date).days
+    if age_days > 7:
+        logger.error(
+            f"STALE: TDCC 資料日期仍為 {raw_data_date}（距今 {age_days} 天），尚未發布新一期，終止任務。"
+        )
+        sys.exit(1)
+    logger.info(f"TDCC 資料日期: {raw_data_date}（距今 {age_days} 天）")
 
     # 3. 過濾出需要更新的公司 (除非 force，否則檢查是否已有數據)
     companies_to_process = []

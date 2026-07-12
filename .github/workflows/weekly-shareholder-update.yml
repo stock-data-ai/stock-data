@@ -45,6 +45,7 @@ jobs:
             if uv run finance_tools/cli.py fetch-shareholder-data --force 2>&1 | tee /tmp/run.log; then
               break
             fi
+            grep -q "STALE:" /tmp/run.log && { echo "TDCC 尚未發布新一期，重試無意義，直接失敗。"; exit 1; }
             [ $attempt -lt $MAX ] && { echo "Attempt $attempt 失敗，30 秒後重試..."; sleep 30; } || exit 1
           done
 
@@ -54,12 +55,20 @@ jobs:
           LOG=/tmp/run.log
           RESULT=$(grep -oP 'OK 完成: \K\d+/\d+(?= 間)' "$LOG" 2>/dev/null | tail -1 || echo "—")
           STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          DATA_DATE=$(grep -oP 'TDCC 資料日期: \K\d{8}' "$LOG" 2>/dev/null | tail -1 || echo "—")
           WARN_COUNT=$(grep -c "⚠" "$LOG" 2>/dev/null || echo "0")
           {
             echo "## 股東結構更新 — $(date -u +%Y-%m-%d)"
             echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **TDCC 尚未發布新一期資料，本次未更新任何數據。** 等 TDCC 發布後再手動重跑。"
+              echo "> $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
             echo "| 指標 | 值 |"
             echo "|------|---|"
+            echo "| TDCC 資料日期 | $DATA_DATE |"
             echo "| 更新公司數 | $RESULT |"
             echo "| 資料異常跳過 | ${WARN_COUNT} 筆 |"
             echo "| 狀態 | $STATUS |"
