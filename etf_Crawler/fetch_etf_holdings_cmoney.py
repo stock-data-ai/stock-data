@@ -45,7 +45,8 @@ HEADERS = {
     "Referer": "https://www.cmoney.tw/etf/tw/",
 }
 
-UNSUPPORTED: set = set()  # 目前無不支援的 ETF
+# 境外掛牌型，CMoney 無持股資料；index/JSON 已移除，此清單防止「補齊缺漏」流程再加回時 CI 失敗
+UNSUPPORTED = {"00625K", "00636K", "00643K", "00657K", "00668K"}
 
 session = create_session()
 
