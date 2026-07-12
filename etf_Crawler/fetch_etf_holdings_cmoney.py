@@ -180,6 +180,7 @@ def main():
         print(f"[INFO] CMoney 不支援，跳過：{', '.join(skipped_unsupported)}")
 
     success, failed, skipped = 0, [], 0
+    newest_seen = ""  # 全部 ETF 中最新的資料日期，用於偵測 CMoney 整體停更
 
     for i, etf_code in enumerate(targets):
         print(f"\n[{i+1}/{len(targets)}] {etf_code}")
@@ -191,6 +192,7 @@ def main():
             continue
 
         latest = max(all_dates)
+        newest_seen = max(newest_seen, latest)
         holdings = all_dates[latest]
 
         if not needs_update(etf_code, latest):
@@ -212,6 +214,15 @@ def main():
             time.sleep(0.3)
 
     print(f"\n完成 — 已更新: {success}，略過: {skipped}，失敗: {len(failed)}/{len(targets)}")
+
+    # 所有 ETF 的最新資料日期都超過 7 天 → CMoney 整體停更或給舊資料，不可綠燈
+    # （個別 ETF 揭露延遲屬正常，不在此檢查範圍）
+    if newest_seen:
+        age_days = (date.today() - date.fromisoformat(newest_seen)).days
+        if age_days > 7:
+            print(f"STALE: CMoney 全部 ETF 最新資料日期為 {newest_seen}（距今 {age_days} 天），資料源疑似停更，視為失敗。")
+            sys.exit(1)
+
     if failed:
         print(f"失敗清單: {', '.join(failed)}")
         sys.exit(1)

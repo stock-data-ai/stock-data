@@ -6,6 +6,7 @@ from pathlib import Path
 
 from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.timezone import now_tw
+from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.institutional_investors.twse_fetcher import TWSEInstitutionalFetcher
 from finance_tools.domains.institutional_investors.twse_shareholding_fetcher import TWSEShareholdingFetcher
 from finance_tools.domains.valuation.twse_valuation_fetcher import TWSEValuationFetcher
@@ -50,8 +51,9 @@ def run_update_marketcap_inst(args):
         today_str = raw_date.replace("-", "")
     else:
         today_str = now_tw().strftime("%Y%m%d")
+    inst_fetcher = TWSEInstitutionalFetcher()
     try:
-        pre_inst = TWSEInstitutionalFetcher().fetch_all(today_str)
+        pre_inst = inst_fetcher.fetch_all(today_str)
     except Exception as e:
         logger.error(f"❌ TWSE T86 批次撈取失敗（含重試）: {e}，中止執行。")
         sys.exit(1)
@@ -61,6 +63,15 @@ def run_update_marketcap_inst(args):
     if not pre_inst:
         logger.error("❌ TWSE/TPEx 三大法人批次撈取失敗（含重試），中止執行。")
         sys.exit(1)
+
+    # 交易日卻拿不到當日核心資料 → STALE 失敗，不可綠燈（休市日拿不到是正常，照舊跳過）
+    if is_tw_trading_day(parse_yyyymmdd(today_str)):
+        if not inst_fetcher.listed_ok:
+            logger.error(f"STALE: {today_str} 為交易日，但 TWSE T86 上市三大法人尚未公布或撈取失敗，終止任務。")
+            sys.exit(1)
+        if not pre_valuation:
+            logger.error(f"STALE: {today_str} 為交易日，但市值估值資料撈取為空，終止任務。")
+            sys.exit(1)
 
     logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}, valuation={len(pre_valuation)}")
 

@@ -81,6 +81,7 @@ class TWSEInstitutionalFetcher:
         result: Dict[str, InstitutionalRecord] = {}
 
         listed = _retry(lambda: self._fetch_listed(date_str), f"TWSE T86 {date_str}")
+        self.listed_ok = listed is not None
         if listed is not None:
             result.update(listed)
             logger.info(f"TWSE T86: {len(listed)} 支上市股票 ({date_str})")

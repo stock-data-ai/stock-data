@@ -67,6 +67,11 @@ jobs:
           {
             echo "## ETF 持股週更 — $(date -u +%Y-%m-%d)"
             echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **CMoney 資料源疑似停更。** $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
             echo "| 指標 | 值 |"
             echo "|------|---|"
             echo "| 總 ETF 數 | $TOTAL |"

@@ -81,6 +81,11 @@ jobs:
             [ -z "$TARGET" ] && TARGET=$(date -u +%Y-%m-%d)
             echo "## 每日更新｜$TARGET"
             echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **交易日但未取得當日資料，本次未更新。** $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
             echo "| 資料來源 | 狀態 | 筆數 |"
             echo "|---------|:----:|-----:|"
 

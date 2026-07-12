@@ -1,8 +1,10 @@
 import json
 import logging
+import sys
 from pathlib import Path
 
 from finance_tools.core.timezone import now_tw
+from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.market_sentiment.fetcher import MarketSentimentFetcher
 
 logger = logging.getLogger(__name__)
@@ -60,9 +62,26 @@ def run_update_market_sentiment(args):
     if data.get("institutional", {}).get("twse") is None:
         data.pop("institutional", None)
 
+    # 交易日的 STALE 檢查：拿不到當日資料不可綠燈（休市日照舊跳過）。
+    # 三大法人 ~15:00 公布，每一趟（15:55 起）都必須有；
+    # 融資融券 ~21:00 公布，只在 21:30 後的那趟（21:55）強制要求。
+    now = now_tw()
+    is_trading = is_tw_trading_day(parse_yyyymmdd(date_str))
+    is_today = date_str == now.strftime("%Y%m%d")
+
     if not data:
-        logger.warning("目標日期 %s 尚無任何市場情緒數據（尚未公布或休市），跳過本次更新，保留既有資料。", date_str)
+        if is_trading:
+            logger.error("STALE: %s 為交易日，但完全抓不到任何市場情緒數據，終止任務。", date_str)
+            sys.exit(1)
+        logger.warning("目標日期 %s 尚無任何市場情緒數據（休市），跳過本次更新，保留既有資料。", date_str)
         return
+
+    if is_trading and "institutional" not in data:
+        logger.error("STALE: %s 為交易日，但三大法人整體買賣超尚未公布或抓取失敗，終止任務。", date_str)
+        sys.exit(1)
+    if is_trading and is_today and "margin" not in data and (now.hour, now.minute) >= (21, 30):
+        logger.error("STALE: %s 為交易日且已過 21:30，但融資融券整體數據仍未取得，終止任務。", date_str)
+        sys.exit(1)
 
     # 只有一邊抓到時，另一邊保留現有資料，不互相牽連
     if "institutional" not in data and "institutional" in existing:

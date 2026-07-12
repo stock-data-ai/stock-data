@@ -1,3 +1,4 @@
+import sys
 import time
 import logging
 import pandas as pd
@@ -6,6 +7,7 @@ from typing import List, Dict, Any
 
 from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.timezone import now_tw, today_str
+from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.margin_trading.fetcher import MarginTradingFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 import finance_tools.config as config
@@ -97,4 +99,9 @@ def run_update_margin_trading(args):
     target_date = target_date.replace("-", "")
 
     logger.info(f"Target Date: {target_date}")
-    _process_one_date(target_date, fetcher, processor, file_mgr, company_codes)
+    count = _process_one_date(target_date, fetcher, processor, file_mgr, company_codes)
+
+    # 交易日卻拿不到當日融資融券 → STALE 失敗，不可綠燈（休市日照舊跳過）
+    if count == 0 and is_tw_trading_day(parse_yyyymmdd(target_date)):
+        logger.error(f"STALE: {target_date} 為交易日，但融資融券資料尚未公布或撈取失敗，終止任務。")
+        sys.exit(1)
