@@ -111,23 +111,25 @@ jobs:
         env:
           PAT: ${{ secrets.STOCK_MAP_PAT }}
         run: |
-          CONTENT=$(base64 -w 0 src/data/etf/index.json)
+          # base64 內容超過 128KB 會撞 Linux 單一參數上限，payload 一律走檔案傳給 curl
+          base64 -w 0 src/data/etf/index.json > /tmp/content.b64
           SHA=$(curl -fsSL \
             -H "Authorization: token $PAT" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
             | jq -r '.sha')
+          jq -n \
+            --rawfile content /tmp/content.b64 \
+            --arg message "sync: ETF index 更新 $(date +%Y-%m-%d)" \
+            --arg sha "$SHA" \
+            '{message: $message, content: $content, sha: $sha, branch: "publish_cloudflare"}' \
+            > /tmp/payload.json
           curl -fsSL \
             -X PUT \
             -H "Authorization: token $PAT" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json" \
-            -d "{
-              \"message\": \"sync: ETF index 更新 $(date +%Y-%m-%d)\",
-              \"content\": \"$CONTENT\",
-              \"sha\": \"$SHA\",
-              \"branch\": \"publish_cloudflare\"
-            }"
+            -d @/tmp/payload.json
           echo "✅ index.json 已推送至 stock_map"
 
       - name: 開 Issue 提醒本地跑 sync_etf_metadata
