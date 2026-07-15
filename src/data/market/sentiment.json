@@ -3,14 +3,14 @@
     "date": "2026-07-15",
     "twse": {
       "foreign": {
-        "buy": 382849786228,
-        "sell": 384265175000,
+        "buy": 395092885421,
+        "sell": 396508274193,
         "net": -1415388772
       },
       "trust": {
-        "buy": 31021732881,
-        "sell": 19540277200,
-        "net": 11481455681
+        "buy": 34153100061,
+        "sell": 21616812315,
+        "net": 12536287746
       },
       "dealer": {
         "buy": 18236238136,
@@ -18,8 +18,8 @@
         "net": 6419682851
       },
       "dealerHedge": {
-        "buy": 38140621771,
-        "sell": 34434200975,
+        "buy": 38140965877,
+        "sell": 34434545081,
         "net": 3706420796
       },
       "foreignDealer": {
@@ -332,39 +332,19 @@
     ]
   },
   "margin": {
-    "date": "2026-07-14",
-    "twse": {
-      "longBalance": {
-        "change": -136909,
-        "buy": 515321,
-        "sell": 641611,
-        "balance": 9465644
-      },
-      "shortBalance": {
-        "change": -22526,
-        "buy": 40124,
-        "sell": 29679,
-        "balance": 180712
-      },
-      "longAmount": {
-        "change": -14265952000,
-        "buy": 37192135000,
-        "sell": 49858905000,
-        "balance": 604034106000
-      }
-    },
+    "date": "2026-07-15",
     "tpex": {
       "longBalance": {
-        "change": -14443,
-        "buy": 128303,
-        "sell": 140339,
-        "balance": 2439584
+        "change": 27754,
+        "buy": 86586,
+        "sell": 57449,
+        "balance": 2467337
       },
       "shortBalance": {
-        "change": -3554,
-        "buy": 5511,
-        "sell": 8391,
-        "balance": 33518
+        "change": 570,
+        "buy": 5344,
+        "sell": 4308,
+        "balance": 34088
       }
     },
     "history": [
@@ -738,6 +718,26 @@
           }
         }
       }
-    ]
+    ],
+    "twse": {
+      "longBalance": {
+        "change": -136909,
+        "buy": 515321,
+        "sell": 641611,
+        "balance": 9465644
+      },
+      "shortBalance": {
+        "change": -22526,
+        "buy": 40124,
+        "sell": 29679,
+        "balance": 180712
+      },
+      "longAmount": {
+        "change": -14265952000,
+        "buy": 37192135000,
+        "sell": 49858905000,
+        "balance": 604034106000
+      }
+    }
   }
 }
