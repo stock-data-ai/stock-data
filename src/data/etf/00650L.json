@@ -14,41 +14,41 @@
   "topHoldings": [
     {
       "name": "恆生指數期貨",
-      "weight": 200.37,
-      "shares": 865,
+      "weight": 200.09,
+      "shares": 810,
       "foreignCode": "202607HSI",
-      "previousWeight": 200.22,
-      "weightChange": 0.15,
-      "previousShares": 855,
-      "sharesChange": 10
+      "previousWeight": 200.37,
+      "weightChange": -0.28,
+      "previousShares": 865,
+      "sharesChange": -55
     },
     {
       "name": "MARGIN",
-      "weight": 75.52,
-      "shares": 390868255,
+      "weight": 83.31,
+      "shares": 412644805,
       "foreignCode": "M_HKD",
-      "previousWeight": 0.21,
-      "weightChange": 75.31,
+      "previousWeight": 0.2,
+      "weightChange": 83.11,
       "previousShares": 4161662,
-      "sharesChange": 386706593
+      "sharesChange": 408483143
     },
     {
       "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
-      "weight": 25.7,
-      "shares": 546167564,
+      "weight": 25.29,
+      "shares": 516457940,
       "foreignCode": "DA_NTD",
-      "previousWeight": 26.95,
-      "weightChange": -1.25,
+      "previousWeight": 25.7,
+      "weightChange": -0.41,
       "previousShares": 546167564,
-      "sharesChange": 0
+      "sharesChange": -29709624
     },
     {
       "name": "MARGIN",
       "weight": 0.2,
       "shares": 4161662,
       "foreignCode": "M_NTD",
-      "previousWeight": 0.21,
-      "weightChange": -0.01,
+      "previousWeight": 0.2,
+      "weightChange": 0.0,
       "previousShares": 4161662,
       "sharesChange": 0
     }
@@ -207,7 +207,29 @@
         "weight": 0.2,
         "shares": 4161662
       }
+    ],
+    "2026-07-17": [
+      {
+        "name": "恆生指數期貨",
+        "weight": 200.09,
+        "shares": 810
+      },
+      {
+        "name": "MARGIN",
+        "weight": 83.31,
+        "shares": 412644805
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 25.29,
+        "shares": 516457940
+      },
+      {
+        "name": "MARGIN",
+        "weight": 0.2,
+        "shares": 4161662
+      }
     ]
   },
-  "lastUpdated": "2026-07-09"
+  "lastUpdated": "2026-07-17"
 }
