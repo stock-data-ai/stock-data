@@ -495,7 +495,19 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2025,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 0.6,
+        "stockDividend": 0.0,
+        "totalDividend": 0.6,
+        "payoutDate": "2026-03-31",
+        "periodRange": "2025-01-01~2025-12-31",
+        "status": "股東會確認"
+      }
+    ],
     "institutionalInvestors": {
       "2026-03-13": {
         "foreign_buy": 2.325,
@@ -3078,7 +3090,7 @@
       }
     }
   },
-  "lastUpdated": "2026-07-24",
+  "lastUpdated": "2026-07-25",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -5589,5 +5601,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-07-25"
 }
