@@ -9,7 +9,8 @@ compatibility_date = "2024-01-29"
 crons = [
   "0 23 * * *",           # scraper-economic-daily    台灣 07:00 每天
   "0 0 * * 7",            # etf-holdings-update       台灣 08:00 週六
-  "0 1 * * 7",            # weekly-shareholder-update 台灣 09:00 週六
+  "0 1 * * 7",            # weekly-shareholder-update 台灣 09:00 週六（第一次）
+  "30 1 * * 7",           # weekly-shareholder-update 台灣 09:30 週六（第二次備援）
   "1 1 * * 1",            # weekly-financials-update  台灣 09:01 週日
   "0 2 * * 1",            # update-us-financials      台灣 10:00 週日
   "0 3 * * 7",            # weekly-dividend-update    台灣 11:00 週六
