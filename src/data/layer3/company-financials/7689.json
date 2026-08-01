@@ -13,7 +13,8 @@
     "marketCap": 13291062272,
     "pe": 24.630543,
     "pb": 8.306476,
-    "dividendYield": 223.0
+    "dividendYield": 223.0,
+    "dividendFrequency": "年"
   },
   "historical": {
     "annual": [
@@ -210,7 +211,19 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2025,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 5.5,
+        "stockDividend": 0.0,
+        "totalDividend": 5.5,
+        "payoutDate": "2026-05-08",
+        "periodRange": "2025-01-01~2025-12-31",
+        "status": "股東會確認"
+      }
+    ],
     "institutionalInvestors": {
       "2026-03-12": {
         "foreign_buy": 0.0,
@@ -3836,5 +3849,6 @@
       "shares": 0,
       "ratio_pct": 0.0
     }
-  ]
+  ],
+  "dividendsUpdated": "2026-08-01"
 }
