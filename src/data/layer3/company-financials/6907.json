@@ -14,7 +14,9 @@
     "marketCap": 11004426400.0,
     "pe": 35.34,
     "pb": 6.81,
-    "dividendYield": 0.56
+    "dividendYield": 0.56,
+    "marginBalance": 0,
+    "shortBalance": 0
   },
   "historical": {
     "annual": [
@@ -2635,6 +2637,16 @@
         "dealer_net_buy": -0.4740000000000002,
         "code": "6907",
         "foreign_ratio": 54.61
+      }
+    },
+    "marginTrading": {
+      "2026-08-03": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 0,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     }
   },
