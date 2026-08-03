@@ -78,3 +78,11 @@ jobs:
             git pull --rebase -X theirs origin main && git push && break
             sleep $((i * 5))
           done
+
+      # commit 之後才推：通知點進去要能看到當日數字。
+      # 本 workflow 一天跑 4 輪，防重複由 push-broadcast 的 pushLog（key 含日期）把關。
+      - name: 推播三大法人統計
+        if: success()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: uv run finance_tools/scripts/notify_market_inst.py

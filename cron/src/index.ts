@@ -28,8 +28,9 @@ const CRON_MAP: Record<string, CronJob> = {
   '55 7 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 15:55 週一到週五（第一次）
   '55 8 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 16:55 週一到週五（第二次）
   '55 9 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 17:55 每天（第二次）
-  '05 11 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 19:05 每天（第一次）
-  '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（第二次，TWSE資料結算延遲備援）
+  '30 8 * * *':           { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 16:30 每天（第一次，T86 公布後即抓）
+  '05 9 * * *':           { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 17:05 每天（第二次，補 TPEx 上櫃結算）
+  '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（第三次備援，TWSE資料結算延遲）
   '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
@@ -60,8 +61,9 @@ interface CheckJob {
 const CHECK_JOBS: CheckJob[] = [
   { label: '07:00 Economic Daily Scraper｜爬取經濟日報（早）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 7, twMinute: 0 },
   { label: '16:00 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第一次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 16, twMinute: 0 },
-  { label: '19:05 Daily Update｜每日更新（市值 + 三大法人，第一次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 19, twMinute: 5 },
-  { label: '21:05 Daily Update｜每日更新（市值 + 三大法人，第二次備援）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 21, twMinute: 5 },
+  { label: '16:30 Daily Update｜每日更新（市值 + 三大法人，第一次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 16, twMinute: 30 },
+  { label: '17:05 Daily Update｜每日更新（市值 + 三大法人，第二次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 17, twMinute: 5 },
+  { label: '21:05 Daily Update｜每日更新（市值 + 三大法人，第三次備援）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 21, twMinute: 5 },
   { label: '19:00 MOPS Scraper｜爬取公開資訊觀測站重訊', workflowName: 'MOPS Scraper｜公開資訊觀測站爬蟲', twHour: 19, twMinute: 0 },
   { label: '17:55 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第二次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 17, twMinute: 55 },
   { label: '20:30 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第三次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 20, twMinute: 30 },
