@@ -1,0 +1,10 @@
+# 可再生的輸出不進 git（避免肥大）：
+#   cache/       — MI_INDEX/TPEx 每日價量，可向 TWSE 回補
+#   predictions/ — backtest 產出，可用 `p1_reconcile.py backtest` 重建
+#   disposition-forecast.json — forecast 摺算結果，可重建
+#   __pycache__  — Python bytecode
+# 注意：notices/ 一定要進 git — 官方 notice/notetrans API 只回最新日、無法回補歷史。
+cache/
+predictions/
+disposition-forecast.json
+__pycache__/

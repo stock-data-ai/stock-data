@@ -1,0 +1,29 @@
+{
+  "_note": "Regression fixture — 大量 3167。官方款1 但 A 模型距門檻很遠，非 rounding error。先不硬解，P1 觀察是否為模式。見 docs/future/處置股預測.md §4.4。",
+  "code": "3167",
+  "name": "大量",
+  "market": "上市",
+  "sector": "05",
+  "chengwaye_record": "07/24(款1) → 07/28(款1) → 07/29(款1,11)",
+  "official_rule": 1,
+  "anomaly": "官方款1（公告07/24→觸發07/23收盤），但 6日A僅 -19%，雙差幅皆<20%，距門檻遠",
+  "observed_triggers": [
+    {"announcement_date": "20260724", "trigger_date": "20260723",
+     "return_6d_A": -19.2, "market_avg": -2.9, "peer_avg": -3.6,
+     "market_diff": 16.2, "peer_diff": 15.5,
+     "base_A_pass": false, "market_20pp_pass": false, "peer_20pp_pass": false,
+     "verdict": "我的模型判定 NOT hit，官方判定 hit → 模型缺一段定義 或 標籤/資料問題"},
+    {"announcement_date": "20260729", "trigger_date": "20260728",
+     "return_6d_A": -26.5, "market_avg": -4.6, "peer_avg": -5.8,
+     "market_diff": 21.9, "peer_diff": 20.7,
+     "base_A_pass": true, "market_20pp_pass": true, "peer_20pp_pass": true,
+     "verdict": "這天三條件全過，模型一致"}
+  ],
+  "hypotheses_to_test_in_P1": [
+    "視窗可能>6日（大量10日高851/892在07/15-16，若納入則 07/23 幅度達 -23~30%）",
+    "高價股標準二的起迄價差計法差異",
+    "除權息/還原權值",
+    "官方標籤或 chengwaye 紀錄的日期語意"
+  ],
+  "decision_rule": "P1 累積後：若僅此1檔→查個股特殊條件/資料/標籤；若出現第2、3檔『官方款1但A僅±15~20%』→ A 模型還缺定義"
+}
