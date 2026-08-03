@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write        # 需寫回 notices/ 快照（累積官方真相，供本地 reconcile 對答案）
 
 jobs:
   generate:
@@ -34,6 +34,21 @@ jobs:
         run: |
           set -o pipefail
           uv run finance_tools/cli.py generate-disposition-forecast 2>&1 | tee /tmp/run.log
+
+      # 官方 notice/notetrans API 只回最新一天、無法回補；漏存一天真相就永遠沒了。
+      # 故每日把新快照 commit 回本 repo（後端資料，不影響網站；供本地 reconcile 對答案）。
+      - name: 存官方 notice 快照回 repo（累積真相）
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add finance_tools/disposition/notices/
+          if git diff --cached --quiet; then
+            echo "無新 notice 快照，略過"
+          else
+            git commit -m "chore(disposition): 累積官方 notice 快照 $(date -u +%Y-%m-%d)"
+            git pull --rebase origin main && git push origin main
+          fi
 
       - name: 執行摘要
         if: always()
