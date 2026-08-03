@@ -35,6 +35,8 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
   '55 13 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 21:55 週一到週五（第四次，融資融券公布後）
+  '30 14 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 22:30 週一到週五（第一次，日資料+融資融券皆已結算）
+  '30 15 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 23:30 週一到週五（第二次備援）
   '30 12 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 20:30 每天（第三次）
   '30 13 * * *':          { workflow: 'scraper-economic-daily.yml' },                               // 台灣 21:30 每天
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）

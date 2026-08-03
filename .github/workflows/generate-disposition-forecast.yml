@@ -1,0 +1,53 @@
+name: Generate Disposition Forecast｜生成處置股預警
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: generate-disposition-forecast
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Generate and push disposition-forecast.json
+        env:
+          STOCK_MAP_PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py generate-disposition-forecast 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          AS_OF=$(grep -oP 'as_of=\K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          NONSAFE=$(grep -oP '非safe=\K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 處置股預警生成 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 資料日 as_of | $AS_OF |"
+            echo "| 非safe 檔數 | $NONSAFE |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
