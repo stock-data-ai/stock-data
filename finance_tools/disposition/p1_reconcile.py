@@ -16,13 +16,20 @@
 
 注意：官方款1紀錄日=公告日，觸發在前一交易日（off-by-one，見 §4.4）。
 """
-import json, os, sys, re, urllib.request, datetime, statistics
+import json, os, sys, re, datetime, statistics
+import requests
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE, PRED, NOTI = (os.path.join(HERE, d) for d in ("cache", "predictions", "notices"))
 for _d in (CACHE, PRED, NOTI):          # 可再生目錄在乾淨 checkout（CI）不存在，先建好
     os.makedirs(_d, exist_ok=True)
-UA = {"User-Agent": "Mozilla/5.0"}
+# 從美國 runner 連 TWSE 需帶 Referer（對齊 domains/margin_trading 等能成功的抓法），
+# 否則 TWSE 容易把裸請求掛住 → timeout。用 session 共用連線 + tenacity 自動重試。
+_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Referer": "https://www.twse.com.tw/"}
+_SESSION = requests.Session()
+_SESSION.headers.update(_HEADERS)
 
 # ── 各款門檻（market-specific，見文件 §3）──────────────────────
 CFG = {
@@ -58,14 +65,14 @@ def _f(x):
     except (ValueError, AttributeError):
         return None
 
-def fj(url, tries=3):
-    last = None
-    for _ in range(tries):
-        try:
-            return json.loads(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read())
-        except Exception as e:
-            last = e
-    raise last
+@retry(stop=stop_after_attempt(5),
+       wait=wait_exponential(multiplier=1, min=2, max=20),
+       retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout)),
+       reraise=True)
+def fj(url):
+    r = _SESSION.get(url, timeout=25)
+    r.raise_for_status()
+    return r.json()
 
 # ── 每日全個股資料（含量價/PE/發行股數）──────────────────────
 def mi_index(date):

@@ -28,6 +28,18 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      # 記住抓過的每日價量：第一次冷跑抓一次，之後每天只抓「新的一天」，
+      # 避免每次從美國 runner 重抓 60+ 次 TWSE → timeout。key 用 run_id 滾動、restore-keys 取最新。
+      - name: Restore/persist 價量 cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            finance_tools/disposition/cache
+            finance_tools/disposition/predictions
+          key: disposition-cache-${{ github.run_id }}
+          restore-keys: |
+            disposition-cache-
+
       - name: Generate and push disposition-forecast.json
         env:
           STOCK_MAP_PAT: ${{ secrets.STOCK_MAP_PAT }}
