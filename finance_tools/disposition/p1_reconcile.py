@@ -6,7 +6,7 @@
   款1 ✅  款2 ✅  款3 ✅  款4 ✅  款6 ⚠️(PE/PB;PB為openapi最新日)  款7 ⚠️(margin為最新日,forward準)
   款5 ❌ 分點資料不可得；款8 TDR 不做。
 官方標籤（GT）：上市走 TWSE rwd 端點，吃 startDate/endDate **可回溯數年**且原文含「第X款」；
-上櫃端點 date 參數無效（只回最近兩個公告日）→ 上櫃仍需每日 forward 累積。
+上櫃 rwd 端點同樣吃 startDate/endDate 可回溯（`date=` 無效，會回最新日——老坑）。
 
 用法：
   python3 p1_reconcile.py predict [YYYYMMDD]   # 算某收盤日全款 prediction（省略=今天）
@@ -668,9 +668,15 @@ def _official_rows_twse(start, end):
                         "clauses": _clauses(r[4])})
     return out
 
-def _official_rows_tpex():
-    """上櫃只回最近兩個公告日（date 參數無效）→ 每日呼叫累積。"""
-    x = fj("https://www.tpex.org.tw/www/zh-tw/bulletin/attention?response=json")
+def _official_rows_tpex(start=None, end=None):
+    """上櫃注意名單。**吃 startDate/endDate 可回溯**（實測一年前仍有資料）；
+    `date=` 參數會被無視（一律回最近兩個公告日）——同 TPEx 歷史報價的老坑，別再踩。
+    日期格式為西元斜線 YYYY/MM/DD。"""
+    q = ""
+    if start and end:
+        q = (f"startDate={start[:4]}/{start[4:6]}/{start[6:8]}"
+             f"&endDate={end[:4]}/{end[4:6]}/{end[6:8]}&")
+    x = fj(f"https://www.tpex.org.tw/www/zh-tw/bulletin/attention?{q}response=json")
     tbl = next((t for t in x.get("tables", []) if t.get("data")), None)
     out = []
     for r in (tbl or {}).get("data", []):
@@ -708,7 +714,7 @@ def backfill_notice(start=None, end=None):
     except Exception as e:
         print(f"[backfill] 上市抓取失敗: {e}")
     try:
-        rows += _official_rows_tpex()
+        rows += _official_rows_tpex(start, end)
     except Exception as e:
         print(f"[backfill] 上櫃抓取失敗: {e}")
     by = _save_official(rows)
