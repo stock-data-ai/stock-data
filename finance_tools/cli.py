@@ -58,6 +58,7 @@ from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
 from finance_tools.domains.market_sentiment.tasks import run_update_market_sentiment
 from finance_tools.scripts.compute_weekly_big_holders import run as run_compute_big_holders
 from finance_tools.scripts.generate_chip_topic import run as run_generate_chip_topic
+from finance_tools.scripts.generate_disposition_forecast import run as run_generate_disposition_forecast
 
 def add_common_arguments(parser, include_force=False, include_rerun=False):
     """Adds common filtering arguments to a subparser."""
@@ -150,6 +151,14 @@ def main():
     )
     parser_chip.add_argument("--dry-run", action="store_true", help="產出至 /tmp 但不推送至 stock_map。")
     parser_chip.set_defaults(func=lambda args: run_generate_chip_topic(dry_run=args.dry_run))
+
+    # --- 'generate-disposition-forecast' command ---
+    parser_disp = subparsers.add_parser(
+        "generate-disposition-forecast",
+        help="處置股預警：回測近30日+摺算狀態機，輸出 disposition-forecast.json 並推送至 stock_map。",
+    )
+    parser_disp.add_argument("--dry-run", action="store_true", help="產出至 /tmp 但不推送至 stock_map。")
+    parser_disp.set_defaults(func=lambda args: run_generate_disposition_forecast(dry_run=args.dry_run))
 
     args = parser.parse_args()
     

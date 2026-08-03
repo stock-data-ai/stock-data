@@ -20,6 +20,8 @@ import json, os, sys, re, urllib.request, datetime, statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE, PRED, NOTI = (os.path.join(HERE, d) for d in ("cache", "predictions", "notices"))
+for _d in (CACHE, PRED, NOTI):          # 可再生目錄在乾淨 checkout（CI）不存在，先建好
+    os.makedirs(_d, exist_ok=True)
 UA = {"User-Agent": "Mozilla/5.0"}
 
 # ── 各款門檻（market-specific，見文件 §3）──────────────────────
