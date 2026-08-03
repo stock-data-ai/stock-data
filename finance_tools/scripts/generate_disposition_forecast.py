@@ -70,6 +70,12 @@ def run(dry_run: bool = False) -> None:
         engine.notice()          # 官方標籤快照（best-effort；forward 累積驗證用）
     except Exception as e:
         print(f"[disposition] notice 快照失敗（略過，不影響預警）: {e}")
+    try:
+        # 官方注意名單（含款號）：上市可回溯 60 日、上櫃補最近兩日。
+        # 必須在 backtest 之前 —— 款2 豁免要靠「近30日曾公告款1」的官方 state。
+        engine.backfill_notice()
+    except Exception as e:
+        print(f"[disposition] 官方名單回補失敗（款2 豁免將失效，預警可能變吵）: {e}")
     engine.backtest(BACKTEST_DAYS)
     engine.forecast()
 
