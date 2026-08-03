@@ -664,7 +664,8 @@ def _official_rows_twse(start, end):
         ann = _roc_to_ymd(r[5])
         if ann:
             out.append({"date": ann, "code": r[1], "name": r[2], "market": "TWSE",
-                        "count": _f(r[3]), "text": r[4], "clauses": _clauses(r[4])})
+                        "count": _f(r[3]), "close": _f(r[6]), "text": r[4],
+                        "clauses": _clauses(r[4])})
     return out
 
 def _official_rows_tpex():
@@ -676,7 +677,8 @@ def _official_rows_tpex():
         ann = _roc_to_ymd(r[5])
         if ann:
             out.append({"date": ann, "code": r[1], "name": r[2], "market": "TPEx",
-                        "count": _f(r[3]), "text": r[4], "clauses": _clauses(r[4])})
+                        "count": _f(r[3]), "close": _f(r[6]), "text": r[4],
+                        "clauses": _clauses(r[4])})
     return out
 
 def _save_official(rows):
@@ -723,7 +725,8 @@ def official_index():
             if not _is_stock(r.get("code", "")):
                 continue
             e = out.setdefault(rec["date"], {}).setdefault(
-                r["code"], {"name": r.get("name"), "market": r.get("market"), "clauses": set()})
+                r["code"], {"name": r.get("name"), "market": r.get("market"),
+                            "close": r.get("close"), "clauses": set()})
             e["clauses"] |= set(r.get("clauses") or [])
     return out
 
@@ -950,9 +953,31 @@ REASON = {1: "近期漲跌劇烈", 2: "中長期漲幅過大", 3: "成交爆量"
 # 三道到齊後，納入款2 對 danger/near 完全無影響（2/0 不變）、僅 watch +3 → 安全且覆蓋更完整。
 # 款6 仍排除：實測 0 命中（PB 來源落後一日 + 38% 案例需買不到的分點資料），計入等於加 0。
 ACCUM_CLAUSES = {1, 2, 3, 4, 7}
+# 官方名單來源的日子用這組：官方即以款1~7 累積，含我們算不出的款5（分點）與只算到 41% 的款6。
+ACCUM_OFFICIAL = {1, 2, 3, 4, 5, 6, 7}
 
 def _pred_dates():
     return sorted(f[5:13] for f in os.listdir(PRED) if f.startswith("pred_") and f.endswith(".json"))
+
+def _last_trigger(axis, acc_days, k1_days):
+    """逐日推進四條路徑，回「最後一次達門檻」的日期——達門檻＝當時就被處置，累積**重新起算**。
+    少了這道，早已處置完畢的股票會被舊帳一路累加成假 danger
+    （實例：統懋 2434 官方 30 日內 13 次已跨 12 次門檻＝7 月中就處置過，現只剩 1 次卻被算成剩0）。"""
+    active, act_k1, last = [], [], None
+    pos = {d: i for i, d in enumerate(axis)}
+    for d in axis:
+        if d in acc_days:
+            active.append(d)
+            if d in k1_days:
+                act_k1.append(d)
+        i = pos[d]
+        w10 = set(axis[max(0, i - 9):i + 1])
+        w30 = set(axis[max(0, i - 29):i + 1])
+        if (_streak(axis[:i + 1], set(act_k1)) >= 3 or _streak(axis[:i + 1], set(active)) >= 5
+                or len([x for x in active if x in w10]) >= 6
+                or len([x for x in active if x in w30]) >= 12):
+            last, active, act_k1 = d, [], []
+    return last
 
 def _streak(axis, hitset):
     """axis 由舊到新；回結尾連續在 hitset 的天數。"""
@@ -981,15 +1006,51 @@ def forecast(as_of=None, window=30):
             meta[c] = {"name": h.get("name"), "market": h.get("market"), "close": h.get("close")}
             if d == as_of:
                 meta[c]["rules_today"] = h.get("rules", [])
+    # ── 歷史「被點名次數」以**官方名單**為準（我們的預測只在官方覆蓋不到時遞補）──
+    # countdown 數的是「官方公告注意的次數」，官方名單就是這個量的唯一真相；自家預測會漏
+    # （實例：聯鈞 3450 官方近30日 11 次、我們只算到 1 次 → 誤判 safe）。
+    # 上市每日皆有官方名單；上櫃端點不可回溯 → 沒官方的日子仍用自家預測。
+    idx, avail = official_index(), official_markets()
+    src_official = set()                                # (code, date) 來源為官方 → 用官方累積款別
+    for d in axis:
+        mkts = avail.get(d, set())
+        if not mkts:
+            continue
+        for c, dm in hitmap.items():                    # 該市場當日改由官方認定，先清掉自家預測
+            if d in dm and meta.get(c, {}).get("market") in mkts:
+                del dm[d]
+        for c, v in idx.get(d, {}).items():
+            if v.get("market") not in mkts:
+                continue
+            hitmap.setdefault(c, {})[d] = set(v["clauses"])
+            src_official.add((c, d))
+            m = meta.setdefault(c, {})
+            m.setdefault("name", v.get("name"))
+            m.setdefault("market", v.get("market"))
+            if m.get("close") is None:
+                m["close"] = v.get("close")
+    hitmap = {c: dm for c, dm in hitmap.items() if dm}
+
     disposed = disposed_set()
     detail = disposed_detail()                          # 官方處置公告細節
     last10, last30 = axis[-10:], axis[-30:]
     stocks = []
     for c, dm in hitmap.items():
         # 計入 countdown 的「命中日」= 當天有 acute 款別（款1/3/4/7）
-        acc = {d: (dm[d] & ACCUM_CLAUSES) for d in dm if dm[d] & ACCUM_CLAUSES}
+        # 官方來源的日子：官方本就以款1~7 累積（含我們算不出的款5/6）；自家預測的日子只採 ACCUM_CLAUSES
+        acc = {}
+        for d in dm:
+            keep = dm[d] & (ACCUM_OFFICIAL if (c, d) in src_official else ACCUM_CLAUSES)
+            if keep:
+                acc[d] = keep
         any_days = set(acc)
         k1_days = {d for d in axis if 1 in dm.get(d, set())}
+        # 期間若曾達門檻（＝已被處置一次）→ 累積重新起算，只算該日之後的命中
+        trig = _last_trigger(axis, any_days, k1_days)
+        if trig:
+            acc = {d: v for d, v in acc.items() if d > trig}
+            any_days = {d for d in any_days if d > trig}
+            k1_days = {d for d in k1_days if d > trig}
         cons_any, cons_k1 = _streak(axis, any_days), _streak(axis, k1_days)
         cnt10 = sum(1 for d in last10 if d in acc)
         cnt30 = sum(1 for d in last30 if d in acc)
