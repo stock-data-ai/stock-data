@@ -965,6 +965,19 @@ ACCUM_OFFICIAL = {1, 2, 3, 4, 5, 6, 7}
 def _pred_dates():
     return sorted(f[5:13] for f in os.listdir(PRED) if f.startswith("pred_") and f.endswith(".json"))
 
+_TIMES_RE = re.compile(r"第\s*(\d+)\s*次")
+
+def _next_disposition(disp, countdown, cnt10):
+    """處置中的股票：距「下一次處置」還差幾次、會是第幾次、撮合幾分。
+    官方措施：第一次 5 分撮合；30 日內第二次起 20 分＋全面預收款券。
+    近 10 日無活動就不輸出（休眠股不該被算術距離誤判成快被加重）。"""
+    if cnt10 == 0 or countdown >= 99:
+        return {}
+    m = _TIMES_RE.search(disp.get("times") or "")
+    nxt = (int(m.group(1)) + 1) if m else 2
+    return {"next_countdown": countdown, "next_times": f"第{nxt}次",
+            "next_interval": "5分" if nxt < 2 else "20分"}
+
 def _last_trigger(axis, acc_days, k1_days):
     """逐日推進四條路徑，回「最後一次達門檻」的日期——達門檻＝當時就被處置，累積**重新起算**。
     少了這道，早已處置完畢的股票會被舊帳一路累加成假 danger
@@ -1057,6 +1070,14 @@ def forecast(as_of=None, window=30):
             acc = {d: v for d, v in acc.items() if d > trig}
             any_days = {d for d in any_days if d > trig}
             k1_days = {d for d in k1_days if d > trig}
+        # 處置中的股票**繼續累積**：處置期間再達門檻 → 升級為下一次處置（撮合 5分→20分、全面預收）。
+        # 起算點＝處置開始日，否則處置前的舊帳會被算進來。
+        disp = detail.get(c) if c in disposed else None
+        if disp and disp.get("start"):
+            st = disp["start"]
+            acc = {d: v for d, v in acc.items() if d >= st}
+            any_days = {d for d in any_days if d >= st}
+            k1_days = {d for d in k1_days if d >= st}
         cons_any, cons_k1 = _streak(axis, any_days), _streak(axis, k1_days)
         cnt10 = sum(1 for d in last10 if d in acc)
         cnt30 = sum(1 for d in last30 if d in acc)
@@ -1101,6 +1122,7 @@ def forecast(as_of=None, window=30):
             "plain_reason": reason, "recent_hits": recent,
             "rules_today": meta[c].get("rules_today", []),
             "disposal": detail.get(c) if status == "disposed" else None,
+            **(_next_disposition(disp, countdown, cnt10) if disp else {}),
         })
     # 官方處置中、但近期沒被我們預測到的股票也要列出（處置中＝官方事實，非預測）
     seen = {s["code"] for s in stocks}
