@@ -3,7 +3,10 @@
 #   predictions/ — backtest 產出，可用 `p1_reconcile.py backtest` 重建
 #   disposition-forecast.json — forecast 摺算結果，可重建
 #   __pycache__  — Python bytecode
-# 注意：notices/ 一定要進 git — 官方 notice/notetrans API 只回最新日、無法回補歷史。
+# 注意：notices/ 與 forecasts/ 一定要進 git —
+#   notices/   官方標籤（openapi 只回最新日；rwd 端點雖可回溯，仍保留封存原文）
+#   forecasts/ 我們「當天真的發布出去」的預警名單 —— 戰績唯一可信來源，事後無法重建
+#              （拿今天的引擎回頭重算過去＝用改良後規則考已知答案，不可宣稱）
 cache/
 predictions/
 disposition-forecast.json

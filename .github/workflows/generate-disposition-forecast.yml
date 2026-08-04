@@ -54,11 +54,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add finance_tools/disposition/notices/
+          git add finance_tools/disposition/notices/ finance_tools/disposition/forecasts/
           if git diff --cached --quiet; then
             echo "無新 notice 快照，略過"
           else
-            git commit -m "chore(disposition): 累積官方 notice 快照 $(date -u +%Y-%m-%d)"
+            git commit -m "chore(disposition): 累積官方 notice 與當日預警快照 $(date -u +%Y-%m-%d)"
             git pull --rebase origin main && git push origin main
           fi
 

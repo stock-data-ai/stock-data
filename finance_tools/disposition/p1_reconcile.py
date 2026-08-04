@@ -25,7 +25,8 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE, PRED, NOTI = (os.path.join(HERE, d) for d in ("cache", "predictions", "notices"))
-for _d in (CACHE, PRED, NOTI):          # 可再生目錄在乾淨 checkout（CI）不存在，先建好
+FCAST = os.path.join(HERE, "forecasts")        # 每日「真的發布出去」的預警快照（戰績唯一可信來源）
+for _d in (CACHE, PRED, NOTI, FCAST):          # 可再生目錄在乾淨 checkout（CI）不存在，先建好
     os.makedirs(_d, exist_ok=True)
 # 從美國 runner 連 TWSE 需帶 Referer（對齊 domains/margin_trading 等能成功的抓法），
 # 否則 TWSE 容易把裸請求掛住 → timeout。用 session 共用連線 + tenacity 自動重試。
@@ -905,6 +906,59 @@ def reconcile(show_fn=True):
         for d, mk, c, n in fn_rows[-15:]:
             print(f"  {d} [{mk}] {c} {n}")
 
+# ── 戰績：我們當天真的示警過嗎 ─────────────────────────────
+# 只認 forecasts/ 裡「當日實際發布」的快照。拿現在的引擎回頭重算過去等於用改良後的規則
+# 考已知答案，不可宣稱。故沒有快照的日子一律留白，不補、不猜。
+ALERT_LEVELS = {"danger", "near"}
+
+def alert_history():
+    """{as_of: {"published_at": ISO, "stocks": {code: {...}}}}"""
+    out = {}
+    for f in sorted(os.listdir(FCAST)):
+        if f.startswith("forecast_") and f.endswith(".json"):
+            rec = json.load(open(os.path.join(FCAST, f)))
+            out[rec["as_of"]] = {"published_at": rec.get("published_at") or rec.get("generated_at"),
+                                 "stocks": rec.get("stocks", {})}
+    return out
+
+def _alerted(hist, code, start):
+    """該檔被處置前，我們最早從哪一個資料日起就把它列進警示（往前追連續的示警）。
+    已是 disposed 的日子略過（那是結果、不是漏警）；一遇到「沒列」就停。"""
+    since = None
+    for d in sorted((d for d in hist if d < start), reverse=True):
+        rec = hist[d]
+        # 只認「在處置生效前就已經發布出去」的名單——資料日可能是事後回補的，發布時間才算數
+        pub = (rec.get("published_at") or "")[:10].replace("-", "")
+        if pub and pub >= start:
+            continue
+        e = rec["stocks"].get(code)
+        if not e:
+            break
+        if e.get("status") == "disposed":
+            if (e.get("next_countdown") or 99) <= 2:
+                since = d
+            continue                      # 已處置的日子不算漏警
+        if e.get("status") in ALERT_LEVELS:
+            since = d
+            continue
+        break
+    if not since:
+        return {}
+    return {"alerted_since": since,
+            "alerted_published_at": hist[since].get("published_at"),
+            "alerted_level": hist[since]["stocks"][code]["status"]}
+
+def save_forecast_snapshot(out):
+    """把當日發布的預警名單存檔（進 git，跟 notices/ 同理：事後無法重建）。"""
+    fp = os.path.join(FCAST, f"forecast_{out['as_of']}.json")
+    json.dump({"as_of": out["as_of"], "source": "engine", "generated_at": out.get("generated_at"),
+               "stocks": {s["code"]: {"name": s.get("name"), "status": s["status"],
+                                      "countdown": s.get("countdown"),
+                                      **({"next_countdown": s["next_countdown"]}
+                                         if s.get("next_countdown") is not None else {})}
+                          for s in out.get("stocks", [])}},
+              open(fp, "w"), ensure_ascii=False, indent=2)
+
 def audit():
     """狼來了守門員：把 forecast 的 danger/near 逐檔拿去比「我方 vs 官方近30日被點名次數」。
     單日 Precision 高不代表累積次數對——錯誤若叢聚在同一檔，就會累積成假 danger。
@@ -1052,6 +1106,7 @@ def forecast(as_of=None, window=30):
 
     disposed = disposed_set()
     detail = disposed_detail()                          # 官方處置公告細節
+    hist = alert_history()                              # 我們過去每天真的發布過的預警名單
     last10, last30 = axis[-10:], axis[-30:]
     stocks = []
     for c, dm in hitmap.items():
@@ -1123,6 +1178,7 @@ def forecast(as_of=None, window=30):
             "rules_today": meta[c].get("rules_today", []),
             "disposal": detail.get(c) if status == "disposed" else None,
             **(_next_disposition(disp, countdown, cnt10) if disp else {}),
+            **(_alerted(hist, c, disp["start"]) if disp and disp.get("start") else {}),
         })
     # 官方處置中、但近期沒被我們預測到的股票也要列出（處置中＝官方事實，非預測）
     seen = {s["code"] for s in stocks}
@@ -1135,7 +1191,8 @@ def forecast(as_of=None, window=30):
             "close": None, "status": "disposed", "countdown": 0, "path": None,
             "consecutive": 0, "consecutive_k1": 0, "count_10d": 0, "count_30d": 0,
             "flags": {}, "plain_reason": "官方處置中", "recent_hits": [], "rules_today": [],
-            "disposal": detail.get(c),
+            "disposal": d,
+            **(_alerted(hist, c, d["start"]) if d.get("start") else {}),
         })
     rank = {"disposed": 0, "danger": 1, "near": 2, "watch": 3, "safe": 4}
     stocks.sort(key=lambda s: (rank[s["status"]], s["countdown"], -s["count_30d"]))
@@ -1144,6 +1201,7 @@ def forecast(as_of=None, window=30):
            "stocks": stocks}
     fp = os.path.join(HERE, "disposition-forecast.json")
     json.dump(out, open(fp, "w"), ensure_ascii=False, indent=2)
+    save_forecast_snapshot(out)          # 戰績快照，事後無法重建 → 每天存，進 git
     print(f"[forecast] as_of={as_of} 軸長={len(axis)}日 → {fp}")
     print("  " + " ".join(f"{k}={out['counts'][k]}" for k in rank))
     top = [s for s in stocks if s["status"] in ("danger", "near")][:12]
