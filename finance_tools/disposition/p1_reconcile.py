@@ -13,6 +13,7 @@
   python3 p1_reconcile.py notice               # 抓當前官方 notice/notetrans 快照（存原文）
   python3 p1_reconcile.py backfill-notice [S] [E]  # 回補官方注意名單（含款號）→ notices/official_*.json
   python3 p1_reconcile.py reconcile            # 逐款對帳 prediction vs 官方款號 → confusion matrix
+  python3 p1_reconcile.py record               # 戰績：被處置的個股我們事前示警過幾檔
   python3 p1_reconcile.py explain CODE [DATE]  # 印某檔的完整命中理由
   python3 p1_reconcile.py daily                # predict(today)+notice 一次做
 
@@ -949,7 +950,16 @@ def _alerted(hist, code, start):
             "alerted_level": hist[since]["stocks"][code]["status"]}
 
 def save_forecast_snapshot(out):
-    """把當日發布的預警名單存檔（進 git，跟 notices/ 同理：事後無法重建）。"""
+    """把當日發布的預警名單存檔（進 git，跟 notices/ 同理：事後無法重建）。
+
+    **抓資料失敗的爛結果不可入檔**——快照是戰績的唯一依據，存進一天「什麼都沒警告」
+    會被永久當成漏警。判準同 CI 護欄：處置名單抓失敗（disposed=0）或全站零預警即視為異常。
+    """
+    counts = out.get("counts", {})
+    if not counts.get("disposed") or sum(counts.get(k, 0) for k in ("danger", "near", "watch")) == 0:
+        print(f"[forecast] ⚠️ 結果異常（disposed={counts.get('disposed')} "
+              f"warn={sum(counts.get(k, 0) for k in ('danger', 'near', 'watch'))}）→ 不存戰績快照")
+        return
     fp = os.path.join(FCAST, f"forecast_{out['as_of']}.json")
     json.dump({"as_of": out["as_of"], "source": "engine", "generated_at": out.get("generated_at"),
                "stocks": {s["code"]: {"name": s.get("name"), "status": s["status"],
@@ -958,6 +968,70 @@ def save_forecast_snapshot(out):
                                          if s.get("next_countdown") is not None else {})}
                           for s in out.get("stocks", [])}},
               open(fp, "w"), ensure_ascii=False, indent=2)
+
+DISPOSALS = os.path.join(FCAST, "disposals.json")   # 歷史處置事件（官方 API 只回進行中的，出關就消失）
+
+def save_disposals():
+    """把當前官方處置名單併入歷史檔（append-only，key=代號+開始日）。
+    官方 punish/tpex_disposal API **只回進行中的**，處置期滿即消失 → 不存就永遠追不回，
+    戰績也會跟著蒸發。每日 forecast 順手累積。"""
+    try:
+        hist = json.load(open(DISPOSALS)) if os.path.exists(DISPOSALS) else {}
+    except (json.JSONDecodeError, OSError):
+        hist = {}
+    added = 0
+    for c, v in disposed_detail().items():
+        if not v.get("start"):
+            continue
+        k = f"{c}_{v['start']}"
+        if k not in hist:
+            hist[k] = {"code": c, **v, "first_seen": _today()}
+            added += 1
+    if added:
+        json.dump(dict(sorted(hist.items())), open(DISPOSALS, "w"), ensure_ascii=False, indent=2)
+    return added, len(hist)
+
+def record():
+    """戰績：被處置的個股中，我們事前示警過幾檔。
+    只採 forecasts/ 的真實快照——沒有快照涵蓋的處置事件不計入分母（不是漏警，是當時還沒上線）。"""
+    hist = alert_history()
+    if not hist:
+        print("[record] 尚無預警快照")
+        return
+    days = sorted(hist)
+    try:
+        disposals = json.load(open(DISPOSALS)) if os.path.exists(DISPOSALS) else {}
+    except (json.JSONDecodeError, OSError):
+        disposals = {}
+    if not disposals:
+        print("[record] 尚無處置事件歷史檔，先跑一次 forecast 累積")
+        return
+
+    # 涵蓋判定要用「發布時間」而非資料日：資料日 07/30 的名單若是 08/03 才發布，
+    # 對 07/31 生效的處置根本來不及示警，算成漏警是自我抹黑。
+    pubs = sorted(p for p in ((hist[d].get("published_at") or "") for d in days) if p)
+
+    hit, miss, uncovered = [], [], 0
+    for v in sorted(disposals.values(), key=lambda x: x.get("start") or ""):
+        start = v.get("start")
+        if not start or not any(p[:10].replace("-", "") < start for p in pubs):
+            uncovered += 1                      # 處置生效前我們還沒發布過任何名單 → 不計分母
+            continue
+        a = _alerted(hist, v["code"], start)
+        (hit if a.get("alerted_published_at") else miss).append((v, a))
+
+    total = len(hit) + len(miss)
+    print(f"\n=== 戰績（只計快照涵蓋期間；另有 {uncovered} 筆處置發生於上線前，不計）===")
+    if not total:
+        print("尚無可計分的處置事件——需要至少一天快照早於某次處置開始日。")
+        return
+    pct = f"（{len(hit)/total:.0%}）" if total >= 10 else "（樣本太小，先不談比率）"
+    print(f"被處置 {total} 檔，事前示警 {len(hit)} 檔 {pct}")
+    for v, a in hit:
+        print(f"  ✅ {v['code']} {v.get('name')}：我方 {a['alerted_published_at'][:16]} 列為 "
+              f"{a['alerted_level']} → 官方 {v['start']} 起處置")
+    for v, _ in miss:
+        print(f"  ❌ {v['code']} {v.get('name')}：官方 {v['start']} 起處置，我方事前未列入")
 
 def audit():
     """狼來了守門員：把 forecast 的 danger/near 逐檔拿去比「我方 vs 官方近30日被點名次數」。
@@ -1202,6 +1276,9 @@ def forecast(as_of=None, window=30):
     fp = os.path.join(HERE, "disposition-forecast.json")
     json.dump(out, open(fp, "w"), ensure_ascii=False, indent=2)
     save_forecast_snapshot(out)          # 戰績快照，事後無法重建 → 每天存，進 git
+    n_new, n_all = save_disposals()      # 處置事件歷史（官方 API 只回進行中的）
+    if n_new:
+        print(f"[forecast] 新增 {n_new} 筆處置事件（累計 {n_all}）")
     print(f"[forecast] as_of={as_of} 軸長={len(axis)}日 → {fp}")
     print("  " + " ".join(f"{k}={out['counts'][k]}" for k in rank))
     top = [s for s in stocks if s["status"] in ("danger", "near")][:12]
@@ -1225,6 +1302,8 @@ if __name__ == "__main__":
         reconcile()
     elif cmd == "audit":
         audit()
+    elif cmd == "record":
+        record()
     elif cmd == "forecast":
         forecast(sys.argv[2] if len(sys.argv) > 2 else None)
     elif cmd == "backtest":
