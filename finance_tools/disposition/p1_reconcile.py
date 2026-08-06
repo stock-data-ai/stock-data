@@ -333,6 +333,9 @@ def _trigger(series, c, close, base_th, mkt6, peer6, peer_ok_flag, gap_th):
         return round(p, 2)
 
     if need_up <= -DAY_LIMIT or need_dn >= DAY_LIMIT:
+        # 緩衝＝跌停（或漲停）之後距門檻還剩幾個百分點。門檻含「大盤均值+20%」，
+        # 大盤明天續漲會把門檻墊高 → 緩衝薄的不可講「一定」，前端據此降級為「很可能」。
+        margin = min(-need_up, need_dn) - DAY_LIMIT if need_dn >= DAY_LIMIT else -need_up - DAY_LIMIT
         kind, pct, p = "certain", None, None
     elif need_up <= 0:
         kind, pct, p = "hold", round(need_up, 2), price(need_up)
@@ -342,8 +345,11 @@ def _trigger(series, c, close, base_th, mkt6, peer6, peer_ok_flag, gap_th):
         kind, pct, p = "fall", round(need_dn, 2), price(need_dn)
     else:
         return None                                    # 明天到不了，不輸出（免得洗版）
-    return {"kind": kind, "price": p, "pct": pct,
-            "base5": round(base5, 2), "threshold": round(up, 2), "gap_required": gap_th}
+    out = {"kind": kind, "price": p, "pct": pct,
+           "base5": round(base5, 2), "threshold": round(up, 2), "gap_required": gap_th}
+    if kind == "certain":
+        out["margin"] = round(margin, 2)
+    return out
 
 def _gap(series, c, n=6):
     """款1「25%版」起迄兩營業日收盤價價差（同 _ret_cum 的 n+1 點窗）。"""
@@ -1170,7 +1176,7 @@ _TIMES_RE = re.compile(r"第\s*(\d+)\s*次")
 
 def _pub_trigger(t):
     """對外只給前端要用的欄位（base5/threshold 是內部診斷用，不必進資料契約）。"""
-    return {k: t[k] for k in ("kind", "price", "pct") if k in t} if t else None
+    return {k: t[k] for k in ("kind", "price", "pct", "margin") if k in t} if t else None
 
 def _next_disposition(disp, countdown, cnt10):
     """處置中的股票：距「下一次處置」還差幾次、會是第幾次、撮合幾分。
