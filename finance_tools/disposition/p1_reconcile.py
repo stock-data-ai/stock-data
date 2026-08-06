@@ -295,6 +295,56 @@ def _ret_cum(series, c, n=6):
     seq = seq[-(n + 1):]
     return sum((seq[i] / seq[i - 1] - 1) * 100 for i in range(1, len(seq)) if seq[i - 1])
 
+DAY_LIMIT = 10.0       # 台股單日漲跌幅上限 → 明天的 6 日累積只能在 base5 ± 10% 之間移動
+
+def _trigger(series, c, close, base_th, mkt6, peer6, peer_ok_flag, gap_th):
+    """反推「明天要到什麼價位才會觸發款1」。
+
+    款1 度量是**逐日漲跌幅累加**，所以明天的 6 日累積 = 最近 5 個日變動（已知）+ 明天的日變動。
+    門檻已知 → 明天所需漲跌幅可直接解出，觸發價 = 今日收盤 ×(1+所需%)。**盤後即可定案，不需即時報價。**
+
+    因為單日漲跌上限 ±10%，會出現三種質性結論：
+      base5 已 ≥ 門檻+10 → 明天跌停也躲不掉（certain）
+      base5 已 ≥ 門檻     → 不跌破某價位就觸發（hold）
+      否則              → 要漲/跌到某價位才觸發（rise/fall），差太遠則明天到不了（None）
+
+    門檻用「基準 vs 大盤均值±20%」取較嚴者——即文件 §4.2 說的「有效門檻」，僅供顯示。
+    大盤均值盤中會動，故觸發價是**估計值**，不是保證。
+    """
+    seq = [e[1][c]["close"] for e in series if c in e[1] and e[1][c].get("close")]
+    if len(seq) < 6 or close is None or close <= 0:
+        return None
+    seq = seq[-6:]                                     # 6 個價格點 = 明天窗內已知的 5 個日變動
+    if any(x is None or x <= 0 for x in seq):
+        return None
+    base5 = sum((seq[i] / seq[i - 1] - 1) * 100 for i in range(1, 6))
+
+    ups = [base_th, (mkt6 + DIFF) if mkt6 is not None else base_th]
+    dns = [-base_th, (mkt6 - DIFF) if mkt6 is not None else -base_th]
+    if peer_ok_flag and peer6 is not None:
+        ups.append(peer6 + DIFF)
+        dns.append(peer6 - DIFF)
+    up, dn = max(ups), min(dns)
+
+    need_up, need_dn = up - base5, dn - base5
+    def price(pct):
+        p = close * (1 + pct / 100)
+        # 25%版另需起迄價差 ≥ gap_th；價差不足時該價位其實不會觸發 → 標記供前端誠實顯示
+        return round(p, 2)
+
+    if need_up <= -DAY_LIMIT or need_dn >= DAY_LIMIT:
+        kind, pct, p = "certain", None, None
+    elif need_up <= 0:
+        kind, pct, p = "hold", round(need_up, 2), price(need_up)
+    elif need_up <= DAY_LIMIT:
+        kind, pct, p = "rise", round(need_up, 2), price(need_up)
+    elif need_dn >= -DAY_LIMIT:
+        kind, pct, p = "fall", round(need_dn, 2), price(need_dn)
+    else:
+        return None                                    # 明天到不了，不輸出（免得洗版）
+    return {"kind": kind, "price": p, "pct": pct,
+            "base5": round(base5, 2), "threshold": round(up, 2), "gap_required": gap_th}
+
 def _gap(series, c, n=6):
     """款1「25%版」起迄兩營業日收盤價價差（同 _ret_cum 的 n+1 點窗）。"""
     seq = [e[1][c]["close"] for e in series if c in e[1] and e[1][c].get("close")]
@@ -387,7 +437,7 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
         p = M[c]["pe"]
         return peer_n.get(s, 0) >= MIN_PEERS and not (p is not None and (p < PE_LO or p >= PE_HI))
 
-    hits = {}
+    hits, triggers = {}, {}
     def add(c, rule):
         hits.setdefault(c, {"code": c, "name": M[c]["name"], "market": market,
                             "close": M[c]["close"], "rules": []})["rules"].append(rule)
@@ -398,6 +448,12 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
         if cl is None or cl < PRICE_FLOOR:
             continue
         s = m["sector"]
+
+        # ── 明天的觸發價（反推，盤後即可定案）──
+        tg = _trigger(series, c, cl, cfg["k1"]["std2"], A6[0],
+                      A6[1].get(s), peer_ok(s, A6[2], c), cfg["k1"]["gap"])
+        if tg:
+            triggers[c] = {"name": m["name"], "market": market, "close": cl, **tg}
 
         # ── 款1 ──（並算出 k1_25 供款3/4/7 前置）
         k1_25 = False
@@ -509,7 +565,7 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
                         "note": "margin為openapi最新日，回測近似；6日最低券資比放大4倍條件需歷史，暫略",
                         "reason": f"券資比{mg['rq']:.1f}%(≥20) 且 融資使用率{mg['fin_use']:.1f}%(≥25) 且 融券使用率{mg['sht_use']:.1f}%(≥15)"})
 
-    return list(hits.values())
+    return list(hits.values()), triggers
 
 
 def predict(market_date):
@@ -521,15 +577,17 @@ def predict(market_date):
     shares_tw, pb, margin = ref_data()
     official_hist = official_index()          # 官方注意名單（含款號）→ 款2 豁免
     disposed = disposed_set()
-    hits = []
+    hits, triggers = [], {}
     for mkt in ("TWSE", "TPEx"):
         try:
-            hits += rules_for_market(mkt, market_date, sector, pe_api, shares_tw, pb, margin, official_hist, disposed)
+            h, t = rules_for_market(mkt, market_date, sector, pe_api, shares_tw, pb, margin, official_hist, disposed)
+            hits += h
+            triggers.update(t)
         except Exception as e:
             print(f"[predict] {mkt} 引擎錯誤: {e}")
     rec = {"market_date": market_date, "prediction_generated_at": _now(),
            "engine": "multi-clause-v2", "clauses": [1, 2, 3, 4, 6, 7],
-           "predicted_codes": [h["code"] for h in hits], "hits": hits}
+           "predicted_codes": [h["code"] for h in hits], "hits": hits, "triggers": triggers}
     json.dump(rec, open(os.path.join(PRED, f"pred_{market_date}.json"), "w"), ensure_ascii=False, indent=2)
     by = {}
     for h in hits:
@@ -547,15 +605,17 @@ def backtest(n=30, end=None):
     shares, pb, margin = ref_data()
     hist, disp = official_index(), disposed_set()
     for d in days:
-        hits = []
+        hits, triggers = [], {}
         for mkt in ("TWSE", "TPEx"):
             try:
-                hits += rules_for_market(mkt, d, sector, pe, shares, pb, margin, hist, disp)
+                h, t = rules_for_market(mkt, d, sector, pe, shares, pb, margin, hist, disp)
+                hits += h
+                triggers.update(t)
             except Exception as e:
                 print(f"  {d} {mkt} err: {e}")
         rec = {"market_date": d, "prediction_generated_at": _now(),
                "engine": "multi-clause-v2", "clauses": [1, 2, 3, 4, 6, 7],
-               "predicted_codes": [h["code"] for h in hits], "hits": hits}
+               "predicted_codes": [h["code"] for h in hits], "hits": hits, "triggers": triggers}
         json.dump(rec, open(os.path.join(PRED, f"pred_{d}.json"), "w"), ensure_ascii=False, indent=2)
     print(f"[backtest] 生成 {len(days)} 日 prediction: {days[0]}~{days[-1]}")
 
@@ -1095,6 +1155,10 @@ def _pred_dates():
 
 _TIMES_RE = re.compile(r"第\s*(\d+)\s*次")
 
+def _pub_trigger(t):
+    """對外只給前端要用的欄位（base5/threshold 是內部診斷用，不必進資料契約）。"""
+    return {k: t[k] for k in ("kind", "price", "pct") if k in t} if t else None
+
 def _next_disposition(disp, countdown, cnt10):
     """處置中的股票：距「下一次處置」還差幾次、會是第幾次、撮合幾分。
     官方措施：第一次 5 分撮合；30 日內第二次起 20 分＋全面預收款券。
@@ -1144,9 +1208,11 @@ def forecast(as_of=None, window=30):
         return
     as_of = dates[-1]
     axis = dates                                        # 交易日軸（升冪）
-    hitmap, meta = {}, {}                               # code -> {date:{clauses}} / code -> info
+    hitmap, meta, triggers = {}, {}, {}                  # code -> {date:{clauses}} / info / 明日觸發價
     for d in axis:
         p = json.load(open(os.path.join(PRED, f"pred_{d}.json")))
+        if d == as_of:
+            triggers = p.get("triggers", {}) or {}       # 只有最新一天的觸發價有意義
         for h in p.get("hits", []):
             c = h["code"]
             hitmap.setdefault(c, {})[d] = {r["clause"] for r in h.get("rules", [])}
@@ -1177,6 +1243,12 @@ def forecast(as_of=None, window=30):
             if m.get("close") is None:
                 m["close"] = v.get("close")
     hitmap = {c: dm for c, dm in hitmap.items() if dm}
+
+    # meta["close"] 原本取自「最後一次命中那天」的收盤，可能是好幾天前的舊價；
+    # triggers 一定是 as_of 當天算的 → 用它校正，否則觸發價與顯示價對不起來。
+    for c, t in triggers.items():
+        if c in meta and t.get("close"):
+            meta[c]["close"] = t["close"]
 
     disposed = disposed_set()
     detail = disposed_detail()                          # 官方處置公告細節
@@ -1253,6 +1325,7 @@ def forecast(as_of=None, window=30):
             "disposal": detail.get(c) if status == "disposed" else None,
             **(_next_disposition(disp, countdown, cnt10) if disp else {}),
             **(_alerted(hist, c, disp["start"]) if disp and disp.get("start") else {}),
+            "trigger": _pub_trigger(triggers.get(c)),
         })
     # 官方處置中、但近期沒被我們預測到的股票也要列出（處置中＝官方事實，非預測）
     seen = {s["code"] for s in stocks}
