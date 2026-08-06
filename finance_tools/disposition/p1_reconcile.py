@@ -378,7 +378,10 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
     k1_recent = official_k1_recent(official_hist, market_date) if official_hist else set()
     series = _series(loader, market_date, 90)
     if not series or series[-1][0] != market_date:
-        return []
+        # 該市場當日尚未發布收盤（上櫃比上市晚），整個市場略過。回傳型別要與正常路徑一致，
+        # 否則 predict 端的 tuple 拆解會拋錯、被 except 吞掉，變成「上櫃無聲消失」。
+        print(f"[{market}] {market_date} 尚無收盤資料，略過該市場")
+        return [], {}
     # 上櫃官方名單不可回溯（目前僅累積數日）→ 官方覆蓋不足時改用自算款1 歷史當 proxy，
     # 否則豁免形同失效、冷卻股舊帳會一路累積成假 danger（見文件 §0f）。
     cov, tot = official_coverage(market, market_date)
@@ -587,7 +590,11 @@ def predict(market_date):
             print(f"[predict] {mkt} 引擎錯誤: {e}")
     rec = {"market_date": market_date, "prediction_generated_at": _now(),
            "engine": "multi-clause-v2", "clauses": [1, 2, 3, 4, 6, 7],
+           "markets": sorted({h["market"] for h in hits} | {t["market"] for t in triggers.values()}),
            "predicted_codes": [h["code"] for h in hits], "hits": hits, "triggers": triggers}
+    if len(rec["markets"]) < 2:
+        print(f"[predict] ⚠️ 只有 {rec['markets']} 有資料 —— 另一市場當日收盤可能尚未發布，"
+              f"該市場個股會整批從預警名單消失")
     json.dump(rec, open(os.path.join(PRED, f"pred_{market_date}.json"), "w"), ensure_ascii=False, indent=2)
     by = {}
     for h in hits:
