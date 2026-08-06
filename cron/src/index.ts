@@ -65,6 +65,8 @@ const CHECK_JOBS: CheckJob[] = [
   { label: '17:05 Daily Update｜每日更新（市值 + 三大法人，第二次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 17, twMinute: 5 },
   { label: '21:05 Daily Update｜每日更新（市值 + 三大法人，第三次備援）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 21, twMinute: 5 },
   { label: '19:00 MOPS Scraper｜爬取公開資訊觀測站重訊', workflowName: 'MOPS Scraper｜公開資訊觀測站爬蟲', twHour: 19, twMinute: 0 },
+  // 23:30 disposition 備援班在 23:00 健康檢查之後才跑，無法納入當日檢查
+  { label: '19:05 Generate Disposition Forecast｜生成處置股預警', workflowName: 'Generate Disposition Forecast｜生成處置股預警', twHour: 19, twMinute: 5, days: [1, 2, 3, 4, 5] },
   { label: '17:55 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第二次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 17, twMinute: 55 },
   { label: '20:30 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第三次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 20, twMinute: 30 },
   { label: '21:30 Economic Daily Scraper｜爬取經濟日報（晚）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 21, twMinute: 30 },
