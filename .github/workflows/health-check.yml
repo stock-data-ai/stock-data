@@ -31,20 +31,26 @@ jobs:
           REPO                  = os.environ['REPO']
           STEP_SUMMARY_PATH     = os.environ.get('GITHUB_STEP_SUMMARY', '')
 
+          # 注意：排程由外部 dispatcher 觸發（除 Footprint Collect 用 cron），
+          # 這裡的 hour/minute 只是「預期時間」，用來切出比對視窗。改排程時務必同步改這裡。
           CHECK_JOBS = [
               {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
-              {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
-              {'label': '19:05 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 5},
-              {'label': '21:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
-              {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
-              {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
-              {'label': '20:30 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 20, 'minute': 30},
-              {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5]},
+              {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
+              {'label': '16:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 16, 'minute': 30},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
-              {'label': '19:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 19, 'minute': 55, 'days': [1,2,3,4,5]},
+              {'label': '17:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 17, 'minute': 5},
+              {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
+              {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
+              {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
               {'label': '20:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 20, 'minute': 0,  'days': [1,2,3,4,5]},
+              {'label': '20:30 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 20, 'minute': 30},
+              {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
+              {'label': '21:05 Daily Update（第三次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
+              {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '21:30 Margin Trading Update',               'workflow_name': 'Margin Trading Update｜融資融券更新',                          'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
+              {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
+              # 23:30 Generate Disposition Forecast 不列入：健康檢查 23:00 執行，比它早，列了會恆為「未執行」
               {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
               {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
               {'label': '週六 11:00 Weekly Dividend Update',         'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）',           'hour': 11, 'minute': 0,  'days': [6]},
@@ -178,11 +184,14 @@ jobs:
           results = []
           for job in required:
               start, end = job_window(job)
-              runs = [
-                  r for r in workflow_runs
-                  if r['name'] == job['workflow_name']
-                  and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end
-              ]
+              # 依 created_at 由早到晚排序：視窗內有多筆時（例如同一 workflow 的備援跑），
+              # 取最早的那筆才對應到這個時段，否則會抓到後面時段的 run 而標錯執行時間。
+              runs = sorted(
+                  (r for r in workflow_runs
+                   if r['name'] == job['workflow_name']
+                   and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end),
+                  key=lambda r: r['created_at'],
+              )
               success_run = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] == 'success'), None)
               failed_run  = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] != 'success'), None)
               running_run = next((r for r in runs if r['status'] in ('in_progress', 'queued', 'waiting')), None)

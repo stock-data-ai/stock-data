@@ -7,9 +7,10 @@ on:
         description: '只跑 N 分鐘（測試用，會加 --ignore-hours）'
         required: false
         default: ''
-  schedule:
-    # 00:30 UTC = 08:30 台北，poller 會自己等到 09:00 開盤
-    - cron: '30 0 * * 1-5'
+  # 2026-08-05 停用自動排程：GitHub schedule 天天延遲 3h+，實際 11:40 才啟動，
+  # 每天漏掉 09:00–11:40 早盤，資料殘缺；App 端足跡圖分頁本來也是關閉狀態。
+  # 要重啟請改用 cron/wrangler.toml 的 Cloudflare dispatcher（準時），不要用 GitHub schedule。
+  # 需要時可從 Actions 頁面手動 workflow_dispatch 執行。
 
 concurrency:
   group: footprint-collect
