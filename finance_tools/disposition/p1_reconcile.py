@@ -1022,6 +1022,12 @@ def save_forecast_snapshot(out):
     **抓資料失敗的爛結果不可入檔**——快照是戰績的唯一依據，存進一天「什麼都沒警告」
     會被永久當成漏警。判準同 CI 護欄：處置名單抓失敗（disposed=0）或全站零預警即視為異常。
     """
+    fp_exist = os.path.join(FCAST, f"forecast_{out['as_of']}.json")
+    if os.path.exists(fp_exist) and out["as_of"] < _today():
+        # **既有的過去快照永不覆寫**：它記錄的是「那天實際發布給使用者的名單」，
+        # 今天重跑會帶入今天的處置名單與改良後的規則，等於竄改歷史、讓戰績失真。
+        print(f"[forecast] {out['as_of']} 快照已存在且非當日 → 保留原紀錄，不覆寫")
+        return
     counts = out.get("counts", {})
     if not counts.get("disposed") or sum(counts.get(k, 0) for k in ("danger", "near", "watch")) == 0:
         print(f"[forecast] ⚠️ 結果異常（disposed={counts.get('disposed')} "
