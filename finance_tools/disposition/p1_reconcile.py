@@ -1027,11 +1027,20 @@ def alert_history():
                                  "stocks": rec.get("stocks", {})}
     return out
 
+ALERT_LOOKBACK = 10        # 最多往前追 10 個快照日：太久以前的示警不該算在這次處置頭上
+
 def _alerted(hist, code, start):
-    """該檔被處置前，我們最早從哪一個資料日起就把它列進警示（往前追連續的示警）。
-    已是 disposed 的日子略過（那是結果、不是漏警）；一遇到「沒列」就停。"""
+    """該檔被處置前，我們最早從哪一個資料日起就把它列進警示。
+
+    **只讀快照、不改快照**——快照記錄的是「那天使用者實際看到什麼」，補寫等於造假。
+    往前追時這幾種日子**跳過**而非中斷：
+      - 該檔當天不在名單上：達標後計數歸零曾被判成 safe 而遭裁掉（2026-08-07 川湖等 6 檔），
+        那是顯示 bug，不是「沒示警」——08/06 的已發布名單裡它明明是 danger。
+      - status 為 pending/disposed：那是結果，不是漏警。
+    真正中斷的條件是「當天有列，但只到 watch/safe」——代表當時確實沒把它當回事。"""
     since = None
-    for d in sorted((d for d in hist if d < start), reverse=True):
+    seen_any = False
+    for d in sorted((d for d in hist if d < start), reverse=True)[:ALERT_LOOKBACK]:
         rec = hist[d]
         # 只認「在處置生效前就已經發布出去」的名單——資料日可能是事後回補的，發布時間才算數
         pub = (rec.get("published_at") or "")[:10].replace("-", "")
@@ -1039,7 +1048,8 @@ def _alerted(hist, code, start):
             continue
         e = rec["stocks"].get(code)
         if not e:
-            break
+            continue                      # 當天沒列 ≠ 沒示警（見 docstring）；繼續往前找
+        seen_any = True
         if e.get("status") == "pending":
             continue                      # 達標當天是「結果」，不是漏警 → 跳過繼續往前找
         if e.get("status") == "disposed":
@@ -1050,7 +1060,7 @@ def _alerted(hist, code, start):
             since = d
             continue
         break
-    if not since:
+    if not since or not seen_any:
         return {}
     return {"alerted_since": since,
             "alerted_published_at": hist[since].get("published_at"),
