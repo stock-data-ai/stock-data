@@ -840,27 +840,76 @@ def official_k1_recent(idx, market_date, lookback=30):
     return {c for ann, m in idx.items() if lo <= ann <= market_date
             for c, v in m.items() if 1 in v["clauses"]}
 
-def refresh_punish():
-    tw_cp = os.path.join(CACHE, "punish_cache.json")
-    otc_cp = os.path.join(CACHE, "otc_punish_cache.json")
-    try:
-        json.dump(fj("https://openapi.twse.com.tw/v1/announcement/punish"), open(tw_cp, "w"))
-    except Exception as e:
-        print(f"[punish] 上市抓取失敗，用快取: {e}")
-    try:
-        json.dump(fj("https://www.tpex.org.tw/openapi/v1/tpex_disposal_information"), open(otc_cp, "w"))
-    except Exception as e:
-        print(f"[punish] 上櫃抓取失敗，用快取: {e}")
-
-def disposed_set():
-    out = set()
-    tw_cp = os.path.join(CACHE, "punish_cache.json")
-    if os.path.exists(tw_cp):
-        out |= {p["Code"] for p in json.load(open(tw_cp)) if _is_stock(p.get("Code", ""))}
-    otc_cp = os.path.join(CACHE, "otc_punish_cache.json")
-    if os.path.exists(otc_cp):
-        out |= {p["SecuritiesCompanyCode"] for p in json.load(open(otc_cp)) if _is_stock(p.get("SecuritiesCompanyCode", ""))}
+# ── 官方處置名單 ────────────────────────────────────────────
+# **不可用 openapi/announcement/punish**：它只回「已生效中」的處置，看不到「已公布、尚未生效」。
+# 實例 2026-08-07：川湖等 5 檔當晚公布、08/10 生效，openapi 當晚查為空 → 我們誤判規則有錯。
+# 改用 rwd/bulletin 端點：含公布日、可帶 startDate/endDate 回溯（實測拉得到兩個月以上），
+# 且包含尚未生效的處置。日期參數篩的是**處置期間**，不是公布日 → 要往後查才看得到新公布的。
+def _punish_rows_twse(start, end):
+    x = fj("https://www.twse.com.tw/rwd/zh/announcement/punish"
+           f"?startDate={start}&endDate={end}&response=json")
+    if str(x.get("stat")) != "OK":
+        raise RuntimeError(f"TWSE punish stat={x.get('stat')}")
+    out = []
+    for r in x.get("data") or []:
+        st, en = _disp_period(r[6])
+        streak, clause, times = _disp_reason(str(r[5]) + str(r[8]), str(r[7]))
+        out.append({"code": str(r[2]), "market": "市", "name": str(r[3]),
+                    "announced": _disp_roc(str(r[1])), "start": st, "end": en,
+                    "interval": _disp_interval(str(r[8])),
+                    "streak": streak, "clause": clause, "times": times})
     return out
+
+def _punish_rows_tpex(start, end):
+    x = fj("https://www.tpex.org.tw/www/zh-tw/bulletin/disposal"
+           f"?startDate={start[:4]}/{start[4:6]}/{start[6:8]}"
+           f"&endDate={end[:4]}/{end[4:6]}/{end[6:8]}&response=json")
+    tbl = next((t for t in x.get("tables", []) if t.get("data")), None)
+    out = []
+    for r in (tbl or {}).get("data", []):
+        st, en = _disp_period(str(r[5]))
+        streak, clause, times = _disp_reason(str(r[6]) + str(r[7]), str(r[7]))
+        out.append({"code": str(r[2]), "market": "櫃",
+                    "name": re.sub(r"\(.*", "", str(r[3])).strip(),   # 名稱欄含 (../連結) 要去掉
+                    "announced": _disp_roc(str(r[1])), "start": st, "end": en,
+                    "interval": _disp_interval(str(r[7])),
+                    "streak": streak, "clause": clause, "times": times})
+    return out
+
+def refresh_punish(days_back=90, days_fwd=30):
+    """抓處置名單並存快取。往前抓 days_back 天（回補歷史）、往後 days_fwd 天（含未生效）。"""
+    today = datetime.datetime.strptime(_today(), "%Y%m%d").date()
+    start = (today - datetime.timedelta(days=days_back)).strftime("%Y%m%d")
+    end = (today + datetime.timedelta(days=days_fwd)).strftime("%Y%m%d")
+    rows = []
+    for name, fn in (("上市", _punish_rows_twse), ("上櫃", _punish_rows_tpex)):
+        try:
+            rows += fn(start, end)
+        except Exception as e:
+            print(f"[punish] {name}抓取失敗: {e}")
+    if rows:
+        json.dump(rows, open(os.path.join(CACHE, "punish_rows.json"), "w"), ensure_ascii=False)
+    return len(rows)
+
+def _punish_rows():
+    fp = os.path.join(CACHE, "punish_rows.json")
+    if not os.path.exists(fp):
+        return []
+    try:
+        return [r for r in json.load(open(fp)) if _is_stock(r.get("code", ""))]
+    except (json.JSONDecodeError, OSError):
+        return []
+
+def disposed_set(as_of=None):
+    """**處置生效中**的代號（start <= as_of <= end）。尚未生效的不算，那是 announced_set。"""
+    d = as_of or _today()
+    return {r["code"] for r in _punish_rows()
+            if r.get("start") and r["start"] <= d and (not r.get("end") or d <= r["end"])}
+
+def announced_set(as_of=None):
+    """**已公布、尚未生效**的代號（start > as_of）——這批已達處置門檻，只是還沒開始。"""
+    d = as_of or _today()
+    return {r["code"] for r in _punish_rows() if r.get("start") and r["start"] > d}
 
 # ── 處置公告細節（撮合/期間/原因/第幾次）——直接來自官方，非預測 ────────────
 _CN = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
@@ -886,30 +935,13 @@ def _disp_reason(text, measures=''):
     times = f"第{_cn2int(tm.group(1))}次" if tm else None
     return streak, clause, times
 
-def disposed_detail():
-    """{code: {market,name,interval,start,end,streak,clause,times}} — 官方處置公告細節。"""
+def disposed_detail(as_of=None):
+    """{code: {market,name,interval,start,end,streak,clause,times,announced,pending}}。
+    pending=True 表示已公布但尚未生效（start > as_of）。同一檔多筆時取最新公布的那筆。"""
+    d = as_of or _today()
     out = {}
-    tw_cp = os.path.join(CACHE, "punish_cache.json")
-    if os.path.exists(tw_cp):
-        for x in json.load(open(tw_cp)):
-            c = x.get("Code", "")
-            if not _is_stock(c) or c in out:
-                continue
-            st, en = _disp_period(x.get("DispositionPeriod", ""))
-            streak, clause, times = _disp_reason(x.get("Detail", ""), x.get("DispositionMeasures", ""))
-            out[c] = {"market": "市", "name": x.get("Name"), "interval": _disp_interval(x.get("Detail", "")),
-                      "start": st, "end": en, "streak": streak, "clause": clause, "times": times}
-    otc_cp = os.path.join(CACHE, "otc_punish_cache.json")
-    if os.path.exists(otc_cp):
-        for x in json.load(open(otc_cp)):
-            c = x.get("SecuritiesCompanyCode", "")
-            if not _is_stock(c) or c in out:
-                continue
-            cond = x.get("DisposalCondition", "") or x.get("DispositionReasons", "")
-            st, en = _disp_period(x.get("DispositionPeriod", ""))
-            streak, clause, times = _disp_reason(cond)
-            out[c] = {"market": "櫃", "name": x.get("CompanyName"), "interval": _disp_interval(cond),
-                      "start": st, "end": en, "streak": streak, "clause": clause, "times": times}
+    for r in sorted(_punish_rows(), key=lambda x: (x.get("announced") or "", x.get("start") or "")):
+        out[r["code"]] = {**r, "pending": bool(r.get("start") and r["start"] > d)}
     return out
 
 def _k1_predicted(pred):
@@ -1008,6 +1040,8 @@ def _alerted(hist, code, start):
         e = rec["stocks"].get(code)
         if not e:
             break
+        if e.get("status") == "pending":
+            continue                      # 達標當天是「結果」，不是漏警 → 跳過繼續往前找
         if e.get("status") == "disposed":
             if (e.get("next_countdown") or 99) <= 2:
                 since = d
@@ -1186,8 +1220,9 @@ def _next_disposition(disp, countdown, cnt10):
         return {}
     m = _TIMES_RE.search(disp.get("times") or "")
     nxt = (int(m.group(1)) + 1) if m else 2
-    return {"next_countdown": countdown, "next_times": f"第{nxt}次",
-            "next_interval": "5分" if nxt < 2 else "20分"}
+    # 不推測下次的撮合間隔：實測官方 2026-08 已改為「約每二分鐘」，寫死 5分/20分 會給錯數字。
+    # 間隔只在官方公告原文裡才有，未公告前不知道 → 前端只講「措施加重」。
+    return {"next_countdown": countdown, "next_times": f"第{nxt}次"}
 
 def _last_trigger(axis, acc_days, k1_days):
     """逐日推進四條路徑，回「最後一次達門檻」的日期——達門檻＝當時就被處置，累積**重新起算**。
@@ -1269,8 +1304,9 @@ def forecast(as_of=None, window=30):
         if c in meta and t.get("close"):
             meta[c]["close"] = t["close"]
 
-    disposed = disposed_set()
-    detail = disposed_detail()                          # 官方處置公告細節
+    disposed = disposed_set(as_of)
+    announced = announced_set(as_of)                    # 已公布、尚未生效 → 已達標
+    detail = disposed_detail(as_of)                     # 官方處置公告細節
     hist = alert_history()                              # 我們過去每天真的發布過的預警名單
     last10, last30 = axis[-10:], axis[-30:]
     stocks = []
@@ -1292,7 +1328,10 @@ def forecast(as_of=None, window=30):
             k1_days = {d for d in k1_days if d > trig}
         # 處置中的股票**繼續累積**：處置期間再達門檻 → 升級為下一次處置（撮合 5分→20分、全面預收）。
         # 起算點＝處置開始日，否則處置前的舊帳會被算進來。
+        # disp＝「處置生效中」才有，供第二次處置的累積起算用；
+        # disp_any 另含「已公布未生效」，戰績（_alerted）要用它，否則剛達標那批查不到示警紀錄。
         disp = detail.get(c) if c in disposed else None
+        disp_any = detail.get(c) if (c in disposed or c in announced) else None
         if disp and disp.get("start"):
             st = disp["start"]
             acc = {d: v for d, v in acc.items() if d >= st}
@@ -1317,6 +1356,11 @@ def forecast(as_of=None, window=30):
         countdown = best_rem if best is not None else 99
         if c in disposed:
             status = "disposed"
+        elif c in announced or trig == as_of:
+            # 已達處置門檻、等生效：官方已公布（announced）或我們今天算到達標（trig==as_of）。
+            # 少了這一級，達標當天計數歸零後會被判成 safe → 使用者昨天看到「明天進處置」，
+            # 今天卻整檔從畫面消失（2026-08-07 川湖等 5 檔即如此）。
+            status = "pending"
         elif cnt10 == 0:
             status = "safe"                       # 近10日無 acute 活動 → 休眠，不論算術距離
         elif countdown <= 1:
@@ -1341,26 +1385,28 @@ def forecast(as_of=None, window=30):
             "count_10d": cnt10, "count_30d": cnt30, "flags": flags,
             "plain_reason": reason, "recent_hits": recent,
             "rules_today": meta[c].get("rules_today", []),
-            "disposal": detail.get(c) if status == "disposed" else None,
+            "disposal": detail.get(c) if status in ("disposed", "pending") else None,
             **(_next_disposition(disp, countdown, cnt10) if disp else {}),
-            **(_alerted(hist, c, disp["start"]) if disp and disp.get("start") else {}),
+            **(_alerted(hist, c, disp_any["start"]) if disp_any and disp_any.get("start") else {}),
             "trigger": _pub_trigger(triggers.get(c)),
         })
     # 官方處置中、但近期沒被我們預測到的股票也要列出（處置中＝官方事實，非預測）
     seen = {s["code"] for s in stocks}
-    for c in disposed:
+    for c in disposed | announced:
         if c in seen:
             continue
         d = detail.get(c, {})
         stocks.append({
             "code": c, "name": d.get("name"), "market": "TWSE" if d.get("market") == "市" else "TPEx",
-            "close": None, "status": "disposed", "countdown": 0, "path": None,
+            "close": None, "status": "pending" if c in announced else "disposed",
+            "countdown": 0, "path": None,
             "consecutive": 0, "consecutive_k1": 0, "count_10d": 0, "count_30d": 0,
-            "flags": {}, "plain_reason": "官方處置中", "recent_hits": [], "rules_today": [],
+            "flags": {}, "recent_hits": [], "rules_today": [],
+            "plain_reason": "已公布處置，尚未生效" if c in announced else "官方處置中",
             "disposal": d,
             **(_alerted(hist, c, d["start"]) if d.get("start") else {}),
         })
-    rank = {"disposed": 0, "danger": 1, "near": 2, "watch": 3, "safe": 4}
+    rank = {"disposed": 0, "pending": 1, "danger": 2, "near": 3, "watch": 4, "safe": 5}
     stocks.sort(key=lambda s: (rank[s["status"]], s["countdown"], -s["count_30d"]))
     out = {"as_of": as_of, "generated_at": _now(), "window": len(axis),
            "counts": {k: sum(1 for s in stocks if s["status"] == k) for k in rank},
