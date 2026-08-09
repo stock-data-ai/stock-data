@@ -15,7 +15,10 @@ SENTIMENT_FILE = Path("src/data/market/sentiment.json")
 HISTORY_LIMIT = 10
 
 MARGIN_HISTORY_FILE = Path("src/data/market/margin_history.json")
-MARGIN_HISTORY_DAYS = 730  # 兩年水位，前端切 1M/3M/6M/1Y/2Y 用
+MARGIN_HISTORY_DAYS = 730  # 兩年水位，前端切 1M/3M/6M/1Y 用（留一年 buffer 給區間頭）
+
+INST_HISTORY_FILE = Path("src/data/market/institutional_history.json")
+INST_HISTORY_DAYS = 730  # 同上；前端在選定區間內自行累加成累計買賣超曲線
 
 
 def _merge_history(existing_section: dict, history_limit: int) -> list:
@@ -88,16 +91,75 @@ def _write_margin_history(fetcher: MarketSentimentFetcher, margin_section: Optio
     )
 
 
+def _write_institutional_history(
+    fetcher: MarketSentimentFetcher, inst_section: Optional[dict]
+) -> None:
+    """
+    重建 src/data/market/institutional_history.json：上市三大法人每日買賣超兩年日線。
+
+    法人沒有「餘額」這種存量，前端的水位圖是在選定區間內自行累加（累計買賣超），
+    所以這裡存的是每日淨額原始值，不預先累加——累加起點跟著使用者選的區間走。
+
+    其餘策略與融資水位相同：整段重抓自我修復、當日以 BFI82U 官方數字覆蓋、
+    FinMind 掛掉時保留既有檔案。
+    """
+    end = now_tw()
+    start = end - timedelta(days=INST_HISTORY_DAYS)
+    start_str, end_str = start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+
+    series = fetcher.fetch_twse_institutional_history(start_str, end_str)
+
+    if series is None:
+        if not INST_HISTORY_FILE.exists():
+            logger.warning("三大法人長序列取得失敗且無既有檔案，略過 institutional_history.json")
+            return
+        logger.warning("三大法人長序列取得失敗，沿用既有檔案並只補當日")
+        with open(INST_HISTORY_FILE, encoding="utf-8") as f:
+            series = json.load(f).get("series", [])
+
+    fields = ("foreign", "trust", "dealer", "dealerHedge", "foreignDealer")
+    twse = (inst_section or {}).get("twse") or {}
+    if twse and (inst_section or {}).get("date"):
+        today_point = {"date": inst_section["date"]}
+        today_point.update({f: twse.get(f, {}).get("net", 0) for f in fields})
+        series = [p for p in series if p.get("date") != today_point["date"]] + [today_point]
+
+    series = sorted(
+        (p for p in series if p.get("date", "") >= start_str),
+        key=lambda p: p["date"],
+    )
+    if not series:
+        logger.warning("三大法人長序列為空，略過寫檔（保留既有 institutional_history.json）")
+        return
+
+    payload = {
+        "updated": end.strftime("%Y-%m-%d"),
+        "market": "twse",  # 上市，與三大法人卡口徑一致（上櫃暫停）
+        "units": {f: "元" for f in fields},
+        "series": series,
+    }
+    INST_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(INST_HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    logger.info(
+        "已寫入 %s（%d 筆，%s ~ %s）",
+        INST_HISTORY_FILE, len(series), series[0]["date"], series[-1]["date"],
+    )
+
+
 def run_update_margin_history(args):
     """
-    單獨重建融資水位長序列（回補／修復用，任何一天跑都安全）。
+    單獨重建融資水位／三大法人長序列（回補／修復用，任何一天跑都安全）。
     當日數字沿用現有 sentiment.json，不重打 TWSE。
     """
     existing: dict = {}
     if SENTIMENT_FILE.exists():
         with open(SENTIMENT_FILE, encoding="utf-8") as f:
             existing = json.load(f)
-    _write_margin_history(MarketSentimentFetcher(), existing.get("margin"))
+    fetcher = MarketSentimentFetcher()
+    _write_margin_history(fetcher, existing.get("margin"))
+    _write_institutional_history(fetcher, existing.get("institutional"))
 
 
 def run_update_market_sentiment(args):
@@ -203,8 +265,12 @@ def run_update_market_sentiment(args):
                 len(data.get("institutional", {}).get("history", [])),
                 len(data.get("margin", {}).get("history", [])))
 
-    # 融資水位長序列是附加資料，失敗不影響本任務主結果
+    # 長序列是附加資料（水位／累計圖用），失敗不影響本任務主結果
     try:
         _write_margin_history(fetcher, data.get("margin"))
     except Exception:
         logger.exception("寫入融資水位長序列失敗，略過")
+    try:
+        _write_institutional_history(fetcher, data.get("institutional"))
+    except Exception:
+        logger.exception("寫入三大法人長序列失敗，略過")

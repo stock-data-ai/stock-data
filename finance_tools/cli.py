@@ -143,7 +143,7 @@ def main():
     # --- 'update-margin-history' command ---
     parser_margin_history = subparsers.add_parser(
         "update-margin-history",
-        help="重建融資水位長序列 margin_history.json（回補／修復用；平時由 update-market-sentiment 自動帶）。",
+        help="重建融資水位／三大法人長序列（回補／修復用；平時由 update-market-sentiment 自動帶）。",
     )
     parser_margin_history.set_defaults(func=run_update_margin_history)
 

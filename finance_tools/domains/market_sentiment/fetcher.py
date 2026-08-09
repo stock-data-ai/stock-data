@@ -46,6 +46,15 @@ class MarketSentimentFetcher:
         "MarginPurchase": "longBalance",       # 融資餘額（張）
         "ShortSale": "shortBalance",           # 融券餘額（張）
     }
+    FINMIND_INST_DATASET = "TaiwanStockTotalInstitutionalInvestors"
+    # 與 BFI82U 逐類對帳一致（2026-08-07 五類買賣金額完全相同），取 buy - sell = 買賣超
+    FINMIND_INST_FIELDS = {
+        "Foreign_Investor": "foreign",
+        "Investment_Trust": "trust",
+        "Dealer_self": "dealer",
+        "Dealer_Hedging": "dealerHedge",
+        "Foreign_Dealer_Self": "foreignDealer",
+    }
 
     def __init__(self) -> None:
         self.headers = {
@@ -321,11 +330,76 @@ class MarketSentimentFetcher:
             [{date, longAmount(元), longBalance(張), shortBalance(張)}, ...] 舊→新
             全區間都拿不到時回 None（呼叫端據此保留既有檔案）。
         """
-        params = {
-            "dataset": self.FINMIND_MARGIN_DATASET,
-            "start_date": start_date,
-            "end_date": end_date,
-        }
+        rows = self._fetch_finmind_range(
+            self.FINMIND_MARGIN_DATASET, start_date, end_date, "融資水位", retries, retry_delay
+        )
+        if rows is None:
+            return None
+
+        by_date: Dict[str, Dict[str, int]] = {}
+        for row in rows:
+            field = self.FINMIND_MARGIN_FIELDS.get(row.get("name"))
+            date = row.get("date")
+            if not field or not date:
+                continue
+            by_date.setdefault(date, {})[field] = int(row.get("TodayBalance") or 0)
+
+        fields = ("longAmount", "longBalance", "shortBalance")
+        series = [
+            {"date": date, **{f: vals[f] for f in fields}}
+            for date, vals in sorted(by_date.items())
+            if set(fields) <= vals.keys()
+        ]
+        if not series:
+            logger.error("FinMind 融資水位回傳資料不完整 %s~%s", start_date, end_date)
+            return None
+        return series
+
+    def fetch_twse_institutional_history(
+        self, start_date: str, end_date: str, retries: int = 3, retry_delay: int = 10
+    ) -> Optional[List[Dict]]:
+        """
+        Fetch 上市三大法人每日買賣超長序列（FinMind，整段區間一次抓）。
+
+        BFI82U 只能逐日查；FinMind 同一口徑一次給完。
+        已對帳 2026-08-07：五類的買進／賣出金額與 BFI82U 完全相同。
+
+        Returns:
+            [{date, foreign, trust, dealer, dealerHedge, foreignDealer}, ...] 舊→新
+            單位：元，值為買賣超（buy - sell）。
+        """
+        rows = self._fetch_finmind_range(
+            self.FINMIND_INST_DATASET, start_date, end_date, "三大法人", retries, retry_delay
+        )
+        if rows is None:
+            return None
+
+        by_date: Dict[str, Dict[str, int]] = {}
+        for row in rows:
+            field = self.FINMIND_INST_FIELDS.get(row.get("name"))
+            date = row.get("date")
+            if not field or not date:
+                continue
+            by_date.setdefault(date, {})[field] = int(row.get("buy") or 0) - int(row.get("sell") or 0)
+
+        fields = tuple(self.FINMIND_INST_FIELDS.values())
+        series = [
+            # 外資自營商常年為 0，FinMind 偶爾整天不給該列，補 0 而非整天丟掉
+            {"date": date, **{f: vals.get(f, 0) for f in fields}}
+            for date, vals in sorted(by_date.items())
+            if "foreign" in vals
+        ]
+        if not series:
+            logger.error("FinMind 三大法人回傳資料不完整 %s~%s", start_date, end_date)
+            return None
+        return series
+
+    def _fetch_finmind_range(
+        self, dataset: str, start_date: str, end_date: str,
+        label: str, retries: int, retry_delay: int,
+    ) -> Optional[List[Dict]]:
+        """FinMind v4 區間查詢。免 token 可用；有 token 時帶上以吃較高的額度。"""
+        params = {"dataset": dataset, "start_date": start_date, "end_date": end_date}
         headers = {"Accept": "application/json"}
         raw_token = (
             os.environ.get("FINMIND_API_TOKENS")
@@ -344,39 +418,22 @@ class MarketSentimentFetcher:
                 resp.raise_for_status()
                 payload = resp.json()
                 rows = payload.get("data") or []
-                if not rows:
-                    logger.warning(
-                        "FinMind 融資水位無資料 %s~%s: msg=%s (attempt %d/%d)",
-                        start_date, end_date, payload.get("msg"), attempt + 1, retries,
-                    )
-                else:
-                    by_date: Dict[str, Dict[str, int]] = {}
-                    for row in rows:
-                        field = self.FINMIND_MARGIN_FIELDS.get(row.get("name"))
-                        date = row.get("date")
-                        if not field or not date:
-                            continue
-                        by_date.setdefault(date, {})[field] = int(row.get("TodayBalance") or 0)
-
-                    wanted = set(self.FINMIND_MARGIN_FIELDS.values())
-                    series = [
-                        {"date": date, **{f: vals[f] for f in ("longAmount", "longBalance", "shortBalance")}}
-                        for date, vals in sorted(by_date.items())
-                        if wanted <= vals.keys()
-                    ]
-                    if series:
-                        return series
-                    logger.warning("FinMind 融資水位回傳資料不完整 %s~%s", start_date, end_date)
+                if rows:
+                    return rows
+                logger.warning(
+                    "FinMind %s 無資料 %s~%s: msg=%s (attempt %d/%d)",
+                    label, start_date, end_date, payload.get("msg"), attempt + 1, retries,
+                )
             except Exception:
                 logger.warning(
-                    "Error fetching FinMind 融資水位 %s~%s (attempt %d/%d)",
-                    start_date, end_date, attempt + 1, retries, exc_info=True,
+                    "Error fetching FinMind %s %s~%s (attempt %d/%d)",
+                    label, start_date, end_date, attempt + 1, retries, exc_info=True,
                 )
 
             if attempt < retries - 1:
                 time.sleep(retry_delay)
 
-        logger.error("FinMind 融資水位長序列取得失敗 %s~%s", start_date, end_date)
+        logger.error("FinMind %s 長序列取得失敗 %s~%s", label, start_date, end_date)
         return None
 
     # ------------------------------------------------------------------
