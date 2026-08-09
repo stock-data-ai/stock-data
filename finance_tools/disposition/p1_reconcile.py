@@ -20,7 +20,7 @@
 注意：注意名單的「日期」欄 = **資料日（觸發日）本身，不是隔日公告日**——實測 763/763 筆
 其「收盤價」欄等於該日收盤、0 筆等於前一交易日 → reconcile 直接同日對帳，勿再 off-by-one。
 """
-import json, os, sys, re, datetime, statistics
+import json, os, sys, re, math, datetime, statistics
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
@@ -52,6 +52,23 @@ CFG = {
              "k2_low": {30: 120.0, 60: 180.0, 90: 240.0},   # 收盤<5元 上櫃特別門檻
              "k4_turn": 5.0},
 }
+
+# ── 2026-08-10 新制（證交所/櫃買 2026-08 修正，自 2026/08/10 施行）───────────
+#   一、處置期間：一般 10 → **5** 營業日；當沖占比過高加重者 12 → **7** 營業日。
+#   二、撮合間隔：5分/20分 → 一律**約每 2 分鐘**（引擎不推測，只讀官方公告原文）。
+#   三、高價股注意標準放寬：款1「低標版」（25%/27%＋起迄價差）改為**僅適用收盤價 >1000 元**，
+#       且價差門檻 100 → 300 元；>2000 元後每增 1000 元一級距 +150 元（2000~3000 → 450）。
+# 新制只對 as_of >= 施行日生效，舊資料仍走舊制，否則歷史準確度會被今天的規則污染。
+RULE_2026_08_10 = "20260810"
+
+def _gap_threshold(close, as_of, legacy):
+    """款1「低標版」所需的 6 日起迄價差門檻；回 None＝該版本此時不適用（只剩高標 32%/30% 版）。"""
+    if as_of < RULE_2026_08_10:
+        return legacy                       # 舊制：不分價位一律 legacy（本引擎校準值 50 元）
+    if close is None or close <= 1000:
+        return None                         # 新制：低價股不再適用低標版
+    return 300.0 + 150.0 * math.ceil(max(0.0, close - 2000.0) / 1000.0)
+
 DIFF = 20.0                    # 款1 6日雙差幅門檻
 PRICE_FLOOR = 5.0             # 收盤<5元 除外（款1，連帶其前置款3/4/7）
 PE_LO, PE_HI = 0.0, 60.0     # 款1 類股比較豁免：PE<0 或 ≥60
@@ -297,7 +314,48 @@ def _ret_cum(series, c, n=6):
 
 DAY_LIMIT = 10.0       # 台股單日漲跌幅上限 → 明天的 6 日累積只能在 base5 ± 10% 之間移動
 
-def _trigger(series, c, close, base_th, mkt6, peer6, peer_ok_flag, gap_th):
+# 兩條路徑取「最容易觸發」者。同一 rank 內用 _need 比較（漲側直接比所需漲幅：hold 為負、
+# rise 為正，天然排在前；跌側比所需跌幅的絕對值）。**不可用 abs(pct) 排序**——hold 的
+# |pct| 越小代表門檻價越高、其實越難觸發，會挑到錯的那條。
+_KIND_RANK = {"certain": 0, "hold": 1, "rise": 1, "fall": 2}
+
+def _trigger_route(base5, close, start, base_th, gap_th, mkt6, peer6, peer_ok_flag):
+    """單一觸發路徑（高標版無價差要求；低標版另需起迄價差 ≥ gap_th）→ 明天的觸發價。"""
+    ups = [base_th, (mkt6 + DIFF) if mkt6 is not None else base_th]
+    dns = [-base_th, (mkt6 - DIFF) if mkt6 is not None else -base_th]
+    if peer_ok_flag and peer6 is not None:
+        ups.append(peer6 + DIFF)
+        dns.append(peer6 - DIFF)
+    up, dn = max(ups), min(dns)
+    need_up, need_dn = up - base5, dn - base5
+
+    # 起迄價差要求換算成價位 → 再換成相對今日收盤的漲跌幅，與累積漲跌幅要求取較嚴者。
+    # 明天那個 6 日窗的起始日收盤就是 start（今天往前第 6 個價格點）。
+    if gap_th is not None:
+        need_up = max(need_up, ((start + gap_th) / close - 1) * 100)
+        need_dn = min(need_dn, ((start - gap_th) / close - 1) * 100)
+
+    if need_up <= -DAY_LIMIT or need_dn >= DAY_LIMIT:
+        # 緩衝＝跌停（或漲停）之後距門檻還剩幾個百分點。門檻含「大盤均值+20%」，
+        # 大盤明天續漲會把門檻墊高 → 緩衝薄的不可講「一定」，前端據此降級為「很可能」。
+        margin = (need_dn - DAY_LIMIT) if need_dn >= DAY_LIMIT else (-need_up - DAY_LIMIT)
+        kind, pct, p, need = "certain", None, None, -margin
+    elif need_up <= 0:
+        kind, pct, p, need = "hold", need_up, close * (1 + need_up / 100), need_up
+    elif need_up <= DAY_LIMIT:
+        kind, pct, p, need = "rise", need_up, close * (1 + need_up / 100), need_up
+    elif need_dn >= -DAY_LIMIT:
+        kind, pct, p, need = "fall", need_dn, close * (1 + need_dn / 100), -need_dn
+    else:
+        return None                                    # 明天到不了，不輸出（免得洗版）
+    out = {"kind": kind, "price": round(p, 2) if p is not None else None,
+           "pct": round(pct, 2) if pct is not None else None, "_need": need,
+           "base5": round(base5, 2), "threshold": round(up, 2), "gap_required": gap_th}
+    if kind == "certain":
+        out["margin"] = round(margin, 2)
+    return out
+
+def _trigger(series, c, close, cfg_k1, mkt6, peer6, peer_ok_flag, as_of):
     """反推「明天要到什麼價位才會觸發款1」。
 
     款1 度量是**逐日漲跌幅累加**，所以明天的 6 日累積 = 最近 5 個日變動（已知）+ 明天的日變動。
@@ -307,6 +365,9 @@ def _trigger(series, c, close, base_th, mkt6, peer6, peer_ok_flag, gap_th):
       base5 已 ≥ 門檻+10 → 明天跌停也躲不掉（certain）
       base5 已 ≥ 門檻     → 不跌破某價位就觸發（hold）
       否則              → 要漲/跌到某價位才觸發（rise/fall），差太遠則明天到不了（None）
+
+    款1 有兩條路徑（高標版 32%/30%、低標版 25%/27%＋起迄價差），兩條都算再取**最易觸發**者。
+    2026-08-10 起低標版只適用收盤價 >1000 元，一般股票只剩高標版 → 觸發價會自動變遠。
 
     門檻用「基準 vs 大盤均值±20%」取較嚴者——即文件 §4.2 說的「有效門檻」，僅供顯示。
     大盤均值盤中會動，故觸發價是**估計值**，不是保證。
@@ -319,37 +380,16 @@ def _trigger(series, c, close, base_th, mkt6, peer6, peer_ok_flag, gap_th):
         return None
     base5 = sum((seq[i] / seq[i - 1] - 1) * 100 for i in range(1, 6))
 
-    ups = [base_th, (mkt6 + DIFF) if mkt6 is not None else base_th]
-    dns = [-base_th, (mkt6 - DIFF) if mkt6 is not None else -base_th]
-    if peer_ok_flag and peer6 is not None:
-        ups.append(peer6 + DIFF)
-        dns.append(peer6 - DIFF)
-    up, dn = max(ups), min(dns)
-
-    need_up, need_dn = up - base5, dn - base5
-    def price(pct):
-        p = close * (1 + pct / 100)
-        # 25%版另需起迄價差 ≥ gap_th；價差不足時該價位其實不會觸發 → 標記供前端誠實顯示
-        return round(p, 2)
-
-    if need_up <= -DAY_LIMIT or need_dn >= DAY_LIMIT:
-        # 緩衝＝跌停（或漲停）之後距門檻還剩幾個百分點。門檻含「大盤均值+20%」，
-        # 大盤明天續漲會把門檻墊高 → 緩衝薄的不可講「一定」，前端據此降級為「很可能」。
-        margin = min(-need_up, need_dn) - DAY_LIMIT if need_dn >= DAY_LIMIT else -need_up - DAY_LIMIT
-        kind, pct, p = "certain", None, None
-    elif need_up <= 0:
-        kind, pct, p = "hold", round(need_up, 2), price(need_up)
-    elif need_up <= DAY_LIMIT:
-        kind, pct, p = "rise", round(need_up, 2), price(need_up)
-    elif need_dn >= -DAY_LIMIT:
-        kind, pct, p = "fall", round(need_dn, 2), price(need_dn)
-    else:
-        return None                                    # 明天到不了，不輸出（免得洗版）
-    out = {"kind": kind, "price": p, "pct": pct,
-           "base5": round(base5, 2), "threshold": round(up, 2), "gap_required": gap_th}
-    if kind == "certain":
-        out["margin"] = round(margin, 2)
-    return out
+    routes = [(cfg_k1["std1"], None)]
+    gap_th = _gap_threshold(close, as_of, cfg_k1["gap"])
+    if gap_th is not None:
+        routes.append((cfg_k1["std2"], gap_th))
+    cands = [r for r in (_trigger_route(base5, close, seq[0], bt, gt, mkt6, peer6, peer_ok_flag)
+                         for bt, gt in routes) if r]
+    if not cands:
+        return None
+    best = min(cands, key=lambda x: (_KIND_RANK[x["kind"]], x["_need"]))
+    return {k: v for k, v in best.items() if k != "_need"}
 
 def _gap(series, c, n=6):
     """款1「25%版」起迄兩營業日收盤價價差（同 _ret_cum 的 n+1 點窗）。"""
@@ -459,8 +499,8 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
         s = m["sector"]
 
         # ── 明天的觸發價（反推，盤後即可定案）──
-        tg = _trigger(series, c, cl, cfg["k1"]["std2"], A6[0],
-                      A6[1].get(s), peer_ok(s, A6[2], c), cfg["k1"]["gap"])
+        tg = _trigger(series, c, cl, cfg["k1"], A6[0],
+                      A6[1].get(s), peer_ok(s, A6[2], c), market_date)
         if tg:
             triggers[c] = {"name": m["name"], "market": market, "close": cl, **tg}
 
@@ -475,7 +515,9 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
             p_ok = (pdiff is not None and pdiff >= DIFF) if papp else True
             t = cfg["k1"]
             g = _gap(series, c, 6)
-            base_ok = abs(a) > t["std1"] or (abs(a) > t["std2"] and g is not None and g >= t["gap"])
+            gap_th = _gap_threshold(cl, market_date, t["gap"])   # None＝低標版此時不適用
+            lo_ok = gap_th is not None and abs(a) > t["std2"] and g is not None and g >= gap_th
+            base_ok = abs(a) > t["std1"] or lo_ok
             if base_ok and m_ok and p_ok:
                 std = "32%版" if abs(a) > t["std1"] else "25%版"
                 add(c, {"clause": 1, "standard": std,
@@ -485,7 +527,9 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
                         "thresholds": {"return": t["std1"] if std == "32%版" else t["std2"], "diff": DIFF},
                         "reason": f"6日累積{a:+.1f}%(>{t['std2' if std=='25%版' else 'std1']}%) 且 與大盤差{mdiff:.1f}%"
                                   + (f"、與同類差{pdiff:.1f}%(均≥20%)" if papp and pdiff is not None else "、同類比較豁免")})
-            # k1_25：符合款1「25%版」門檻（供前置）
+            # k1_25：符合款1「25%版」門檻（供款3/4/7 前置）。
+            # 刻意不套價差／2026-08 新制的高價股限制——這是對帳校準出來的寬鬆前置，
+            # 綁上款1 的完整條件會連動改變款3/4/7 的命中率，需另行校準才能動。
             k1_25 = (abs(a) > t["std2"]) and m_ok and p_ok
 
         # ── 款2（30/60/90 中長期）── 需長期資料 + 方向 + 豁免
@@ -891,25 +935,68 @@ def refresh_punish(days_back=90, days_fwd=30):
         json.dump(rows, open(os.path.join(CACHE, "punish_rows.json"), "w"), ensure_ascii=False)
     return len(rows)
 
-def _punish_rows():
+# 台股例假日以外的休市日（颱風停市等）。2026-08 無 → 空集合；跨到有休市日的期間要補。
+_MARKET_HOLIDAYS = set()
+
+def _bdays_from(start, n):
+    """從 start（含）起算第 n 個營業日。未來日以週一~五近似（颱風停市無法預知）。"""
+    d = datetime.datetime.strptime(start, "%Y%m%d").date()
+    cnt = 0
+    while True:
+        ymd = d.strftime("%Y%m%d")
+        if d.weekday() < 5 and ymd not in _MARKET_HOLIDAYS:
+            cnt += 1
+            if cnt >= n:
+                return ymd
+        d += datetime.timedelta(days=1)
+
+def _bdays_span(start, end):
+    """start~end 之間的營業日數（含頭尾）。"""
+    d = datetime.datetime.strptime(start, "%Y%m%d").date()
+    e = datetime.datetime.strptime(end, "%Y%m%d").date()
+    n = 0
+    while d <= e:
+        if d.weekday() < 5 and d.strftime("%Y%m%d") not in _MARKET_HOLIDAYS:
+            n += 1
+        d += datetime.timedelta(days=1)
+    return n
+
+def _shorten_period(r, as_of):
+    """2026-08-10 新制：處置期間 10→5 營業日（當沖加重 12→7）。
+
+    官方**不會改寫已發布的舊制公告**，但實際上 8/10 起提前解除：至 8/10 前已處置滿
+    5(7) 日者當日直接解禁，未滿者續到滿。不就地修正 end，畫面會把已出關的股票多關好幾天。
+
+    只在 as_of >= 施行日才套用——8/10 之前那些股票是**真的還在處置中**，
+    拿新制去改寫過去會把歷史對帳與戰績紀錄一起改掉。
+    只動「舊制開始、跨越施行日」的那批；官方若自行改短，min() 會採用官方值。
+    """
+    st, en = r.get("start"), r.get("end")
+    if as_of < RULE_2026_08_10 or not (st and en) or st >= RULE_2026_08_10 or en < RULE_2026_08_10:
+        return r
+    new_en = _bdays_from(st, 7 if _bdays_span(st, en) >= 12 else 5)   # ≥12 營業日＝當沖加重版
+    return {**r, "end": min(en, new_en), "period_shortened": True} if new_en < en else r
+
+def _punish_rows(as_of=None):
     fp = os.path.join(CACHE, "punish_rows.json")
     if not os.path.exists(fp):
         return []
+    d = as_of or _today()
     try:
-        return [r for r in json.load(open(fp)) if _is_stock(r.get("code", ""))]
+        return [_shorten_period(r, d) for r in json.load(open(fp)) if _is_stock(r.get("code", ""))]
     except (json.JSONDecodeError, OSError):
         return []
 
 def disposed_set(as_of=None):
     """**處置生效中**的代號（start <= as_of <= end）。尚未生效的不算，那是 announced_set。"""
     d = as_of or _today()
-    return {r["code"] for r in _punish_rows()
+    return {r["code"] for r in _punish_rows(d)
             if r.get("start") and r["start"] <= d and (not r.get("end") or d <= r["end"])}
 
 def announced_set(as_of=None):
     """**已公布、尚未生效**的代號（start > as_of）——這批已達處置門檻，只是還沒開始。"""
     d = as_of or _today()
-    return {r["code"] for r in _punish_rows() if r.get("start") and r["start"] > d}
+    return {r["code"] for r in _punish_rows(d) if r.get("start") and r["start"] > d}
 
 # ── 處置公告細節（撮合/期間/原因/第幾次）——直接來自官方，非預測 ────────────
 _CN = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
@@ -940,7 +1027,7 @@ def disposed_detail(as_of=None):
     pending=True 表示已公布但尚未生效（start > as_of）。同一檔多筆時取最新公布的那筆。"""
     d = as_of or _today()
     out = {}
-    for r in sorted(_punish_rows(), key=lambda x: (x.get("announced") or "", x.get("start") or "")):
+    for r in sorted(_punish_rows(d), key=lambda x: (x.get("announced") or "", x.get("start") or "")):
         out[r["code"]] = {**r, "pending": bool(r.get("start") and r["start"] > d)}
     return out
 
@@ -1223,8 +1310,9 @@ def _pub_trigger(t):
     return {k: t[k] for k in ("kind", "price", "pct", "margin") if k in t} if t else None
 
 def _next_disposition(disp, countdown, cnt10):
-    """處置中的股票：距「下一次處置」還差幾次、會是第幾次、撮合幾分。
-    官方措施：第一次 5 分撮合；30 日內第二次起 20 分＋全面預收款券。
+    """處置中的股票：距「下一次處置」還差幾次、會是第幾次。
+    2026-08-10 新制：撮合間隔與處置期間不再隨次數改變（一律約 2 分鐘 / 5 個營業日），
+    30 日內第二次起加重的是**全面預收款券**。
     近 10 日無活動就不輸出（休眠股不該被算術距離誤判成快被加重）。"""
     if cnt10 == 0 or countdown >= 99:
         return {}
