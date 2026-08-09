@@ -7,12 +7,14 @@ Data sources:
 - Institutional: https://www.twse.com.tw/fund/BFI82U (units: 千元 → converted to 元)
 - Margin TWSE:   https://www.twse.com.tw/exchangeReport/MI_MARGN (units: 張)
 - Margin TPEx:   https://www.tpex.org.tw/.../margin_bal_result.php  (units: 張)
+- Margin 長序列: FinMind TaiwanStockTotalMarginPurchaseShortSale（整段區間一次抓）
 """
 
 import logging
+import os
 import time
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import requests
@@ -36,6 +38,14 @@ class MarketSentimentFetcher:
         "https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/"
         "margin_bal_result.php?l=zh-tw&d={roc_date}&_={timestamp}"
     )
+    FINMIND_DATA_URL = "https://api.finmindtrade.com/api/v4/data"
+    FINMIND_MARGIN_DATASET = "TaiwanStockTotalMarginPurchaseShortSale"
+    # FinMind 的 name 欄位 → 我們的欄位名（都取 TodayBalance = 當日餘額）
+    FINMIND_MARGIN_FIELDS = {
+        "MarginPurchaseMoney": "longAmount",   # 融資餘額金額（元）
+        "MarginPurchase": "longBalance",       # 融資餘額（張）
+        "ShortSale": "shortBalance",           # 融券餘額（張）
+    }
 
     def __init__(self) -> None:
         self.headers = {
@@ -293,6 +303,81 @@ class MarketSentimentFetcher:
         except Exception:
             logger.exception("Error fetching TPEx margin for %s", date_str)
             return None
+
+    def fetch_twse_margin_history(
+        self, start_date: str, end_date: str, retries: int = 3, retry_delay: int = 10
+    ) -> Optional[List[Dict]]:
+        """
+        Fetch 上市整體融資融券「餘額水位」長序列（FinMind，整段區間一次抓）。
+
+        MI_MARGN 只能逐日查，補兩年水位要 480+ 次請求；FinMind 同一口徑一次給完。
+        已對帳 2026-08-05~08-07：融資張數／融資金額／融券張數與 MI_MARGN 逐日相同。
+        免 token 可用；有 token 時帶上以吃較高的額度。
+
+        Args:
+            start_date / end_date: YYYY-MM-DD
+
+        Returns:
+            [{date, longAmount(元), longBalance(張), shortBalance(張)}, ...] 舊→新
+            全區間都拿不到時回 None（呼叫端據此保留既有檔案）。
+        """
+        params = {
+            "dataset": self.FINMIND_MARGIN_DATASET,
+            "start_date": start_date,
+            "end_date": end_date,
+        }
+        headers = {"Accept": "application/json"}
+        raw_token = (
+            os.environ.get("FINMIND_API_TOKENS")
+            or os.environ.get("FINMIND_API_TOKEN_local")
+            or ""
+        )
+        token = raw_token.split(",")[0].strip()
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+
+        for attempt in range(retries):
+            try:
+                resp = requests.get(
+                    self.FINMIND_DATA_URL, params=params, headers=headers, timeout=30
+                )
+                resp.raise_for_status()
+                payload = resp.json()
+                rows = payload.get("data") or []
+                if not rows:
+                    logger.warning(
+                        "FinMind 融資水位無資料 %s~%s: msg=%s (attempt %d/%d)",
+                        start_date, end_date, payload.get("msg"), attempt + 1, retries,
+                    )
+                else:
+                    by_date: Dict[str, Dict[str, int]] = {}
+                    for row in rows:
+                        field = self.FINMIND_MARGIN_FIELDS.get(row.get("name"))
+                        date = row.get("date")
+                        if not field or not date:
+                            continue
+                        by_date.setdefault(date, {})[field] = int(row.get("TodayBalance") or 0)
+
+                    wanted = set(self.FINMIND_MARGIN_FIELDS.values())
+                    series = [
+                        {"date": date, **{f: vals[f] for f in ("longAmount", "longBalance", "shortBalance")}}
+                        for date, vals in sorted(by_date.items())
+                        if wanted <= vals.keys()
+                    ]
+                    if series:
+                        return series
+                    logger.warning("FinMind 融資水位回傳資料不完整 %s~%s", start_date, end_date)
+            except Exception:
+                logger.warning(
+                    "Error fetching FinMind 融資水位 %s~%s (attempt %d/%d)",
+                    start_date, end_date, attempt + 1, retries, exc_info=True,
+                )
+
+            if attempt < retries - 1:
+                time.sleep(retry_delay)
+
+        logger.error("FinMind 融資水位長序列取得失敗 %s~%s", start_date, end_date)
+        return None
 
     # ------------------------------------------------------------------
     # Combined

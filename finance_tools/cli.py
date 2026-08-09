@@ -55,7 +55,10 @@ from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
-from finance_tools.domains.market_sentiment.tasks import run_update_market_sentiment
+from finance_tools.domains.market_sentiment.tasks import (
+    run_update_margin_history,
+    run_update_market_sentiment,
+)
 from finance_tools.scripts.compute_weekly_big_holders import run as run_compute_big_holders
 from finance_tools.scripts.generate_chip_topic import run as run_generate_chip_topic
 from finance_tools.scripts.generate_disposition_forecast import run as run_generate_disposition_forecast
@@ -136,6 +139,13 @@ def main():
     )
     parser_sentiment.add_argument("--date", type=str, help="指定日期 (YYYYMMDD)。")
     parser_sentiment.set_defaults(func=run_update_market_sentiment)
+
+    # --- 'update-margin-history' command ---
+    parser_margin_history = subparsers.add_parser(
+        "update-margin-history",
+        help="重建融資水位長序列 margin_history.json（回補／修復用；平時由 update-market-sentiment 自動帶）。",
+    )
+    parser_margin_history.set_defaults(func=run_update_margin_history)
 
     # --- 'compute-big-holders' command ---
     parser_big_holders = subparsers.add_parser(

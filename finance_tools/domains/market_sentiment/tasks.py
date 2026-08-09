@@ -1,7 +1,9 @@
 import json
 import logging
 import sys
+from datetime import timedelta
 from pathlib import Path
+from typing import Optional
 
 from finance_tools.core.timezone import now_tw
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
@@ -11,6 +13,9 @@ logger = logging.getLogger(__name__)
 
 SENTIMENT_FILE = Path("src/data/market/sentiment.json")
 HISTORY_LIMIT = 10
+
+MARGIN_HISTORY_FILE = Path("src/data/market/margin_history.json")
+MARGIN_HISTORY_DAYS = 730  # 兩年水位，前端切 1M/3M/6M/1Y/2Y 用
 
 
 def _merge_history(existing_section: dict, history_limit: int) -> list:
@@ -22,6 +27,77 @@ def _merge_history(existing_section: dict, history_limit: int) -> list:
     new_entry = {k: v for k, v in existing_section.items() if k != "history"}
     deduped = [e for e in prev_history if e.get("date") != new_entry.get("date")]
     return ([new_entry] + deduped)[:history_limit]
+
+
+def _write_margin_history(fetcher: MarketSentimentFetcher, margin_section: Optional[dict]) -> None:
+    """
+    重建 src/data/market/margin_history.json：上市整體融資／融券「餘額水位」兩年日線。
+
+    為什麼另存一支檔：sentiment.json 的 history 只留 10 筆（畫每日增減用），
+    畫不出水位趨勢；把上限拉大會讓每日焦點頁必載的 sentiment.json 一路變胖。
+
+    每次整段重抓 = 自我修復，某天漏跑不會在序列裡留缺口。
+    當日那筆以剛抓到的 TWSE 官方數字覆蓋，確保線圖末端與資券卡上的餘額一致。
+    FinMind 掛掉時保留既有檔案，只補當日一筆。
+    """
+    end = now_tw()
+    start = end - timedelta(days=MARGIN_HISTORY_DAYS)
+    start_str, end_str = start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+
+    series = fetcher.fetch_twse_margin_history(start_str, end_str)
+
+    if series is None:
+        if not MARGIN_HISTORY_FILE.exists():
+            logger.warning("融資水位長序列取得失敗且無既有檔案，略過 margin_history.json")
+            return
+        logger.warning("融資水位長序列取得失敗，沿用既有檔案並只補當日")
+        with open(MARGIN_HISTORY_FILE, encoding="utf-8") as f:
+            series = json.load(f).get("series", [])
+
+    twse = (margin_section or {}).get("twse") or {}
+    today_point = {
+        "date": (margin_section or {}).get("date"),
+        "longAmount": twse.get("longAmount", {}).get("balance"),
+        "longBalance": twse.get("longBalance", {}).get("balance"),
+        "shortBalance": twse.get("shortBalance", {}).get("balance"),
+    }
+    if all(v is not None for v in today_point.values()):
+        series = [p for p in series if p.get("date") != today_point["date"]] + [today_point]
+
+    series = sorted(
+        (p for p in series if p.get("date", "") >= start_str),
+        key=lambda p: p["date"],
+    )
+    if not series:
+        logger.warning("融資水位長序列為空，略過寫檔（保留既有 margin_history.json）")
+        return
+
+    payload = {
+        "updated": end.strftime("%Y-%m-%d"),
+        "market": "twse",  # 上市，與資券卡口徑一致（上櫃暫停）
+        "units": {"longAmount": "元", "longBalance": "張", "shortBalance": "張"},
+        "series": series,
+    }
+    MARGIN_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(MARGIN_HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    logger.info(
+        "已寫入 %s（%d 筆，%s ~ %s）",
+        MARGIN_HISTORY_FILE, len(series), series[0]["date"], series[-1]["date"],
+    )
+
+
+def run_update_margin_history(args):
+    """
+    單獨重建融資水位長序列（回補／修復用，任何一天跑都安全）。
+    當日數字沿用現有 sentiment.json，不重打 TWSE。
+    """
+    existing: dict = {}
+    if SENTIMENT_FILE.exists():
+        with open(SENTIMENT_FILE, encoding="utf-8") as f:
+            existing = json.load(f)
+    _write_margin_history(MarketSentimentFetcher(), existing.get("margin"))
 
 
 def run_update_market_sentiment(args):
@@ -126,3 +202,9 @@ def run_update_market_sentiment(args):
                 SENTIMENT_FILE,
                 len(data.get("institutional", {}).get("history", [])),
                 len(data.get("margin", {}).get("history", [])))
+
+    # 融資水位長序列是附加資料，失敗不影響本任務主結果
+    try:
+        _write_margin_history(fetcher, data.get("margin"))
+    except Exception:
+        logger.exception("寫入融資水位長序列失敗，略過")
