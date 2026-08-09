@@ -330,7 +330,6 @@ def _trigger_route(base5, close, start, base_th, gap_th, mkt6, peer6, peer_ok_fl
     need_up, need_dn = up - base5, dn - base5
 
     # 起迄價差要求換算成價位 → 再換成相對今日收盤的漲跌幅，與累積漲跌幅要求取較嚴者。
-    # 明天那個 6 日窗的起始日收盤就是 start（今天往前第 6 個價格點）。
     if gap_th is not None:
         need_up = max(need_up, ((start + gap_th) / close - 1) * 100)
         need_dn = min(need_dn, ((start - gap_th) / close - 1) * 100)
@@ -384,15 +383,23 @@ def _trigger(series, c, close, cfg_k1, mkt6, peer6, peer_ok_flag, as_of):
     gap_th = _gap_threshold(close, as_of, cfg_k1["gap"])
     if gap_th is not None:
         routes.append((cfg_k1["std2"], gap_th))
-    cands = [r for r in (_trigger_route(base5, close, seq[0], bt, gt, mkt6, peer6, peer_ok_flag)
+    # 明天那個 6 營業日窗的**起始日收盤** = seq[1]（明天入窗、最舊那天出窗）。
+    # 不是 seq[0]——seq[0] 只參與累積漲跌幅的第一個日變動，價差窗比累積窗少一個點，見 _gap()。
+    cands = [r for r in (_trigger_route(base5, close, seq[1], bt, gt, mkt6, peer6, peer_ok_flag)
                          for bt, gt in routes) if r]
     if not cands:
         return None
     best = min(cands, key=lambda x: (_KIND_RANK[x["kind"]], x["_need"]))
     return {k: v for k, v in best.items() if k != "_need"}
 
-def _gap(series, c, n=6):
-    """款1「25%版」起迄兩營業日收盤價價差（同 _ret_cum 的 n+1 點窗）。"""
+def _gap(series, c, n=5):
+    """款1 低標版「起迄兩營業日收盤價價差」= 最近 6 個營業日的**頭尾**收盤價差（n=5 個間隔）。
+
+    **與 _ret_cum 的窗不同，這是刻意的。** 累積漲跌幅是 6 個日變動（7 個價格點，含窗前一日
+    到窗首日那一段，已由官方原文 475 筆實證）；價差則是那 6 個營業日自己的頭尾，只有 6 個點。
+    2026-08-09 用 35 交易日重掃兩種窗：7 點窗在 50 元時上市 FP 34/FN 16，6 點窗同門檻
+    FP 10/FN 14（F1 93.6 → 96.8）→ 6 點窗才是官方定義。
+    """
     seq = [e[1][c]["close"] for e in series if c in e[1] and e[1][c].get("close")]
     return abs(seq[-1] - seq[-(n + 1)]) if len(seq) >= n + 1 else None
 
@@ -514,7 +521,7 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
             m_ok = mdiff is not None and mdiff >= DIFF
             p_ok = (pdiff is not None and pdiff >= DIFF) if papp else True
             t = cfg["k1"]
-            g = _gap(series, c, 6)
+            g = _gap(series, c, 5)          # 6 個營業日的頭尾價差，非 _ret_cum 的 7 點窗
             gap_th = _gap_threshold(cl, market_date, t["gap"])   # None＝低標版此時不適用
             lo_ok = gap_th is not None and abs(a) > t["std2"] and g is not None and g >= gap_th
             base_ok = abs(a) > t["std1"] or lo_ok
@@ -523,7 +530,9 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
                 add(c, {"clause": 1, "standard": std,
                         "metrics": {"return_6d": round(a, 2), "market_diff": round(mdiff, 2) if mdiff else None,
                                     "peer_diff": round(pdiff, 2) if pdiff is not None else None,
-                                    "peer_applicable": papp},
+                                    "peer_applicable": papp,
+                                    # 實際起迄價差留檔：門檻是逆推校準值，日後重掃門檻不必再全期重跑 predict
+                                    "gap": round(g, 2) if g is not None else None},
                         "thresholds": {"return": t["std1"] if std == "32%版" else t["std2"], "diff": DIFF},
                         "reason": f"6日累積{a:+.1f}%(>{t['std2' if std=='25%版' else 'std1']}%) 且 與大盤差{mdiff:.1f}%"
                                   + (f"、與同類差{pdiff:.1f}%(均≥20%)" if papp and pdiff is not None else "、同類比較豁免")})
