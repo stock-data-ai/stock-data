@@ -1364,8 +1364,15 @@ def _streak(axis, hitset):
             break
     return s
 
-def forecast(as_of=None, window=30):
-    """讀近 window 個交易日 prediction → 每檔累積狀態 → disposition-forecast.json。"""
+def forecast(as_of=None, window=30, disposal_date=None):
+    """讀近 window 個交易日 prediction → 每檔累積狀態 → disposition-forecast.json。
+
+    `disposal_date`（預設今天）與 `as_of`（價格資料日）**刻意分開**：
+    累積次數、觸發價要用盤後價格算，但「現在誰在處置中」是**今天**的官方事實，不該等收盤。
+    兩者同一天時沒差別；差別出現在盤中／假日／規則換日——2026-08-10 新制上路當天，
+    若沿用 as_of=08/07，畫面整個白天都還在顯示已經出關的 16 檔（禾伸堂等）。
+    回補歷史請顯式傳入當時的日期，否則會拿今天的處置名單去改寫過去。
+    """
     dates = [d for d in _pred_dates() if (as_of is None or d <= as_of)][-window:]
     if not dates:
         print("[forecast] 無 prediction，先跑 predict")
@@ -1414,9 +1421,10 @@ def forecast(as_of=None, window=30):
         if c in meta and t.get("close"):
             meta[c]["close"] = t["close"]
 
-    disposed = disposed_set(as_of)
-    announced = announced_set(as_of)                    # 已公布、尚未生效 → 已達標
-    detail = disposed_detail(as_of)                     # 官方處置公告細節
+    dd = disposal_date or _today()                      # 處置狀態看今天，不看價格資料日
+    disposed = disposed_set(dd)
+    announced = announced_set(dd)                       # 已公布、尚未生效 → 已達標
+    detail = disposed_detail(dd)                        # 官方處置公告細節
     hist = alert_history()                              # 我們過去每天真的發布過的預警名單
     last10, last30 = axis[-10:], axis[-30:]
     stocks = []
@@ -1518,7 +1526,7 @@ def forecast(as_of=None, window=30):
         })
     rank = {"disposed": 0, "pending": 1, "danger": 2, "near": 3, "watch": 4, "safe": 5}
     stocks.sort(key=lambda s: (rank[s["status"]], s["countdown"], -s["count_30d"]))
-    out = {"as_of": as_of, "generated_at": _now(), "window": len(axis),
+    out = {"as_of": as_of, "disposal_as_of": dd, "generated_at": _now(), "window": len(axis),
            "counts": {k: sum(1 for s in stocks if s["status"] == k) for k in rank},
            "stocks": stocks}
     fp = os.path.join(HERE, "disposition-forecast.json")

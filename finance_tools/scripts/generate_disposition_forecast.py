@@ -32,6 +32,7 @@ def _trim(forecast: dict) -> dict:
     keep = [s for s in forecast["stocks"] if s["status"] != "safe"]
     return {
         "as_of": forecast["as_of"],
+        "disposal_as_of": forecast.get("disposal_as_of"),   # 處置名單看的是今天，非價格資料日
         "generated_at": forecast["generated_at"],
         "window": forecast["window"],
         "counts": forecast["counts"],
