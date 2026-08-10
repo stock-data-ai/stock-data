@@ -1070,8 +1070,18 @@ def _disp_reason(text, measures=''):
     streak = f"連續{_cn2int(days.group(1))}日" if days else None
     cm = re.search(r'第([一二三四五六七1-9])款', text or '')
     clause = f"第{_cn2int(cm.group(1))}款" if cm else ('第1款' if (days and _cn2int(days.group(1)) == 3) else None)
-    tm = re.search(r'第([一二三四1-4])次', (measures or '') + (text or ''))
-    times = f"第{_cn2int(tm.group(1))}次" if tm else None
+    blob = (measures or '') + (text or '')
+    tm = re.search(r'第([一二三四1-4])次', blob)
+    if tm:
+        times = f"第{_cn2int(tm.group(1))}次"
+    elif '曾發布處置' in blob:
+        # 櫃買公告不寫「第X次」，改用措辭區分：帶「最近30個營業日內曾發布處置」＝再犯，
+        # 措施是**全面預收**（無單筆10/累計30 門檻）。無法得知確切次數，只能講「第2次以上」。
+        times = '第2次以上'
+    elif '交易單位' in blob:
+        times = '第1次'                      # 有「單筆10/累計30」門檻預收 ＝ 首次
+    else:
+        times = None
     return streak, clause, times
 
 def disposed_detail(as_of=None):
