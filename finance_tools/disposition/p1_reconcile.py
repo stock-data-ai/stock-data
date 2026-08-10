@@ -46,10 +46,12 @@ CFG = {
     "TWSE": {"k1": {"std1": 32.0, "std2": 25.0, "gap": 50.0},
              "k2": {30: (100.0, 85.0), 60: (130.0, 110.0), 90: (160.0, 135.0)},
              "k2_low": None,                       # 上市無低價股特別門檻
+             "pe_hi": 60.0,                        # 款1 類股比較豁免：PE≥60（官方原文「達六十倍」）
              "k4_turn": 10.0},
     "TPEx": {"k1": {"std1": 30.0, "std2": 27.0, "gap": 50.0},
              "k2": {30: (100.0, 80.0), 60: (130.0, 80.0), 90: (160.0, 80.0)},
              "k2_low": {30: 120.0, 60: 180.0, 90: 240.0},   # 收盤<5元 上櫃特別門檻
+             "pe_hi": 65.0,                        # **上櫃是 65 倍不是 60**（櫃買原文「達六十五倍」）
              "k4_turn": 5.0},
 }
 
@@ -84,7 +86,7 @@ def _gap_threshold(close, as_of, legacy):
 
 DIFF = 20.0                    # 款1 6日雙差幅門檻
 PRICE_FLOOR = 5.0             # 收盤<5元 除外（款1，連帶其前置款3/4/7）
-PE_LO, PE_HI = 0.0, 60.0     # 款1 類股比較豁免：PE<0 或 ≥60
+PE_LO = 0.0                  # 款1 類股比較豁免：PE<0；上限見 CFG[market]["pe_hi"]（市場不同）
 MIN_PEERS = 5                # 款1 類股比較豁免：同類<5檔
 # 款3（量能）
 K3_VOLX, K3_XSPREAD = 5.0, 4.0            # 當日量/近60均量 ≥5；放大倍數 − 全市場 ≥4
@@ -504,7 +506,8 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
     def peer_ok(s, peer_n, c):
         """款1類股比較是否適用：同類≥5 且 PE 非(<0或≥60)。"""
         p = M[c]["pe"]
-        return peer_n.get(s, 0) >= MIN_PEERS and not (p is not None and (p < PE_LO or p >= PE_HI))
+        pe_hi = cfg["pe_hi"]
+        return peer_n.get(s, 0) >= MIN_PEERS and not (p is not None and (p < PE_LO or p >= pe_hi))
 
     hits, triggers = {}, {}
     def add(c, rule):
@@ -582,12 +585,17 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
                     continue
                 if r < 0 and not (cl < pc):
                     continue
-            # 豁免1：近60日曾處置 且 6日累積<10%
+            # 豁免1：近60營業日內**曾發布**處置 且 6日累積<10%（官方原文是「曾發布」，
+            # 不是「現在還在處置中」；且必須以預測當日為基準，否則歷史預測會隨今天的名單漂移）
             if c in disposed and m["ret6"] is not None and abs(m["ret6"]) < K2_EX_DISPOSED_RET:
                 continue
-            # 豁免2：近30日曾公告款1 且 6日累積未超過 25%(上市)/27%(上櫃) → 已冷卻，不再算款2
-            # （官方用這條過濾「舊帳」；缺它會讓款2 對已冷卻股持續亂喊，實測 Precision 僅 15.9%）
-            if c in k1_recent and m["ret6"] is not None and abs(m["ret6"]) <= cfg["k1"]["std2"]:
+            # 豁免2：近30日曾公告款1 者，若「當下的 6 日表現」符合下列任一 → 不適用款2。
+            # 官方原文（詳細數據第三條第二項）分三種情事，我們原本只做了第一種：
+            #   (一) 6 日累積未超過 25%(上市)/27%(上櫃)
+            #   (二) 超過門檻，但與全體／同類平均的差幅未達 20% ← (一)+(二) 合起來就是「不成立款1 低標」
+            #   (三) 6 日方向與本款所達標準的漲跌方向相反
+            if c in k1_recent and (not k1_25
+                                   or (m["ret6"] is not None and m["ret6"] * r < 0)):
                 continue
             add(c, {"clause": 2, "standard": f"{p}日",
                     "metrics": {f"return_{p}d": round(r, 2), "market_diff": round(mdiff, 2),
@@ -651,7 +659,7 @@ def predict(market_date):
     sector, pe_api = sector_pe()
     shares_tw, pb, margin = ref_data()
     official_hist = official_index()          # 官方注意名單（含款號）→ 款2 豁免
-    disposed = disposed_set()
+    disposed = disposed_recent(market_date)     # 以預測當日為準，不可用 _today()
     hits, triggers = [], {}
     for mkt in ("TWSE", "TPEx"):
         try:
@@ -682,8 +690,9 @@ def backtest(n=30, end=None):
     days = trading_days_back(end, n)
     sector, pe = sector_pe()
     shares, pb, margin = ref_data()
-    hist, disp = official_index(), disposed_set()
+    hist = official_index()
     for d in days:
+        disp = disposed_recent(d)          # 逐日算：款2 豁免的處置名單以該日為準，不可全期共用
         hits, triggers = [], {}
         for mkt in ("TWSE", "TPEx"):
             try:
@@ -760,7 +769,11 @@ def _roc_dates(text):
     return [d for d in sorted(set(list_cached_days())) if lo <= d <= hi]
 
 def list_cached_days():
-    return sorted(f[3:11] for f in os.listdir(CACHE) if f.startswith("mi_") and f.endswith(".json"))
+    """快取裡**真的有盤後資料**的交易日。非交易日會被寫入 {"stat": "NO_DATA"} 佔位檔
+    （避免每次回補都去打 TWSE、遇 404 整批全滅），那些不算交易日，用檔案大小排除。"""
+    return sorted(f[3:11] for f in os.listdir(CACHE)
+                  if f.startswith("mi_") and f.endswith(".json")
+                  and os.path.getsize(os.path.join(CACHE, f)) > 1000)
 
 def _is_stock(code):
     return len(code) == 4 and code[0].isdigit()
@@ -1017,6 +1030,20 @@ def disposed_set(as_of=None):
     d = as_of or _today()
     return {r["code"] for r in _punish_rows(d)
             if r.get("start") and r["start"] <= d and (not r.get("end") or d <= r["end"])}
+
+def disposed_recent(as_of=None, days=60):
+    """最近 `days` 個營業日內**曾被發布處置**的代號（款2 豁免1 用）。
+
+    與 disposed_set() 的差別：那個是「此刻仍在處置期間」，這個是「窗內曾經發布過」——
+    官方款2 除外情形寫的是後者。且必須吃 as_of：用 _today() 會讓歷史預測隨今天的名單漂移
+    （2026-08-10 新制放人後，昨天算 21 檔、今天算 9 檔，整批歷史款2 成績跟著變）。
+    """
+    d = as_of or _today()
+    axis = [x for x in list_cached_days() if x <= d][-days:]
+    lo = axis[0] if axis else d
+    return {r["code"] for r in _punish_rows(d)
+            if (r.get("announced") or r.get("start") or "") >= lo
+            and (r.get("start") or "") <= d}
 
 def announced_set(as_of=None):
     """**已公布、尚未生效**的代號（start > as_of）——這批已達處置門檻，只是還沒開始。"""
@@ -1323,7 +1350,7 @@ REASON = {1: "近期漲跌劇烈", 2: "中長期漲幅過大", 3: "成交爆量"
 # 款6 仍排除：實測 0 命中（PB 來源落後一日 + 38% 案例需買不到的分點資料），計入等於加 0。
 ACCUM_CLAUSES = {1, 2, 3, 4, 7}
 # 官方名單來源的日子用這組：官方即以款1~7 累積，含我們算不出的款5（分點）與只算到 41% 的款6。
-ACCUM_OFFICIAL = {1, 2, 3, 4, 5, 6, 7}
+ACCUM_OFFICIAL = {1, 2, 3, 4, 5, 6, 7, 8}
 
 def _pred_dates():
     return sorted(f[5:13] for f in os.listdir(PRED) if f.startswith("pred_") and f.endswith(".json"))
