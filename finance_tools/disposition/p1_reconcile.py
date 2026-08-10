@@ -983,8 +983,11 @@ def _shorten_period(r, as_of):
     st, en = r.get("start"), r.get("end")
     if as_of < RULE_2026_08_10 or not (st and en) or st >= RULE_2026_08_10 or en < RULE_2026_08_10:
         return r
+    # 撮合間隔跟著新制走：舊公告原文寫 5分/20分，但 8/10 起實際一律約 2 分鐘。
+    # 不覆寫的話，跨越施行日還在處置中的個股會一直顯示已作廢的舊間隔。
+    out = {**r, "interval": "2分", "rule_2026_08_10": True}
     new_en = _bdays_from(st, 7 if _bdays_span(st, en) >= 12 else 5)   # ≥12 營業日＝當沖加重版
-    return {**r, "end": min(en, new_en), "period_shortened": True} if new_en < en else r
+    return {**out, "end": new_en, "period_shortened": True} if new_en < en else out
 
 def _punish_rows(as_of=None):
     fp = os.path.join(CACHE, "punish_rows.json")
