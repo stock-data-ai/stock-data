@@ -12,6 +12,8 @@
 predictions/cache 皆可再生（gitignore），CI 每次重建，故 stateless。
 """
 
+from __future__ import annotations       # str | None 註記需要（本機 venv 為 Python 3.9）
+
 import base64
 import json
 import os
@@ -24,6 +26,10 @@ from finance_tools.disposition import p1_reconcile as engine
 STOCK_MAP_REPO = "CHIJUI0128/stock_map"
 STOCK_MAP_BRANCH = "publish_cloudflare"
 FORECAST_PATH = "src/data/market/disposition-forecast.json"
+# 舊版處置名單（/live 契約，ADR-010）。原由 stock_map fetch_punishments.py 打 TWSE openapi 產生，
+# 那支只有上市、沒套 2026-08-10 新制、且沒有排程（靠 company-topics/index.json 被 push 才跑）。
+# 改由同一個引擎產生 → 個股頁警示／熱力圖黃框／公司資料庫篩選／推播／每日焦點五處共用同一真相源。
+PUNISH_PATH = "src/data/market/punishments.json"
 BACKTEST_DAYS = 30
 
 
@@ -40,19 +46,20 @@ def _trim(forecast: dict) -> dict:
     }
 
 
-def _push_to_stock_map(output: dict, pat: str) -> None:
+def _push_to_stock_map(output: dict, pat: str, path: str = FORECAST_PATH,
+                       message: str | None = None) -> None:
     content_b64 = base64.b64encode(
         json.dumps(output, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).decode("ascii")
     headers = {"Authorization": f"token {pat}", "Accept": "application/vnd.github.v3+json"}
 
-    get_url = f"https://api.github.com/repos/{STOCK_MAP_REPO}/contents/{FORECAST_PATH}?ref={STOCK_MAP_BRANCH}"
+    get_url = f"https://api.github.com/repos/{STOCK_MAP_REPO}/contents/{path}?ref={STOCK_MAP_BRANCH}"
     sha_resp = requests.get(get_url, headers=headers, timeout=30)
     sha = sha_resp.json().get("sha") if sha_resp.ok else None
 
-    put_url = f"https://api.github.com/repos/{STOCK_MAP_REPO}/contents/{FORECAST_PATH}"
+    put_url = f"https://api.github.com/repos/{STOCK_MAP_REPO}/contents/{path}"
     payload = {
-        "message": f"sync: 處置股預警更新 {output['as_of']}",
+        "message": message or f"sync: 處置股預警更新 {output['as_of']}",
         "content": content_b64,
         "branch": STOCK_MAP_BRANCH,
     }
@@ -60,7 +67,7 @@ def _push_to_stock_map(output: dict, pat: str) -> None:
         payload["sha"] = sha
     resp = requests.put(put_url, headers=headers, json=payload, timeout=30)
     resp.raise_for_status()
-    print(f"[disposition] ✅ disposition-forecast.json 已推送至 stock_map ({resp.status_code})")
+    print(f"[disposition] ✅ {path.rsplit('/', 1)[-1]} 已推送至 stock_map ({resp.status_code})")
 
 
 def run(dry_run: bool = False) -> None:
@@ -92,12 +99,25 @@ def run(dry_run: bool = False) -> None:
         print("[disposition] ⚠️  非safe=0 或處置名單為空，疑似資料異常，中止推送。")
         return
 
+    # 舊版處置名單同步產生。護欄：0 筆代表官方端點抓失敗，推上去會讓四個畫面同時清空。
+    punish = engine.export_punishments()
+    print(f"[disposition] punishments.json {punish['count']} 筆（含上櫃與權證）")
+    if punish["count"] == 0:
+        print("[disposition] ⚠️  處置名單 0 筆，疑似抓取失敗，該檔不推送。")
+        punish = None
+
     if pat and not dry_run:
         _push_to_stock_map(output, pat)
+        if punish:
+            _push_to_stock_map(punish, pat, PUNISH_PATH,
+                               f"sync: 處置股名單更新 {output['as_of']}")
     else:
-        out_path = Path("/tmp/disposition-forecast.json")
-        out_path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"[disposition] dry_run → 已寫入 {out_path}")
+        for name, data in (("disposition-forecast", output), ("punishments", punish)):
+            if data is None:
+                continue
+            out_path = Path(f"/tmp/{name}.json")
+            out_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"[disposition] dry_run → 已寫入 {out_path}")
 
 
 if __name__ == "__main__":

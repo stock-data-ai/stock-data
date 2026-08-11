@@ -935,7 +935,7 @@ def _punish_rows_twse(start, end):
         streak, clause, times = _disp_reason(str(r[5]) + str(r[8]), str(r[7]))
         out.append({"code": str(r[2]), "market": "市", "name": str(r[3]),
                     "announced": _disp_roc(str(r[1])), "start": st, "end": en,
-                    "interval": _disp_interval(str(r[8])),
+                    "interval": _disp_interval(str(r[8])), "detail": str(r[8]).strip(),
                     "streak": streak, "clause": clause, "times": times})
     return out
 
@@ -951,7 +951,7 @@ def _punish_rows_tpex(start, end):
         out.append({"code": str(r[2]), "market": "櫃",
                     "name": re.sub(r"\(.*", "", str(r[3])).strip(),   # 名稱欄含 (../連結) 要去掉
                     "announced": _disp_roc(str(r[1])), "start": st, "end": en,
-                    "interval": _disp_interval(str(r[7])),
+                    "interval": _disp_interval(str(r[7])), "detail": str(r[7]).strip(),
                     "streak": streak, "clause": clause, "times": times})
     return out
 
@@ -1013,15 +1013,16 @@ def _shorten_period(r, as_of):
     # 不覆寫的話，跨越施行日還在處置中的個股會一直顯示已作廢的舊間隔。
     out = {**r, "interval": "2分", "rule_2026_08_10": True}
     new_en = _bdays_from(st, 7 if _bdays_span(st, en) >= 12 else 5)   # ≥12 營業日＝當沖加重版
-    return {**out, "end": new_en, "period_shortened": True} if new_en < en else out
+    return {**out, "end": new_en, "end_original": en, "period_shortened": True} if new_en < en else out
 
-def _punish_rows(as_of=None):
+def _punish_rows(as_of=None, stocks_only=True):
     fp = os.path.join(CACHE, "punish_rows.json")
     if not os.path.exists(fp):
         return []
     d = as_of or _today()
     try:
-        return [_shorten_period(r, d) for r in json.load(open(fp)) if _is_stock(r.get("code", ""))]
+        return [_shorten_period(r, d) for r in json.load(open(fp))
+                if not stocks_only or _is_stock(r.get("code", ""))]
     except (json.JSONDecodeError, OSError):
         return []
 
@@ -1030,6 +1031,54 @@ def disposed_set(as_of=None):
     d = as_of or _today()
     return {r["code"] for r in _punish_rows(d)
             if r.get("start") and r["start"] <= d and (not r.get("end") or d <= r["end"])}
+
+_ORD = {1: "第一次", 2: "第二次", 3: "第三次", 4: "第四次", 5: "第五次"}
+
+def _to_roc(d):
+    """20260811 → 115/08/11（舊 punishments.json 用民國紀年）。"""
+    return f"{int(d[:4]) - 1911}/{d[4:6]}/{d[6:8]}" if d and len(d) == 8 else ""
+
+def export_punishments(as_of=None):
+    """產出 **舊版 `punishments.json`** 的內容（schema 一字不改）。
+
+    這支檔是 `/live` 契約（ADR-010，已上架 App 直接讀），且同時撐著五個地方：
+    個股頁處置警示卡、熱力圖黃框、公司資料庫「只顯示處置股」、手機推播、每日焦點排除。
+    原本由 stock_map `scripts/finance/fetch_punishments.py` 打 TWSE openapi 產生，那支有三個病：
+      1. **只有上市**——上櫃處置股在個股頁完全沒警示
+      2. 沒套 2026-08-10 新制銜接 → 已解除的還標成處置中、撮合還寫 5分/20分
+      3. 靠 company-topics/index.json 被 push 才觸發，沒有排程 → 官方晚上公告、隔天下午才推播
+    改由本引擎產生後三個都解決，且與處置股預警 tab 共用同一個真相源。
+    含權證（維持舊檔內容範圍；推播規則自己會濾成 4 碼股票）。
+    """
+    d = as_of or _today()
+    rows = []
+    for r in sorted(_punish_rows(d, stocks_only=False),
+                    key=lambda x: (x.get("code") or "", x.get("start") or "")):
+        st, en = r.get("start"), r.get("end")
+        # 只留「尚未結束」的：舊檔來源 openapi 本來就只回生效中，且這支是 /live 檔，
+        # 每次開 App 都會抓 —— 全部歷史 525 筆會讓它從幾十 KB 漲成數百 KB。
+        if not (st and en) or en < d:
+            continue
+        m = _TIMES_RE.search(r.get("times") or "")
+        n = int(m.group(1)) if m else None
+        measure = f"{_ORD.get(n, f'第{n}次')}處置" if n else "處置"
+        if (r.get("times") or "").endswith("以上"):
+            measure = f"{_ORD.get(n, '第二次')}以上處置"
+        detail = r.get("detail") or ""
+        if r.get("period_shortened"):
+            # 官方不會改寫舊制公告原文，但實際已提前解除 → 明講，否則 details 會跟期間打架
+            detail += (f"\n＊本檔原公告處置至 {_to_roc(r['end_original'])}；"
+                       f"因 115/08/10 起施行之新制（處置期間縮短為 5 個營業日、"
+                       f"當日沖銷加重者 7 個營業日，撮合改約每 2 分鐘一次），"
+                       f"實際處置至 {_to_roc(en)} 止。")
+        rows.append({
+            "code": r["code"], "name": r.get("name") or "",
+            "period": f"{_to_roc(st)}～{_to_roc(en)}",
+            "startDate": _to_roc(st), "endDate": _to_roc(en),
+            "measure": measure, "details": detail,
+            "market": "TPEx" if r.get("market") == "櫃" else "TWSE",
+        })
+    return {"lastUpdated": _now(), "count": len(rows), "punishments": rows}
 
 def disposed_recent(as_of=None, days=60):
     """最近 `days` 個營業日內**曾被發布處置**的代號（款2 豁免1 用）。
