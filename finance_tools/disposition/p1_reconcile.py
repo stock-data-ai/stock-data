@@ -1416,6 +1416,14 @@ def _pred_dates():
 
 _TIMES_RE = re.compile(r"第\s*(\d+)\s*次")
 
+# 前端資料契約只要這幾個欄位（src/features/disposition/types.ts DispositionDisposal）。
+# **必須投影**：punish row 帶著公告全文 detail（每筆約 500 字），整包塞進 forecast
+# 會讓這支 /live 檔從 70KB 漲到 145KB —— 那串全文只有 punishments.json 需要。
+_DISPOSAL_KEYS = ("market", "name", "interval", "start", "end", "streak", "clause", "times", "pending")
+
+def _pub_disposal(r):
+    return {k: r[k] for k in _DISPOSAL_KEYS if k in r} if r else None
+
 def _pub_trigger(t):
     """對外只給前端要用的欄位（base5/threshold 是內部診斷用，不必進資料契約）。"""
     return {k: t[k] for k in ("kind", "price", "pct", "margin") if k in t} if t else None
@@ -1602,7 +1610,7 @@ def forecast(as_of=None, window=30, disposal_date=None):
             "count_10d": cnt10, "count_30d": cnt30, "flags": flags,
             "plain_reason": reason, "recent_hits": recent,
             "rules_today": meta[c].get("rules_today", []),
-            "disposal": detail.get(c) if status in ("disposed", "pending") else None,
+            "disposal": _pub_disposal(detail.get(c)) if status in ("disposed", "pending") else None,
             **(_next_disposition(disp, countdown, cnt10) if disp else {}),
             **(_alerted(hist, c, disp_any["start"]) if disp_any and disp_any.get("start") else {}),
             "trigger": _pub_trigger(triggers.get(c)),
@@ -1620,7 +1628,7 @@ def forecast(as_of=None, window=30, disposal_date=None):
             "consecutive": 0, "consecutive_k1": 0, "count_10d": 0, "count_30d": 0,
             "flags": {}, "recent_hits": [], "rules_today": [],
             "plain_reason": "已公布處置，尚未生效" if c in announced else "官方處置中",
-            "disposal": d,
+            "disposal": _pub_disposal(d),
             **(_alerted(hist, c, d["start"]) if d.get("start") else {}),
         })
     rank = {"disposed": 0, "pending": 1, "danger": 2, "near": 3, "watch": 4, "safe": 5}
