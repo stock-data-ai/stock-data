@@ -116,6 +116,14 @@ def fj(url):
     r.raise_for_status()
     return r.json()
 
+MIN_DAILY_ROWS = 300     # 上市約 1100 檔、上櫃約 870 檔；低於此值必為殘缺回應
+
+def _rows_ok(x):
+    """回應是否「看起來完整」。**殘缺的當日資料不可入快取**——它會被後續每一次執行重用，
+    而 _series 把缺日當成非交易日略過，6 日窗就會偷偷往前多吃一天、累積漲跌幅被灌水。
+    實例：2026-08-06 上櫃整天缺資料 → 8/10、8/11 上櫃款1 誤報從 0 暴增到 9~13 檔。"""
+    return any(len(t.get("data") or []) >= MIN_DAILY_ROWS for t in (x.get("tables") or []))
+
 # ── 每日全個股資料（含量價/PE/發行股數）──────────────────────
 def mi_index(date):
     """上市全個股 {code:{name,close,open,vol,amount,pe}}；快取。回 None=非交易日。"""
@@ -124,7 +132,7 @@ def mi_index(date):
         x = json.load(open(cp))
     else:
         x = fj(f"https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date={date}&type=ALLBUT0999")
-        if x.get("stat") == "OK":
+        if x.get("stat") == "OK" and _rows_ok(x):
             json.dump(x, open(cp, "w"))
     if x.get("stat") != "OK" or "tables" not in x:
         return None
@@ -147,7 +155,7 @@ def tpex_daily(date):
         x = json.load(open(cp))
     else:
         x = fj(f"https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?date={ymd_slash}&type=EW&response=json")
-        if str(x.get("stat", "")).lower() == "ok" and str(x.get("date", "")) == date:
+        if str(x.get("stat", "")).lower() == "ok" and str(x.get("date", "")) == date and _rows_ok(x):
             json.dump(x, open(cp, "w"))
         elif str(x.get("date", "")) != date:
             return None
@@ -245,21 +253,29 @@ def trading_days_back(date, n):
 
 # ── 引擎輔助 ────────────────────────────────────────────────
 def _series(loader, market_date, n):
-    """回 [(date, data)] 由舊到新，最多 n 個交易日（含 market_date）。缺資料的日子略過。"""
-    out = []
+    """回 (series, gaps)：series 為 [(date, data)] 由舊到新最多 n 個交易日；
+    gaps 為「行事曆上是交易日、但該市場抓不到資料」的日期集合。
+
+    **缺日不可與非交易日混為一談**：_ret_cum 取的是最後 n+1 個「有資料」的點，
+    中間少一天，窗就會往前多吃一天、把多出來的漲幅算進去（見 _rows_ok 的實例）。
+    """
+    out, gaps = [], set()
+    cal = set(list_cached_days())        # 交易日行事曆（上市有盤後資料的日子）
     d = datetime.datetime.strptime(market_date, "%Y%m%d").date()
     for _ in range(n * 3):
         ymd = d.strftime("%Y%m%d")
         try:
             data = loader(ymd)
         except Exception:
-            data = None                  # 網路失敗當缺日跳過（不中斷整體）
+            data = None                  # 網路失敗當缺日（不中斷整體），但要記進 gaps
         if data:
             out.append((ymd, data))
+        elif ymd in cal:
+            gaps.add(ymd)                # 是交易日卻沒資料 → 真的缺，不是休市
         if len(out) >= n:
             break
         d -= datetime.timedelta(days=1)
-    return list(reversed(out))
+    return list(reversed(out)), gaps
 
 def _ret(series, c, p):
     """c 的 p 營業日累積漲跌%（close[t]/close[t-(p-1)]-1）。資料不足回 None。"""
@@ -444,7 +460,14 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
     cfg = CFG[market]
     # 款2 豁免用：近30日曾被官方公告款1 的代號（official_hist = official_index()）
     k1_recent = official_k1_recent(official_hist, market_date) if official_hist else set()
-    series = _series(loader, market_date, 90)
+    series, gaps = _series(loader, market_date, 90)
+    recent = {d for d, _ in series[-7:]} | gaps
+    near_gaps = sorted(g for g in gaps if g >= min(recent, default=market_date))
+    if near_gaps:
+        # 款1 的 6 日窗會吃到缺日 → 算出來的累積漲跌幅是灌水的，整個市場跳過比出錯好。
+        # 資料補上後（下一班或手動 predict）就會自動恢復。
+        print(f"[{market}] {market_date} 近 7 個交易日內有缺日 {near_gaps} → 略過該市場（避免 6 日窗灌水）")
+        return [], {}
     if not series or series[-1][0] != market_date:
         # 該市場當日尚未發布收盤（上櫃比上市晚），整個市場略過。回傳型別要與正常路徑一致，
         # 否則 predict 端的 tuple 拆解會拋錯、被 except 吞掉，變成「上櫃無聲消失」。
