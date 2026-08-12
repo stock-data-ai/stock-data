@@ -12,7 +12,9 @@
     "netMargin": -5.38,
     "eps": -0.15,
     "dividendFrequency": "年",
-    "dividendYield": 0.0
+    "dividendYield": 0.0,
+    "marginBalance": 0,
+    "shortBalance": 0
   },
   "lastUpdated": "2026-08-12",
   "historical": {
@@ -2616,7 +2618,17 @@
         "yoy": null
       }
     ],
-    "dividends": null
+    "dividends": null,
+    "marginTrading": {
+      "2026-08-12": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 0,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
+      }
+    }
   },
   "shareholderDataHistory": {
     "20260320": [
