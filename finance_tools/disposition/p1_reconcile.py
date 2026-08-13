@@ -51,9 +51,12 @@ CFG = {
     # 上櫃低標 2026-08-13 校準：39 個交易日、4603 筆候選離線掃門檻，27→25 使
     # F1 88.4→89.6（TP 267→275、FN 42→34）。高標 30、價差 50、差幅 20 皆已是最佳解。
     # 25 與上市低標一致（上市那個已由法條原文證實），比原本憑空推的 27 有依據。
-    # k1.pre = 款3/4/7 的前置漲跌幅門檻，與款1 低標 std2 **分開**：兩者官方本就是不同條文，
-    # 綁在一起時把 std2 27→25 會讓款3/4 前置一起放寬，FP 從 5/7 暴增到 22/25。
-    "TPEx": {"k1": {"std1": 30.0, "std2": 25.0, "gap": 50.0, "pre": 27.0},
+    # 上櫃三個數字皆取自**官方公告原文自述值**（2026-08-13，見文件 §0m）：
+    #   櫃買注意公告會寫出它自己算的數字，例如
+    #   「累積之最後成交價漲幅達23.22%且起迄兩個營業日之最後成交價價差達新臺幣41元(第一款)」
+    #   高標實測最小 30.01% → 30；低標最小 23.05% → 23；價差最小 40.2 元 → 40。
+    # k1.pre = 款3/4/7 前置漲跌幅（不含價差），與上市同結構＝低標本身。
+    "TPEx": {"k1": {"std1": 30.0, "std2": 23.0, "gap": 40.0, "pre": 27.0},
              "k2": {30: (100.0, 80.0), 60: (130.0, 80.0), 90: (160.0, 80.0)},
              "k2_low": {30: 120.0, 60: 180.0, 90: 240.0},   # 收盤<5元 上櫃特別門檻
              "pe_hi": 65.0,                        # **上櫃是 65 倍不是 60**（櫃買原文「達六十五倍」）
@@ -308,7 +311,9 @@ def self_k1_history(series, sector, cfg, lookback=30):
     用它當款2 豁免的 proxy。純用手上的 series 逐日重算，不讀 predictions/，故與執行順序無關。
     比官方標籤粗（省略 PE 豁免、用同類≥5 判定），但豁免本身只是「曾被點名過」的粗篩。"""
     out = set()
-    std2 = cfg["k1"]["std2"]
+    # 必須套**完整**款1 條件（高標 or 低標＋起迄價差）。只用 std2 當門檻的話，
+    # 上櫃低標 23% 沒有價差把關會過度寬鬆 → 款2 被過度豁免（實測 TP 96→84）。
+    t1 = cfg["k1"]
     for t in range(len(series) - 1, max(len(series) - 1 - lookback, 6), -1):
         today = series[t][1]
         rets, by_sec = {}, {}
@@ -329,8 +334,12 @@ def self_k1_history(series, sector, cfg, lookback=30):
         peer = {s: statistics.mean(v) for s, v in by_sec.items()}
         pn = {s: len(v) for s, v in by_sec.items()}
         for c, a in rets.items():
-            if abs(a) <= std2 or abs(a - mkt) < DIFF:
+            if abs(a - mkt) < DIFF:
                 continue
+            if abs(a) <= t1["std1"]:
+                g = _gap(series[:t + 1], c, 5)
+                if not (abs(a) > t1["std2"] and g is not None and g >= t1["gap"]):
+                    continue
             s = sector.get(c, "?")
             if pn.get(s, 0) >= MIN_PEERS and abs(a - peer[s]) < DIFF:
                 continue
