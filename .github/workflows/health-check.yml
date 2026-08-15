@@ -220,6 +220,39 @@ jobs:
                   'run_id':   (run or {}).get('id'),
               })
 
+          # ── 端到端檢查：/live 的資料日有沒有跟上我們算出來的 ────────────────
+          # 為什麼要這條：CI 全綠、git 有推、資料也對，但只要 Cloudflare Pages 建置失敗，
+          # 使用者看到的就是舊資料，而且**沒有任何一個既有檢查會發現**。
+          # 2026-08-14 因 podcast 公開投影沒同步，部署連續失敗 14 次、卡了一天多才被人問出來。
+          # 比對「最新一份預警快照的資料日」vs「線上 /live 的 as_of」——一條就涵蓋
+          # 排程有沒有跑、git 有沒有推、CF 有沒有部署成功。
+          def check_live_freshness():
+              import glob
+              snaps = sorted(glob.glob('finance_tools/disposition/forecasts/forecast_*.json'))
+              expected = os.path.basename(snaps[-1])[9:17] if snaps else None
+              live = None
+              try:
+                  req = urllib.request.Request(
+                      'https://aistockmap.com/live/disposition-forecast.json',
+                      headers={'User-Agent': 'stock-data-health-check'})
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      live = json.loads(resp.read().decode('utf-8')).get('as_of')
+              except Exception as e:
+                  print(f'[live] 取得失敗: {e}')
+              if not expected or not live:
+                  status, detail = 'missing', f'無法比對（快照 {expected or "—"} / 線上 {live or "取不到"}）'
+              elif live >= expected:
+                  status, detail = 'ok', f'線上 {live}'
+              else:
+                  # 落後就是部署沒成功 —— 去 Cloudflare Pages 看 build log
+                  status, detail = 'failed', f'線上 {live} 落後快照 {expected}'
+              results.append({
+                  'label': f'/live 資料新鮮度（{detail}）', 'sched': '—', 'status': status,
+                  'run_time': '—', 'duration': '—', 'url': None, 'run_id': None,
+              })
+
+          check_live_freshness()
+
           ok_n   = sum(1 for r in results if r['status'] == 'ok')
           fail_n = sum(1 for r in results if r['status'] == 'failed')
           miss_n = sum(1 for r in results if r['status'] in ('missing', 'running'))
