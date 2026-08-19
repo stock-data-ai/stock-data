@@ -14,6 +14,7 @@ from typing import Dict, Optional
 import requests
 
 from finance_tools.utils.retry import retry as _retry
+from finance_tools.utils.twse_url import bust as _bust
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +61,7 @@ class TWSEShareholdingFetcher:
 
     def _fetch_listed(self) -> Optional[Dict[str, float]]:
         try:
-            resp = requests.get(self.TWSE_URL, timeout=20, headers=_BROWSER_HEADERS)
+            resp = requests.get(_bust(self.TWSE_URL), timeout=20, headers=_BROWSER_HEADERS)
             resp.raise_for_status()
             data = resp.json()
             if data.get("stat") != "OK":

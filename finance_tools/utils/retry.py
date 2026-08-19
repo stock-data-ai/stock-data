@@ -6,11 +6,13 @@ logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
-_RETRY_DELAYS = (5, 15, 30)  # 秒，最多 3 次重試
+# 秒，最多 5 次重試（共 6 次嘗試，約 68 秒）。TWSE 邊緣快取會間歇回空資料，
+# 呼叫端已加 cache buster，但仍需多幾次才夠把壞快取磨掉（見 utils/twse_url.py）。
+_RETRY_DELAYS = (3, 5, 10, 20, 30)
 
 
 def retry(fn: Callable[[], T], label: str) -> T:
-    """執行 fn()，失敗（回傳 None 或拋出例外）時最多重試 3 次（5s/15s/30s）。
+    """執行 fn()，失敗（回傳 None 或拋出例外）時最多重試 5 次（3/5/10/20/30s）。
     所有重試後仍有例外則重新拋出；無資料（None）則回傳 None。
     """
     last_exc: Exception | None = None

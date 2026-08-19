@@ -16,6 +16,7 @@ from typing import Dict, Optional
 import requests
 
 from finance_tools.utils.retry import retry as _retry
+from finance_tools.utils.twse_url import bust as _bust
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +87,7 @@ class TWSEValuationFetcher:
     # ──────────────────────────────────────────────────────────────
     def _fetch_listed(self) -> Optional[Dict[str, ValuationRecord]]:
         try:
-            close_resp = requests.get(self.STOCK_DAY_ALL_URL, timeout=20, headers=_BROWSER_HEADERS)
+            close_resp = requests.get(_bust(self.STOCK_DAY_ALL_URL), timeout=20, headers=_BROWSER_HEADERS)
             close_resp.raise_for_status()
             close_data = close_resp.json()
             if close_data.get("stat") != "OK" or not close_data.get("data"):
@@ -95,7 +96,7 @@ class TWSEValuationFetcher:
             # TWSE 對同一連線的連續請求有速率限制，緊接著打第二個 API 會被卡住 timeout
             time.sleep(3)
 
-            ratio_resp = requests.get(self.BWIBBU_ALL_URL, timeout=20, headers=_BROWSER_HEADERS)
+            ratio_resp = requests.get(_bust(self.BWIBBU_ALL_URL), timeout=20, headers=_BROWSER_HEADERS)
             ratio_resp.raise_for_status()
             ratio_data = ratio_resp.json()
             ratios = {}

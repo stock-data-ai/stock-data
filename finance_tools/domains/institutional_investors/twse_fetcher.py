@@ -15,6 +15,7 @@ from typing import Dict, Optional
 import requests
 
 from finance_tools.utils.retry import retry as _retry
+from finance_tools.utils.twse_url import bust as _bust
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +104,7 @@ class TWSEInstitutionalFetcher:
     # ──────────────────────────────────────────────────────────────
     def _fetch_listed(self, date_str: str) -> Optional[Dict[str, InstitutionalRecord]]:
         """網路錯誤直接拋出（由 retry 重試後 re-raise）；stat != OK 代表非交易日，回傳 None。"""
-        url = self.TWSE_URL.format(date=date_str)
+        url = _bust(self.TWSE_URL.format(date=date_str))
         resp = requests.get(url, timeout=20, headers=_BROWSER_HEADERS)
         resp.raise_for_status()
         data = resp.json()
