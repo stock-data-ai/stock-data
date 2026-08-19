@@ -58,7 +58,8 @@ def run_update_marketcap_inst(args):
         logger.error(f"❌ TWSE T86 批次撈取失敗（含重試）: {e}，中止執行。")
         sys.exit(1)
     pre_shareholding = TWSEShareholdingFetcher().fetch_all()
-    pre_valuation = TWSEValuationFetcher().fetch_all()
+    valuation_fetcher = TWSEValuationFetcher()
+    pre_valuation = valuation_fetcher.fetch_all(today_str)
 
     if not pre_inst:
         logger.error("❌ TWSE/TPEx 三大法人批次撈取失敗（含重試），中止執行。")
@@ -72,6 +73,13 @@ def run_update_marketcap_inst(args):
         if not pre_valuation:
             logger.error(f"STALE: {today_str} 為交易日，但市值估值資料撈取為空，終止任務。")
             sys.exit(1)
+
+    # 上市估值失敗不即刻中止：三大法人已在手，值得先寫入。改記旗標、跑完再讓整批紅燈——
+    # 否則只剩上櫃的那 985 支會被當成全市場成功（2026-08-18 那班就是這樣綠燈放行，
+    # 上市市值靜默停更兩天沒人發現）。
+    listed_valuation_missing = (
+        is_tw_trading_day(parse_yyyymmdd(today_str)) and not valuation_fetcher.listed_ok
+    )
 
     logger.info(f"✅ TWSE/TPEx 批次資料就緒: inst={len(pre_inst)}, shareholding={len(pre_shareholding)}, valuation={len(pre_valuation)}")
 
@@ -137,3 +145,10 @@ def run_update_marketcap_inst(args):
     if no_marketcap:
         logger.info(f"今日無市值資料: {len(no_marketcap)} 家（記錄於 quality report）")
     logger.info(f"{'='*60}\n")
+
+    if listed_valuation_missing:
+        logger.error(
+            f"STALE: {today_str} 為交易日，但 TWSE 上市收盤價/估值撈取失敗，"
+            f"上市股票市值/PE/PB/殖利率本次未更新（三大法人已寫入）。"
+        )
+        sys.exit(1)

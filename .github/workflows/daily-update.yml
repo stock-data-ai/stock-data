@@ -56,7 +56,9 @@ jobs:
           set -o pipefail
           uv run finance_tools/cli.py update-marketcap-inst $ARGS 2>&1 | tee /tmp/run.log
 
+      # 更新步驟可能「資料已寫入但整批判紅」（例如上市估值缺漏），此時仍要把寫好的資料收進 repo
       - name: 提交變更
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -105,26 +107,32 @@ jobs:
               echo "| TPEx 上櫃三大法人 | ❌ 失敗 | — |"
             fi
 
-            # 外資持股
+            # 外資持股（上市 / 上櫃 各自判斷——只看其中一邊會讓另一邊整組掛掉還顯示 ✅）
             if grep -q "外資持股比例合計" "$LOG"; then
               N=$(grep "外資持股比例合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
-              if grep -q "tpex_3insti_qfii: 無法取得資料" "$LOG"; then
-                echo "| 外資持股比例 | ⚠️ 僅 TWSE（TPEx 失敗）| $N |"
-              else
-                echo "| 外資持股比例 | ✅ | $N |"
-              fi
+              grep -q "TWSE MI_QFIIS: .*支上市股票" "$LOG" && TW=1 || TW=0
+              grep -q "TPEx tpex_3insti_qfii: .*支上櫃股票" "$LOG" && TP=1 || TP=0
+              case "$TW$TP" in
+                11) echo "| 外資持股比例 | ✅ | $N |" ;;
+                10) echo "| 外資持股比例 | ⚠️ 僅上市（上櫃失敗）| $N |" ;;
+                01) echo "| 外資持股比例 | ⚠️ 僅上櫃（**上市失敗**）| $N |" ;;
+                *)  echo "| 外資持股比例 | ❌ 失敗 | — |" ;;
+              esac
             else
               echo "| 外資持股比例 | ❌ 失敗 | — |"
             fi
 
-            # 收盤價/PE/PB/殖利率
+            # 收盤價/PE/PB/殖利率（上市 / 上櫃 各自判斷）
             if grep -q "市值估值合計" "$LOG"; then
               N=$(grep "市值估值合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
-              if grep -q "tpex_mainboard_quotes.*無法取得資料" "$LOG"; then
-                echo "| 收盤價／PE／PB／殖利率 | ⚠️ 僅 TWSE（TPEx 失敗）| $N |"
-              else
-                echo "| 收盤價／PE／PB／殖利率 | ✅ | $N |"
-              fi
+              grep -q "TWSE 市值估值: .*支上市股票" "$LOG" && TW=1 || TW=0
+              grep -q "TPEx 市值估值: .*支上櫃股票" "$LOG" && TP=1 || TP=0
+              case "$TW$TP" in
+                11) echo "| 收盤價／PE／PB／殖利率 | ✅ | $N |" ;;
+                10) echo "| 收盤價／PE／PB／殖利率 | ⚠️ 僅上市（上櫃失敗）| $N |" ;;
+                01) echo "| 收盤價／PE／PB／殖利率 | ⚠️ 僅上櫃（**上市失敗**）| $N |" ;;
+                *)  echo "| 收盤價／PE／PB／殖利率 | ❌ 失敗 | — |" ;;
+              esac
             else
               echo "| 收盤價／PE／PB／殖利率 | ❌ 失敗 | — |"
             fi
