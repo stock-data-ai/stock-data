@@ -12,6 +12,11 @@ jobs:
   health-check:
     runs-on: ubuntu-latest
     steps:
+      # /live 新鮮度那條要讀 repo 裡的 forecast 快照來比對。沒有這步 glob 永遠是空的，
+      # 該檢查會靜靜降級成「無法比對」——2026-08-15 加進來後就這樣黃燈了五天沒人發現。
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - name: Run health check and send report email
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,9 +47,9 @@ jobs:
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '17:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 17, 'minute': 5},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
+              {'label': '18:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 18, 'minute': 0,  'days': [1,2,3,4,5]},
               {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
-              {'label': '20:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 20, 'minute': 0,  'days': [1,2,3,4,5]},
               {'label': '20:30 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 20, 'minute': 30},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '21:05 Daily Update（第三次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
@@ -229,20 +234,28 @@ jobs:
           # 比對「最新一份預警快照的資料日」vs「線上 /live 的 as_of」——一條就涵蓋
           # 排程有沒有跑、git 有沒有推、CF 有沒有部署成功。
           def check_live_freshness():
-              import glob
+              import glob, time
               snaps = sorted(glob.glob('finance_tools/disposition/forecasts/forecast_*.json'))
               expected = os.path.basename(snaps[-1])[9:17] if snaps else None
               live = None
-              try:
-                  req = urllib.request.Request(
-                      'https://aistockmap.com/live/disposition-forecast.json',
-                      headers={'User-Agent': 'stock-data-health-check'})
-                  with urllib.request.urlopen(req, timeout=30) as resp:
-                      live = json.loads(resp.read().decode('utf-8')).get('as_of')
-              except Exception as e:
-                  print(f'[live] 取得失敗: {e}')
+              for attempt in range(3):        # 網站偶發抖動不該讓整份報告變紅
+                  try:
+                      req = urllib.request.Request(
+                          'https://aistockmap.com/live/disposition-forecast.json',
+                          headers={'User-Agent': 'stock-data-health-check'})
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          live = json.loads(resp.read().decode('utf-8')).get('as_of')
+                      break
+                  except Exception as e:
+                      print(f'[live] 第 {attempt + 1}/3 次取得失敗: {e}')
+                      if attempt < 2:
+                          time.sleep(5)
               if not expected or not live:
-                  status, detail = 'missing', f'無法比對（快照 {expected or "—"} / 線上 {live or "取不到"}）'
+                  # **比對不出來 = 這條檢查自己壞了，不是「排程沒跑」。** 原本標成 missing／
+                  # 「未執行」，看起來只是某一班沒跑到，所以 2026-08-15 少 checkout 之後，
+                  # 它靜靜黃燈了五天沒人看出來。標成失敗才會逼人去看它為什麼比不了。
+                  broken = '讀不到本地快照（checkout 是否遺漏？）' if not expected else f'連不上線上（本地快照 {expected}）'
+                  status, detail = 'failed', f'檢查失效：{broken}'
               elif live >= expected:
                   status, detail = 'ok', f'線上 {live}'
               else:
