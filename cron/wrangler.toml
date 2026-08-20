@@ -29,8 +29,8 @@ crons = [
   "30 13 * * 2,3,4,5,6", # margin-trading-update     台灣 21:30 週一到週五
   "30 13 * * *",          # scraper-economic-daily    台灣 21:30 每天
   "05 11 * * 2,3,4,5,6", # generate-disposition-forecast 台灣 19:05 週一到週五（第一次）
-  "30 15 * * 2,3,4,5,6", # generate-disposition-forecast 台灣 23:30 週一到週五（備援，補款7）
+  "30 14 * * 2,3,4,5,6", # generate-disposition-forecast 台灣 22:30 週一到週五（備援，補款7；提前到 23:00 健康檢查之前才蓋得到）
   "55 13 * * 2,3,4,5,6", # market-sentiment          台灣 21:55 週一到週五（第四次，融資融券公布後）
   "0 19 * * 1",           # cleanup-workflow-runs     台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
-  "50 15 * * *",          # health-check              台灣 23:50 每天（必須晚於 23:30 的處置備援班，否則永遠檢查不到它）
+  "0 15 * * *",           # health-check              台灣 23:00 每天
 ]

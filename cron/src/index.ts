@@ -37,7 +37,7 @@ const CRON_MAP: Record<string, CronJob> = {
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
   '55 13 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 21:55 週一到週五（第四次，融資融券公布後）
   '05 11 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 19:05 週一到週五（提早出爐；價量已結算。此時融資融券款7尚未公布，由下方備援補齊）
-  '30 15 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 23:30 週一到週五（備援，融資融券公布後補上款7）
+  '30 14 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 22:30 週一到週五（備援，補款7；款7 直接讀 TWSE openapi MI_MARGN，21:30 就有當日資料。排在 23:00 健康檢查之前才蓋得到）
   '30 12 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 20:30 每天（第三次）
   '30 13 * * *':          { workflow: 'scraper-economic-daily.yml' },                               // 台灣 21:30 每天
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
@@ -48,10 +48,10 @@ const CRON_MAP: Record<string, CronJob> = {
 // workflow 裡，**不要在這裡再放一份 CHECK_JOBS**——本檔曾有一份重複清單，只有
 // 手動 /health-check 端點會用到，結果與 workflow 那份長期漂移（標籤都已不同）。
 //
-// 23:50 而非 23:00：23:30 的處置股備援班要跑 7~10 分鐘，早於此檢查就永遠抓不到它，
-// 過去它被迫排除在檢查清單外（2026-08-17 那班失敗了整天沒人發現）。
+// 檢查固定 23:00。要被它蓋到的排程一律安排在 23:00 之前收工——處置股備援班原本排
+// 23:30，因此長期不在檢查清單內（2026-08-17 那班失敗了整天沒人發現），現已提前到 22:30。
 
-const HEALTH_CHECK_CRON = '50 15 * * *';   // 台灣 23:50
+const HEALTH_CHECK_CRON = '0 15 * * *';   // 台灣 23:00
 const HEALTH_CHECK_JOB: CronJob = { workflow: 'health-check.yml' };
 
 // ── Shared helpers ────────────────────────────────────────────────────────────

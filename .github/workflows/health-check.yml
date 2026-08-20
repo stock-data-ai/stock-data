@@ -51,9 +51,9 @@ jobs:
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '21:30 Margin Trading Update',               'workflow_name': 'Margin Trading Update｜融資融券更新',                          'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
-              # 23:30 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘；健康檢查已移到 23:50 才跑得贏它。
-              # （2026-08-17 這班失敗過一整天沒人發現，就是因為當時它不在清單裡。）
-              {'label': '23:30 Generate Disposition Forecast（備援）', 'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 23, 'minute': 30, 'days': [1,2,3,4,5]},
+              # 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘。原排 23:30、比 23:00 健康檢查晚，
+              # 所以長期不在清單裡（2026-08-17 那班失敗過一整天沒人發現）；已提前到 22:30 並納入檢查。
+              {'label': '22:30 Generate Disposition Forecast（備援）', 'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 22, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
               {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
               {'label': '週六 09:30 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 30, 'days': [6]},
