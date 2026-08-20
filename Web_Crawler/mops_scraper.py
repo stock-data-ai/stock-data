@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+import sys
 import time
 import re
 import requests
@@ -294,6 +295,8 @@ def scrape_mops_material_info(
         except Exception as e:
             print(f"寫入 Cloudflare D1 時發生錯誤: {e}")
             print("請確認已設定 CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_DATABASE_ID, CLOUDFLARE_API_TOKEN 環境變數")
+            # 不可靜默放行：抓到的公告一筆都沒進 D1，排程若還綠燈就沒人會發現公告斷更。
+            raise
 
         return df
     else:
@@ -340,3 +343,12 @@ if __name__ == '__main__':
             print(f"\n已儲存至: {args.output}")
     else:
         print("\n--- 無符合條件的重大訊息 ---")
+
+    # 交易日卻一筆都沒有 = MOPS 被擋或改版，不是「今天沒公告」。
+    # 只在「無條件全市場撈當日」時判定，指定股票／關鍵字／歷史日期查無資料屬正常。
+    if df.empty and not (args.stock or args.keyword or start_date or end_date):
+        from finance_tools.core.trading_day import is_tw_trading_day
+
+        if is_tw_trading_day(datetime.date.today()):
+            print("\nSTALE: 今日為交易日，但重大訊息 0 筆，判定為撈取失敗。")
+            sys.exit(1)

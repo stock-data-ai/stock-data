@@ -304,6 +304,7 @@ jobs:
           fi
 
       - name: Fetch stock_map ETF index.json (for categoryId/issuer)
+        id: fetch_index
         continue-on-error: true
         env:
           PAT: ${{ secrets.STOCK_MAP_PAT }}
@@ -316,10 +317,12 @@ jobs:
           echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
 
       - name: Regenerate stock-to-ETF reverse index
+        id: reverse_index
         continue-on-error: true
         run: uv run python etf_Crawler/generate_stock_etf_index.py
 
       - name: Commit & push reverse index
+        id: push_reverse_index
         continue-on-error: true
         run: |
           git add src/data/etf-by-stock/
@@ -333,11 +336,19 @@ jobs:
             done
           fi
 
-      - name: Fail if CMoney failed
+      # 上面幾步用 continue-on-error 是為了「壞一步不擋住後面」，不是為了放它們過關。
+      # 這裡逐一複查，否則反向索引默默停更、燈還是全綠（etf-by-stock/ 會過期沒人知道）。
+      - name: Fail if any step failed
         if: always()
         run: |
-          if [ "${{ steps.cmoney.outcome }}" != "success" ]; then
-            echo "❌ CMoney 爬蟲失敗"
+          FAILED=""
+          check () { [ "$2" = "success" ] || FAILED="$FAILED $1"; }
+          check CMoney爬蟲       "${{ steps.cmoney.outcome }}"
+          check 取得index.json   "${{ steps.fetch_index.outcome }}"
+          check 重建反向索引     "${{ steps.reverse_index.outcome }}"
+          check 推送反向索引     "${{ steps.push_reverse_index.outcome }}"
+          if [ -n "$FAILED" ]; then
+            echo "❌ 失敗步驟:$FAILED"
             exit 1
           fi
-          echo "✅ CMoney 更新成功"
+          echo "✅ 全部步驟成功"

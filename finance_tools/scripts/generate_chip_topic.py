@@ -25,11 +25,15 @@ total = 有足夠資料（≥3 個交易日）的公司數
 import base64
 import json
 import os
+import sys
 from datetime import datetime, date
 from pathlib import Path
 from typing import Union
 
 import requests
+
+from finance_tools.core.timezone import now_tw
+from finance_tools.core.trading_day import is_tw_trading_day
 
 BASE = Path(__file__).parent.parent.parent / "src/data"
 FINANCIALS_DIR = BASE / "layer3/company-financials"
@@ -132,6 +136,7 @@ def compute(topics_list: list, companies_index: list) -> dict:
                 topic_companies[tid].append(code)
 
     results: dict[str, dict] = {}
+    newest_inst_date = ""   # 用來擋「上游沒更新卻照算」的假綠燈
 
     for topic_id, codes in topic_companies.items():
         if not codes:
@@ -160,6 +165,7 @@ def compute(topics_list: list, companies_index: list) -> dict:
             # 三大法人
             inst = data.get("historical", {}).get("institutionalInvestors", {})
             if inst:
+                newest_inst_date = max(newest_inst_date, max(inst.keys()))
                 has_f, bull_f = _compute_ii_signal(inst, "foreign_net_buy")
                 has_t, bull_t = _compute_ii_signal(inst, "trust_net_buy")
                 if has_f:
@@ -204,8 +210,17 @@ def compute(topics_list: list, companies_index: list) -> dict:
             f"大戶 {lh_bull}/{lh_total} avgΔ={avg_change:+.2f}%"
         )
 
+    # 上游 daily-update 沒跑成功時，這裡會拿舊資料算完、照樣寫檔並標今天的日期——
+    # 綠燈但籌碼訊號其實停在前一天（2026-08-19 實際發生過）。交易日就必須有當日資料。
+    today = now_tw().date()
+    if is_tw_trading_day(today) and newest_inst_date != today.isoformat():
+        print(f"[chip_topic] STALE: 三大法人最新資料為 {newest_inst_date or '無'}，"
+              f"但 {today.isoformat()} 為交易日 —— 上游每日更新未完成，中止產出。")
+        sys.exit(1)
+
+    print(f"[chip_topic] 三大法人資料日期: {newest_inst_date}")
     return {
-        "lastUpdated": date.today().isoformat(),
+        "lastUpdated": today.isoformat(),
         "topics": results,
     }
 
