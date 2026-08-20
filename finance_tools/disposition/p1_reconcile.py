@@ -1011,19 +1011,43 @@ def _punish_rows_tpex(start, end):
     return out
 
 def refresh_punish(days_back=90, days_fwd=30):
-    """抓處置名單並存快取。往前抓 days_back 天（回補歷史）、往後 days_fwd 天（含未生效）。"""
+    """抓處置名單並存快取。往前抓 days_back 天（回補歷史）、往後 days_fwd 天（含未生效）。
+
+    **兩個市場都拿到才可以寫快取。** 只寫成功的那一半，等於把另一市場的處置股整批從
+    名單上抹掉，而下游沒有任何一處看得出來——disposed_set()/announced_set() 會回報
+    「沒被處置」、款2 豁免跟著算錯、發布出去的 punishments.json 也少一半，燈還是綠的。
+    2026-08-20 19:05 那班就是上市抓取失敗、上櫃成功，快取被覆寫成只剩上櫃。
+    寧可沿用既有快取——處置期間橫跨數週，晚一天更新的傷害遠小於少一整個市場。
+    """
     today = datetime.datetime.strptime(_today(), "%Y%m%d").date()
     start = (today - datetime.timedelta(days=days_back)).strftime("%Y%m%d")
     end = (today + datetime.timedelta(days=days_fwd)).strftime("%Y%m%d")
-    rows = []
+    fp = os.path.join(CACHE, "punish_rows.json")
+    rows, bad = [], []
     for name, fn in (("上市", _punish_rows_twse), ("上櫃", _punish_rows_tpex)):
         try:
-            rows += fn(start, end)
+            got = fn(start, end)
+            # 回 0 筆也算失敗。±120 天視窗內兩市場常態都有數百筆（2026-08-20 實測
+            # 上市 198／上櫃 310），空清單只可能是端點壞掉或格式改了——而 _punish_rows_tpex
+            # 找不到表格時是**靜默**回 []，不擋下來就會被當成「今天真的沒有處置股」。
+            if not got:
+                raise RuntimeError("回 0 筆")
+            rows += got
         except Exception as e:
+            bad.append(name)
             print(f"[punish] {name}抓取失敗: {e}")
-    if rows:
-        json.dump(rows, open(os.path.join(CACHE, "punish_rows.json"), "w"), ensure_ascii=False)
-    return len(rows)
+
+    if not bad:
+        json.dump(rows, open(fp, "w"), ensure_ascii=False)
+        return len(rows)
+
+    if not os.path.exists(fp):
+        raise RuntimeError(f"處置名單 {'/'.join(bad)} 抓取失敗，且無既有快取可沿用——"
+                           f"硬跑下去會產出「全市場都沒被處置」的錯誤預警，故中止。")
+    kept = json.load(open(fp))
+    print(f"[punish] ⚠️ {'/'.join(bad)}抓取失敗 → 沿用既有快取 {len(kept)} 筆，不覆寫"
+          f"（只寫半個市場會讓另一市場的處置股整批消失）")
+    return len(kept)
 
 # 台股例假日以外的休市日（颱風停市等）。2026-08 無 → 空集合；跨到有休市日的期間要補。
 _MARKET_HOLIDAYS = set()
