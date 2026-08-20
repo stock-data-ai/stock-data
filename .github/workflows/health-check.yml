@@ -41,9 +41,11 @@ jobs:
           # 這裡的 hour/minute 只是「預期時間」，用來切出比對視窗。改排程時務必同步改這裡。
           CHECK_JOBS = [
               {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
-              {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5]},
+              # lenient：這兩班刻意排在證交所公布之前搶頭香，抓不到是常態不是故障
+              # （16:30 那班 8/14、8/18、8/19、8/20 都紅過）。只有「後面的班也全滅」才算異常。
+              {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5], 'lenient': True},
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
-              {'label': '16:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 16, 'minute': 30},
+              {'label': '16:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 16, 'minute': 30, 'lenient': True},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '17:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 17, 'minute': 5},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
@@ -219,6 +221,8 @@ jobs:
                   'label':    job['label'],
                   'sched':    f"{job['hour']:02d}:{job['minute']:02d}",
                   'status':   status,
+                  'workflow_name': job['workflow_name'],
+                  'lenient':  job.get('lenient', False),
                   'run_time': fmt_tw_time(started_at) if started_at else '—',
                   'duration': (fmt_duration(started_at, run['updated_at'])
                                if started_at and run and run['status'] == 'completed' else
@@ -226,6 +230,17 @@ jobs:
                   'url':      (run or {}).get('html_url'),
                   'run_id':   (run or {}).get('id'),
               })
+
+          # ── 早班沒搶到不算異常，前提是後面真的有班補上 ──────────────────────
+          # **不可以直接把早班改成綠的**——那就變回假綠燈了。這裡只在「同一個 workflow
+          # 今天稍後確實有一班成功」時才降級；後面全滅時早班照樣是紅的。
+          for i, r in enumerate(results):
+              # 只寬容 'failed'（跑了、但資料還沒公布）。'missing' 代表這班根本沒被觸發，
+              # 那是排程本身壞了，跟搶不搶得到資料無關，一律維持紅燈。
+              if r['lenient'] and r['status'] == 'failed' and any(
+                      later['workflow_name'] == r['workflow_name'] and later['status'] == 'ok'
+                      for later in results[i + 1:]):
+                  r['status'] = 'late'
 
           # ── 端到端檢查：/live 的資料日有沒有跟上我們算出來的 ────────────────
           # 為什麼要這條：CI 全綠、git 有推、資料也對，但只要 Cloudflare Pages 建置失敗，
@@ -263,6 +278,7 @@ jobs:
                   status, detail = 'failed', f'線上 {live} 落後快照 {expected}'
               results.append({
                   'label': f'/live 資料新鮮度（{detail}）', 'sched': '—', 'status': status,
+                  'workflow_name': None, 'lenient': False,
                   'run_time': '—', 'duration': '—', 'url': None, 'run_id': None,
               })
 
@@ -271,11 +287,14 @@ jobs:
           ok_n   = sum(1 for r in results if r['status'] == 'ok')
           fail_n = sum(1 for r in results if r['status'] == 'failed')
           miss_n = sum(1 for r in results if r['status'] in ('missing', 'running'))
-          all_good = fail_n == 0 and miss_n == 0
+          late_n = sum(1 for r in results if r['status'] == 'late')
+          all_good = fail_n == 0 and miss_n == 0          # late 不算異常，但仍會列出來
 
-          STATUS_EMOJI = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄'}
-          STATUS_LABEL = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中'}
-          ROW_COLOR    = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb', 'running': '#eff6ff'}
+          STATUS_EMOJI = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄', 'late': '🟡'}
+          STATUS_LABEL = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中',
+                          'late': '早班未搶到（後續已補）'}
+          ROW_COLOR    = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb',
+                          'running': '#eff6ff', 'late': '#f8fafc'}
 
           # ── Fetch per-workflow summaries (deduplicated by run_id) ────────────
           print('撈取各 workflow 詳細摘要...')
@@ -295,7 +314,8 @@ jobs:
 
           # ── Build GITHUB_STEP_SUMMARY (Markdown) ────────────────────────────
           md  = f"## stock_data 健康檢查 — {tw_date}\n\n"
-          md += f"✅ **{ok_n}** 成功　❌ **{fail_n}** 失敗　⚠️ **{miss_n}** 未執行 / 進行中\n\n"
+          md += f"✅ **{ok_n}** 成功　❌ **{fail_n}** 失敗　⚠️ **{miss_n}** 未執行 / 進行中"
+          md += (f"　🟡 **{late_n}** 早班未搶到" if late_n else "") + "\n\n"
           md += "| 排程 | 任務 | 狀態 | 執行時間（台灣） | 耗時 |\n"
           md += "|------|------|:----:|:--------------:|:----:|\n"
           for r in results:
@@ -346,6 +366,7 @@ jobs:
             ✅ <strong>{ok_n}</strong> 成功 &nbsp;
             ❌ <strong>{fail_n}</strong> 失敗 &nbsp;
             ⚠️ <strong>{miss_n}</strong> 未執行 / 進行中
+            {f'&nbsp; 🟡 <strong>{late_n}</strong> 早班未搶到' if late_n else ''}
           </p>
           <table style="border-collapse:collapse;width:100%;font-size:13px;border:1px solid #e2e8f0">
             <thead>
