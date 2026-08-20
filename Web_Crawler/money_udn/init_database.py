@@ -448,6 +448,16 @@ def run_rotate(delay: int = 10):
     }
     save_progress(progress)
 
+    # 摘要表有「失敗公司數」，但過去失敗幾家都不影響燈號——全滅也是綠燈。
+    # 輪替狀態照常推進（下次換主題），但整批必須紅燈，否則來源掛掉沒人會發現。
+    attempted = result["success"] + result["fail"]
+    if attempted and result["success"] == 0:
+        print(f"STALE: 主題 [{topic_name}] {attempted} 家全部失敗，判定為來源異常。")
+        sys.exit(1)
+    if attempted and result["fail"] > attempted / 2:
+        print(f"STALE: 主題 [{topic_name}] 失敗 {result['fail']}/{attempted}（超過半數），判定為來源異常。")
+        sys.exit(1)
+
 
 def main():
     parser = argparse.ArgumentParser(description="初始化經濟日報資料庫（以主題分批）")

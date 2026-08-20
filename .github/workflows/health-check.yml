@@ -31,7 +31,8 @@ jobs:
           REPO                  = os.environ['REPO']
           STEP_SUMMARY_PATH     = os.environ.get('GITHUB_STEP_SUMMARY', '')
 
-          # 注意：排程由外部 dispatcher 觸發（除 Footprint Collect 用 cron），
+          # 注意：排程由外部 dispatcher 觸發（cron/wrangler.toml 的 stock-data-cron Worker），
+          # 本清單是唯一一份檢查清單（Worker 那邊已不再各留一份，避免兩份漂移）。
           # 這裡的 hour/minute 只是「預期時間」，用來切出比對視窗。改排程時務必同步改這裡。
           CHECK_JOBS = [
               {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
@@ -42,7 +43,6 @@ jobs:
               {'label': '17:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 17, 'minute': 5},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
               {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
-              # 23:30 disposition 備援班在 23:00 健康檢查之後才跑，無法納入當日檢查
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
               {'label': '20:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 20, 'minute': 0,  'days': [1,2,3,4,5]},
               {'label': '20:30 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 20, 'minute': 30},
@@ -51,7 +51,9 @@ jobs:
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '21:30 Margin Trading Update',               'workflow_name': 'Margin Trading Update｜融資融券更新',                          'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
-              # 23:30 Generate Disposition Forecast 不列入：健康檢查 23:00 執行，比它早，列了會恆為「未執行」
+              # 23:30 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘；健康檢查已移到 23:50 才跑得贏它。
+              # （2026-08-17 這班失敗過一整天沒人發現，就是因為當時它不在清單裡。）
+              {'label': '23:30 Generate Disposition Forecast（備援）', 'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 23, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
               {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
               {'label': '週六 09:30 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 30, 'days': [6]},

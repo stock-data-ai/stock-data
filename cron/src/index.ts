@@ -43,157 +43,16 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };
 
-// ── Health check (台灣 23:00 = UTC 15:00) ─────────────────────────────────────
+// ── Health check ─────────────────────────────────────────────────────────────
+// 這裡只負責「叫 health-check.yml 起來跑」。檢查清單、比對邏輯、寄信全在那個
+// workflow 裡，**不要在這裡再放一份 CHECK_JOBS**——本檔曾有一份重複清單，只有
+// 手動 /health-check 端點會用到，結果與 workflow 那份長期漂移（標籤都已不同）。
+//
+// 23:50 而非 23:00：23:30 的處置股備援班要跑 7~10 分鐘，早於此檢查就永遠抓不到它，
+// 過去它被迫排除在檢查清單外（2026-08-17 那班失敗了整天沒人發現）。
 
-const HEALTH_CHECK_CRON = '0 15 * * *';
+const HEALTH_CHECK_CRON = '50 15 * * *';   // 台灣 23:50
 const HEALTH_CHECK_JOB: CronJob = { workflow: 'health-check.yml' };
-const TAIWAN_OFFSET_MS = 8 * 60 * 60 * 1000;
-
-// Taiwan day via getUTCDay(): 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
-interface CheckJob {
-  label: string;
-  workflowName: string;
-  twHour: number;
-  twMinute: number;
-  days?: number[];
-}
-
-const CHECK_JOBS: CheckJob[] = [
-  { label: '07:00 Economic Daily Scraper｜爬取經濟日報（早）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 7, twMinute: 0 },
-  { label: '16:00 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第一次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 16, twMinute: 0 },
-  { label: '16:30 Daily Update｜每日更新（市值 + 三大法人，第一次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 16, twMinute: 30 },
-  { label: '17:05 Daily Update｜每日更新（市值 + 三大法人，第二次）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 17, twMinute: 5 },
-  { label: '21:05 Daily Update｜每日更新（市值 + 三大法人，第三次備援）', workflowName: 'Daily Update｜每日更新（市值＋三大法人）', twHour: 21, twMinute: 5 },
-  { label: '19:00 MOPS Scraper｜爬取公開資訊觀測站重訊', workflowName: 'MOPS Scraper｜公開資訊觀測站爬蟲', twHour: 19, twMinute: 0 },
-  // 23:30 disposition 備援班在 23:00 健康檢查之後才跑，無法納入當日檢查
-  { label: '19:05 Generate Disposition Forecast｜生成處置股預警', workflowName: 'Generate Disposition Forecast｜生成處置股預警', twHour: 19, twMinute: 5, days: [1, 2, 3, 4, 5] },
-  { label: '17:55 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第二次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 17, twMinute: 55 },
-  { label: '20:30 Active ETF Holdings Update (Daily)｜更新主動型 ETF 持股（第三次）', workflowName: 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）', twHour: 20, twMinute: 30 },
-  { label: '21:30 Economic Daily Scraper｜爬取經濟日報（晚）', workflowName: 'Economic Daily Scraper｜經濟日報爬蟲', twHour: 21, twMinute: 30 },
-  { label: '15:55 Market Sentiment Update｜更新市場情緒指標（第一次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 15, twMinute: 55, days: [1, 2, 3, 4, 5] },
-  { label: '16:55 Market Sentiment Update｜更新市場情緒指標（第二次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 16, twMinute: 55, days: [1, 2, 3, 4, 5] },
-  { label: '20:55 Market Sentiment Update｜更新市場情緒指標（第三次）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 20, twMinute: 55, days: [1, 2, 3, 4, 5] },
-  { label: '21:55 Market Sentiment Update｜更新市場情緒指標（第四次，融資融券公布後）', workflowName: 'Market Sentiment Update｜市場情緒更新', twHour: 21, twMinute: 55, days: [1, 2, 3, 4, 5] },
-  { label: '20:00 Generate Chip Topic｜生成籌碼題材標籤', workflowName: 'Generate Chip Topic｜生成籌碼題材', twHour: 20, twMinute: 0, days: [1, 2, 3, 4, 5] },
-  { label: '21:30 Margin Trading Update｜更新融資融券數據', workflowName: 'Margin Trading Update｜融資融券更新', twHour: 21, twMinute: 30, days: [1, 2, 3, 4, 5] },
-  { label: '週六 08:00 ETF Holdings Update (Weekly)｜每週 ETF 持股更新', workflowName: 'ETF Holdings Update (Weekly)｜ETF持股（週更）', twHour: 8, twMinute: 0, days: [6] },
-  { label: '週六 09:00 Weekly Shareholder Update (Saturday)｜每週股東結構更新（第一次）', workflowName: 'Weekly Shareholder Update (Saturday)｜股東結構（週六）', twHour: 9, twMinute: 0, days: [6] },
-  { label: '週六 09:30 Weekly Shareholder Update (Saturday)｜每週股東結構更新（第二次備援）', workflowName: 'Weekly Shareholder Update (Saturday)｜股東結構（週六）', twHour: 9, twMinute: 30, days: [6] },
-  { label: '週六 11:00 Weekly Dividend Update (Saturday)｜每週股利資料更新', workflowName: 'Weekly Dividend Update (Saturday)｜股利資料（週六）', twHour: 11, twMinute: 0, days: [6] },
-  { label: '週日 09:01 Weekly Financials Update (Sunday)｜每週財務報表更新（台股）', workflowName: 'Weekly Financials Update (Sunday)｜財務報表更新（週日）', twHour: 9, twMinute: 1, days: [0] },
-  { label: '週日 10:00 Update US Financials｜更新美股財務資料', workflowName: 'Update US Financials｜美股財務更新', twHour: 10, twMinute: 0, days: [0] },
-  { label: '週日 11:00 Weekly Balance Sheet Update (Monday)｜每週資產負債表更新', workflowName: 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）', twHour: 11, twMinute: 0, days: [0] },
-  { label: '週一 03:00 Cleanup old workflow runs｜清理舊 workflow 記錄', workflowName: 'Cleanup old workflow runs｜清理舊 workflow 記錄', twHour: 3, twMinute: 0, days: [1] },
-];
-
-interface WorkflowRun {
-  name: string;
-  status: string;
-  conclusion: string | null;
-  html_url: string;
-  created_at: string;
-}
-
-function toGithubTimestamp(date: Date): string {
-  return date.toISOString().replace(/\.\d+Z$/, 'Z');
-}
-
-function getTaiwanCheckWindow(now: Date) {
-  const taiwanNow = new Date(now.getTime() + TAIWAN_OFFSET_MS);
-  const twDate = taiwanNow.toISOString().slice(0, 10);
-  const [year, month, day] = twDate.split('-').map(Number);
-  const twStartUtc = new Date(Date.UTC(year, month - 1, day) - TAIWAN_OFFSET_MS);
-
-  return {
-    since: toGithubTimestamp(twStartUtc),
-    until: toGithubTimestamp(now),
-    twDate,
-    twDay: taiwanNow.getUTCDay(),
-    twStartUtc,
-    taiwanYmd: { year, month, day },
-  };
-}
-
-function getJobStartUtc(job: CheckJob, ymd: { year: number; month: number; day: number }): Date {
-  return new Date(Date.UTC(ymd.year, ymd.month - 1, ymd.day, job.twHour - 8, job.twMinute));
-}
-
-function getExpectedJobs(twDay: number): CheckJob[] {
-  return CHECK_JOBS.filter(job => !job.days || job.days.includes(twDay));
-}
-
-function getJobWindow(job: CheckJob, expected: CheckJob[], ymd: { year: number; month: number; day: number }, until: string) {
-  const start = getJobStartUtc(job, ymd);
-  const nextSameWorkflow = expected
-    .filter(candidate => candidate.workflowName === job.workflowName)
-    .map(candidate => getJobStartUtc(candidate, ymd))
-    .filter(candidateStart => candidateStart.getTime() > start.getTime())
-    .sort((a, b) => a.getTime() - b.getTime())[0];
-
-  return {
-    start,
-    end: nextSameWorkflow ?? new Date(until),
-  };
-}
-
-async function runHealthCheck(env: Env): Promise<void> {
-  const { since, until, twDate, twDay, taiwanYmd } = getTaiwanCheckWindow(new Date());
-  const workflowRuns: WorkflowRun[] = [];
-
-  for (let page = 1; page <= 5; page++) {
-    const runsUrl = new URL(`https://api.github.com/repos/${REPO}/actions/runs`);
-    runsUrl.searchParams.set('created', `${since}..${until}`);
-    runsUrl.searchParams.set('per_page', '100');
-    runsUrl.searchParams.set('page', String(page));
-
-    const res = await fetch(runsUrl.toString(), {
-      headers: {
-        Authorization: `Bearer ${env.GH_TOKEN}`,
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'stock-data-cron',
-      },
-    });
-
-    if (!res.ok) {
-      await alertError(`健康檢查失敗：無法讀取 GitHub Actions runs: ${res.status}`, env);
-      return;
-    }
-
-    const data = await res.json() as { workflow_runs: WorkflowRun[] };
-    workflowRuns.push(...data.workflow_runs);
-    if (data.workflow_runs.length < 100) break;
-  }
-
-  const required = getExpectedJobs(twDay);
-  const ok: string[] = [], failed: string[] = [], missing: string[] = [];
-  for (const job of required) {
-    const { start, end } = getJobWindow(job, required, taiwanYmd, until);
-    const runs = workflowRuns.filter(run => {
-      const created = new Date(run.created_at);
-      return run.name === job.workflowName && created >= start && created < end;
-    });
-    const success = runs.find(run => run.status === 'completed' && run.conclusion === 'success');
-    const completedFailure = runs.find(run => run.status === 'completed' && run.conclusion !== 'success');
-
-    if (success)       ok.push(job.label);
-    else if (runs.length === 0) missing.push(job.label);
-    else if (completedFailure) failed.push(`${job.label}\n  ${completedFailure.html_url}`);
-    else              missing.push(`${job.label}（尚未完成）`);
-  }
-
-  const allGood = failed.length === 0 && missing.length === 0;
-  const subject = allGood
-    ? `✅ [${twDate}] stock_data 更新完成`
-    : `⚠️ [${twDate}] stock_data 更新異常`;
-
-  let body = `stock_data 健康檢查｜${twDate} 23:00 Taiwan\n\n`;
-  if (ok.length)      body += `✅ 成功 (${ok.length})\n${ok.map(w => `  • ${w}`).join('\n')}\n\n`;
-  if (failed.length)  body += `❌ 失敗\n${failed.map(w => `  • ${w}`).join('\n')}\n\n`;
-  if (missing.length) body += `⚠️ 未執行\n${missing.map(w => `  • ${w}`).join('\n')}\n\n`;
-
-  await alertError(body, env, subject);
-}
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
@@ -324,7 +183,7 @@ export default {
     const auth = request.headers.get('Authorization');
     if (auth !== `Bearer ${env.GH_TOKEN}`) return new Response('Unauthorized', { status: 401 });
 
-    await runHealthCheck(env);
-    return new Response('Health check triggered, email sent.', { status: 200 });
+    await dispatchWithRetry(HEALTH_CHECK_JOB, env.GH_TOKEN);
+    return new Response('Health check workflow dispatched.', { status: 200 });
   },
 };
