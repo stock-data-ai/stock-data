@@ -20,7 +20,7 @@
 注意：注意名單的「日期」欄 = **資料日（觸發日）本身，不是隔日公告日**——實測 763/763 筆
 其「收盤價」欄等於該日收盤、0 筆等於前一交易日 → reconcile 直接同日對帳，勿再 off-by-one。
 """
-import json, os, sys, re, math, datetime, statistics
+import json, os, sys, re, math, time, datetime, statistics, itertools
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
@@ -115,12 +115,30 @@ def _f(x):
     except (ValueError, AttributeError):
         return None
 
+_BUST_SEQ = itertools.count()   # 時間戳單獨用不夠：macOS 的 time_ns() 解析度約 1µs，
+                                # 同一微秒內的兩次呼叫會拿到同一個值 → 又撞回同一份快取
+
+
+def _bust(url):
+    """每次帶一個不同的無意義參數，強迫繞過 TWSE/TPEx 的 CDN 邊緣快取。
+
+    邊緣快取會間歇回「HTTP 200 + 空 body」，而重試若送完全相同的 URL，只會一再命中
+    同一份壞快取。同 finance_tools/utils/twse_url.py 的招式；本檔刻意不 import 任何
+    內部模組，才能維持 `python3 p1_reconcile.py …` 單檔可跑，故在這裡各留一份。
+    """
+    return f"{url}{'&' if '?' in url else '?'}_={time.time_ns()}-{next(_BUST_SEQ)}"
+
+
+# 空 body 會讓 r.json() 拋 requests.exceptions.JSONDecodeError——它**不是**
+# ConnectionError/Timeout，所以原本一次都不重試，一發壞快取就整支掛掉
+# （2026-08-20 19:05 那班：BWIBBU_ALL 回空 body → backtest() 死在 sector_pe()）。
 @retry(stop=stop_after_attempt(5),
        wait=wait_exponential(multiplier=1, min=2, max=20),
-       retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout)),
+       retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout,
+                                      requests.exceptions.JSONDecodeError)),
        reraise=True)
 def fj(url):
-    r = _SESSION.get(url, timeout=25)
+    r = _SESSION.get(_bust(url), timeout=25)
     r.raise_for_status()
     return r.json()
 
