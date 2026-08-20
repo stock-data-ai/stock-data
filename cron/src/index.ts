@@ -31,7 +31,7 @@ const CRON_MAP: Record<string, CronJob> = {
   '30 8 * * *':           { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 16:30 每天（第一次，T86 公布後即抓）
   '05 9 * * *':           { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 17:05 每天（第二次，補 TPEx 上櫃結算）
   '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（第三次備援，TWSE資料結算延遲）
-  '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五
+  '0 10 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 18:00 週一到週五（上游 daily-update 17:05 已收工；提早是為了讓 stock_map 的每日焦點在 20:00 題材信之前產出）
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
