@@ -14,41 +14,51 @@
   "topHoldings": [
     {
       "name": "恆生指數期貨",
-      "weight": 199.98,
-      "shares": 667,
+      "weight": 195.64,
+      "shares": 644,
       "foreignCode": "202608HSI",
-      "previousWeight": 198.8,
-      "weightChange": 1.18,
-      "previousShares": 677,
-      "sharesChange": -10
+      "previousWeight": 199.98,
+      "weightChange": -4.34,
+      "previousShares": 667,
+      "sharesChange": -23
     },
     {
       "name": "MARGIN",
-      "weight": 70.6,
-      "shares": 295460472,
+      "weight": 76.11,
+      "shares": 325973532,
       "foreignCode": "M_HKD",
-      "previousWeight": 0.23,
-      "weightChange": 70.37,
+      "previousWeight": 0.24,
+      "weightChange": 75.87,
       "previousShares": 4161662,
-      "sharesChange": 291298810
+      "sharesChange": 321811870
     },
     {
       "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
-      "weight": 29.18,
+      "weight": 28.64,
       "shares": 498472306,
       "foreignCode": "DA_NTD",
-      "previousWeight": 31.73,
-      "weightChange": -2.55,
-      "previousShares": 570956500,
-      "sharesChange": -72484194
+      "previousWeight": 29.18,
+      "weightChange": -0.54,
+      "previousShares": 498472306,
+      "sharesChange": 0
+    },
+    {
+      "name": "恆生指數期貨",
+      "weight": 3.94,
+      "shares": 13,
+      "foreignCode": "202609HSI",
+      "previousWeight": 199.98,
+      "weightChange": -196.04,
+      "previousShares": 667,
+      "sharesChange": -654
     },
     {
       "name": "MARGIN",
       "weight": 0.24,
       "shares": 4161662,
       "foreignCode": "M_NTD",
-      "previousWeight": 0.23,
-      "weightChange": 0.01,
+      "previousWeight": 0.24,
+      "weightChange": 0.0,
       "previousShares": 4161662,
       "sharesChange": 0
     }
@@ -322,7 +332,34 @@
         "weight": 0.24,
         "shares": 4161662
       }
+    ],
+    "2026-08-21": [
+      {
+        "name": "恆生指數期貨",
+        "weight": 195.64,
+        "shares": 644
+      },
+      {
+        "name": "MARGIN",
+        "weight": 76.11,
+        "shares": 325973532
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 28.64,
+        "shares": 498472306
+      },
+      {
+        "name": "恆生指數期貨",
+        "weight": 3.94,
+        "shares": 13
+      },
+      {
+        "name": "MARGIN",
+        "weight": 0.24,
+        "shares": 4161662
+      }
     ]
   },
-  "lastUpdated": "2026-08-14"
+  "lastUpdated": "2026-08-21"
 }
