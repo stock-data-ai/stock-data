@@ -5,17 +5,29 @@
     "year": 2026,
     "quarter": 1,
     "revenue": 1805641000,
-    "yoy": 23.4,
+    "yoy": 22.5,
     "grossMargin": 37.5,
-    "operatingMargin": 15.74,
+    "operatingMargin": 11.83,
     "netMargin": 11.31,
     "eps": 0.97,
-    "pe": 79.28,
-    "pb": 5.85,
-    "marketCap": 63745159168
+    "pe": 70.44,
+    "pb": 5.2,
+    "marketCap": 56697348096
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "revenue": 7118181000,
+        "grossProfit": 2669040000,
+        "operatingIncome": 901522000,
+        "netIncome": 804998000,
+        "eps": 4.12,
+        "grossMargin": 37.5,
+        "operatingMargin": 12.67,
+        "netMargin": 11.31,
+        "revenueYoY": 22.5
+      },
       {
         "year": 2025,
         "revenue": 5810115000,
@@ -49,19 +61,7 @@
         "eps": -2.93,
         "grossMargin": 31.36,
         "operatingMargin": 1.59,
-        "netMargin": -5.03,
-        "revenueYoY": 55.6
-      },
-      {
-        "year": 2022,
-        "revenue": 3316616000,
-        "grossProfit": 1265496000,
-        "operatingIncome": 414294000,
-        "netIncome": 234759000,
-        "eps": 1.45,
-        "grossMargin": 38.16,
-        "operatingMargin": 12.49,
-        "netMargin": 7.08
+        "netMargin": -5.03
       }
     ],
     "quarterly": [
@@ -127,7 +127,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-08-16",
+  "lastUpdated": "2026-08-23",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance"
 }
