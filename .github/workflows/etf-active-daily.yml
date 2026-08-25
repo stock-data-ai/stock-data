@@ -339,6 +339,12 @@ jobs:
       # commit 之後才推：通知點進去要能看到當日數字。
       # 彙總算法在 stock_map（與 App 的主動式 ETF 統計面板共用），這裡只負責觸發；
       # 防重複由 endpoint 的 pushLog（key＝CMoney 資料日期）把關，一天三輪只會推一次。
+      #
+      # **必須重試等 GitHub Pages 部署**：endpoint 讀的是 stock-data-ai.github.io 上的明細，
+      # 而 Pages 在 commit 後要數分鐘才重建。commit 完立刻打，endpoint 讀到的是「上一輪」的
+      # 快照（2026-08-24 實例：20:33 打過去回「僅 11/22 檔」＝17:55 那版，Pages 追上後其實是 16/22，
+      # 但那時已經沒人再打端點，當天整個沒推）。
+      # 這與 stock_map 規則引擎的 `live: { path, probe }`（輪詢 /live 等部署）是同一件事。
       - name: 推播主動式 ETF 持股異動
         id: push_active_etf
         continue-on-error: true
@@ -349,14 +355,24 @@ jobs:
             echo "缺 CRON_SECRET，跳過推播"
             exit 0
           fi
-          RESP=$(curl -sS -w '\n%{http_code}' -X POST \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            -H "Content-Type: application/json" \
-            -d '{}' \
-            "https://aistockmap.com/api/cron/push-active-etf")
-          CODE=$(echo "$RESP" | tail -n1)
-          echo "$RESP" | sed '$d'
-          [ "$CODE" = "200" ] || { echo "❌ 推播失敗 HTTP $CODE"; exit 1; }
+          # 最多等 12 分鐘（Pages 重建通常 1~5 分鐘）
+          for i in $(seq 1 12); do
+            RESP=$(curl -sS -w '\n%{http_code}' -X POST \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -H "Content-Type: application/json" \
+              -d '{}' \
+              "https://aistockmap.com/api/cron/push-active-etf")
+            CODE=$(echo "$RESP" | tail -n1)
+            BODY=$(echo "$RESP" | sed '$d')
+            echo "[$i/12] HTTP $CODE $BODY"
+            [ "$CODE" = "200" ] || { echo "❌ 推播失敗 HTTP $CODE"; exit 1; }
+            # 「尚未到齊」＝Pages 還沒追上，等一分鐘再試；其餘結果（已推、已推過、無異動）即定案
+            case "$BODY" in
+              *尚未到齊*) sleep 60 ;;
+              *) echo "✅ 定案"; exit 0 ;;
+            esac
+          done
+          echo "⏱ 等滿 12 分鐘資料仍未到齊，本輪放棄（下一輪會再試）"
 
       # 上面幾步用 continue-on-error 是為了「壞一步不擋住後面」，不是為了放它們過關。
       # 這裡逐一複查，否則反向索引默默停更、燈還是全綠（etf-by-stock/ 會過期沒人知道）。
