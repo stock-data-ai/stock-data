@@ -38,7 +38,11 @@ const CRON_MAP: Record<string, CronJob> = {
   '55 13 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 21:55 週一到週五（第四次，融資融券公布後）
   '05 11 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 19:05 週一到週五（提早出爐；價量已結算。此時融資融券款7尚未公布，由下方備援補齊）
   '30 14 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 22:30 週一到週五（備援，補款7；款7 直接讀 TWSE openapi MI_MARGN，21:30 就有當日資料。排在 23:00 健康檢查之前才蓋得到）
-  '30 12 * * *':          { workflow: 'etf-active-daily.yml' },                                     // 台灣 20:30 每天（第三次）
+  // 第三輪＝實際推播的那輪（前兩輪 CMoney 資料還沒到齊，端點會 skip）。刻意排在 21:00 而非 20:30：
+  // stock_map 的題材訂閱通知也在 20:30，兩則推播撞在同一分鐘；且晚 30 分鐘資料更齊、
+  // 推播前等 GitHub Pages 部署的重試次數更少（2026-08-25 實測 20:30 那輪等了 8 分鐘）。
+  // 改這裡要同步改 health-check.yml 的『21:00 Active ETF』那筆，否則健康檢查每天報缺班。
+  '0 13 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 21:00 每天（第三次）
   '30 13 * * *':          { workflow: 'scraper-economic-daily.yml' },                               // 台灣 21:30 每天
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };

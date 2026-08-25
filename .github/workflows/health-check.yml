@@ -52,7 +52,7 @@ jobs:
               {'label': '18:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 18, 'minute': 0,  'days': [1,2,3,4,5]},
               {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
-              {'label': '20:30 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 20, 'minute': 30},
+              {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '21:05 Daily Update（第三次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},

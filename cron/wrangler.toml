@@ -25,7 +25,7 @@ crons = [
   "0 10 * * 2,3,4,5,6",  # generate-chip-topic       台灣 18:00 週一到週五（讓每日焦點趕在 20:00 題材信之前）
   "0 11 * * *",           # scraper-mops              台灣 19:00 每天
   "55 12 * * 2,3,4,5,6", # market-sentiment          台灣 20:55 週一到週五（第三次）
-  "30 12 * * *",          # etf-active-daily          台灣 20:30 每天（第三次）
+  "0 13 * * *",           # etf-active-daily          台灣 21:00 每天（第三次）＝推播那輪，見 src/index.ts 註解
   "30 13 * * 2,3,4,5,6", # margin-trading-update     台灣 21:30 週一到週五
   "30 13 * * *",          # scraper-economic-daily    台灣 21:30 每天
   "05 11 * * 2,3,4,5,6", # generate-disposition-forecast 台灣 19:05 週一到週五（第一次）
