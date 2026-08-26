@@ -102,11 +102,13 @@ jobs:
           echo "❌ 推送失敗"
           exit 1
 
-      # namespace id 走 secret 而非寫死：此 repo 公開，資源 ID 沒必要外顯
+      # 用專用的 KV token，不是 CLOUDFLARE_API_TOKEN——後者是給 D1 用的，
+      # 沒有 KV 權限（2026-08-26 首次搬遷即敗在這，CF 回 code 10000 Authentication error）。
+      # namespace id 也走 secret 而非寫死：此 repo 公開，資源 ID 沒必要外顯。
       - name: Sync heatmap canonical codes to KV
         working-directory: stock_map
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_KV_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           HEATMAP_KV_NAMESPACE_ID: ${{ secrets.HEATMAP_KV_NAMESPACE_ID }}
         run: node scripts/sync-heatmap-codes-to-kv.mjs --api
