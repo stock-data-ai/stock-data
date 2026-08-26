@@ -1,0 +1,114 @@
+name: Update Stock Tags｜更新選股標籤（stock_map）
+
+# 為什麼這支在 stock-data 跑，產物卻進 stock_map：
+#   stock_map 是**私有** repo，Actions 分鐘要計費（2026-08 用滿 2000 分/月）；
+#   stock-data 是**公開** repo，Actions 免費無上限。
+#   而這支是純資料工作（抓期貨標的清單＋財務數字 → 產 public/stock-tags.json），
+#   跟「程式碼放在哪個 repo」無關，搬過來成本直接歸零。
+#
+# 刻意**不改腳本、也不在此 repo 複製一份**：用 PAT 淺層 clone stock_map，
+# 在它自己的目錄裡原地執行、原地 commit。腳本只有一份（stock_map 內），
+# 不會有兩份各自演化然後漏改的問題。
+#
+# 排程在 stock-data 的 cron worker（台灣 15:30）；改排程記得
+# `cd cron && npx wrangler deploy`，那支 worker 不隨 git push 部署。
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '更新模式'
+        required: false
+        default: 'topic-with-futures'
+        type: choice
+        options:
+          - topic-with-futures
+          - futures-only
+          - topic-only
+
+concurrency:
+  group: update-stock-tags
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 只取最新一版：這支不需要歷史，淺層 clone 省下大部分時間
+      - name: Clone stock_map（私有，需 PAT）
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "❌ 缺 STOCK_MAP_PAT"
+            exit 1
+          fi
+          git clone --depth 1 --branch publish_cloudflare \
+            "https://x-access-token:${PAT}@github.com/CHIJUI0128/stock_map.git" stock_map
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 腳本只用 Python 標準庫（urllib / html.parser），無須 pip install
+      - name: Update stock tags
+        working-directory: stock_map
+        run: |
+          set -o pipefail
+          MODE="${{ github.event.inputs.mode || 'topic-with-futures' }}"
+          case "$MODE" in
+            futures-only)
+              python scripts/maintenance/generate_stock_tags.py --futures-only 2>&1 | tee /tmp/tags.log
+              ;;
+            topic-only)
+              python scripts/maintenance/generate_stock_tags.py --topic-only 2>&1 | tee /tmp/tags.log
+              ;;
+            *)
+              python scripts/maintenance/generate_stock_tags.py --topic-only --with-futures 2>&1 | tee /tmp/tags.log
+              ;;
+          esac
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/tags.log
+          MODE="${{ github.event.inputs.mode || 'topic-with-futures' }}"
+          FUTURES=$(grep -oP 'Found \K\d+(?= stocks with futures)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          PROCESSED=$(grep -oP 'Done: \K\d+(?= processed)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          SKIPPED=$(grep -oP '\d+(?= skipped)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          CO_TAGS=$(grep -oP 'Companies with tags: \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 個股標籤更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 更新模式 | $MODE |"
+            echo "| 期貨標的數 | $FUTURES |"
+            echo "| 處理公司數 | $PROCESSED |"
+            echo "| 跳過公司數 | $SKIPPED |"
+            echo "| 含標籤公司數 | $CO_TAGS |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit and push if changed
+        working-directory: stock_map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/stock-tags.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "每日更新個股標籤 $(date +'%Y-%m-%d')"
+          # 淺層 clone 也能 pull --rebase；bot 同時在推別的檔案，重試三次
+          for i in 1 2 3; do
+            git pull --rebase origin publish_cloudflare && git push && exit 0
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          echo "❌ 推送失敗"
+          exit 1
