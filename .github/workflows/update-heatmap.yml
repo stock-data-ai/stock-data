@@ -1,0 +1,112 @@
+name: Update Heatmap Data｜更新熱力圖（stock_map）
+
+# 為什麼這支在 stock-data 跑，產物卻進 stock_map：
+#   stock_map 是**私有** repo，Actions 分鐘要計費（這支一個月吃掉 760 分＝總量的 38%）；
+#   stock-data 是**公開** repo，Actions 免費無上限。
+#   內容上也對得起來——熱力圖是市場資料（市值＋漲跌），stock-data 本來就是資料 repo。
+#
+# 與 update-stock-tags.yml 同一套做法：**不改腳本、不在此 repo 複製一份**，
+# 用 PAT 淺層 clone stock_map，在它自己的目錄裡原地執行、原地 commit。
+#
+# 公開 repo 的 Actions log 任何人可讀——已確認 generate_heatmap_data.py 只印統計數字
+# （題材數／公司數／抓取進度％），失敗時只印個股代號，不印題材→公司對照。
+# 日後改動腳本的 print，要重新確認這件事。
+#
+# 排程在 stock-data 的 cron worker（台灣 15:00 與 18:30）；改排程記得
+# `cd cron && npx wrangler deploy`，那支 worker 不隨 git push 部署。
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: update-heatmap
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 只取最新一版：這支不需要歷史
+      - name: Clone stock_map（私有，需 PAT）
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "❌ 缺 STOCK_MAP_PAT"
+            exit 1
+          fi
+          git clone --depth 1 --branch publish_cloudflare \
+            "https://x-access-token:${PAT}@github.com/CHIJUI0128/stock_map.git" stock_map
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 不裝 npm 相依：收尾的 sync-heatmap-codes-to-kv.mjs 只用 Node 內建模組，
+      # 且走 --api（Cloudflare REST）不碰 wrangler。
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pip install yfinance
+
+      - name: Generate heatmap data
+        working-directory: stock_map
+        run: |
+          set -o pipefail
+          python scripts/finance/generate_heatmap_data.py 2>&1 | tee /tmp/heatmap.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/heatmap.log
+          FETCH=$(grep -oP 'Done fetching: \K\d+/\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          TOPICS=$(grep -oP 'Successfully generated \K\d+(?= topics)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          ENTRIES=$(grep -oP 'topics, \K\d+(?= entries)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 熱力圖更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 抓取成功 | $FETCH |"
+            echo "| 題材數 | $TOPICS |"
+            echo "| 公司條目數 | $ENTRIES |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit and push if changed
+        id: commit
+        working-directory: stock_map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # punishments.json 由 stock-data 的處置引擎另外推送，這裡只管 heatmap
+          git add src/data/heatmap/data.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "每日更新 Heatmap $(date +'%Y-%m-%d')"
+          for i in 1 2 3; do
+            git pull --rebase -X ours origin publish_cloudflare && git push && {
+              echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; }
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          echo "❌ 推送失敗"
+          exit 1
+
+      # namespace id 走 secret 而非寫死：此 repo 公開，資源 ID 沒必要外顯
+      - name: Sync heatmap canonical codes to KV
+        working-directory: stock_map
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          HEATMAP_KV_NAMESPACE_ID: ${{ secrets.HEATMAP_KV_NAMESPACE_ID }}
+        run: node scripts/sync-heatmap-codes-to-kv.mjs --api
