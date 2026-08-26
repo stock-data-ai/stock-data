@@ -24,6 +24,10 @@ const CRON_MAP: Record<string, CronJob> = {
   '0 2 * * 1':            { workflow: 'update-us-financials.yml' },                                 // 台灣 10:00 週日
   '0 3 * * 7':            { workflow: 'weekly-dividend-update.yml' },                               // 台灣 11:00 週六
   '0 3 * * 1':            { workflow: 'weekly-balance-sheet-update.yml' },                          // 台灣 11:00 週日
+  // 這兩支產物進 stock_map，卻排在這裡跑：stock_map 私有、Actions 要計費，
+  // stock-data 公開、免費無上限。workflow 用 PAT clone stock_map 原地執行（見各自的 yml 註解）。
+  '0 7 * * *':            { workflow: 'update-heatmap.yml' },                                    // 台灣 15:00 每天（日韓收盤後）
+  '30 7 * * *':           { workflow: 'update-stock-tags.yml' },                                 // 台灣 15:30 每天
   '0 8 * * *':            { workflow: 'etf-active-daily.yml' },                                     // 台灣 16:00 每天（第一次）
   '55 7 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 15:55 週一到週五（第一次）
   '55 8 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 16:55 週一到週五（第二次）

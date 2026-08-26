@@ -44,6 +44,8 @@ jobs:
               # lenient：這兩班刻意排在證交所公布之前搶頭香，抓不到是常態不是故障
               # （16:30 那班 8/14、8/18、8/19、8/20 都紅過）。只有「後面的班也全滅」才算異常。
               {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5], 'lenient': True},
+              {'label': '15:00 Update Heatmap Data',                  'workflow_name': 'Update Heatmap Data｜更新熱力圖（stock_map）',                  'hour': 15, 'minute': 0},
+              {'label': '15:30 Update Stock Tags',                    'workflow_name': 'Update Stock Tags｜更新選股標籤（stock_map）',                  'hour': 15, 'minute': 30},
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
               {'label': '16:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 16, 'minute': 30, 'lenient': True},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
