@@ -37,7 +37,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      # 融資融券已於 2026-08-26 改走 FinMind（證交所來函後移除 www.twse.com.tw 的
+      # MI_MARGN 與櫃買的 margin_bal_result.php）。**沒帶 token 會整批 400**：
+      # 全市場查詢需要付費層，register 等級只能逐檔查，不是「拿到少一點資料」。
       - name: Update margin trading data
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
         run: |
           BACKFILL="${{ inputs.backfill_from }}"
           DATE="${{ inputs.date }}"

@@ -1,155 +1,87 @@
-import requests
-import pandas as pd
+"""
+個股融資融券（上市＋上櫃），來源 FinMind `TaiwanStockMarginPurchaseShortSale`。
+
+**不再直接抓證交所與櫃買網站**：2026-08-26 證交所來函後移除。原本走
+`www.twse.com.tw/exchangeReport/MI_MARGN` 與
+`www.tpex.org.tw/.../margin_bal_result.php` 兩支網頁端點，屬其網站使用條款明文
+禁止爬取的範圍（與 openapi.twse.com.tw 的開放資料不同）。移除前的實作見 git history。
+
+FinMind 一支資料集同時涵蓋上市與上櫃，所以原本 fetch_twse／fetch_tpex 兩條路
+收斂成一次請求；權證等非個股代號一併回傳，由呼叫端的 company_codes 過濾。
+
+對帳紀錄（切換前逐欄位比對，零差異）：
+- 2026-08-27：378 檔 × 6 欄位（marginBuy/Sell/Balance、shortBuy/Sell/Balance）
+  與既有 company-financials 完全相同，含上櫃（6488、5483、3324）
+"""
+
 import logging
-import time
-from typing import Optional, Dict, Any
-from datetime import datetime
+from typing import Optional
+
+import pandas as pd
+
+from finance_tools.utils.finmind import fetch_finmind
 
 logger = logging.getLogger(__name__)
 
+
 class MarginTradingFetcher:
-    """
-    Fetcher for Margin Trading data from TWSE (Listed) and TPEx (OTC).
-    """
-    
-    TWSE_URL = "https://www.twse.com.tw/exchangeReport/MI_MARGN?response=json&date={date}&selectType=ALL"
-    TPEX_URL = "https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/margin_bal_result.php?l=zh-tw&d={roc_date}&_={timestamp}"
+    """Fetcher for margin trading data (上市＋上櫃 一次取得)。"""
 
-    def __init__(self):
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-            "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Referer": "https://www.twse.com.tw/",
-        }
+    DATASET = "TaiwanStockMarginPurchaseShortSale"
 
-    def _clean_number(self, val: Any) -> Any:
-        if isinstance(val, str):
-            return val.replace(',', '')
-        return val
-
-    def fetch_twse(self, date_str: str) -> Optional[pd.DataFrame]:
-        """
-        Fetch Listed (TWSE) margin trading data.
-        date_str: YYYYMMDD
-        """
-        url = self.TWSE_URL.format(date=date_str)
-        try:
-            response = requests.get(url, headers=self.headers, timeout=15)
-            response.raise_for_status()
-            data = response.json()
-            
-            if data.get('stat') != 'OK':
-                logger.warning(f"TWSE Margin Trading API returned status: {data.get('stat')} for date {date_str}")
-                return None
-            
-            target_table = None
-            for table in data.get('tables', []):
-                if '融資融券彙總' in table.get('title', ''):
-                    target_table = table
-                    break
-            
-            if not target_table:
-                return None
-            
-            df = pd.DataFrame(target_table['data'], columns=target_table['fields'])
-            
-            # Column mapping for TWSE
-            # 0: Code, 1: Name, 2: MarginBuy, 3: MarginSell, 4: MarginCashRepay, 6: MarginBalance
-            # 8: ShortBuy, 9: ShortSell, 10: ShortStockRepay, 12: ShortBalance
-            result = df.iloc[:, [0, 1, 2, 3, 4, 6, 8, 9, 10, 12]].copy()
-            result.columns = [
-                'stock_id', 'stock_name', 
-                'margin_buy', 'margin_sell', 'margin_repay', 'margin_balance',
-                'short_buy', 'short_sell', 'short_repay', 'short_balance'
-            ]
-            
-            for col in result.columns[2:]:
-                result[col] = pd.to_numeric(result[col].apply(self._clean_number), errors='coerce')
-                
-            return result
-        except Exception as e:
-            logger.error(f"Error fetching TWSE margin trading for {date_str}: {e}")
-            return None
-
-    def fetch_tpex(self, date_str: str) -> Optional[pd.DataFrame]:
-        """
-        Fetch OTC (TPEx) margin trading data.
-        date_str: YYYYMMDD
-        TPEx API fields: 代號,名稱,前資餘額,資買(3),資賣(4),現償(5),資餘額(6),...,前券餘額,券賣(11),券買(12),券償(13),券餘額(14),...
-        """
-        try:
-            dt = datetime.strptime(date_str, '%Y%m%d')
-            roc_date = f"{dt.year - 1911}/{dt.month:02}/{dt.day:02}"
-        except Exception:
-            return None
-
-        timestamp = int(time.time() * 1000)
-        url = self.TPEX_URL.format(roc_date=roc_date, timestamp=timestamp)
-
-        try:
-            response = requests.get(url, headers=self.headers, timeout=15)
-            response.raise_for_status()
-            data = response.json()
-
-            # API 現為 tables 格式（同 TWSE），舊版 aaData 已棄用
-            tables = data.get('tables', [])
-            if not tables or not tables[0].get('data'):
-                logger.warning(f"TPEx Margin Trading API returned no data for date {date_str}")
-                return None
-
-            table = tables[0]
-            df = pd.DataFrame(table['data'], columns=table['fields'])
-
-            # 0:代號 1:名稱 3:資買 4:資賣 5:現償 6:資餘額 11:券賣 12:券買 13:券償 14:券餘額
-            result = df.iloc[:, [0, 1, 3, 4, 5, 6, 12, 11, 13, 14]].copy()
-            result.columns = [
-                'stock_id', 'stock_name',
-                'margin_buy', 'margin_sell', 'margin_repay', 'margin_balance',
-                'short_buy', 'short_sell', 'short_repay', 'short_balance'
-            ]
-
-            for col in result.columns[2:]:
-                result[col] = pd.to_numeric(result[col].apply(self._clean_number), errors='coerce')
-
-            return result
-        except Exception as e:
-            logger.error(f"Error fetching TPEx margin trading for {date_str}: {e}")
-            return None
+    # 輸出欄位 → FinMind 欄位。
+    # 融券的 buy/sell 不可對調：buy 是回補、sell 是放空，換位置會讓多空整個顛倒。
+    # 2026-08-27 以 2317（shortBuy 17／shortSell 45）等不對稱樣本驗證過方向正確。
+    FIELD_MAP = {
+        "margin_buy": "MarginPurchaseBuy",
+        "margin_sell": "MarginPurchaseSell",
+        "margin_repay": "MarginPurchaseCashRepayment",
+        "margin_balance": "MarginPurchaseTodayBalance",
+        "short_buy": "ShortSaleBuy",
+        "short_sell": "ShortSaleSell",
+        "short_repay": "ShortSaleCashRepayment",
+        "short_balance": "ShortSaleTodayBalance",
+    }
 
     def fetch_all(self, date_str: str) -> Optional[pd.DataFrame]:
         """
-        Fetch both TWSE and TPEx margin trading data and combine them.
+        Args:
+            date_str: YYYYMMDD
+
+        Returns:
+            DataFrame[stock_id, margin_*, short_*]；當日無資料（假日或尚未公布）回 None。
+            單位為「張」，與既有 company-financials 一致。
         """
-        twse_df = self.fetch_twse(date_str)
-        tpex_df = self.fetch_tpex(date_str)
-        
-        dfs = []
-        if twse_df is not None:
-            dfs.append(twse_df)
-        if tpex_df is not None:
-            dfs.append(tpex_df)
-            
-        if not dfs:
+        d = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+        rows = fetch_finmind(self.DATASET, d, d, label="融資融券")
+        if not rows:
             return None
-            
-        return pd.concat(dfs, ignore_index=True)
+
+        df = pd.DataFrame(rows)
+        missing = {"stock_id", *self.FIELD_MAP.values()} - set(df.columns)
+        if missing:
+            logger.error("FinMind 融資融券缺欄位 %s: %s", date_str, sorted(missing))
+            return None
+
+        out = pd.DataFrame({"stock_id": df["stock_id"].astype(str)})
+        for col, src in self.FIELD_MAP.items():
+            out[col] = pd.to_numeric(df[src], errors="coerce")
+        return out
+
 
 if __name__ == "__main__":
-    # Test fetcher
     logging.basicConfig(level=logging.INFO)
     fetcher = MarginTradingFetcher()
-    test_date = "20240510"
-    
+    test_date = "20260827"
+
     print(f"Testing fetch_all for {test_date}...")
     combined_df = fetcher.fetch_all(test_date)
     if combined_df is not None:
         print(f"Total rows fetched: {len(combined_df)}")
         print(combined_df.head())
-        # Check for an OTC stock (e.g., 6488 GlobalWafers)
-        otc_stock = combined_df[combined_df['stock_id'] == '6488']
+        otc_stock = combined_df[combined_df["stock_id"] == "6488"]
         if not otc_stock.empty:
             print("\nOTC Stock (6488) Found:")
-            print(otc_stock.to_dict('records')[0])
+            print(otc_stock.to_dict("records")[0])
     else:
         print("Fetch failed")
