@@ -28,7 +28,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      # 上市三大法人與融資融券已於 2026-08-26 改走 FinMind（證交所來函後移除
+      # www.twse.com.tw 的 BFI82U／MI_MARGN）。沒帶 token 會退成匿名額度，
+      # 平常量小看不出來，但一被限流就整輪拿不到當日資料。
       - name: Update market sentiment
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
         run: |
           set -o pipefail
           uv run finance_tools/cli.py update-market-sentiment 2>&1 | tee /tmp/run.log

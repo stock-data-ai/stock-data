@@ -4,10 +4,19 @@ Fetches market-wide sentiment data:
 2. Margin trading aggregate from TWSE MI_MARGN + TPEx (per-stock summed)
 
 Data sources:
-- Institutional: https://www.twse.com.tw/fund/BFI82U (units: 千元 → converted to 元)
-- Margin TWSE:   https://www.twse.com.tw/exchangeReport/MI_MARGN (units: 張)
-- Margin TPEx:   https://www.tpex.org.tw/.../margin_bal_result.php  (units: 張)
-- Margin 長序列: FinMind TaiwanStockTotalMarginPurchaseShortSale（整段區間一次抓）
+- Institutional 上市: FinMind TaiwanStockTotalInstitutionalInvestors（單位：元）
+- Institutional 上櫃: https://www.tpex.org.tw/openapi/v1/tpex_3insti_summary
+- Margin 上市:       FinMind TaiwanStockTotalMarginPurchaseShortSale（張／元）
+- Margin 上櫃:       https://www.tpex.org.tw/.../margin_bal_result.php（張）
+
+**上市部分不再直接抓證交所網站**：2026-08-26 證交所來函後移除。`www.twse.com.tw`
+的 BFI82U／MI_MARGN 屬其網站使用條款明文禁止爬取的範圍，與 openapi.twse.com.tw
+的開放資料性質不同。改用 FinMind 同口徑資料，日／區間共用同一來源。
+
+對帳紀錄（換過去前逐欄位比對，零差異）：
+- 2026-08-07：五類三大法人的買進／賣出金額與 BFI82U 完全相同
+- 2026-08-27：三大法人 buy/sell/net（5 類 × 3 欄）與融資融券 change/buy/sell/balance
+  （3 組 × 4 欄）共 27 個數字，與 BFI82U／MI_MARGN 全部相同
 """
 
 import logging
@@ -23,16 +32,8 @@ logger = logging.getLogger(__name__)
 
 
 class MarketSentimentFetcher:
-    INSTITUTIONAL_URL = (
-        "https://www.twse.com.tw/zh/fund/BFI82U"
-        "?response=json&dayDate={date}&type=day"
-    )
     TPEX_INSTITUTIONAL_URL = (
         "https://www.tpex.org.tw/openapi/v1/tpex_3insti_summary"
-    )
-    TWSE_MARGIN_URL = (
-        "https://www.twse.com.tw/exchangeReport/MI_MARGN"
-        "?response=json&date={date}&selectType=ALL"
     )
     TPEX_MARGIN_URL = (
         "https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/"
@@ -61,7 +62,7 @@ class MarketSentimentFetcher:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
             "Accept": "application/json, text/plain, */*",
             "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Referer": "https://www.twse.com.tw/",
+            "Referer": "https://www.tpex.org.tw/",
         }
 
     # ------------------------------------------------------------------
@@ -97,36 +98,33 @@ class MarketSentimentFetcher:
 
     def fetch_twse_institutional(self, date_str: str, retries: int = 3, retry_delay: int = 30) -> Optional[Dict]:
         """
-        Fetch TWSE (上市) institutional investors aggregate from BFI82U.
-        Retries up to `retries` times with `retry_delay` seconds between attempts.
+        Fetch TWSE (上市) institutional investors aggregate（FinMind，單位：元）。
+
+        回傳形狀與上櫃路徑一致：{foreign|trust|dealer|dealerHedge|foreignDealer: {buy, sell, net}}。
+        FinMind 另有一列 name="total"，不在 FINMIND_INST_FIELDS 內，自動略過。
         """
-        url = self.INSTITUTIONAL_URL.format(date=date_str)
-        for attempt in range(retries):
-            try:
-                resp = requests.get(url, headers=self.headers, timeout=15)
-                resp.raise_for_status()
-                data = resp.json()
+        rows = self._finmind_rows_for_date(
+            self.FINMIND_INST_DATASET, date_str, "三大法人", retries, retry_delay
+        )
+        if not rows:
+            return None
 
-                if data.get("stat") != "OK":
-                    logger.warning("BFI82U stat=%s for %s (attempt %d/%d)", data.get("stat"), date_str, attempt + 1, retries)
-                else:
-                    inst_map = {
-                        row[0]: {
-                            "buy": self._parse_yuan(row[1]),
-                            "sell": self._parse_yuan(row[2]),
-                            "net": self._parse_yuan(row[3]),
-                        }
-                        for row in data.get("data", [])
-                    }
-                    return self._map_inst_rows(inst_map, "外資及陸資(不含外資自營商)")
-            except Exception:
-                logger.warning("Error fetching BFI82U for %s (attempt %d/%d)", date_str, attempt + 1, retries, exc_info=True)
+        out: Dict[str, Dict[str, int]] = {}
+        for row in rows:
+            field = self.FINMIND_INST_FIELDS.get(row.get("name"))
+            if not field:
+                continue
+            buy = int(row.get("buy") or 0)
+            sell = int(row.get("sell") or 0)
+            out[field] = {"buy": buy, "sell": sell, "net": buy - sell}
 
-            if attempt < retries - 1:
-                time.sleep(retry_delay)
+        if "foreign" not in out:
+            logger.error("FinMind 三大法人缺外資欄位 %s", date_str)
+            return None
 
-        logger.error("BFI82U fetch failed after %d attempts for %s", retries, date_str)
-        return None
+        # 外資自營商常年為 0，FinMind 偶爾整天不給該列 → 補零而非整天丟掉
+        zero = {"buy": 0, "sell": 0, "net": 0}
+        return {f: out.get(f, zero) for f in self.FINMIND_INST_FIELDS.values()}
 
     def fetch_tpex_institutional(self) -> Optional[Dict]:
         """
@@ -159,83 +157,43 @@ class MarketSentimentFetcher:
     # Margin trading (融資融券)
     # ------------------------------------------------------------------
 
-    def _parse_margin_balance_row(self, row: list) -> Dict:
-        """
-        Parse one row from TWSE 信用交易統計 (table[0]).
-        Fields: 項目, 買進, 賣出, 現金(券)償還, 前日餘額, 今日餘額
-        """
-        p = self._parse_yuan  # reuse int parser (no ×1000 needed)
-        today = p(row[5])
-        prev = p(row[4])
-        return {
-            "change": today - prev,
-            "buy": p(row[1]),
-            "sell": p(row[2]),
-            "balance": today,
-        }
-
     def fetch_twse_margin(self, date_str: str, retries: int = 3, retry_delay: int = 30) -> Optional[Dict]:
         """
-        Fetch TWSE (上市) margin aggregate from MI_MARGN table[0] (信用交易統計).
-        Only accepts data for the exact requested date — no cross-date fallback,
-        which would silently mislabel a previous day's data as `date_str` when
-        the data is not yet published or a request is rate-limited.
-        Retries the same date up to `retries` times with `retry_delay` seconds between attempts.
-        (Unlike BFI82U, MI_MARGN does not auto-return the latest trading day.)
+        Fetch TWSE (上市) margin aggregate（FinMind，單位：張／元）。
 
-        table[0] rows (欄位: 項目, 買進, 賣出, 現金(券)償還, 前日餘額, 今日餘額):
-          0: 融資(交易單位)  — 張
-          1: 融券(交易單位)  — 張
-          2: 融資金額(仟元)  — 千元
+        只接受「剛好是所請求日期」的資料——`_finmind_rows_for_date` 以 start=end
+        查詢，非交易日或尚未公布時回空，不會把前一日的數字誤標成 date_str。
 
         Returns:
           longBalance:  { change, buy, sell, balance }  — 張
           shortBalance: { change, buy, sell, balance }  — 張
-          longAmount:   { change, buy, sell, balance }  — 元 (千元 × 1000)
+          longAmount:   { change, buy, sell, balance }  — 元
         """
-        for attempt in range(retries):
-            result = self._fetch_twse_margin_single(date_str)
-            if result is not None:
-                return result
-            if attempt < retries - 1:
-                time.sleep(retry_delay)
-        logger.warning("TWSE margin: no data for %s (尚未公布或休市)", date_str)
-        return None
-
-    def _fetch_twse_margin_single(self, date_str: str) -> Optional[Dict]:
-        url = self.TWSE_MARGIN_URL.format(date=date_str)
-        try:
-            resp = requests.get(url, headers=self.headers, timeout=15)
-            resp.raise_for_status()
-            data = resp.json()
-
-            if data.get("stat") != "OK":
-                return None
-
-            summary_table = data.get("tables", [None])[0]
-            if not summary_table or not summary_table.get("data"):
-                return None
-
-            rows = summary_table["data"]
-            if len(rows) < 3:
-                logger.warning("TWSE 信用交易統計 unexpected row count: %d for %s", len(rows), date_str)
-                return None
-
-            long_balance = self._parse_margin_balance_row(rows[0])   # 融資(交易單位)
-            short_balance = self._parse_margin_balance_row(rows[1])  # 融券(交易單位)
-
-            # 融資金額(仟元) → convert to 元
-            raw = self._parse_margin_balance_row(rows[2])
-            long_amount = {k: v * 1000 for k, v in raw.items()}
-
-            return {
-                "longBalance": long_balance,
-                "shortBalance": short_balance,
-                "longAmount": long_amount,
-            }
-        except Exception:
-            logger.exception("Error fetching TWSE margin for %s", date_str)
+        rows = self._finmind_rows_for_date(
+            self.FINMIND_MARGIN_DATASET, date_str, "融資融券", retries, retry_delay
+        )
+        if not rows:
             return None
+
+        out: Dict[str, Dict[str, int]] = {}
+        for row in rows:
+            field = self.FINMIND_MARGIN_FIELDS.get(row.get("name"))
+            if not field:
+                continue
+            today = int(row.get("TodayBalance") or 0)
+            prev = int(row.get("YesBalance") or 0)
+            out[field] = {
+                "change": today - prev,
+                "buy": int(row.get("buy") or 0),
+                "sell": int(row.get("sell") or 0),
+                "balance": today,
+            }
+
+        missing = set(self.FINMIND_MARGIN_FIELDS.values()) - out.keys()
+        if missing:
+            logger.error("FinMind 融資融券缺欄位 %s: %s", date_str, sorted(missing))
+            return None
+        return out
 
     def fetch_tpex_margin(self, date_str: str, retries: int = 3, retry_delay: int = 30) -> Optional[Dict]:
         """
@@ -393,6 +351,22 @@ class MarketSentimentFetcher:
             logger.error("FinMind 三大法人回傳資料不完整 %s~%s", start_date, end_date)
             return None
         return series
+
+    def _finmind_rows_for_date(
+        self, dataset: str, date_str: str, label: str, retries: int, retry_delay: int,
+    ) -> Optional[List[Dict]]:
+        """
+        單日取數：以 start=end 查 FinMind，回傳該日的原始 rows。
+
+        用 start=end 而非「抓一段再挑」是刻意的——FinMind 只會回這一天，
+        非交易日或尚未公布時回空，呼叫端不會拿到前一日的數字卻標成 date_str
+        （舊的 MI_MARGN 實作就是為了防這件事才禁止跨日 fallback）。
+
+        Args:
+            date_str: YYYYMMDD
+        """
+        d = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+        return self._fetch_finmind_range(dataset, d, d, label, retries, retry_delay)
 
     def _fetch_finmind_range(
         self, dataset: str, start_date: str, end_date: str,
