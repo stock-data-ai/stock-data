@@ -48,7 +48,12 @@ jobs:
           python-version-file: pyproject.toml
       - run: uv sync --all-extras --dev
 
+      # 市值估值（本益比／淨值比／殖利率／收盤價）與個股三大法人已於 2026-08-26 改走
+      # FinMind（證交所來函後移除 www.twse.com.tw 的 BWIBBU_d／MI_INDEX／T86）。
+      # **沒帶 token 會整批 400**：全市場查詢需付費層，register 等級只能逐檔查。
       - name: 執行每日更新
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
         run: |
           ARGS=""
           [ -n "${{ inputs.date }}" ] && ARGS="$ARGS --date ${{ inputs.date }}"

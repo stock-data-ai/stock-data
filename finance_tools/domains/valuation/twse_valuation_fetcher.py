@@ -16,7 +16,7 @@ from typing import Dict, Optional
 import requests
 
 from finance_tools.utils.retry import retry as _retry
-from finance_tools.utils.twse_url import bust as _bust
+from finance_tools.utils.finmind import fetch_finmind
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ _BROWSER_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Referer": "https://www.twse.com.tw/",
+    "Referer": "https://www.tpex.org.tw/",
 }
 
 
@@ -53,11 +53,10 @@ class TWSEValuationFetcher:
     fetch_all() 最多 4 次 HTTP 呼叫，取代數千次 yfinance per-stock 請求。
     """
 
-    # 兩支都吃 date 參數：補跑指定日期會拿到那一天，而非「最新一筆」。
-    # （舊的 STOCK_DAY_ALL/BWIBBU_ALL 沒有 date，補跑 8/19 會寫進 8/20 的價格；
-    #   且 STOCK_DAY_ALL 自 2026-08-18 起持續逾時，上市市值連兩天靜默停更。）
-    BWIBBU_D_URL = "https://www.twse.com.tw/exchangeReport/BWIBBU_d?response=json&date={date}&selectType=ALL"
-    MI_INDEX_URL = "https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date={date}&type=ALLBUT0999"
+    # FinMind 兩支都吃日期區間，補跑指定日期會拿到那一天而非「最新一筆」——
+    # 這是原本不能改用 openapi BWIBBU_ALL／STOCK_DAY_ALL 的原因（那兩支沒有 date）。
+    FINMIND_PER_DATASET = "TaiwanStockPER"      # 本益比／股價淨值比／殖利率
+    FINMIND_PRICE_DATASET = "TaiwanStockPrice"  # 收盤價（含 ETF、F 股、權證）
     TPEX_QUOTES_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes"
     TPEX_PERATIO_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_peratio_analysis"
 
@@ -92,66 +91,59 @@ class TWSEValuationFetcher:
     # TWSE  (上市)
     # ──────────────────────────────────────────────────────────────
     def _fetch_listed(self, date_str: str) -> Optional[Dict[str, ValuationRecord]]:
-        """BWIBBU_d 一次給齊收盤價/本益比/淨值比/殖利率；MI_INDEX 補上它沒有的 ETF 與 F 股。"""
-        try:
-            # BWIBBU_d: [0]代號 [1]名稱 [2]收盤價 [3]殖利率(%) [4]股利年度 [5]本益比 [6]股價淨值比
-            ratios: Dict[str, dict] = {}
-            ratio_resp = requests.get(
-                _bust(self.BWIBBU_D_URL.format(date=date_str)), timeout=60, headers=_BROWSER_HEADERS
-            )
-            ratio_resp.raise_for_status()
-            ratio_data = ratio_resp.json()
-            if ratio_data.get("stat") == "OK" and ratio_data.get("data"):
-                for row in ratio_data["data"]:
-                    ratios[row[0].strip()] = {
-                        "close": _parse_float(row[2]),
-                        "dividend_yield": _parse_float(row[3]),
-                        "pe": _parse_float(row[5]),
-                        "pb": _parse_float(row[6]),
-                    }
-            else:
-                logger.warning(f"TWSE BWIBBU_d: 無 {date_str} 資料（非交易日或尚未公布）")
+        """
+        全市場收盤價 + 本益比／淨值比／殖利率（FinMind）。
 
-            # TWSE 對同一連線的連續請求有速率限制，緊接著打第二個 API 會被卡住 timeout
-            time.sleep(3)
+        **不再抓 www.twse.com.tw 的 BWIBBU_d／MI_INDEX**：2026-08-26 證交所來函後移除，
+        那兩支是其網站條款明文禁止爬取的網頁端點（與 openapi.twse.com.tw 的開放資料不同）。
 
-            # MI_INDEX 的「每日收盤行情」表比 BWIBBU_d 多約 235 檔（ETF、F 股／KY 無本益比者）
-            closes: Dict[str, float] = {}
-            close_resp = requests.get(
-                _bust(self.MI_INDEX_URL.format(date=date_str)), timeout=60, headers=_BROWSER_HEADERS
-            )
-            close_resp.raise_for_status()
-            close_data = close_resp.json()
-            if close_data.get("stat") == "OK":
-                for table in close_data.get("tables") or []:
-                    if "每日收盤行情" not in (table.get("title") or ""):
-                        continue
-                    # [0]代號 [1]名稱 [2]成交股數 [3]成交筆數 [4]成交金額 [5]開 [6]高 [7]低 [8]收盤價
-                    for row in table.get("data") or []:
-                        close = _parse_float(row[8]) if len(row) > 8 else None
-                        if close is not None:
-                            closes[row[0].strip()] = close
-            if not closes:
-                logger.warning(f"TWSE MI_INDEX: 無 {date_str} 收盤行情，僅用 BWIBBU_d 的收盤價")
+        `TaiwanStockPER` 同時涵蓋上市與上櫃，所以這裡也會回上櫃代號；`fetch_all` 之後
+        再用 `_fetch_otc`（櫃買 OpenAPI，開放資料）覆蓋上櫃，兩者不衝突。
 
-            result: Dict[str, ValuationRecord] = {}
-            for code in set(closes) | set(ratios):
-                r = ratios.get(code, {})
-                close = closes.get(code)
-                if close is None:
-                    close = r.get("close")
-                if not code or close is None:
-                    continue
-                result[code] = ValuationRecord(
-                    close=close,
-                    pe=r.get("pe"),
-                    pb=r.get("pb"),
-                    dividend_yield=r.get("dividend_yield"),
-                )
-            return result or None
-        except Exception as e:
-            logger.error(f"TWSE 市值估值 error: {e}")
+        對帳紀錄：2026-08-27 與開放資料 BWIBBU_d 逐檔比對，1,081 檔 × PER／PBR／殖利率
+        三欄全部相同。
+        """
+        d = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+        per_rows = fetch_finmind(self.FINMIND_PER_DATASET, d, d, label="本益比")
+        price_rows = fetch_finmind(self.FINMIND_PRICE_DATASET, d, d, label="收盤價")
+
+        if not per_rows and not price_rows:
+            logger.warning("FinMind 估值：%s 無資料（非交易日或尚未公布）", date_str)
             return None
+
+        ratios: Dict[str, dict] = {}
+        for row in per_rows or []:
+            code = str(row.get("stock_id", "")).strip()
+            if code:
+                ratios[code] = {
+                    "dividend_yield": _parse_float(row.get("dividend_yield")),
+                    "pe": _parse_float(row.get("PER")),
+                    "pb": _parse_float(row.get("PBR")),
+                }
+
+        # 收盤價要另外抓：PER 那支沒有價格。價格涵蓋面比 PER 廣（ETF、F 股／KY 無本益比者）
+        closes: Dict[str, float] = {}
+        for row in price_rows or []:
+            code = str(row.get("stock_id", "")).strip()
+            close = _parse_float(row.get("close"))
+            if code and close is not None and close > 0:
+                closes[code] = close
+        if not closes:
+            logger.warning("FinMind 收盤價：無 %s 資料，僅能用有 PER 的部分", date_str)
+
+        result: Dict[str, ValuationRecord] = {}
+        for code in set(closes) | set(ratios):
+            r = ratios.get(code, {})
+            close = closes.get(code)
+            if not code or close is None:
+                continue
+            result[code] = ValuationRecord(
+                close=close,
+                pe=r.get("pe"),
+                pb=r.get("pb"),
+                dividend_yield=r.get("dividend_yield"),
+            )
+        return result or None
 
     # ──────────────────────────────────────────────────────────────
     # TPEx  (上櫃)
