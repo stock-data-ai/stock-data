@@ -43,6 +43,10 @@ jobs:
       - name: Generate and push disposition-forecast.json
         env:
           STOCK_MAP_PAT: ${{ secrets.STOCK_MAP_PAT }}
+          # 款6 的當日 PE/PB 已於 2026-08-26 改走 FinMind（證交所來函後移除 BWIBBU_d
+          # 網頁端點）。沒帶 token 會整批 400 → pb_pe_daily 回 None → 款6 退回較舊的
+          # 備援值，預警會靜默失準而不是報錯。
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
         run: |
           set -o pipefail
           uv run finance_tools/cli.py generate-disposition-forecast 2>&1 | tee /tmp/run.log

@@ -22,6 +22,8 @@
 """
 import json, os, sys, re, math, time, datetime, statistics, itertools
 import requests
+
+from finance_tools.utils.finmind import fetch_finmind
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -200,25 +202,32 @@ def tpex_daily(date):
     return out
 
 def pb_pe_daily(date):
-    """上市 **當日** 本益比/股價淨值比（BWIBBU_d 可帶日期，與 openapi BWIBBU_ALL 的「最新日」不同）。
-    款6 必須用當日值：openapi 版落後一日，實測 3450 聯鈞 08/03 官方 PB 11.42、openapi 給 10.39，
-    門檻就卡在中間 → 款6 回測 0 命中。回 {code: {"pe","pb"}}；抓不到回 None 由呼叫端 fallback。"""
-    cp = os.path.join(CACHE, f"bwibbu_{date}.json")
+    """上市 **當日** 本益比/股價淨值比（FinMind TaiwanStockPER，可指定日期）。
+
+    款6 必須用當日值：openapi 的 BWIBBU_ALL 落後一日，實測 3450 聯鈞 08/03 官方 PB 11.42、
+    openapi 給 10.39，門檻卡在中間 → 款6 回測 0 命中。FinMind 有當日資料（2026-08-28 17:58
+    實測已有當天 1,968 筆），且 2026-08-27 與開放資料逐檔比對 1,081 檔 × PER/PBR 完全相同。
+
+    **不再抓證交所網頁端點**：2026-08-26 來函後移除，改用 FinMind 同口徑資料。
+
+    回 {code: {"pe","pb"}}；抓不到回 None 由呼叫端 fallback。
+    """
+    # 快取檔名與舊的 bwibbu_ 分開：欄位語意相同但來源不同，混用會讓回測分不清基準
+    cp = os.path.join(CACHE, f"pbpe_{date}.json")
     if os.path.exists(cp):
-        x = json.load(open(cp))
+        rows = json.load(open(cp))
     else:
-        try:
-            x = fj(f"https://www.twse.com.tw/exchangeReport/BWIBBU_d?response=json&date={date}&selectType=ALL")
-        except Exception:
-            return None
-        if x.get("stat") == "OK" and str(x.get("date", "")) == date:
-            json.dump(x, open(cp, "w"))
-    if x.get("stat") != "OK" or str(x.get("date", "")) != date:
+        d = f"{date[:4]}-{date[4:6]}-{date[6:]}"
+        rows = fetch_finmind("TaiwanStockPER", d, d, label="本益比", retries=2, retry_delay=5)
+        if rows:
+            json.dump(rows, open(cp, "w"))
+    if not rows:
         return None
     out = {}
-    for r in x.get("data", []):
-        if len(r) >= 7 and len(r[0]) == 4 and r[0][0].isdigit():
-            out[r[0]] = {"pe": _f(r[5]), "pb": _f(r[6])}
+    for r in rows:
+        c = str(r.get("stock_id", "")).strip()
+        if len(c) == 4 and c[0].isdigit():
+            out[c] = {"pe": _f(r.get("PER")), "pb": _f(r.get("PBR"))}
     return out or None
 
 def sector_pe():
