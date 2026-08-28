@@ -7,7 +7,7 @@ Data sources:
 - Institutional 上市: FinMind TaiwanStockTotalInstitutionalInvestors（單位：元）
 - Institutional 上櫃: https://www.tpex.org.tw/openapi/v1/tpex_3insti_summary
 - Margin 上市:       FinMind TaiwanStockTotalMarginPurchaseShortSale（張／元）
-- Margin 上櫃:       https://www.tpex.org.tw/.../margin_bal_result.php（張）
+- Margin 上櫃:       https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance（張）
 
 **上市部分不再直接抓證交所網站**：2026-08-26 證交所來函後移除。`www.twse.com.tw`
 的 BFI82U／MI_MARGN 屬其網站使用條款明文禁止爬取的範圍，與 openapi.twse.com.tw
@@ -25,7 +25,6 @@ import time
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-import pandas as pd
 import requests
 
 logger = logging.getLogger(__name__)
@@ -35,10 +34,21 @@ class MarketSentimentFetcher:
     TPEX_INSTITUTIONAL_URL = (
         "https://www.tpex.org.tw/openapi/v1/tpex_3insti_summary"
     )
-    TPEX_MARGIN_URL = (
-        "https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/"
-        "margin_bal_result.php?l=zh-tw&d={roc_date}&_={timestamp}"
-    )
+    # 櫃買 OpenAPI（開放資料）。只回最新一日、無日期參數，所以呼叫端要自己核對
+    # Date 欄是不是所請求的那天——見 _fetch_tpex_margin_single。
+    TPEX_MARGIN_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance"
+    # 加總用欄位。券賣＝融券建倉、券買（ShortConvering，官方欄名就是這個拼字）＝回補，
+    # 對應到輸出的 shortBalance.buy／sell 是**刻意相反**的，不要「順手改正」。
+    TPEX_MARGIN_FIELDS = {
+        "prev_margin": "MarginPurchaseBalancePreviousDay",
+        "margin_buy": "MarginPurchase",
+        "margin_sell": "MarginSales",
+        "margin_balance": "MarginPurchaseBalance",
+        "prev_short": "ShortSaleBalancePreviousDay",
+        "short_sell": "ShortSale",
+        "short_buy": "ShortConvering",
+        "short_balance": "ShortSaleBalance",
+    }
     FINMIND_DATA_URL = "https://api.finmindtrade.com/api/v4/data"
     FINMIND_MARGIN_DATASET = "TaiwanStockTotalMarginPurchaseShortSale"
     # FinMind 的 name 欄位 → 我們的欄位名（都取 TodayBalance = 當日餘額）
@@ -68,11 +78,6 @@ class MarketSentimentFetcher:
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
-
-    def _clean_number(self, val: Any) -> Any:
-        if isinstance(val, str):
-            return val.replace(",", "")
-        return val
 
     def _parse_yuan(self, val: str) -> int:
         """Parse a NT$ integer string (may have commas). BFI82U returns 元 directly."""
@@ -223,48 +228,40 @@ class MarketSentimentFetcher:
         return None
 
     def _fetch_tpex_margin_single(self, date_str: str, dt: datetime) -> Optional[Dict]:
-        roc_date = f"{dt.year - 1911}/{dt.month:02}/{dt.day:02}"
-        timestamp = int(time.time() * 1000)
-        url = self.TPEX_MARGIN_URL.format(roc_date=roc_date, timestamp=timestamp)
+        """
+        上櫃融資融券市場加總（櫃買 OpenAPI，開放資料）。
 
+        **不再抓櫃買的網頁端點**：2026-08-26 起改走櫃買自己的 OpenAPI（原本那支與證交所
+        的網頁端點同性質，不在開放資料授權內）。對帳紀錄：2026-08-27 加總結果與原網頁
+        端點的 8 個數字完全相同。
+
+        OpenAPI 沒有日期參數、只回最新一日，所以這裡自己核對 `Date` 欄——原實作刻意禁止
+        跨日 fallback（避免把前一日數字標成 date_str），這個性質要保住。
+        """
+        roc = f"{dt.year - 1911}{dt.month:02}{dt.day:02}"
         try:
-            resp = requests.get(url, headers=self.headers, timeout=15)
+            resp = requests.get(self.TPEX_MARGIN_URL, headers=self.headers, timeout=20)
             resp.raise_for_status()
-            data = resp.json()
-
-            tables = data.get("tables", [])
-            if not tables or not tables[0].get("data"):
+            rows = [r for r in (resp.json() or []) if str(r.get("Date", "")).strip() == roc]
+            if not rows:
                 return None
 
-            table = tables[0]
-            df = pd.DataFrame(table["data"], columns=table["fields"])
-            # cols: prev_margin(2), margin_buy(3), margin_sell(4), margin_balance(6)
-            #       prev_short(10), short_sell(11), short_buy(12), short_balance(14)
-            cols = df.columns[[2, 3, 4, 6, 10, 11, 12, 14]]
-            names = [
-                "prev_margin", "margin_buy", "margin_sell", "margin_balance",
-                "prev_short", "short_sell", "short_buy", "short_balance",
-            ]
-            num = df[cols].copy()
-            num.columns = names
-            for c in names:
-                num[c] = pd.to_numeric(
-                    num[c].apply(self._clean_number), errors="coerce"
-                ).fillna(0)
+            def total(field: str) -> int:
+                return sum(int(self._parse_yuan(r.get(field, 0)) or 0) for r in rows)
 
-            s = num.sum()
+            agg = {k: total(v) for k, v in self.TPEX_MARGIN_FIELDS.items()}
             return {
                 "longBalance": {
-                    "change": int(s["margin_balance"] - s["prev_margin"]),
-                    "buy": int(s["margin_buy"]),
-                    "sell": int(s["margin_sell"]),
-                    "balance": int(s["margin_balance"]),
+                    "change": agg["margin_balance"] - agg["prev_margin"],
+                    "buy": agg["margin_buy"],
+                    "sell": agg["margin_sell"],
+                    "balance": agg["margin_balance"],
                 },
                 "shortBalance": {
-                    "change": int(s["short_balance"] - s["prev_short"]),
-                    "buy": int(s["short_sell"]),   # 券賣 = 融券建倉
-                    "sell": int(s["short_buy"]),   # 券買 = 融券回補
-                    "balance": int(s["short_balance"]),
+                    "change": agg["short_balance"] - agg["prev_short"],
+                    "buy": agg["short_sell"],   # 券賣 = 融券建倉
+                    "sell": agg["short_buy"],   # 券買 = 融券回補
+                    "balance": agg["short_balance"],
                 },
             }
         except Exception:
