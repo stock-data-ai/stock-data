@@ -42,6 +42,7 @@ def fetch_finmind(
     label: Optional[str] = None,
     retries: int = 3,
     retry_delay: int = 10,
+    quiet: bool = False,
 ) -> Optional[List[Dict]]:
     """
     查 FinMind 一段區間的資料。
@@ -50,6 +51,8 @@ def fetch_finmind(
         start_date / end_date: YYYY-MM-DD。單日就把兩者設成同一天——FinMind 只回那天，
             非交易日或尚未公布時回空，呼叫端不會拿到前一日的資料卻標成當天。
         data_id: 個股代號；不帶則查全市場（需付費層）。
+        quiet: 逐日探測「哪一天有資料」時設 True——查不到是預期結果，
+            用 ERROR 記錄會讓正常的往回找變成一串假警報。
 
     Returns:
         rows；全部嘗試都失敗或無資料時回 None（呼叫端據此保留既有檔案，不要寫入空值）。
@@ -77,9 +80,10 @@ def fetch_finmind(
             rows = (resp.json() or {}).get("data") or []
             if rows:
                 return rows
-            logger.warning(
-                "FinMind %s 無資料 %s~%s (attempt %d/%d)", name, start_date, end_date, attempt + 1, retries
-            )
+            if not quiet:
+                logger.warning(
+                    "FinMind %s 無資料 %s~%s (attempt %d/%d)", name, start_date, end_date, attempt + 1, retries
+                )
         except Exception:
             logger.warning(
                 "FinMind %s 取得失敗 %s~%s (attempt %d/%d)", name, start_date, end_date,
@@ -88,5 +92,6 @@ def fetch_finmind(
         if attempt < retries - 1:
             time.sleep(retry_delay)
 
-    logger.error("FinMind %s 取得失敗 %s~%s", name, start_date, end_date)
+    if not quiet:
+        logger.error("FinMind %s 取得失敗 %s~%s", name, start_date, end_date)
     return None

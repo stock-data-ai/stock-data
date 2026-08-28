@@ -15,7 +15,7 @@ from typing import Dict, Optional
 import requests
 
 from finance_tools.utils.retry import retry as _retry
-from finance_tools.utils.twse_url import bust as _bust
+from finance_tools.utils.finmind import fetch_finmind
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ _BROWSER_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Referer": "https://www.twse.com.tw/zh/trading/fund/T86.html",
+    "Referer": "https://www.tpex.org.tw/",
 }
 
 
@@ -69,7 +69,7 @@ class TWSEInstitutionalFetcher:
     fetch_all(date_str) 最多 2 次 HTTP 呼叫，取代數千次 FinMind per-stock 請求。
     """
 
-    TWSE_URL = "https://www.twse.com.tw/fund/T86?response=json&date={date}&selectType=ALL"
+    FINMIND_DATASET = "TaiwanStockInstitutionalInvestorsBuySellWide"
     TPEX_URL = "https://www.tpex.org.tw/openapi/v1/tpex_3insti_daily_trading"
 
     def fetch_all(self, date_str: str) -> Dict[str, InstitutionalRecord]:
@@ -102,43 +102,53 @@ class TWSEInstitutionalFetcher:
     # ──────────────────────────────────────────────────────────────
     # TWSE T86  (上市)
     # ──────────────────────────────────────────────────────────────
-    def _fetch_listed(self, date_str: str) -> Optional[Dict[str, InstitutionalRecord]]:
-        """網路錯誤直接拋出（由 retry 重試後 re-raise）；stat != OK 代表非交易日，回傳 None。"""
-        url = _bust(self.TWSE_URL.format(date=date_str))
-        resp = requests.get(url, timeout=20, headers=_BROWSER_HEADERS)
-        resp.raise_for_status()
-        data = resp.json()
+    # FinMind Wide → InstitutionalRecord。Wide 版一檔一列（24K 筆），long 版一檔五列
+    # （121K 筆、10.4MB），內容相同但體積差一倍，沒有理由用 long。
+    FINMIND_FIELDS = {
+        "Foreign_Investor_buy":  "Foreign_Investor_buy",
+        "Foreign_Investor_sell": "Foreign_Investor_sell",
+        "Foreign_Dealer_buy":    "Foreign_Dealer_Self_buy",
+        "Foreign_Dealer_sell":   "Foreign_Dealer_Self_sell",
+        "Investment_Trust_buy":  "Investment_Trust_buy",
+        "Investment_Trust_sell": "Investment_Trust_sell",
+        "Dealer_self_buy":       "Dealer_self_buy",
+        "Dealer_self_sell":      "Dealer_self_sell",
+        "Dealer_hedging_buy":    "Dealer_Hedging_buy",
+        "Dealer_hedging_sell":   "Dealer_Hedging_sell",
+    }
 
-        if data.get("stat") != "OK" or not data.get("data"):
+    def _fetch_listed(self, date_str: str) -> Optional[Dict[str, InstitutionalRecord]]:
+        """
+        全市場個股三大法人買賣超（FinMind，單位：股）。
+
+        **不再抓 www.twse.com.tw/fund/T86**：2026-08-26 證交所來函後移除，那是其網站條款
+        明文禁止爬取的網頁端點（與 openapi.twse.com.tw 的開放資料不同）。
+
+        > [!WARNING]
+        > FinMind 這支同時涵蓋上市與上櫃，但**上櫃的 dealer_self／dealer_hedging 與櫃買
+        > 自己的 OpenAPI 對不起來**（2026-08-27 實測 531 檔上櫃有此差異，兩邊的自營商
+        > 自行買賣與避險像是互換）。所以 `_fetch_otc` 不可省略——`fetch_all` 讓它在後面
+        > 覆蓋上櫃，上櫃一律以櫃買官方為準。看到「FinMind 已含上櫃」就把 `_fetch_otc`
+        > 拿掉的話，531 檔上櫃的自營商資料會靜默變成另一個數字。
+
+        對帳紀錄：2026-08-27 以開放資料的上市名單限縮後，1,075 檔 × 10 欄位全部相同。
+        """
+        d = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+        rows = fetch_finmind(self.FINMIND_DATASET, d, d, label="個股三大法人")
+        if not rows:
             return None
 
-        # T86 欄位索引:
-        # [0] code  [1] name
-        # [2-4]  外陸資（不含外資自營商）: buy, sell, net
-        # [5-7]  外資自營商: buy, sell, net
-        # [8-10] 投信: buy, sell, net
-        # [11]   自營商合計 net
-        # [12-14] 自營商（自行買賣）: buy, sell, net
-        # [15-17] 自營商（避險）: buy, sell, net
-        # [18]   三大法人合計 net
-        date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-        return {
-            row[0].strip(): InstitutionalRecord(
+        date_iso = d
+        result: Dict[str, InstitutionalRecord] = {}
+        for row in rows:
+            code = str(row.get("stock_id", "")).strip()
+            if not code:
+                continue
+            result[code] = InstitutionalRecord(
                 date=date_iso,
-                Foreign_Investor_buy  = _parse_int(row[2]),
-                Foreign_Investor_sell = _parse_int(row[3]),
-                Foreign_Dealer_buy    = _parse_int(row[5]),
-                Foreign_Dealer_sell   = _parse_int(row[6]),
-                Investment_Trust_buy  = _parse_int(row[8]),
-                Investment_Trust_sell = _parse_int(row[9]),
-                Dealer_self_buy       = _parse_int(row[12]),
-                Dealer_self_sell      = _parse_int(row[13]),
-                Dealer_hedging_buy    = _parse_int(row[15]),
-                Dealer_hedging_sell   = _parse_int(row[16]),
+                **{ours: _parse_int(row.get(theirs)) for ours, theirs in self.FINMIND_FIELDS.items()},
             )
-            for row in data["data"]
-            if row[0].strip() and len(row) >= 19  # 欄數不足為衍生商品，略過
-        }
+        return result or None
 
     # ──────────────────────────────────────────────────────────────
     # TPEx tpex_3insti_daily_trading  (上櫃)
