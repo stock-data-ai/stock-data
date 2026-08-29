@@ -251,6 +251,26 @@ def pb_pe_daily(date):
             out[c] = {"pe": _f(r.get("PER")), "pb": _f(r.get("PBR"))}
     return out or None
 
+def _bwibbu_all(cache_path, field, label):
+    """BWIBBU_ALL 的某一欄 {code: value}；**上游失敗時退回上次成功的快取**。
+
+    這支 openapi 端點會間歇性回「HTTP 200 + 空 body」，fj 的 5 次重試（含快取破壞）
+    有時仍然全數落空——2026-08-20 19:05 與 2026-08-29 09:11 兩班都是這樣整支掛掉。
+    它給的是「最新日」的值，本來就不是逐日精確（見 ref_data 註解），所以退回上一份
+    快取的代價遠小於整個預警停擺。兩者都沒有才拋出。
+    """
+    try:
+        out = {r["Code"]: _f(r.get(field)) for r in fj("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL")}
+        if out:
+            json.dump(out, open(cache_path, "w"))
+            return out
+        raise RuntimeError("BWIBBU_ALL 回空清單")
+    except Exception as e:
+        if os.path.exists(cache_path):
+            print(f"[{label}] BWIBBU_ALL 取得失敗（{e}），退回上次快取")
+            return json.load(open(cache_path))
+        raise
+
 def sector_pe():
     """{code:產業別}, {code:PE(openapi最新日)}。"""
     scp, pcp = os.path.join(CACHE, "sector.json"), os.path.join(CACHE, "pe.json")
@@ -264,11 +284,7 @@ def sector_pe():
         except Exception:
             pass
         json.dump(sector, open(scp, "w"))
-    pe = {}
-    for r in fj("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL"):
-        pe[r["Code"]] = _f(r.get("PEratio"))
-    json.dump(pe, open(pcp, "w"))
-    return sector, pe
+    return sector, _bwibbu_all(pcp, "PEratio", "sector_pe")
 
 def ref_data():
     """發行股數(TWSE t187ap03_L)、PB、margin(券資比/使用率)。
@@ -295,9 +311,7 @@ def ref_data():
                 shares.setdefault(str(r.get("SecuritiesCompanyCode", "")).strip(), s)
     except Exception as e:
         print(f"[ref_data] 上櫃發行股數取得失敗，該市場週轉率將缺值: {e}")
-    pb = {}
-    for r in fj("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL"):
-        pb[r["Code"]] = _f(r.get("PBratio"))
+    pb = _bwibbu_all(os.path.join(CACHE, "pb.json"), "PBratio", "ref_data")
     margin = {}
     for r in fj("https://openapi.twse.com.tw/v1/exchangeReport/MI_MARGN"):
         fin, fin_lim = _f(r.get("融資今日餘額")), _f(r.get("融資限額"))
