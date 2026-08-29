@@ -1022,39 +1022,151 @@ def official_k1_recent(idx, market_date, lookback=30):
             for c, v in m.items() if 1 in v["clauses"]}
 
 # ── 官方處置名單 ────────────────────────────────────────────
-# **不可用 openapi/announcement/punish**：它只回「已生效中」的處置，看不到「已公布、尚未生效」。
-# 實例 2026-08-07：川湖等 5 檔當晚公布、08/10 生效，openapi 當晚查為空 → 我們誤判規則有錯。
-# 改用 rwd/bulletin 端點：含公布日、可帶 startDate/endDate 回溯（實測拉得到兩個月以上），
-# 且包含尚未生效的處置。日期參數篩的是**處置期間**，不是公布日 → 要往後查才看得到新公布的。
-def _punish_rows_twse(start, end):
-    x = fj("https://www.twse.com.tw/rwd/zh/announcement/punish"
-           f"?startDate={start}&endDate={end}&response=json")
-    if str(x.get("stat")) != "OK":
-        raise RuntimeError(f"TWSE punish stat={x.get('stat')}")
+# FinMind `TaiwanStockDispositionSecuritiesPeriod`：**一支同時涵蓋上市、上櫃、興櫃與
+# 可轉債**，取代原本證交所 rwd 與櫃買 bulletin 兩支網頁端點（2026-08-26 來函後移除）。
+#
+# **不可改用 openapi/announcement/punish**：那支只回「已生效中」的處置，看不到「已公布、
+# 尚未生效」。實例 2026-08-07：川湖等 5 檔當晚公布、08/10 生效，openapi 當晚查為空。
+# FinMind 沒這問題——`date` 是公布日、`period_start` 是生效日，兩者分開，實測川湖確實
+# 出現在 08-07。且支援日期區間，回補能力與原端點相同。
+#
+# 對帳紀錄：2026-07-13~08-14 區間，既有 133 筆 vs FinMind 134 筆，兩邊都有 130 筆；
+# 只在既有的 3 筆代號是空字串（舊解析產生的垃圾列），只在 FinMind 的 4 筆是多涵蓋的
+# （含興櫃 7898）。FinMind 是超集合。
+_COND_STREAK = [
+    (re.compile(r"連續([一二三四五六七八九十0-9]+)次"), lambda m: f"連續{_cn2int(m.group(1))}日"),
+    (re.compile(r"最近([一二三四五六七八九十0-9]+)個營業日已有([一二三四五六七八九十0-9]+)次"),
+     lambda m: f"{_cn2int(m.group(1))}日內{_cn2int(m.group(2))}次"),
+]
+
+def _streak_from_condition(cond):
+    """上市處置公告的 condition 是處置標準（連續三次／最近十個營業日已有六次），
+    不是注意款別；轉成與 _disp_reason 同格式的 streak 字串。"""
+    for pat, fmt in _COND_STREAK:
+        m = pat.search(cond or "")
+        if m:
+            return fmt(m)
+    return None
+
+def _punish_rows_tpex_openapi():
+    """上櫃處置（櫃買 OpenAPI，開放資料）。回近六個公布日，**含已公布未生效**且帶公告全文。
+
+    存在的理由是補 FinMind 的延遲：2026-08-29 中午實測 FinMind 最新只到 08-27，
+    而櫃買 OpenAPI 已有 08-28 的 4 筆（3163／3441／4188／6103，期間 08-31~09-04）。
+    全文也讓 interval／clause 能照舊解析出來，不像 FinMind 的上市項目只給短字串。
+    """
     out = []
-    for r in x.get("data") or []:
-        st, en = _disp_period(r[6])
-        streak, clause, times = _disp_reason(str(r[5]) + str(r[8]), str(r[7]))
-        out.append({"code": str(r[2]), "market": "市", "name": str(r[3]),
-                    "announced": _disp_roc(str(r[1])), "start": st, "end": en,
-                    "interval": _disp_interval(str(r[8])), "detail": str(r[8]).strip(),
+    for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_disposal_information"):
+        code = str(r.get("SecuritiesCompanyCode") or "").strip()
+        if not code:
+            continue
+        detail = str(r.get("DisposalCondition") or "")
+        reason = str(r.get("DispositionReasons") or "")
+        st, en = _disp_period(str(r.get("DispositionPeriod") or ""))
+        streak, clause, times = _disp_reason(reason + detail, detail)
+        out.append({"code": code, "market": "櫃",
+                    "name": re.sub(r"\(.*", "", str(r.get("CompanyName") or "")).strip(),
+                    "announced": _disp_roc(str(r.get("Date") or "")), "start": st, "end": en,
+                    "interval": _disp_interval(detail), "detail": detail.strip(),
                     "streak": streak, "clause": clause, "times": times})
     return out
 
-def _punish_rows_tpex(start, end):
-    x = fj("https://www.tpex.org.tw/www/zh-tw/bulletin/disposal"
-           f"?startDate={start[:4]}/{start[4:6]}/{start[6:8]}"
-           f"&endDate={end[:4]}/{end[4:6]}/{end[6:8]}&response=json")
-    tbl = next((t for t in x.get("tables", []) if t.get("data")), None)
+def _punish_rows_twse_openapi():
+    """上市處置（證交所 OpenAPI，開放資料）。**只回已生效中**，補 FinMind 延遲用。
+
+    「已公布尚未生效」這支看不到（2026-08-07 川湖案例即為此），所以它只能當補充，
+    不能單獨當來源——真正的未生效來源是 FinMind。
+    """
     out = []
-    for r in (tbl or {}).get("data", []):
-        st, en = _disp_period(str(r[5]))
-        streak, clause, times = _disp_reason(str(r[6]) + str(r[7]), str(r[7]))
-        out.append({"code": str(r[2]), "market": "櫃",
-                    "name": re.sub(r"\(.*", "", str(r[3])).strip(),   # 名稱欄含 (../連結) 要去掉
-                    "announced": _disp_roc(str(r[1])), "start": st, "end": en,
-                    "interval": _disp_interval(str(r[7])), "detail": str(r[7]).strip(),
+    for r in fj("https://openapi.twse.com.tw/v1/announcement/punish"):
+        code = str(r.get("Code") or "").strip()
+        if not code:
+            continue
+        detail = str(r.get("Detail") or r.get("DispositionMeasures") or "")
+        reason = str(r.get("ReasonsOfDisposition") or "")
+        st, en = _disp_period(str(r.get("DispositionPeriod") or ""))
+        streak, clause, times = _disp_reason(reason + detail, detail)
+        out.append({"code": code, "market": "市", "name": str(r.get("Name") or "").strip(),
+                    "announced": _disp_roc(str(r.get("Date") or "")), "start": st, "end": en,
+                    "interval": _disp_interval(detail), "detail": detail.strip(),
                     "streak": streak, "clause": clause, "times": times})
+    return out
+
+def _merge_punish(*sources):
+    """依 (code, announced) 去重；同一筆保留**欄位較完整**的那份。
+
+    FinMind 的上市項目只給「第一次處置」這種短字串，官方 OpenAPI 有公告全文；
+    兩邊都有時要留全文那份，否則 interval／clause 會平白消失。
+    """
+    merged = {}
+    for rows in sources:
+        for r in rows:
+            k = (r.get("code"), r.get("announced"))
+            cur = merged.get(k)
+            if cur is None or len(r.get("detail") or "") > len(cur.get("detail") or ""):
+                merged[k] = {**(cur or {}), **{kk: vv for kk, vv in r.items() if vv not in (None, "")}}
+    return list(merged.values())
+
+def _punish_rows_finmind(start, end):
+    """回 [{code,market,name,announced,start,end,interval,detail,streak,clause,times}]。"""
+    fmt = lambda d: f"{d[:4]}-{d[4:6]}-{d[6:8]}"
+    rows = fetch_finmind(
+        "TaiwanStockDispositionSecuritiesPeriod", fmt(start), fmt(end),
+        label="處置名單", retries=2, retry_delay=5,
+    )
+    if rows is None:
+        raise RuntimeError("FinMind 處置名單取得失敗")
+
+    # market 由代號查；權證／可轉債不在 TaiwanStockInfo 裡，改查含權證的版本
+    info = stock_info()
+    info_w = None
+    out = []
+    for r in rows:
+        code = str(r.get("stock_id", "")).strip()
+        if not code:
+            continue
+        measure = str(r.get("measure") or "")
+        condition = str(r.get("condition") or "")
+        streak, clause, times = _disp_reason(condition + measure, measure)
+        # 上市項目的 measure 只有「第一次處置」這種短字串，condition 也不寫「第X款」，
+        # 所以 _disp_reason 解不出 streak。改由 condition 的處置標準補：
+        #   連續三次／連續五次        → 連續3日／連續5日
+        #   最近十個營業日已有六次     → 10日內6次
+        # clause（第X款）在上市項目確實拿不到——那是觸發注意的款別，處置公告的短字串
+        # 沒有帶。它只用於顯示，功能性欄位（times/期間）不受影響。
+        if not streak:
+            streak = _streak_from_condition(condition)
+
+        # market 三層：一般股票 → 權證（另一份大表，只在需要時才載）→ 可轉債。
+        # 可轉債代號是「四碼標的＋序號」（24553 的標的是 2455、30371 是 3037），
+        # 不在任何 info 表裡，只能從代號推回標的再查。
+        mk = (info.get(code) or {}).get("market")
+        # 可轉債：代號是「四碼標的＋序號」（24553＝2455 的第 3 檔、629010＝6290 的第 10 檔）。
+        # **一律歸「櫃」，不跟隨標的市場**——可轉債都在櫃買交易，即使標的是上市股票
+        # （30371 欣興一的公告寫「依本中心櫃檯買賣…要點」，但標的 3037 欣興是上市）。
+        # 0 開頭的六碼是權證不是可轉債，要走下面的 info_w 查表。
+        if not mk and 5 <= len(code) <= 6 and code.isdigit() and not code.startswith("0"):
+            mk = "櫃"
+        if not mk:
+            if info_w is None:
+                info_w = stock_info(include_warrant=True)
+            mk = (info_w.get(code) or {}).get("market") or ""
+
+        out.append({
+            "code": code,
+            "market": mk,
+            "name": str(r.get("stock_name") or "").strip(),
+            "announced": str(r.get("date") or "").replace("-", "") or None,
+            "start": str(r.get("period_start") or "").replace("-", "") or None,
+            "end": str(r.get("period_end") or "").replace("-", "") or None,
+            # 2026-08-10 新制起撮合一律約每 2 分鐘；舊制的 5 分／10 分只存在於歷史區間，
+            # 而 forecast 那側本來就會把生效中的處置一律標成 2 分（見 rule_2026_08_10）。
+            # 解不出就留 None：舊制的 5 分／10 分只存在於歷史區間，硬填 2 分會把
+            # 歷史資料改寫成新制。生效中的處置那側本來就會覆蓋成 2 分（rule_2026_08_10）。
+            "interval": _disp_interval(measure),
+            "detail": measure.strip() or condition.strip(),
+            "streak": streak, "clause": clause, "times": times,
+        })
     return out
 
 def refresh_punish(days_back=90, days_fwd=30):
@@ -1071,7 +1183,18 @@ def refresh_punish(days_back=90, days_fwd=30):
     end = (today + datetime.timedelta(days=days_fwd)).strftime("%Y%m%d")
     fp = os.path.join(CACHE, "punish_rows.json")
     rows, bad = [], []
-    for name, fn in (("上市", _punish_rows_twse), ("上櫃", _punish_rows_tpex)):
+    def _all(a, b):
+        # FinMind 提供歷史與上市未生效；兩支官方 OpenAPI 補當日（FinMind 延遲約一天）。
+        # 官方那兩支失敗不擋——它們只是補充，主來源是 FinMind。
+        rows = _punish_rows_finmind(a, b)
+        for fn in (_punish_rows_tpex_openapi, _punish_rows_twse_openapi):
+            try:
+                rows = _merge_punish(rows, fn())
+            except Exception as e:
+                print(f"[punish] {fn.__name__} 補充失敗（不影響主來源）: {e}")
+        return rows
+
+    for name, fn in (("全市場", _all),):
         try:
             got = fn(start, end)
             # 回 0 筆也算失敗。±120 天視窗內兩市場常態都有數百筆（2026-08-20 實測
