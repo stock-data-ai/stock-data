@@ -910,7 +910,43 @@ def _roc_to_ymd(s):
     m = re.match(r"(\d{3})[./-](\d{1,2})[./-](\d{1,2})", str(s).strip())
     return f"{int(m.group(1))+1911:04d}{int(m.group(2)):02d}{int(m.group(3)):02d}" if m else None
 
+# 官方注意名單的來源分兩邊：
+#
+# **上櫃走 OpenAPI**（開放資料）。2026-08-29 對帳：同一天 23 筆，name／market／close／
+# clauses 逐欄位與網頁端點完全相同。
+#
+# > [!WARNING]
+# > **上市不能用 `openapi.twse.com.tw/v1/announcement/notice`——它回空的。**
+# > 2026-08-29 實測：網頁端點的 08-28 名單有 48 筆（含上市 2254、2351、2426、3189…），
+# > OpenAPI 同時間只回 23 筆且全是上櫃，上市那支回一列欄位全空的佔位資料。
+# > 曾因此誤判「當天證交所沒有公布注意股」。上市維持用網頁端點，直到能確認 OpenAPI
+# > 那支在交易日當晚會有內容為止（需要在平日晚間同時比對兩邊才驗得出來）。
+def _official_rows_openapi():
+    """當日注意名單（**僅上櫃**，開放資料）。回 [] 表示當天櫃買沒有公布。"""
+    out = []
+    try:
+        for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_trading_warning_information"):
+            code = str(r.get("SecuritiesCompanyCode") or "").strip()
+            ann = _disp_roc(str(r.get("Date") or ""))
+            if code and ann:
+                text = str(r.get("TradingInformation") or "")
+                out.append({"date": ann, "code": code, "name": str(r.get("CompanyName") or ""),
+                            # 櫃買 OpenAPI 沒有「累計次數」欄；official_index() 不讀 count，
+                            # 只用 code/name/market/close/clauses，所以缺這欄不影響下游。
+                            "market": "TPEx", "count": None,
+                            "close": _f(r.get("ClosePrice")), "text": text,
+                            "clauses": _clauses(text)})
+    except Exception as e:
+        print(f"[backfill] 上櫃（OpenAPI）抓取失敗: {e}")
+
+    # 抓到列卻一款都解不出來 = 欄位語意變了。這種壞法會讓款2 豁免與 reconcile 靜默失準，
+    # 必須吵出來，不能當成「今天沒有注意股」。
+    if out and not any(r["clauses"] for r in out):
+        print(f"[backfill] ⚠️ OpenAPI 回 {len(out)} 筆但無一解出款號，請檢查欄位是否變更")
+    return out
+
 def _official_rows_twse(start, end):
+    """上市注意名單（網頁端點，**僅供手動補洞**）。可帶 startDate/endDate 回溯數年。"""
     x = fj("https://www.twse.com.tw/rwd/zh/announcement/notice"
            f"?startDate={start}&endDate={end}&response=json")
     if str(x.get("stat")) != "OK":
@@ -925,7 +961,7 @@ def _official_rows_twse(start, end):
     return out
 
 def _official_rows_tpex(start=None, end=None):
-    """上櫃注意名單。**吃 startDate/endDate 可回溯**（實測一年前仍有資料）；
+    """上櫃注意名單（網頁端點，**僅供手動補洞**）。吃 startDate/endDate 可回溯；
     `date=` 參數會被無視（一律回最近兩個公告日）——同 TPEx 歷史報價的老坑，別再踩。
     日期格式為西元斜線 YYYY/MM/DD。"""
     q = ""
@@ -960,21 +996,33 @@ def _save_official(rows):
     return by
 
 def backfill_notice(start=None, end=None):
-    """回補官方注意名單（含款號）。省略日期 = 只抓上櫃最近兩日 + 上市近 60 天。"""
+    """
+    更新官方注意名單（含款號）→ notices/official_*.json。
+
+    **不帶日期（每日排程走這條）**：上櫃走 OpenAPI 當日快照，上市仍走網頁端點近 60 天
+    （上市的 OpenAPI 版回空，見上方 WARNING）。
+
+    **帶日期（手動補洞走這條）**：兩邊都走網頁端點回溯。OpenAPI 沒有歷史，某天排程掛掉
+    或官方事後修正名單時才用得到：
+        python3 -m finance_tools.disposition.p1_reconcile backfill-notice 20260801 20260828
+    """
+    auto = not (start and end)
     end = end or _today()
     start = start or (datetime.datetime.strptime(end, "%Y%m%d")
                       - datetime.timedelta(days=60)).strftime("%Y%m%d")
+
     rows = []
-    try:
-        rows += _official_rows_twse(start, end)
-    except Exception as e:
-        print(f"[backfill] 上市抓取失敗: {e}")
-    try:
-        rows += _official_rows_tpex(start, end)
-    except Exception as e:
-        print(f"[backfill] 上櫃抓取失敗: {e}")
+    # 上櫃：自動路徑走 OpenAPI（不碰網頁端點）；手動補洞才用網頁端點回溯。
+    tpex = (_official_rows_openapi if auto else (lambda: _official_rows_tpex(start, end)))
+    for label, fn in (("上市", lambda: _official_rows_twse(start, end)),
+                      ("上櫃", tpex)):
+        try:
+            rows += fn()
+        except Exception as e:
+            print(f"[backfill] {label}抓取失敗: {e}")
     by = _save_official(rows)
-    print(f"[backfill] {start}~{end}: {len(rows)} 筆 / {len(by)} 個公告日 → notices/official_*.json")
+    src = "上市網頁＋上櫃 OpenAPI" if auto else "網頁端點補洞"
+    print(f"[backfill] {start}~{end}（{src}）: {len(rows)} 筆 / {len(by)} 個公告日")
 
 def official_index():
     """{公告日: {代號: {"name","market","clauses":[...]}}}（排除權證）。"""
