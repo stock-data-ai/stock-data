@@ -24,6 +24,7 @@ import json, os, sys, re, math, time, datetime, statistics, itertools
 import requests
 
 from finance_tools.utils.finmind import fetch_finmind
+from finance_tools.utils.stock_info import stock_info
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -152,54 +153,74 @@ def _rows_ok(x):
     實例：2026-08-06 上櫃整天缺資料 → 8/10、8/11 上櫃款1 誤報從 0 暴增到 9~13 檔。"""
     return any(len(t.get("data") or []) >= MIN_DAILY_ROWS for t in (x.get("tables") or []))
 
-# ── 每日全個股資料（含量價/PE/發行股數）──────────────────────
-def mi_index(date):
-    """上市全個股 {code:{name,close,open,vol,amount,pe}}；快取。回 None=非交易日。"""
-    cp = os.path.join(CACHE, f"mi_{date}.json")
+# ── 每日全個股資料（含量價/PE）────────────────────────────────
+# **不再抓 www.twse.com.tw 的 MI_INDEX 與櫃買的 dailyQuotes 網頁端點**：2026-08-26
+# 證交所來函後移除（與 openapi.twse.com.tw 的開放資料不同，那兩支在其網站條款的
+# 禁止爬取範圍內）。改用 FinMind `TaiwanStockPrice`——**一支同時涵蓋上市與上櫃**，
+# 而且吃日期區間，回補能力比原本的櫃買端點（只能逐日查）更好。
+#
+# 公司名稱由 `TaiwanStockInfo` 補（行情資料集只有 stock_id）；發行股數改由
+# `ref_data()` 統一提供（上市上櫃都用 MOPS 申報值，見該函式註解）。
+def _finmind_prices(date):
+    """{code: {name, close, open, vol, amount}}；含上市與上櫃，非交易日回 None。"""
+    # 回測會逐日往回走三十幾天，其中一半是假日。假日「查無資料」是正常結果不是失敗，
+    # 所以 retries=1、不 sleep、不記 ERROR；並且**把空結果也快取起來**——否則每跑一次
+    # 回測就要為每個假日各打一次網路，第一次全量回測會慢到以為卡死。
+    # 空結果只對「兩天前以上」的日期快取：當天／昨天可能只是還沒公布，之後會有。
+    cp = os.path.join(CACHE, f"px_{date}.json")
     if os.path.exists(cp):
-        x = json.load(open(cp))
+        rows = json.load(open(cp))
     else:
-        x = fj(f"https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date={date}&type=ALLBUT0999")
-        if x.get("stat") == "OK" and _rows_ok(x):
-            json.dump(x, open(cp, "w"))
-    if x.get("stat") != "OK" or "tables" not in x:
+        d = f"{date[:4]}-{date[4:6]}-{date[6:]}"
+        rows = fetch_finmind(
+            "TaiwanStockPrice", d, d, label="行情", retries=1, retry_delay=0, quiet=True
+        )
+        stale = date < (datetime.datetime.strptime(_today(), "%Y%m%d")
+                        - datetime.timedelta(days=2)).strftime("%Y%m%d")
+        if rows or stale:
+            json.dump(rows or [], open(cp, "w"))
+    if not rows:
         return None
-    tbl = next((t for t in x["tables"] if any("證券代號" in str(f) for f in t.get("fields", []))), None)
+    names = stock_info()
     out = {}
-    for r in tbl["data"]:
-        c = r[0]
-        if len(c) == 4 and c[0].isdigit() and _f(r[8]) is not None:
-            out[c] = {"name": r[1], "close": _f(r[8]), "open": _f(r[5]),
-                      "vol": _f(r[2]), "amount": _f(r[4]),
-                      "pe": _f(r[15]) if len(r) > 15 else None}
+    for r in rows:
+        c = str(r.get("stock_id", "")).strip()
+        close = _f(r.get("close"))
+        # 只留四碼數字代號：權證／可轉債不參與量價規則（與原實作同一條件）
+        if len(c) == 4 and c[0].isdigit() and close is not None:
+            out[c] = {"name": (names.get(c) or {}).get("name", ""),
+                      "close": close, "open": _f(r.get("open")),
+                      "vol": _f(r.get("Trading_Volume")), "amount": _f(r.get("Trading_money"))}
+    return out or None
+
+def _prices_by_market(date, market):
+    """依市場別切分 _finmind_prices 的結果。market: 'TWSE' / 'TPEx'。"""
+    px = _finmind_prices(date)
+    if not px:
+        return None
+    info = stock_info()
+    want = "市" if market == "TWSE" else "櫃"
+    out = {c: v for c, v in px.items() if (info.get(c) or {}).get("market") == want}
+    return out or None
+
+def mi_index(date):
+    """上市全個股 {code:{name,close,open,vol,amount,pe}}；回 None=非交易日。"""
+    out = _prices_by_market(date, "TWSE")
+    if not out:
+        return None
+    pe = pb_pe_daily(date) or {}
+    for c, v in out.items():
+        v["pe"] = (pe.get(c) or {}).get("pe")
     return out
 
 def tpex_daily(date):
-    """上櫃全個股 {code:{name,close,open,vol,amount,shares}}；快取。回 None=非交易日。
-    端點需西元斜線日期(YYYY/MM/DD)才回歷史；否則一律回最新日。"""
-    cp = os.path.join(CACHE, f"otc_{date}.json")
-    ymd_slash = f"{date[:4]}/{date[4:6]}/{date[6:8]}"
-    if os.path.exists(cp):
-        x = json.load(open(cp))
-    else:
-        x = fj(f"https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?date={ymd_slash}&type=EW&response=json")
-        if str(x.get("stat", "")).lower() == "ok" and str(x.get("date", "")) == date and _rows_ok(x):
-            json.dump(x, open(cp, "w"))
-        elif str(x.get("date", "")) != date:
-            return None
-    if str(x.get("stat", "")).lower() != "ok" or "tables" not in x or str(x.get("date", "")) != date:
-        return None
-    tbl = next((t for t in x["tables"] if any("代號" in str(f) for f in t.get("fields", []))), None)
-    if not tbl:
-        return None
-    out = {}
-    for r in tbl["data"]:
-        c = r[0]
-        if len(c) == 4 and c[0].isdigit() and _f(r[2]) is not None:
-            out[c] = {"name": r[1], "close": _f(r[2]), "open": _f(r[4]),
-                      "vol": _f(r[8]), "amount": _f(r[9]),
-                      "shares": _f(r[15]) if len(r) > 15 else None}
-    return out
+    """上櫃全個股 {code:{name,close,open,vol,amount}}；回 None=非交易日。
+
+    原本這裡會順便帶回 `shares`（櫃買網頁端點的欄位）。端點移除後改由 `ref_data()`
+    統一提供上市＋上櫃的發行股數，呼叫端的 `row.get("shares") or shares_tw.get(c)`
+    因此一律走後者，不必改。
+    """
+    return _prices_by_market(date, "TPEx")
 
 def pb_pe_daily(date):
     """上市 **當日** 本益比/股價淨值比（FinMind TaiwanStockPER，可指定日期）。
@@ -257,6 +278,23 @@ def ref_data():
         s = _f(r.get("已發行普通股數或TDR原股發行股數"))
         if s:
             shares[r["公司代號"]] = s
+    # 上櫃發行股數。原本是 tpex_daily 從櫃買網頁端點順便帶回來的，該端點 2026-08-29
+    # 移除後改由這裡補，取櫃買 OpenAPI 行情表的 `Capitals`。
+    #
+    # > [!WARNING]
+    # > **不可改用 `mopsfin_t187ap03_O` 的 `IssueShares`**（MOPS 申報值）。那與櫃買
+    # > 交易系統的發行股數是兩個不同的數，官方週轉率用的是交易系統那個。
+    # > 2026-08-28 實測 5314 世紀*：交易系統 1,205,960,000、MOPS 申報 292,000,000，
+    # > 差 4.13 倍 → 週轉率 1.86% vs 7.68%，直接讓款4 從沒命中變成誤報一檔
+    # > （官方當天對 5314 只列款1）。FinMind 的 Shareholding 與市值/收盤也都回申報值，
+    # > 三個來源一致地錯，只有 `Capitals` 對得上（887 檔逐檔比對零差異）。
+    try:
+        for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes"):
+            s = _f(r.get("Capitals"))
+            if s:
+                shares.setdefault(str(r.get("SecuritiesCompanyCode", "")).strip(), s)
+    except Exception as e:
+        print(f"[ref_data] 上櫃發行股數取得失敗，該市場週轉率將缺值: {e}")
     pb = {}
     for r in fj("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL"):
         pb[r["Code"]] = _f(r.get("PBratio"))
