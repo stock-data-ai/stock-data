@@ -86,12 +86,26 @@ jobs:
       FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
 
     steps:
+      # secret 可放多組逗號分隔的 token，每個 batch 取一組來分攤速率限制。
+      # **組數少於 batch 數時要退回第一組**——2026-08-30 週日 financials 與
+      # balance-sheet 全掛就是因為 secret 從多組免費 token 換成單一 Sponsor Pro
+      # token 後，index 1 以上拿到空字串，FinMindClient 直接 raise。
+      # 付費層 20,000 次/小時，一組足以支撐所有 batch，不必再湊組數。
       - name: Select token for this batch
         run: |
           IFS=',' read -ra TOKENS <<< "$FINMIND_API_TOKENS"
           INDEX=$(( ${{ matrix.batch }} - 1 ))
-          echo "FINMIND_API_TOKENS=${TOKENS[$INDEX]}" >> $GITHUB_ENV
-          echo "Using token #${{ matrix.batch }} (${TOKENS[$INDEX]:0:5}...)"
+          TOKEN="${TOKENS[$INDEX]:-}"
+          if [ -z "$TOKEN" ]; then
+            TOKEN="${TOKENS[0]}"
+            echo "token 組數(${#TOKENS[@]}) 少於 batch #${{ matrix.batch }}，退回第一組"
+          fi
+          if [ -z "$TOKEN" ]; then
+            echo "::error::FINMIND_API_TOKENS 未設定或為空"
+            exit 1
+          fi
+          echo "FINMIND_API_TOKENS=$TOKEN" >> $GITHUB_ENV
+          echo "Using token for batch #${{ matrix.batch }} (${TOKEN:0:5}...)"
 
       - name: Checkout repository
         uses: actions/checkout@v6
