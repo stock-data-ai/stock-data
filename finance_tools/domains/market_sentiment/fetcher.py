@@ -27,6 +27,8 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
+from finance_tools.utils.finmind import fetch_finmind
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,7 +51,6 @@ class MarketSentimentFetcher:
         "short_buy": "ShortConvering",
         "short_balance": "ShortSaleBalance",
     }
-    FINMIND_DATA_URL = "https://api.finmindtrade.com/api/v4/data"
     FINMIND_MARGIN_DATASET = "TaiwanStockTotalMarginPurchaseShortSale"
     # FinMind 的 name 欄位 → 我們的欄位名（都取 TodayBalance = 當日餘額）
     FINMIND_MARGIN_FIELDS = {
@@ -369,43 +370,10 @@ class MarketSentimentFetcher:
         self, dataset: str, start_date: str, end_date: str,
         label: str, retries: int, retry_delay: int,
     ) -> Optional[List[Dict]]:
-        """FinMind v4 區間查詢。免 token 可用；有 token 時帶上以吃較高的額度。"""
-        params = {"dataset": dataset, "start_date": start_date, "end_date": end_date}
-        headers = {"Accept": "application/json"}
-        raw_token = (
-            os.environ.get("FINMIND_API_TOKENS")
-            or os.environ.get("FINMIND_API_TOKEN_local")
-            or ""
-        )
-        token = raw_token.split(",")[0].strip()
-        if token:
-            headers["Authorization"] = f"Bearer {token}"
-
-        for attempt in range(retries):
-            try:
-                resp = requests.get(
-                    self.FINMIND_DATA_URL, params=params, headers=headers, timeout=30
-                )
-                resp.raise_for_status()
-                payload = resp.json()
-                rows = payload.get("data") or []
-                if rows:
-                    return rows
-                logger.warning(
-                    "FinMind %s 無資料 %s~%s: msg=%s (attempt %d/%d)",
-                    label, start_date, end_date, payload.get("msg"), attempt + 1, retries,
-                )
-            except Exception:
-                logger.warning(
-                    "Error fetching FinMind %s %s~%s (attempt %d/%d)",
-                    label, start_date, end_date, attempt + 1, retries, exc_info=True,
-                )
-
-            if attempt < retries - 1:
-                time.sleep(retry_delay)
-
-        logger.error("FinMind %s 長序列取得失敗 %s~%s", label, start_date, end_date)
-        return None
+        """FinMind 區間查詢。實作在 utils.finmind——那裡有「非交易日不重試」的處理，
+        自己再寫一份會讓假日每次白等一分鐘（2026-08-30 實測 61 秒 vs 0.4 秒）。"""
+        return fetch_finmind(dataset, start_date, end_date, label=label,
+                             retries=retries, retry_delay=retry_delay)
 
     # ------------------------------------------------------------------
     # Combined

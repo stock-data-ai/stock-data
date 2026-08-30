@@ -10,6 +10,7 @@ token 由環境變數提供，優先序 FINMIND_API_TOKENS（CI）→ FINMIND_AP
 沒 token 會整批回 400 而不是回少一點資料，屬於「上線才發現」的那種壞法。
 """
 
+import datetime
 import logging
 import os
 import time
@@ -21,6 +22,16 @@ logger = logging.getLogger(__name__)
 
 DATA_URL = "https://api.finmindtrade.com/api/v4/data"
 TIMEOUT_SEC = 120  # 全市場單日可達十餘萬筆（含權證），30 秒會逾時
+
+
+def _is_trading_day(iso_date: str) -> bool:
+    """YYYY-MM-DD 是不是台股交易日；判斷不了時保守回 True（照常重試）。"""
+    try:
+        from finance_tools.core.trading_day import is_tw_trading_day
+
+        return is_tw_trading_day(datetime.date.fromisoformat(iso_date))
+    except Exception:
+        return True
 
 
 def finmind_token() -> str:
@@ -68,6 +79,12 @@ def fetch_finmind(
         headers["Authorization"] = f"Bearer {token}"
     else:
         logger.warning("FinMind %s：未設定 token，全市場查詢會被擋在 register 等級", name)
+
+    # 非交易日「查無資料」是必然結果，不是上游還沒公布——重試只是白等。
+    # 2026-08-30 實測：不擋的話 daily-update 週末從 430 秒漲到 800 秒（每個取數
+    # 3 次重試 × 10 秒，外層 _retry 再包一層），還會噴一串看起來很嚴重的 ERROR。
+    if start_date and start_date == end_date and not _is_trading_day(start_date):
+        retries, retry_delay, quiet = 1, 0, True
 
     for attempt in range(retries):
         try:
