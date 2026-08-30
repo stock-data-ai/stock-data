@@ -3,13 +3,13 @@
   "companyName": "百徽股份有限公司",
   "latest": {
     "year": 2026,
-    "quarter": 1,
-    "revenue": 171262000.0,
+    "quarter": 2,
+    "revenue": 194524000.0,
     "yoy": 0,
-    "grossMargin": 22.43,
-    "operatingMargin": 5.23,
-    "netMargin": 7.01,
-    "eps": 0.43,
+    "grossMargin": 22.22,
+    "operatingMargin": 6.36,
+    "netMargin": 8.8,
+    "eps": 0.61,
     "dividendFrequency": "半年",
     "marketCap": 890782635.5,
     "pe": 21.31,
@@ -20,6 +20,12 @@
   },
   "historical": {
     "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 7,
+        "revenue": 74415000.0,
+        "yoy": null
+      },
       {
         "year": 2026,
         "month": 6,
@@ -445,27 +451,21 @@
         "month": 8,
         "revenue": 14068000.0,
         "yoy": null
-      },
-      {
-        "year": 2020,
-        "month": 7,
-        "revenue": 15241000.0,
-        "yoy": null
       }
     ],
     "annual": [
       {
         "year": 2026,
-        "revenue": 171262000.0,
-        "grossProfit": 38408000.0,
-        "operatingIncome": 8950000.0,
-        "netIncome": 12012000.0,
-        "eps": 0.43,
-        "grossMargin": 22.43,
-        "operatingMargin": 5.23,
-        "netMargin": 7.01,
+        "revenue": 365786000.0,
+        "grossProfit": 81640000.0,
+        "operatingIncome": 21328000.0,
+        "netIncome": 29132000.0,
+        "eps": 1.04,
+        "grossMargin": 22.32,
+        "operatingMargin": 5.83,
+        "netMargin": 7.96,
         "note": "累季",
-        "revenueYoY": 51.51,
+        "revenueYoY": 48.34,
         "roe": null,
         "roa": null,
         "ocf": null,
@@ -580,8 +580,14 @@
       {
         "year": 2026,
         "quarter": 2,
-        "currentRatio": 311.93,
-        "debtRatio": 29.82
+        "revenue": 194524000.0,
+        "grossProfit": 43232000.0,
+        "operatingIncome": 12378000.0,
+        "netIncome": 17120000.0,
+        "eps": 0.61,
+        "grossMargin": 22.22,
+        "operatingMargin": 6.36,
+        "netMargin": 8.8
       },
       {
         "year": 2026,
@@ -593,9 +599,7 @@
         "eps": 0.43,
         "grossMargin": 22.43,
         "operatingMargin": 5.23,
-        "netMargin": 7.01,
-        "currentRatio": 366.77,
-        "debtRatio": 25.91
+        "netMargin": 7.01
       },
       {
         "year": 2025,
@@ -607,9 +611,7 @@
         "eps": 0.25,
         "grossMargin": 21.5,
         "operatingMargin": -1.23,
-        "netMargin": 6.13,
-        "currentRatio": 462.79,
-        "debtRatio": 20.18
+        "netMargin": 6.13
       },
       {
         "year": 2025,
@@ -621,9 +623,7 @@
         "eps": 0.23,
         "grossMargin": 23.33,
         "operatingMargin": 1.16,
-        "netMargin": 5.9,
-        "currentRatio": 476.8,
-        "debtRatio": 22.57
+        "netMargin": 5.9
       },
       {
         "year": 2025,
@@ -21486,7 +21486,7 @@
       "ratio_pct": 0.0
     }
   ],
-  "lastUpdated": "2026-08-30",
+  "lastUpdated": "2026-08-31",
   "dataQuality": "high",
   "dividendsUpdated": "2026-08-29"
 }

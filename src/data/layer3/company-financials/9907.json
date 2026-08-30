@@ -146,8 +146,14 @@
       {
         "year": 2026,
         "quarter": 2,
-        "currentRatio": 173.59,
-        "debtRatio": 38.72
+        "revenue": 10731907000.0,
+        "grossProfit": 1163192000.0,
+        "operatingIncome": 512432000.0,
+        "netIncome": 287018000.0,
+        "eps": 0.18,
+        "grossMargin": 10.84,
+        "operatingMargin": 4.77,
+        "netMargin": 2.67
       },
       {
         "year": 2026,
@@ -159,9 +165,7 @@
         "eps": 0.17,
         "grossMargin": 10.71,
         "operatingMargin": 3.84,
-        "netMargin": 2.52,
-        "currentRatio": 229.48,
-        "debtRatio": 32.66
+        "netMargin": 2.52
       },
       {
         "year": 2025,
@@ -173,9 +177,7 @@
         "eps": 0.24,
         "grossMargin": 11.76,
         "operatingMargin": 4.43,
-        "netMargin": 3.9,
-        "currentRatio": 222.89,
-        "debtRatio": 35.36
+        "netMargin": 3.9
       },
       {
         "year": 2025,
@@ -187,9 +189,7 @@
         "eps": 0.36,
         "grossMargin": 13.81,
         "operatingMargin": 6.9,
-        "netMargin": 4.89,
-        "currentRatio": 217.26,
-        "debtRatio": 38.79
+        "netMargin": 4.89
       },
       {
         "year": 2025,
@@ -505,6 +505,12 @@
       }
     ],
     "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 7,
+        "revenue": 3747356000.0,
+        "yoy": null
+      },
       {
         "year": 2026,
         "month": 6,
@@ -929,12 +935,6 @@
         "year": 2020,
         "month": 8,
         "revenue": 3192152000.0,
-        "yoy": null
-      },
-      {
-        "year": 2020,
-        "month": 7,
-        "revenue": 2900309000.0,
         "yoy": null
       }
     ],
@@ -28225,7 +28225,7 @@
       }
     }
   },
-  "lastUpdated": "2026-08-29",
+  "lastUpdated": "2026-08-31",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
