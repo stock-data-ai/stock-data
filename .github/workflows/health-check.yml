@@ -41,22 +41,23 @@ jobs:
           # 這裡的 hour/minute 只是「預期時間」，用來切出比對視窗。改排程時務必同步改這裡。
           CHECK_JOBS = [
               {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
-              # lenient：這兩班刻意排在證交所公布之前搶頭香，抓不到是常態不是故障
-              # （16:30 那班 8/14、8/18、8/19、8/20 都紅過）。只有「後面的班也全滅」才算異常。
+              # lenient：這班刻意排在資料公布之前搶頭香，抓不到是常態不是故障。
+              # 只有「後面的班也全滅」才算異常。
+              # 2026-08-31：daily-update 從 16:30／17:05／21:05 改為 19:30／21:05、
+              # chip-topic 從 18:00 改為 20:00——改走 FinMind 後個股資料比證交所晚 2~3 小時。
               {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5], 'lenient': True},
               {'label': '15:00 Update Heatmap Data',                  'workflow_name': 'Update Heatmap Data｜更新熱力圖（stock_map）',                  'hour': 15, 'minute': 0},
               {'label': '15:30 Update Stock Tags',                    'workflow_name': 'Update Stock Tags｜更新選股標籤（stock_map）',                  'hour': 15, 'minute': 30},
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
-              {'label': '16:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 16, 'minute': 30, 'lenient': True},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
-              {'label': '17:05 Daily Update（第二次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 17, 'minute': 5},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
-              {'label': '18:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 18, 'minute': 0,  'days': [1,2,3,4,5]},
               {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
+              {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30},
               {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},
+              {'label': '20:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 20, 'minute': 0,  'days': [1,2,3,4,5]},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
-              {'label': '21:05 Daily Update（第三次備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
+              {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '21:30 Margin Trading Update',               'workflow_name': 'Margin Trading Update｜融資融券更新',                          'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},

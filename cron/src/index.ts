@@ -32,10 +32,13 @@ const CRON_MAP: Record<string, CronJob> = {
   '55 7 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 15:55 週一到週五（第一次）
   '55 8 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 16:55 週一到週五（第二次）
   '55 9 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 17:55 每天（第二次）
-  '30 8 * * *':           { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 16:30 每天（第一次，T86 公布後即抓）
-  '05 9 * * *':           { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 17:05 每天（第二次，補 TPEx 上櫃結算）
-  '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（第三次備援，TWSE資料結算延遲）
-  '0 10 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 18:00 週一到週五（上游 daily-update 17:05 已收工；提早是為了讓 stock_map 的每日焦點在 20:00 題材信之前產出）
+  // 2026-08-31 起改走 FinMind 後往後移：FinMind 的個股三大法人／本益比比證交所 T86
+  // 晚 2~3 小時（當日 17:05 尚無資料、19:05 已有），原本 16:30／17:05 兩輪必定失敗，
+  // 連帶讓 chip-topic 18:00 因上游資料過舊而中止。證交所 OpenAPI 沒有 T86 的替代品，
+  // 只能把整條鏈往後移。19:30 是依單一觀測點推的，若仍偏早需再往後。
+  '30 11 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 19:30 每天（第一次）
+  '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（備援）
+  '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五（daily-update 19:30 約 7 分鐘跑完，留 23 分鐘緩衝；下游 stock_map 題材信 20:30）
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
