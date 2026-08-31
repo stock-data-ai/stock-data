@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+import os
 import sys
 import time
 import re
@@ -347,6 +348,11 @@ if __name__ == '__main__':
     # 交易日卻一筆都沒有 = MOPS 被擋或改版，不是「今天沒公告」。
     # 只在「無條件全市場撈當日」時判定，指定股票／關鍵字／歷史日期查無資料屬正常。
     if df.empty and not (args.stock or args.keyword or start_date or end_date):
+        # 這支是以「腳本」方式執行（uv run python Web_Crawler/mops_scraper.py），
+        # sys.path 只有 Web_Crawler/，repo root 不在裡面 → 直接 import 會 ModuleNotFoundError。
+        # 2026-08-31 就是這樣：MOPS 回 0 筆本該報 STALE，卻先崩在這行 import，
+        # 真正的原因（疑似機房 IP 被擋）被蓋掉了。
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from finance_tools.core.trading_day import is_tw_trading_day
 
         if is_tw_trading_day(datetime.date.today()):
