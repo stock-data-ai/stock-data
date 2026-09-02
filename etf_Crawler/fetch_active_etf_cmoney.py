@@ -18,6 +18,7 @@ API: https://www.cmoney.tw/api/cm/MobileService/ashx/GetDtnoData.ashx
     uv run python etf_Crawler/fetch_active_etf_cmoney.py 00991A   # 指定
 """
 
+import json
 import sys
 import time
 from datetime import date
@@ -45,20 +46,72 @@ HEADERS = {
     "Referer": "https://www.cmoney.tw/etf/tw/",
 }
 
-CMONEY_ACTIVE_ETFS = [
-    "00403A", "00981A", "00988A",  # 統一
-    "00982A", "00992A", "00997A",  # 群益
-    "00980A", "00985A", "00999A",  # 野村
-    "00990A",                       # 元大
-    "00406A", "00983A", "00995A",  # 中信
-    "00991A", "00998A",            # 復華
-    "00984A", "00993A",            # 安聯
-    "00986A", "00987A",            # 台新
-    "00994A",                       # 第一金
-    "00996A",                       # 兆豐
-    "00400A",                       # 國泰
-    "00405A",                       # 富邦
-]
+# stock_map 的 index.json 是 ETF 清單的唯一真相源，本地優先、CI 讀同步過來的那份。
+STOCK_MAP_INDEX_LOCAL = REPO_ROOT.parent / "stock_map" / "src" / "data" / "etf" / "index.json"
+ETF_INDEX_PATH = ETF_DATA_DIR / "index.json"
+
+
+def load_active_codes() -> list:
+    """
+    動態取得主動型 ETF 代號（結尾 A），來源是 index.json。
+
+    這裡刻意不寫死清單：主動型被 fetch_etf_holdings.py 的週更明確排除
+    （那支只跑非 A 結尾），日更又只認各腳本自己的硬編碼名單，
+    所以清單漏掉一檔 = 那檔永遠不會更新，而且沒有任何地方會報錯。
+    2026-09-01 查出 00401A 停 125 天、00989A 停 144 天，就是從沒被加進來過；
+    同時還有 6 檔已上市的主動型從頭到尾沒收錄。
+    改成讀 index.json 之後，新主動型只要進 index.json 就自動有日更兜底。
+    """
+    for path in (STOCK_MAP_INDEX_LOCAL, ETF_INDEX_PATH):
+        if path.exists():
+            with open(path, encoding="utf-8") as f:
+                return sorted(e["code"] for e in json.load(f) if e["code"].endswith("A"))
+    print("[WARN] 找不到 ETF index.json，主動型清單為空")
+    return []
+
+
+CMONEY_ACTIVE_ETFS = load_active_codes()
+
+
+def _load_index_map() -> dict:
+    for path in (STOCK_MAP_INDEX_LOCAL, ETF_INDEX_PATH):
+        if path.exists():
+            with open(path, encoding="utf-8") as f:
+                return {e["code"]: e for e in json.load(f)}
+    return {}
+
+
+def ensure_skeleton(etf_code: str) -> None:
+    """
+    {code}.json 不存在就從 index.json 建空骨架。
+
+    write_holdings_update() 遇到檔案不存在只會印 [WARN] 然後回 False，
+    不會建檔也不會讓流程失敗——新上市 ETF 會就這樣安靜地一直抓不到。
+    """
+    json_path = ETF_DATA_DIR / f"{etf_code}.json"
+    if json_path.exists():
+        return
+    entry = _load_index_map().get(etf_code, {})
+    skeleton = {
+        "code": etf_code,
+        "name": entry.get("name", etf_code),
+        "assetClass": entry.get("assetClass"),
+        "categoryId": entry.get("categoryId"),
+        "trackingIndex": entry.get("trackingIndex"),
+        "managementFee": entry.get("managementFee"),
+        "dividendFrequency": entry.get("dividendFrequency"),
+        "inceptionDate": None,
+        "fundSize": entry.get("fundSize"),
+        "issuer": entry.get("issuer"),
+        "description": None,
+        "topHoldings": [],
+        "holdingsHistory": {},
+        "lastUpdated": None,
+    }
+    ETF_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(skeleton, f, ensure_ascii=False, indent=2)
+    print(f"  [New] 建立骨架 {etf_code}.json")
 
 session = create_session()
 
@@ -162,6 +215,7 @@ def run_backfill(targets: list, dtrange: int = 30) -> None:
     failed = []
     for i, etf_code in enumerate(targets):
         print(f"\n[{i+1}/{len(targets)}] {etf_code}")
+        ensure_skeleton(etf_code)
         all_dates = fetch_holdings_all_dates(etf_code, dtrange)
         if not all_dates:
             failed.append(etf_code)
@@ -219,6 +273,7 @@ def main():
 
     for i, etf_code in enumerate(targets):
         print(f"\n[{i+1}/{len(targets)}] {etf_code}")
+        ensure_skeleton(etf_code)
         holdings, tran_date = fetch_holdings(etf_code)
 
         if not holdings:
