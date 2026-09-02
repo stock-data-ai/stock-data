@@ -35,6 +35,21 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
+      # index.json 必須在爬蟲之前取得：fetch_active_etf_cmoney.py 的主動型清單
+      # 是開跑時從這份檔案動態讀的，排在爬蟲之後等於新上市 ETF 要隔一天才被認得。
+      - name: Fetch stock_map ETF index.json (for categoryId/issuer)
+        id: fetch_index
+        continue-on-error: true
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
+          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
+
       # ── 官網爬蟲（暫停觀察，以 CMoney 為主）─────────────────────────────
 
       - name: Run active ETF crawler (統一投信 — 00403A 00981A 00988A)
@@ -237,7 +252,7 @@ jobs:
 
       # ── CMoney（主力來源）────────────────────────────────────────────────
 
-      - name: CMoney API 主力更新（23 支主動型 ETF）
+      - name: CMoney API 主力更新（主動型 ETF，清單讀 index.json）
         if: always()
         id: cmoney
         continue-on-error: true
@@ -302,19 +317,6 @@ jobs:
               sleep $((i * 5))
             done
           fi
-
-      - name: Fetch stock_map ETF index.json (for categoryId/issuer)
-        id: fetch_index
-        continue-on-error: true
-        env:
-          PAT: ${{ secrets.STOCK_MAP_PAT }}
-        run: |
-          curl -fsSL \
-            -H "Authorization: token $PAT" \
-            -H "Accept: application/vnd.github.v3.raw" \
-            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
-            -o src/data/etf/index.json
-          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
 
       - name: Regenerate stock-to-ETF reverse index
         id: reverse_index
