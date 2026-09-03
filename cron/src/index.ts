@@ -38,7 +38,7 @@ const CRON_MAP: Record<string, CronJob> = {
   // 只能把整條鏈往後移。19:30 是依單一觀測點推的，若仍偏早需再往後。
   '30 11 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 19:30 每天（第一次）
   '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（備援）
-  '0 12 * * 2,3,4,5,6':   { workflow: 'generate-chip-topic.yml' },                                 // 台灣 20:00 週一到週五（daily-update 19:30 約 7 分鐘跑完，留 23 分鐘緩衝；下游 stock_map 題材信 20:30）
+  '45 11 * * 2,3,4,5,6':  { workflow: 'generate-chip-topic.yml' },                                 // 台灣 19:45 週一到週五（daily-update 19:30 約 6 分鐘跑完；下游每日焦點 routine 20:00 依賴這班的產出）
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
