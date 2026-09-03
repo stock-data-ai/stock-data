@@ -15,7 +15,6 @@ crons = [
   "0 2 * * 1",            # update-us-financials      台灣 10:00 週日
   "0 3 * * 7",            # weekly-dividend-update    台灣 11:00 週六
   "0 3 * * 1",            # weekly-balance-sheet      台灣 11:00 週日
-  "0 7 * * *",            # update-heatmap            台灣 15:00 每天（日韓收盤後）——2026-08-26 自 stock_map 移入，該 repo 私有要計費
   "30 7 * * *",           # update-stock-tags         台灣 15:30 每天——同上
   "0 8 * * *",            # etf-active-daily          台灣 16:00 每天（第一次）
   "55 7 * * 2,3,4,5,6",  # market-sentiment          台灣 15:55 週一到週五（第一次）
