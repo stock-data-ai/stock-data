@@ -55,7 +55,7 @@ jobs:
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
               {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30},
               {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},
-              {'label': '20:00 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 20, 'minute': 0,  'days': [1,2,3,4,5]},
+              {'label': '19:45 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 19, 'minute': 45, 'days': [1,2,3,4,5]},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
@@ -286,6 +286,55 @@ jobs:
               })
 
           check_live_freshness()
+
+          # ── 端到端檢查：每日題材焦點有沒有真的發布 ──────────────────────────
+          # 為什麼要這條：每日焦點的失敗是**靜默降級**，不是紅燈。產報告的 Claude 雲端
+          # routine 每天都跑、每天都「成功」結束——它只是判定籌碼資料不是當天的就中止不
+          # 產報告（daily-focus skill 明訂這是可接受的降級：寧可缺一天也不要出錯的報告）。
+          # 於是「有沒有跑、成不成功」全綠，使用者卻連著幾天看不到報告。
+          # 2026-08-31~09-02 就這樣過了三天沒人發現：上游改走 FinMind 後籌碼資料晚 2~3
+          # 小時，routine 還排在 19:30，每天都讀到昨天的籌碼而中止。
+          #
+          # 而且 routine 不是 GitHub Actions，不會出現在上面的 run 歷史裡；發布用的
+          # daily-report-publish.yml 又在 stock_map repo，這裡也查不到。所以唯一抓得到的
+          # 方式是問線上 API「最新一篇是哪天」，拿它跟最新交易日比——一條涵蓋 routine 沒
+          # 觸發、中止、PR 沒 merge、D1 沒寫、edge cache 沒失效全部失敗模式。
+          def check_daily_report():
+              import glob, time
+              # 交易日基準沿用 forecast 快照（已 checkout，且與 /live 那條同一個來源）。
+              # 假日自動成立：沒有新交易日，基準就停在上一個交易日。
+              snaps = sorted(glob.glob('finance_tools/disposition/forecasts/forecast_*.json'))
+              raw = os.path.basename(snaps[-1])[9:17] if snaps else None
+              expected = f'{raw[:4]}-{raw[4:6]}-{raw[6:8]}' if raw else None
+              latest = None
+              for attempt in range(3):        # 網站偶發抖動不該讓整份報告變紅
+                  try:
+                      req = urllib.request.Request(
+                          'https://aistockmap.com/api/daily-report?list=1',
+                          headers={'User-Agent': 'stock-data-health-check'})
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          reports = json.loads(resp.read().decode('utf-8')).get('reports') or []
+                      latest = reports[0]['date'] if reports else None
+                      break
+                  except Exception as e:
+                      print(f'[daily-report] 第 {attempt + 1}/3 次取得失敗: {e}')
+                      if attempt < 2:
+                          time.sleep(5)
+              if not expected or not latest:
+                  # 同 /live 那條：比對不出來 = 這條檢查自己壞了，標成失敗才會逼人去看。
+                  broken = '讀不到本地快照（checkout 是否遺漏？）' if not expected else '線上 API 無回應或無報告'
+                  status, detail = 'failed', f'檢查失效：{broken}'
+              elif latest >= expected:
+                  status, detail = 'ok', f'最新 {latest}'
+              else:
+                  status, detail = 'failed', f'最新 {latest} 落後交易日 {expected}'
+              results.append({
+                  'label': f'每日題材焦點發布（{detail}）', 'sched': '—', 'status': status,
+                  'workflow_name': None, 'lenient': False,
+                  'run_time': '—', 'duration': '—', 'url': None, 'run_id': None,
+              })
+
+          check_daily_report()
 
           ok_n   = sum(1 for r in results if r['status'] == 'ok')
           fail_n = sum(1 for r in results if r['status'] == 'failed')
