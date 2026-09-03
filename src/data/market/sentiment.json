@@ -3,14 +3,14 @@
     "date": "2026-09-03",
     "twse": {
       "foreign": {
-        "buy": 328310720195,
-        "sell": 376456650958,
+        "buy": 332218545975,
+        "sell": 380364476738,
         "net": -48145930763
       },
       "trust": {
-        "buy": 19697578485,
-        "sell": 18555703222,
-        "net": 1141875263
+        "buy": 20311385285,
+        "sell": 19617823462,
+        "net": 693561823
       },
       "dealer": {
         "buy": 10316550400,
@@ -18,8 +18,8 @@
         "net": -5678799771
       },
       "dealerHedge": {
-        "buy": 27666834682,
-        "sell": 38695541342,
+        "buy": 27667166196,
+        "sell": 38695872856,
         "net": -11028706660
       },
       "foreignDealer": {
@@ -332,39 +332,25 @@
     ]
   },
   "margin": {
-    "date": "2026-09-02",
+    "date": "2026-09-03",
     "twse": {
       "longBalance": {
-        "change": 32892,
-        "buy": 342329,
-        "sell": 304105,
-        "balance": 8929880
+        "change": -26892,
+        "buy": 371507,
+        "sell": 389746,
+        "balance": 8902986
       },
       "shortBalance": {
-        "change": -6520,
-        "buy": 27274,
-        "sell": 21519,
-        "balance": 214315
+        "change": 8528,
+        "buy": 17635,
+        "sell": 27546,
+        "balance": 222843
       },
       "longAmount": {
-        "change": 7559827000,
-        "buy": 35783448000,
-        "sell": 27987724000,
-        "balance": 585675285000
-      }
-    },
-    "tpex": {
-      "longBalance": {
-        "change": 9339,
-        "buy": 70305,
-        "sell": 59781,
-        "balance": 2286146
-      },
-      "shortBalance": {
-        "change": -312,
-        "buy": 4702,
-        "sell": 3886,
-        "balance": 39063
+        "change": -6935978000,
+        "buy": 31682547000,
+        "sell": 37994930000,
+        "balance": 578739307000
       }
     },
     "history": [
@@ -738,6 +724,20 @@
           }
         }
       }
-    ]
+    ],
+    "tpex": {
+      "longBalance": {
+        "change": 9339,
+        "buy": 70305,
+        "sell": 59781,
+        "balance": 2286146
+      },
+      "shortBalance": {
+        "change": -312,
+        "buy": 4702,
+        "sell": 3886,
+        "balance": 39063
+      }
+    }
   }
 }
