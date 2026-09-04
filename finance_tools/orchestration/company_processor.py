@@ -73,16 +73,18 @@ class CompanyProcessor:
                 shares_success = False
 
             if pre_shareholding is not None:
-                ratio = pre_shareholding.get(code)
+                # {"ratio": pct, "shares": lots}；shares 可能缺（來源當天沒給），
+                # 缺的時候只寫比率，不要用比率回推張數。
+                holding = pre_shareholding.get(code) or {}
                 inst_date = inst_record.date if inst_record else None
-                foreign_ratios = {inst_date: ratio} if ratio is not None and inst_date else {}
+                foreign_holdings = {inst_date: holding} if holding and inst_date else {}
             else:
-                foreign_ratios = {}
+                foreign_holdings = {}
         else:
             # ── FinMind 路徑（financials_update）──────────────────────
             # 三大法人買賣超張數由 daily-update TWSE T86 批次每日維護，financials-update 不重抓
             shares_df, shares_success = pd.DataFrame(), False
-            foreign_ratios = {}
+            foreign_holdings = {}
 
         ratios: dict = {}
         if shares_success:
@@ -91,11 +93,15 @@ class CompanyProcessor:
                 ratios[date] = share_info
                 ratios[date]["code"] = code
 
-        # TWSE 路徑：合併今日外資比例（daily-update 用）
-        for date, foreign_ratio in foreign_ratios.items():
-            ratios.setdefault(date, {})["foreign_ratio"] = foreign_ratio
+        # TWSE 路徑：合併今日外資持股比例與張數（daily-update 用）
+        for date, holding in foreign_holdings.items():
+            entry = ratios.setdefault(date, {})
+            if holding.get("ratio") is not None:
+                entry["foreign_ratio"] = holding["ratio"]
+            if holding.get("shares") is not None:
+                entry["foreign_shares"] = holding["shares"]
 
-        inst_success = bool(foreign_ratios or shares_success)
+        inst_success = bool(foreign_holdings or shares_success)
         return ratios, inst_success
 
     def process_company(self, code: str, name: str, start_date: str, force_update: bool = False) -> tuple[bool, dict]:
