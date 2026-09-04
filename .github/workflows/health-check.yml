@@ -59,7 +59,7 @@ jobs:
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
-              {'label': '21:30 Margin Trading Update',               'workflow_name': 'Margin Trading Update｜融資融券更新',                          'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
+              {'label': '21:30 Margin & Lending Update',             'workflow_name': 'Margin Trading Update｜融資融券與借券更新',                    'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
               # 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘。原排 23:30、比 23:00 健康檢查晚，
               # 所以長期不在清單裡（2026-08-17 那班失敗過一整天沒人發現）；已提前到 22:30 並納入檢查。

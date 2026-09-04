@@ -14,6 +14,7 @@ Commands:
   fetch-shareholder-data- 擷取 TDCC 股東分配資料。
   update-company-info   - 更新上市公司基本資訊。
   update-margin         - 更新融資融券資料。
+  update-lending        - 更新借券賣出餘額資料。
   check-quality         - 檢查資料品質。
   compute-big-holders   - 計算大戶加碼排行並輸出 weekly_big_holders.json。
 
@@ -55,6 +56,7 @@ from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
+from finance_tools.domains.securities_lending.tasks import run_update_securities_lending
 from finance_tools.domains.market_sentiment.tasks import (
     run_update_margin_history,
     run_update_market_sentiment,
@@ -131,6 +133,17 @@ def main():
     parser_margin.add_argument("--date", type=str, help="指定單日 (YYYYMMDD 或 YYYY-MM-DD)。")
     parser_margin.add_argument("--backfill-from", type=str, dest="backfill_from", help="補齊歷史：從此日起到昨天 (YYYYMMDD 或 YYYY-MM-DD)。")
     parser_margin.set_defaults(func=run_update_margin_trading)
+
+    # --- 'update-lending' command ---
+    # 獨立成一個指令、但與 update-margin 排在同一個 workflow（21:30 那班）：
+    # 兩支 FinMind 資料集的發布時點相同、也都寫進 company-financials，沒有理由拆成兩班。
+    # 指令分開是為了失敗歸因與各自補歷史——兩者單位不同（融資融券是張、借券餘額是股），
+    # 混在同一個任務裡遲早會有人換算錯。
+    parser_lending = subparsers.add_parser("update-lending", help="更新借券賣出餘額資料。")
+    add_common_arguments(parser_lending, include_force=True)
+    parser_lending.add_argument("--date", type=str, help="指定單日 (YYYYMMDD 或 YYYY-MM-DD)。")
+    parser_lending.add_argument("--backfill-from", type=str, dest="backfill_from", help="補齊歷史：從此日起到昨天 (YYYYMMDD 或 YYYY-MM-DD)。")
+    parser_lending.set_defaults(func=run_update_securities_lending)
 
     # --- 'update-market-sentiment' command ---
     parser_sentiment = subparsers.add_parser(

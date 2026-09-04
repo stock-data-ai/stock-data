@@ -1,4 +1,4 @@
-name: Margin Trading Update｜融資融券更新
+name: Margin Trading Update｜融資融券與借券更新
 
 on:
   workflow_dispatch:
@@ -55,6 +55,30 @@ jobs:
             uv run finance_tools/cli.py update-margin 2>&1 | tee /tmp/run.log
           fi
 
+      # 借券賣出餘額跟在同一班：兩者是同一個盤後發布時點的同一批資料
+      # （2026-09-04 實測兩支 FinMind 資料集當日可取得的時間完全一致），
+      # 而且都寫進 company-financials/。拆成兩個 workflow 只會多一個
+      # concurrency group 去防兩班同時 commit 打架，還要多動一次 cron。
+      #
+      # continue-on-error：借券是後加的資料集，**不可以讓它的失敗吃掉融資融券的成果**。
+      # 失敗不擋 commit，改由最後的閘門步驟把整個 run 標紅。
+      - name: Update securities lending data
+        id: lending
+        continue-on-error: true
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          BACKFILL="${{ inputs.backfill_from }}"
+          DATE="${{ inputs.date }}"
+          set -o pipefail
+          if [ -n "$BACKFILL" ]; then
+            uv run finance_tools/cli.py update-lending --backfill-from "$BACKFILL" 2>&1 | tee /tmp/lending.log
+          elif [ -n "$DATE" ]; then
+            uv run finance_tools/cli.py update-lending --date "$DATE" 2>&1 | tee /tmp/lending.log
+          else
+            uv run finance_tools/cli.py update-lending 2>&1 | tee /tmp/lending.log
+          fi
+
       - name: 執行摘要
         if: always()
         run: |
@@ -88,6 +112,25 @@ jobs:
             echo "| 模式 | $MODE |"
             echo "$DETAIL"
             echo "| 狀態 | $STATUS |"
+            echo ""
+            echo "### 借券賣出餘額"
+            echo ""
+            LLOG=/tmp/lending.log
+            if [ ! -f "$LLOG" ]; then
+              echo "> 未執行。"
+            else
+              if grep -q "STALE:" "$LLOG"; then
+                echo "> [!CAUTION]"
+                echo "> **交易日但未取得當日借券資料，本次未更新。** $(grep 'STALE:' "$LLOG" | tail -1 | sed 's/.*STALE: //')"
+                echo ""
+              fi
+              LCOUNT=$(grep -oP '完成 \K\d+(?= 家公司)' "$LLOG" 2>/dev/null | tail -1 || echo "—")
+              LSTATUS=$( [ "${{ steps.lending.outcome }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗（不影響融資融券）" )
+              echo "| 指標 | 值 |"
+              echo "|------|---|"
+              echo "| 更新公司數 | $LCOUNT |"
+              echo "| 狀態 | $LSTATUS |"
+            fi
           } >> $GITHUB_STEP_SUMMARY
 
       - name: Commit margin trading data
@@ -96,8 +139,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/layer3/company-financials/
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
-          git commit -m "更新融資融券數據 $(date -u +%Y-%m-%d)"
+          git commit -m "更新融資融券與借券數據 $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do
             git pull --rebase -X ours origin main && git push && break
             sleep $((i * 5))
           done
+
+      # 借券失敗時資料已經 commit（融資融券的部分），但整個 run 仍要標紅，
+      # 否則 continue-on-error 會把失敗藏起來，變成「靜默沒資料」。
+      - name: 借券失敗閘門
+        if: steps.lending.outcome == 'failure'
+        run: |
+          echo "::error::借券賣出餘額更新失敗，融資融券已照常提交。詳見執行摘要。"
+          exit 1
