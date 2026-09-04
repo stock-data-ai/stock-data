@@ -1,0 +1,67 @@
+name: Foreign Shares Backfill｜外資持股張數回補（一次性）
+
+# 只給手動觸發，沒有排程——`foreign_shares` 的日常維護由 daily-update 負責，
+# 這支是補 2026-09-04 之前的空窗。因為沒有 cron，Cloudflare Worker 那邊不用動。
+on:
+  workflow_dispatch:
+    inputs:
+      backfill_from:
+        description: '回補起日 (YYYYMMDD)，例如 20260312'
+        required: true
+        default: '20260312'
+
+# 與融資融券／借券共用同一個 group：都 commit company-financials/，同時跑會互相 rebase 打架
+concurrency:
+  group: margin-trading-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.0.0
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+      - run: uv sync --all-extras --dev
+
+      # TaiwanStockShareholding 帶 start≠end 會回空，只能逐日查；全市場查詢需要付費層
+      - name: Backfill foreign shares
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py backfill-foreign-shares \
+            --backfill-from "${{ inputs.backfill_from }}" 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          DAYS=$(grep -oP '取數完成：\K[0-9]+/[0-9]+' /tmp/run.log 2>/dev/null | tail -1 || echo "—")
+          COUNT=$(grep -oP '回補完成，總計 \K\d+' /tmp/run.log 2>/dev/null | tail -1 || echo "—")
+          {
+            echo "## 外資持股張數回補 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 起日 | ${{ inputs.backfill_from }} |"
+            echo "| 有資料的交易日 | $DAYS |"
+            echo "| 更新公司數 | $COUNT |"
+            echo "| 狀態 | $( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" ) |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "data: 回補外資持股張數 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase -X ours origin main && git push && break
+            sleep $((i * 5))
+          done

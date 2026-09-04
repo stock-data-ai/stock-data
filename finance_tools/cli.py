@@ -57,6 +57,7 @@ from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
 from finance_tools.domains.securities_lending.tasks import run_update_securities_lending
+from finance_tools.domains.institutional_investors.shares_backfill import run_backfill_foreign_shares
 from finance_tools.domains.market_sentiment.tasks import (
     run_update_margin_history,
     run_update_market_sentiment,
@@ -144,6 +145,12 @@ def main():
     parser_lending.add_argument("--date", type=str, help="指定單日 (YYYYMMDD 或 YYYY-MM-DD)。")
     parser_lending.add_argument("--backfill-from", type=str, dest="backfill_from", help="補齊歷史：從此日起到昨天 (YYYYMMDD 或 YYYY-MM-DD)。")
     parser_lending.set_defaults(func=run_update_securities_lending)
+
+    # --- 'backfill-foreign-shares' command（一次性） ---
+    parser_fs = subparsers.add_parser("backfill-foreign-shares", help="【一次性】回補外資持股張數。")
+    add_common_arguments(parser_fs)
+    parser_fs.add_argument("--backfill-from", type=str, dest="backfill_from", required=True, help="從此日起 (YYYYMMDD)。")
+    parser_fs.set_defaults(func=run_backfill_foreign_shares)
 
     # --- 'update-market-sentiment' command ---
     parser_sentiment = subparsers.add_parser(
