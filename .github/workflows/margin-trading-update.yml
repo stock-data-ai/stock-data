@@ -8,7 +8,11 @@ on:
         required: false
         default: ''
       backfill_from:
-        description: 'Backfill from date to today (YYYYMMDD), e.g. 20260529'
+        description: '融資融券補齊起日 (YYYYMMDD)。注意：走逐日路徑，補一季要跑數小時'
+        required: false
+        default: ''
+      lending_backfill_from:
+        description: '借券補齊起日 (YYYYMMDD)。走批次路徑，補半年約 7 分鐘'
         required: false
         default: ''
 
@@ -68,7 +72,7 @@ jobs:
         env:
           FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
         run: |
-          BACKFILL="${{ inputs.backfill_from }}"
+          BACKFILL="${{ inputs.lending_backfill_from }}"
           DATE="${{ inputs.date }}"
           set -o pipefail
           if [ -n "$BACKFILL" ]; then
@@ -79,6 +83,10 @@ jobs:
             uv run finance_tools/cli.py update-lending 2>&1 | tee /tmp/lending.log
           fi
 
+      # 兩邊的補齊起日刻意分開：融資融券在 repo 裡已有完整歷史、不需要補，
+      # 而它的補齊還是逐日路徑（每個日期都把全部 company-financials 讀寫一次，
+      # 補一季要跑數小時）。借券是後加的資料集，補齊走的是批次路徑。
+      # 用同一個輸入等於每次補借券都順便叫融資融券做一整段沒必要的重工。
       - name: 執行摘要
         if: always()
         run: |
