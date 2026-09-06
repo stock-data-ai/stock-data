@@ -36,6 +36,9 @@ uv run finance_tools/cli.py update-institutional-investors --force
 # Limit number of companies (for quick testing)
 uv run finance_tools/cli.py update-revenue --limit 10
 
+# 內部人持股（月頻全量，一次拿全市場再逐家併進 company-financials）
+uv run finance_tools/cli.py update-insider-holdings --force
+
 # Run tests
 uv run pytest finance_tools/tests/
 ```
@@ -103,6 +106,11 @@ News data goes to Cloudflare D1; financial data goes to JSON files committed to 
 - `src/data/layer3/companies/companies-all.json` — Stock code ↔ company name lookup (synced from `stock_map`)
 - `src/data/layer3/company-topics/index.json` — Stock code → topic IDs (synced from `stock_map`)
 - `src/data/layer3/company-financials/{code}.json` — Per-company financial data (~2,300+ files)
+  - `insiderHoldingsRecent` / `insiderHoldingsHistory` — 內部人持股（董監、經理人、大股東）。
+    **明細只留當期、歷史只留兩組合計**，與 `shareholderDataRecent` / `shareholderDataHistory` 同一個拆法：
+    一家最多 250 人，每期都留明細會讓檔案幾個月就翻倍。
+    對外顯示的質押比用 `boardTotals`（只算董監事本人）而不是 `totals`（全體內部人）——
+    市場慣稱的「董監持股質押比」不含經理人與大股東，用錯會跟其他網站對不起來。
 - `rerun_queue_<type>.txt` — Failed companies pending retry (committed)
 - `permanent_failures_<type>.txt` — Companies with unrecoverable failures (committed)
 
