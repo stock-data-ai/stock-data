@@ -24,12 +24,28 @@
 
 import json
 import logging
+import time
 import urllib.request
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 TIMEOUT_SEC = 120  # 上市那份約 10 MB
+RETRIES = 3
+RETRY_DELAY_SEC = 10
+
+# > [!WARNING]
+# > **一定要帶瀏覽器 User-Agent。** 2026-09-06 首次上 CI 就失敗：TPEx 對 GitHub runner
+# > 的機房 IP ＋ 預設的 `Python-urllib` UA 直接回 `Connection reset by peer`
+# > （本機跑同一支完全正常，所以測不出來）。repo 內其他 TWSE／TPEx 抓取一律帶 UA，
+# > 這支當初漏了。
+_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json",
+}
 
 SOURCES = [
     ("twse", "https://openapi.twse.com.tw/v1/opendata/t187ap11_L"),
@@ -118,10 +134,21 @@ def _summarize(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-def _fetch(url: str) -> List[Dict[str, Any]]:
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT_SEC) as res:
-        return json.loads(res.read().decode("utf-8"))
+def _fetch(url: str) -> Optional[List[Dict[str, Any]]]:
+    """抓一支端點，失敗重試。全部失敗回 None。
+
+    機房 IP 打 TPEx 會間歇性被重置，重試一次多半就過——本機測不出這個症狀。
+    """
+    req = urllib.request.Request(url, headers=_HEADERS)
+    for attempt in range(RETRIES):
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT_SEC) as res:
+                return json.loads(res.read().decode("utf-8"))
+        except Exception as e:
+            logger.warning(f"  {url} 第 {attempt + 1}/{RETRIES} 次失敗：{e}")
+            if attempt < RETRIES - 1:
+                time.sleep(RETRY_DELAY_SEC)
+    return None
 
 
 def fetch_all_insider_holdings() -> Optional[Dict[str, Dict[str, Any]]]:
@@ -133,10 +160,9 @@ def fetch_all_insider_holdings() -> Optional[Dict[str, Dict[str, Any]]]:
     by_company: Dict[str, Dict[str, Any]] = {}
 
     for market, url in SOURCES:
-        try:
-            rows = _fetch(url)
-        except Exception as e:
-            logger.error(f"內部人持股 {market} 抓取失敗：{e}")
+        rows = _fetch(url)
+        if rows is None:
+            logger.error(f"內部人持股 {market} 抓取失敗（已重試 {RETRIES} 次）")
             return None
 
         for r in rows:
