@@ -62,16 +62,17 @@ GitHub Pages (public static JSON API)
 ### finance_tools/ Structure
 
 - **cli.py** — Entry point; dispatches to task modules
-- **core/** — Shared abstractions: `api_client.py` (FinMind quota management), `file_manager.py` (atomic JSON writes), `data_processor.py`, `timezone.py`, `exceptions.py`
-- **fetchers/** — One module per data type (financials, revenue, market cap, institutional investors, TDCC, dividends, P/E/P/B)
-- **processing/** — `company_processor.py` (combines fetchers per company), `fetch_orchestrator.py` (coordinates batch runs)
-- **tasks/** — CLI task implementations invoked by cli.py, organized by frequency/category:
-  - **daily/**: Market cap, institutional investors
-  - **periodic/**: Monthly revenue, weekly shareholder data, valuation
-  - **fundamentals/**: Basic company info, manual dividend imports
-  - **orchestrators/**: Full update coordination
-  - **maintenance/**: Data quality checks
-- **utils/** — `company_list_loader.py` (resolve --code/--topic to list), `rerun_manager.py` (track failures), `quality_report.py`
+- **core/** — Shared abstractions: `api_client.py` (FinMind quota management), `file_manager.py` (atomic JSON writes), `data_processor.py`, `timezone.py`, `trading_day.py`, `exceptions.py`
+- **domains/** — 一個資料領域一個資料夾，內含 `fetcher.py`（抓＋正規化）與 `tasks.py`（CLI 任務）。
+  現有：`balance_sheet`、`company_info`、`dividends`、`financials`、`insider`、
+  `institutional_investors`、`margin_trading`、`market_sentiment`、`revenue`、
+  `securities_lending`、`shareholder`、`valuation`
+- **orchestration/** — `company_processor.py`（逐家組裝）、`data_assembler.py`（把各領域的結果併進
+  `company-financials/{code}.json`，一個領域一個 `merge_*`）、`fetch_orchestrator.py`（批次協調）、
+  `check_quality.py`（資料品質＋下市殘留偵測）、`financials_update.py`、`marketcap_inst_update.py`
+- **disposition/** — 處置股預測（獨立於 domains，自成一套流程）
+- **us_financials/** — 美股財報，與台股走不同管線
+- **utils/** — `company_list_loader.py` (resolve --code/--topic to list), `rerun_manager.py` (track failures), `quality_report.py`, `finmind.py`（FinMind 共用取數）
 
 ### CI/CD Pipeline (GitHub Actions)
 
