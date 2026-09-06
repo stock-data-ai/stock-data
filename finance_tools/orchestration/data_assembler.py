@@ -86,6 +86,41 @@ class DataAssembler:
         return existing_data
 
     @staticmethod
+    def merge_insider_holdings(existing_data: Dict, holdings: Dict[str, Any]) -> Dict:
+        """把某公司當期的內部人持股併進財報檔。
+
+        與 `shareholderDataRecent` / `shareholderDataHistory` 同一個拆法：
+          - `insiderHoldingsRecent`  當期逐人明細（約 20~40 人、4 KB）
+          - `insiderHoldingsHistory` 月份 → 兩組合計（每月約 100 bytes）
+
+        為什麼明細只留當期：一家最多 250 人，每月留一份明細會讓檔案幾個月就翻倍；
+        而要看趨勢的是「董監持股與質押比怎麼變」，那是合計層級的事，
+        留在 History 就夠。這也是 TDCC 股權分散當初的取捨。
+        """
+        if not existing_data:
+            existing_data = {}
+
+        month = holdings.get('month')
+        existing_data['insiderHoldingsRecent'] = {
+            'month': month,
+            'insiders': holdings['insiders'],
+            'totals': holdings['totals'],
+            'boardTotals': holdings['boardTotals'],
+        }
+
+        if 'insiderHoldingsHistory' not in existing_data:
+            existing_data['insiderHoldingsHistory'] = {}
+        if month:
+            # 用月份當 key：同一期重跑會覆寫而不是長出重複，換月才新增一筆
+            existing_data['insiderHoldingsHistory'][month] = {
+                'totals': holdings['totals'],
+                'boardTotals': holdings['boardTotals'],
+            }
+
+        existing_data['lastUpdated'] = today_str()
+        return existing_data
+
+    @staticmethod
     def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any]):
         """Constructs the final data dictionary to be saved."""
         final_data = existing_data if existing_data else {}

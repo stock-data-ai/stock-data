@@ -49,6 +49,15 @@ jobs:
             [ $attempt -lt $MAX ] && { echo "Attempt $attempt 失敗，30 秒後重試..."; sleep 30; } || exit 1
           done
 
+      # 內部人持股（董監、經理人、大股東）：資料是**月頻**，但掛在這班週跑的排程裡。
+      # 端點只回最新一期，換月與否用「檔案內容有沒有 diff」判斷即可，不必自己算月初；
+      # 而它與股權分散同型（一次拿全市場、逐家併進 company-financials），
+      # 沒有理由為了每月一次的資料再開一個 workflow。
+      - name: Update insider holdings｜內部人持股
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-insider-holdings --force 2>&1 | tee /tmp/insider.log
+
       - name: 執行摘要
         if: always()
         run: |

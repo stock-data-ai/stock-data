@@ -55,6 +55,7 @@ from finance_tools.domains.revenue.tasks import run_update_revenue
 from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
 from finance_tools.orchestration.check_quality import run_check_quality
 from finance_tools.domains.shareholder.tasks import run_fetch_shareholder_data
+from finance_tools.domains.insider.tasks import run_update_insider_holdings
 from finance_tools.domains.margin_trading.tasks import run_update_margin_trading
 from finance_tools.domains.securities_lending.tasks import run_update_securities_lending
 from finance_tools.domains.institutional_investors.shares_backfill import run_backfill_foreign_shares
@@ -127,6 +128,14 @@ def main():
     parser_shareholder = subparsers.add_parser("fetch-shareholder-data", help="擷取 TDCC 股東分配資料。")
     add_common_arguments(parser_shareholder, include_force=True, include_rerun=True)
     parser_shareholder.set_defaults(func=run_fetch_shareholder_data)
+
+    # --- 'update-insider-holdings' command ---
+    # 與 fetch-shareholder-data 同型：一次拿全市場、再逐家併進 company-financials。
+    # 資料是**月頻**，但排程照樣每天跑——端點只回最新一期，用「內容沒變就不會有 diff」
+    # 判斷有沒有換月，比自己算月初日期可靠（新一期上架的日子每月不同）。
+    parser_insider = subparsers.add_parser("update-insider-holdings", help="更新內部人持股餘額（董監、經理人、大股東）。")
+    add_common_arguments(parser_insider, include_force=True)
+    parser_insider.set_defaults(func=run_update_insider_holdings)
 
     # --- 'update-margin' command ---
     parser_margin = subparsers.add_parser("update-margin", help="更新融資融券資料。")
