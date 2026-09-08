@@ -87,6 +87,16 @@ jobs:
       # 而它的補齊還是逐日路徑（每個日期都把全部 company-financials 讀寫一次，
       # 補一季要跑數小時）。借券是後加的資料集，補齊走的是批次路徑。
       # 用同一個輸入等於每次補借券都順便叫融資融券做一整段沒必要的重工。
+      # 全市場籌碼橫斷面，給 stock_map 的籌碼選股讀（逐檔 1.5 GB 不可能放在請求路徑上）。
+      # **必須排在這裡**：這一班是籌碼資料最後到齊的一班（19:30 法人、21:30 融資券借券），
+      # 排前面擠出來的是昨天的籌碼，而且完全不會報錯。
+      # 這支不抓任何資料、只讀磁碟，實測 8 秒。
+      - name: 建立全市場籌碼歷史
+        if: always()
+        run: |
+          set -o pipefail
+          uv run finance_tools/scripts/build_chip_history.py 2>&1 | tee /tmp/chip.log
+
       - name: 執行摘要
         if: always()
         run: |
@@ -121,6 +131,14 @@ jobs:
             echo "$DETAIL"
             echo "| 狀態 | $STATUS |"
             echo ""
+            CHIPD=$(grep -oP '個交易日（[0-9-]+ ~ \K[0-9-]+' /tmp/chip.log 2>/dev/null | tail -1 || echo "—")
+            CHIPN=$(grep -oP '個交易日（[0-9-]+ ~ [0-9-]+）、\K\d+' /tmp/chip.log 2>/dev/null | tail -1 || echo "—")
+            echo "### 全市場籌碼歷史"
+            echo ""
+            echo "| 資料日 | 檔數 |"
+            echo "|---|---|"
+            echo "| $CHIPD | $CHIPN |"
+            echo ""
             echo "### 借券賣出餘額"
             echo ""
             LLOG=/tmp/lending.log
@@ -145,7 +163,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/layer3/company-financials/
+          git add src/data/layer3/company-financials/ src/data/market/chip-history.json
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "更新融資融券與借券數據 $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do
