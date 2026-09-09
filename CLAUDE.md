@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Taiwan stock financial data pipeline that fetches data from FinMind API, TDCC, and other sources, processes it, and outputs JSON files to GitHub Pages as a static API. Paired with a private `stock_map` repo that handles analysis and UI.
 
+## Agent safety / Cross-workspace instructions
+
+This pipeline and sibling `stock_map` are one system. For cross-repo data operations read stock_map's `AGENTS.md` / `CLAUDE.md` and `.claude/skills/_shared/agent-safety.md` (Q1–Q3); this file supplies data-workspace details, not an override of those safety restrictions. If the paired checkout is unavailable or instructions conflict, stop the affected write and report it; do not infer policy from historical notes.
+
+Company-topic semantic decisions remain quarantined, even when initiated here. Local copies of app metadata/topic indexes are inputs, not a new app source of truth; confirm the input version before use. Financial history and ETF accumulated metadata are not assumed rebuildable from a fresh clone.
+
 ## Package Manager
 
 This project uses `uv` (not pip). Always use `uv run` to execute Python scripts.
@@ -18,20 +24,20 @@ uv run finance_tools/cli.py [COMMAND] [OPTIONS]
 ## Common Commands
 
 ```bash
-# Single company update
-uv run finance_tools/cli.py full-update --code 2330
+# Income statement / revenue update (writes local financial JSON; not the former all-domain update)
+uv run finance_tools/cli.py financials-update --code 2330
 
 # Topic-based update
-uv run finance_tools/cli.py update-marketcap --topic bbu
+uv run finance_tools/cli.py update-marketcap-inst --topic bbu
 
 # Batch processing (used in CI — batch N of 4)
-uv run finance_tools/cli.py full-update --batch 2/4
+uv run finance_tools/cli.py financials-update --batch 2/4
 
 # Rerun companies that failed in previous run
-uv run finance_tools/cli.py full-update --rerun --batch 1/4
+uv run finance_tools/cli.py financials-update --rerun --batch 1/4
 
 # Force update (bypass "already updated today" guard)
-uv run finance_tools/cli.py update-institutional-investors --force
+uv run finance_tools/cli.py update-marketcap-inst --force
 
 # Limit number of companies (for quick testing)
 uv run finance_tools/cli.py update-revenue --limit 10
@@ -42,6 +48,10 @@ uv run finance_tools/cli.py update-insider-holdings --force
 # Run tests
 uv run pytest finance_tools/tests/
 ```
+
+These examples use current parser commands in `finance_tools/cli.py`; older `full-update`, `update-marketcap` and `update-institutional-investors` examples in legacy guides are not executable instructions. `financials-update` does not mean “all domains”.
+
+Update commands fetch external data and write local JSON / queues; they are not validation. `check-quality` also writes queues. The `generate-chip-topic` / `generate-disposition-forecast` commands can push outputs into stock_map; their `--dry-run` writes temporary outputs while skipping that push, not zero filesystem effects. CI commit/push can publish data; news crawlers can write remote D1. Inspect the exact task before running it, and never run updates or remote writes merely to verify instructions.
 
 ## Architecture
 
@@ -83,11 +93,7 @@ Three-stage reusable workflow (`.github/workflows/_reusable-data-job.yml`):
 
 **Rerun mechanism**: Workflows self-chain via `gh workflow run` up to `MAX_RERUN_ROUNDS=4` times with a 65-minute delay (API quota reset window). Permanent failures (where failure count doesn't decrease) are written to `permanent_failures_<type>.txt` and excluded from future retries.
 
-**Schedules** (Taiwan time):
-- Mon–Fri 09:00 & 17:00: Market cap + institutional investors
-- Sat 09:00: TDCC shareholder data (API-based)
-- Sun 09:00: Full update (financials, revenue, dividends)
-- Mon–Fri 07:00 & 23:00: Economic Daily news scraper
+**Schedules**: read `cron/wrangler.toml`, `cron/src/index.ts` and the dispatched workflows. Previous timetable prose here was stale; it is not an operational authority. Deployed Worker versions / enabled schedules require production verification; do not deploy to verify this file.
 
 ### API Token Management
 
