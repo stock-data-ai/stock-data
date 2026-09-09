@@ -17,6 +17,7 @@ Commands:
   update-lending        - 更新借券賣出餘額資料。
   check-quality         - 檢查資料品質。
   compute-big-holders   - 計算大戶加碼排行並輸出 weekly_big_holders.json。
+  prune-financials      - 刪掉已不在 companies-all.json 名單上的財報檔（下市清除）。
 
 Common Options:
   --code CODE           - 處理單一公司（股票代碼）。
@@ -64,6 +65,7 @@ from finance_tools.domains.market_sentiment.tasks import (
     run_update_market_sentiment,
 )
 from finance_tools.scripts.compute_weekly_big_holders import run as run_compute_big_holders
+from finance_tools.scripts.prune_financials import run as run_prune_financials
 from finance_tools.scripts.generate_chip_topic import run as run_generate_chip_topic
 from finance_tools.scripts.generate_disposition_forecast import run as run_generate_disposition_forecast
 
@@ -182,6 +184,14 @@ def main():
         help="從 TDCC 股權分散表計算大戶加碼排行，輸出 weekly_big_holders.json。",
     )
     parser_big_holders.set_defaults(func=lambda args: run_compute_big_holders())
+
+    # --- 'prune-financials' command ---
+    parser_prune = subparsers.add_parser(
+        "prune-financials",
+        help="刪掉已不在 companies-all.json 名單上的財報檔（下市／終止興櫃／併購完成）。排程每天跑一次。",
+    )
+    parser_prune.add_argument("--dry-run", action="store_true", help="只列出會刪哪些，不真的刪。")
+    parser_prune.set_defaults(func=lambda args: run_prune_financials(dry_run=args.dry_run))
 
     # --- 'generate-chip-topic' command ---
     parser_chip = subparsers.add_parser(

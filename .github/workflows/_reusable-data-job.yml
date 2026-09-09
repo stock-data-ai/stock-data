@@ -110,17 +110,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Fetch latest companies-all.json from stock_map
-        env:
-          PAT: ${{ secrets.STOCK_MAP_PAT }}
-        run: |
-          mkdir -p src/data/layer3/companies
-          curl -fsSL \
-            -H "Authorization: token $PAT" \
-            -H "Accept: application/vnd.github.v3.raw" \
-            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/layer3/companies/companies-all.json?ref=publish_cloudflare" \
-            -o src/data/layer3/companies/companies-all.json
-          echo "✅ companies-all.json 已從 stock_map 取得"
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
 
       - name: Wait for API quota reset (chained runs only)
         if: inputs.delay_minutes != '0' && inputs.delay_minutes != ''

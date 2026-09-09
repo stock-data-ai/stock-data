@@ -26,6 +26,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+
       - name: Install uv
         uses: astral-sh/setup-uv@v8.0.0
 
@@ -36,6 +41,13 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --all-extras --dev
+
+      # 下市清除先於抓資料：TDCC 對已終止買賣的個股照發資料，不先刪掉，下面那步會把它們續命。
+      # 刪除由「Commit result」的 git add 目錄一起收進 commit。
+      - name: Prune delisted｜刪掉已下市的財報檔
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py prune-financials 2>&1 | tee /tmp/prune.log
 
       - name: Fetch TDCC shareholding data
         run: |
@@ -113,6 +125,11 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: main
+
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v8.0.0

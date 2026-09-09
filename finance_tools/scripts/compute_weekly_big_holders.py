@@ -26,12 +26,12 @@ from collections import Counter
 
 import requests
 
+from finance_tools.core.file_manager import resolve_companies_all_path
 from finance_tools.utils.retry import retry as _retry
 from finance_tools.utils.twse_url import bust
 
 BASE = Path(__file__).parent.parent.parent / "src/data"
 FINANCIALS_DIR = BASE / "layer3/company-financials"
-COMPANIES_ALL = BASE / "layer3/companies/companies-all.json"
 OUTPUT_FILE = BASE / "market/weekly_big_holders.json"
 
 THRESHOLDS = [200, 400, 800, 1000]  # 單位：張（千股）
@@ -132,9 +132,11 @@ def capital_stable(totals: dict[str, float | None], d_from: str, d_to: str) -> b
 
 
 def load_display_names() -> dict[str, str]:
-    if not COMPANIES_ALL.exists():
+    # 與所有 fetcher 同一個名單解析（CI 抓的那份 → 隔壁 stock_map）。沒有就回全名，畫面端另有 shortName 對照。
+    path = resolve_companies_all_path()
+    if path is None:
         return {}
-    with open(COMPANIES_ALL, encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = json.load(f)
     return {code: info.get("shortName") or info.get("name", code)
             for code, info in data.items()}

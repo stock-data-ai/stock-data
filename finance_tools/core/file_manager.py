@@ -5,11 +5,34 @@ File Manager - 統一的檔案管理
 import os
 import json
 import logging
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 from finance_tools.core.timezone import today_str
 import finance_tools.config as config
+
+# 名單的唯一來源是 stock_map 的 companies-all.json（政府上市／上櫃／興櫃三份名單的鏡像，
+# 新上市自動加、下市自動刪）。CI 每次先抓最新版放到 config.COMPANIES_ALL_FILE；
+# 本機沒抓時退到隔壁 checkout——兩個 repo 是同一系統，慣例放同一層。
+_SIBLING_COMPANIES_ALL = (
+    Path(__file__).resolve().parents[3] / "stock_map/src/data/layer3/companies/companies-all.json"
+)
+
+# 台股非 ETF 的合理下界（2026-09-09 實測 2341）。低於此視為抓到殘缺檔，寧可整批失敗，
+# 也不要拿半份名單去跑 prune 把一半的財報檔刪掉。
+ROSTER_MIN_TW = 2000
+
+
+def resolve_companies_all_path() -> Optional[str]:
+    """CI 抓下來的那份優先；沒有就找隔壁的 stock_map。兩邊都沒有回 None，由呼叫端決定要不要炸。"""
+    primary = str(config.COMPANIES_ALL_FILE)
+    if os.path.exists(primary):
+        return primary
+    if _SIBLING_COMPANIES_ALL.exists():
+        logger.info(f"companies-all.json 使用隔壁 stock_map 的檔案：{_SIBLING_COMPANIES_ALL}")
+        return str(_SIBLING_COMPANIES_ALL)
+    return None
 
 
 class FileManager:
@@ -27,44 +50,55 @@ class FileManager:
 
     def load_companies(self) -> List[Dict[str, str]]:
         """
-        載入公司清單。從 company-financials/ 目錄掃描所有 4 位數台股代碼，
-        並從 companies-all.json 取得公司名稱。
-        這樣可以覆蓋所有已有財務檔案的公司，不論是否在 company-topics 題材中。
+        台股名單：companies-all.json 裡 4 碼數字、非 ETF 的那批。
+
+        **刻意不掃 company-financials/ 目錄。** 2026-09-09 之前這裡是掃目錄的，
+        結果名單變成自我延續：檔案在就繼續抓、檔案不在就永遠進不來——
+        下市 16 檔照抓（TDCC 對已終止買賣的個股照發資料，看起來跟活的一樣），
+        2026 年掛牌的 58 檔一個都沒建檔。目錄是儲存位置，不是名單。
+
+        名單缺席或殘缺時直接拋出，不退回掃目錄——那等於把病根接回去。
         """
         all_companies_details = self.load_all_companies_with_details()
+        if not all_companies_details:
+            raise RuntimeError(
+                "找不到 companies-all.json。CI 應先執行 .github/actions/fetch-roster；"
+                f"本機請把 stock_map checkout 放在 {_SIBLING_COMPANIES_ALL.parents[4]} 底下。"
+            )
 
-        codes: set[str] = set()
-        if os.path.isdir(self.financials_dir):
-            for filename in os.listdir(self.financials_dir):
-                if filename.endswith(".json"):
-                    code = filename[:-5]  # strip .json
-                    if code.isdigit() and len(code) == 4:
-                        codes.add(code)
+        companies = [
+            {"code": code, "name": detail.get("name") or code}
+            for code, detail in all_companies_details.items()
+            if code.isdigit() and len(code) == 4 and not detail.get("isETF")
+        ]
+        if len(companies) < ROSTER_MIN_TW:
+            raise RuntimeError(
+                f"companies-all.json 台股只有 {len(companies)} 檔（下界 {ROSTER_MIN_TW}），"
+                "疑似抓到殘缺檔，本次不處理任何公司。"
+            )
 
-        if not codes:
-            logger.warning(f"No 4-digit company codes found in {self.financials_dir}.")
-            return []
-
-        companies = []
-        for code in sorted(codes):
-            detail = all_companies_details.get(code, {})
-            name = detail.get("name", code)
-            companies.append({"code": code, "name": name})
-
-        logger.info(f"Loaded {len(companies)} companies from {self.financials_dir}.")
+        companies.sort(key=lambda c: c["code"])
+        logger.info(f"名單：companies-all.json 台股 {len(companies)} 檔")
         return companies
+
+    def list_financial_codes(self) -> set[str]:
+        """company-financials/ 目錄裡實際存在的 4 碼台股檔。這是「儲存了什麼」，不是名單。"""
+        if not os.path.isdir(self.financials_dir):
+            return set()
+        codes = (fn[:-5] for fn in os.listdir(self.financials_dir) if fn.endswith(".json"))
+        return {c for c in codes if c.isdigit() and len(c) == 4}
 
     def load_all_companies_with_details(self) -> Dict[str, Any]:
         """
         載入 companies-all.json 檔案以獲取完整的公司詳細資訊。
         """
-        file_path = str(config.COMPANIES_ALL_FILE)
+        file_path = resolve_companies_all_path()
+        if file_path is None:
+            logger.error(f"Error: companies-all.json not found at {config.COMPANIES_ALL_FILE}（隔壁 stock_map 也沒有）")
+            return {}
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except FileNotFoundError:
-            logger.error(f"Error: companies-all.json not found at {file_path}")
-            return {}
         except json.JSONDecodeError as e:
             logger.error(f"Error decoding JSON from {file_path}: {e}")
             return {}

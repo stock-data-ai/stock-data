@@ -29,17 +29,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: 取得 companies-all.json（用於計算市值）
-        env:
-          PAT: ${{ secrets.STOCK_MAP_PAT }}
-        run: |
-          mkdir -p src/data/layer3/companies
-          curl -fsSL \
-            -H "Authorization: token $PAT" \
-            -H "Accept: application/vnd.github.v3.raw" \
-            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/layer3/companies/companies-all.json?ref=publish_cloudflare" \
-            -o src/data/layer3/companies/companies-all.json
-          echo "✅ companies-all.json 取得完成"
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
 
       - name: Setup uv + Python
         uses: astral-sh/setup-uv@v8.0.0
@@ -47,6 +40,13 @@ jobs:
         with:
           python-version-file: pyproject.toml
       - run: uv sync --all-extras --dev
+
+      # 下市清除：名單沒有的財報檔刪掉。每天跑一次就夠——其他 job 的名單也讀 companies-all，
+      # 孤兒檔不會再被續抓，只是躺著等這步收走。刪除由下方「提交變更」的 git add 目錄一起收進 commit。
+      - name: Prune delisted｜刪掉已下市的財報檔
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py prune-financials 2>&1 | tee /tmp/prune.log
 
       # 市值估值（本益比／淨值比／殖利率／收盤價）與個股三大法人已於 2026-08-26 改走
       # FinMind（證交所來函後移除 www.twse.com.tw 的 BWIBBU_d／MI_INDEX／T86）。
