@@ -175,9 +175,13 @@ class FileManager:
                     覆蓋下去就是把多年的季報／月營收無聲換成一年份。
           - dict    正常。
 
-        損壞的檔案會被移到 `{code}.json.corrupt`（**不刪、不原地覆寫**），
-        接著 `financials-update` 看到 `None` 就改用 `FULL_HISTORY_DAYS` 的完整視窗
-        重建整份歷史。全程不需要任何人工步驟——這條路徑上沒有人會來看 CI 紅燈。
+        壞檔**留在原地不動**。這是刻意的：它就是「這家公司要重抓」的訊號，
+        每一輪讀到都會再回 `None`，所有寫入者持續退開，直到 `financials-update`
+        用 `FULL_HISTORY_DAYS` 的完整視窗重抓、原子寫入蓋過去為止。全自動、不需要人。
+
+        （曾經試過把壞檔改名成 `.corrupt` 保存，那是錯的：下一輪就變成
+        「檔案不存在」＝新公司，日更會建一份只有市值的空殼檔，而空殼是合法 JSON，
+        於是完整視窗重建永遠不會觸發，歷史照樣沒了。訊號不能自己消失。）
         """
         file_path = os.path.join(self.financials_dir, f"{code}.json")
         if not os.path.exists(file_path):
@@ -186,11 +190,8 @@ class FileManager:
             with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
-            logger.error(f"[{code}] 財報檔損壞（{e}）；移到 .corrupt 並改用完整視窗重建")
-            try:
-                os.replace(file_path, file_path + ".corrupt")
-            except OSError as move_error:
-                logger.error(f"[{code}] 損壞檔移動失敗：{move_error}")
+            # 不動這個檔案——它是「要重抓」的訊號，financials-update 會用完整視窗蓋過去。
+            logger.error(f"[{code}] 財報檔損壞（{e}）；等 financials-update 用完整視窗重抓")
             return None
         except Exception as e:
             # 權限、IO 等暫時性問題：不動檔案，也不讓呼叫端拿空資料去覆蓋。

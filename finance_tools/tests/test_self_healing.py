@@ -46,25 +46,35 @@ def test_missing_file_and_corrupt_file_are_different_signals(isolated_file_manag
     assert isolated_file_manager.load_financial_data("9999") is None, "損壞 → None"
 
 
-def test_corrupt_file_is_set_aside_not_destroyed(isolated_file_manager):
-    """損壞的內容要被保留下來（移到 .corrupt），不是就地覆寫掉。"""
+def test_corrupt_file_stays_put_so_the_signal_does_not_vanish(isolated_file_manager):
+    """壞檔**留在原地**，而且每一輪讀都要繼續回 `None`。
+
+    這條是回歸測試。原本的寫法是把壞檔改名成 `.corrupt` 保存，看起來比較「乾淨」，
+    實際上是個洞：下一輪 `load` 看到「檔案不存在」就回 `{}`＝新公司，
+    於是日更的守門失效、建出一份只有市值的空殼檔；空殼是合法 JSON，
+    週日財報更新讀得回來，**完整視窗重建就永遠不會觸發**，歷史照樣沒。
+
+    訊號必須留著，直到真正被修好為止。
+    """
     import os
     path = corrupt(isolated_file_manager)
-    isolated_file_manager.load_financial_data("9999")
 
-    assert not os.path.exists(path), "損壞檔已移開，下一輪看到的是「不存在」"
-    assert os.path.exists(path + ".corrupt")
-    with open(path + ".corrupt", encoding="utf-8") as f:
+    for round_no in (1, 2, 3):
+        assert isolated_file_manager.load_financial_data("9999") is None, \
+            f"第 {round_no} 輪就不回 None 了，守門會失效"
+        assert os.path.exists(path), "壞檔必須留在原地"
+
+    with open(path, encoding="utf-8") as f:
         assert f.read() == '{"companyCode": "9999", "histor', "原始位元組原封不動"
 
+    assert not os.path.exists(path + ".corrupt"), "不再產生 .corrupt 旁檔"
 
-def test_corrupt_marker_is_gitignored():
-    """`.corrupt` 與 `.tmp` 不進版控——CI 的 `git add company-financials/` 是整個目錄。"""
+
+def test_atomic_write_temp_files_are_gitignored():
+    """`.tmp` 不進版控——CI 的 `git add company-financials/` 是整個目錄。"""
     from pathlib import Path
     ignore = Path(__file__).resolve().parents[2] / ".gitignore"
-    text = ignore.read_text()
-    assert "*.json.corrupt" in text
-    assert "*.json.tmp" in text
+    assert "*.json.tmp" in ignore.read_text()
 
 
 # ── D7：財報更新看到壞檔會用完整視窗把歷史重建回來 ────────────────────
@@ -144,10 +154,9 @@ def test_daily_update_backs_off_on_corrupt_file(isolated_file_manager):
                                          force_update=True, pre_valuation={"9999": _Rec()})
     assert ok is True
     assert status["marketcap"] is True, "確認有走到載入既有檔那一步"
-    assert not os.path.exists(path), "壞檔已被移開"
-    assert os.path.exists(path + ".corrupt"), "壞檔內容保留下來"
-    assert not os.path.exists(os.path.join(isolated_file_manager.financials_dir, "9999.json")), \
-        "沒有留下一份只有市值的空殼檔"
+    with open(path, encoding="utf-8") as f:
+        assert f.read() == '{"companyCode": "9999", "histor', \
+            "日更不得覆寫壞檔——它是重抓的訊號"
 
 
 # ── D8：美股改成累積 ──────────────────────────────────────────────────
