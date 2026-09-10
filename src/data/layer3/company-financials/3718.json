@@ -1,6 +1,9 @@
 {
   "latest": {
-    "marketCap": 25648360815.999996
+    "marketCap": 25648360815.999996,
+    "marginBalance": 16057,
+    "shortBalance": 935,
+    "sblBalance": 5811
   },
   "lastUpdated": "2026-09-10",
   "historical": {
@@ -27,6 +30,25 @@
         "code": "3718",
         "foreign_ratio": 7.06,
         "foreign_shares": 27615
+      }
+    },
+    "marginTrading": {
+      "2026-09-10": {
+        "marginBuy": 172,
+        "marginSell": 124,
+        "marginBalance": 16057,
+        "shortBuy": 29,
+        "shortSell": 1,
+        "shortBalance": 935
+      }
+    },
+    "securitiesLending": {
+      "2026-09-10": {
+        "sblBalance": 5811,
+        "sblShortSales": 1556,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 1513
       }
     }
   }
