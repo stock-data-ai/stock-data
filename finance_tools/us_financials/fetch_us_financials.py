@@ -16,6 +16,8 @@ Usage:
 import argparse
 import json
 import math
+import os
+import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +33,23 @@ SKIP_FINANCIAL_CURRENCIES = {"TWD"}
 
 # Exchange rate cache: { "EUR": 1.08, ... }
 _fx_cache: dict = {}
+
+
+def write_json_atomic(path: Path, data) -> None:
+    """先寫暫存檔再 os.replace，與台股 `FileManager.save_financial_data` 同一個保證：
+    寫到一半失敗時，原本那份已發布的 JSON 不會被截成半個檔。
+    這些檔案會發到 GitHub Pages 給 App 讀，截斷等於下游直接解析失敗。"""
+    fd, temp_path = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.stem}_", suffix=".json.tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_path, path)
+    except Exception:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+        raise
 
 
 def get_fx_rate(from_currency: str) -> float:
@@ -250,8 +269,7 @@ def main():
                 skipped += 1
             else:
                 out = OUTPUT_DIR / f"{code}.json"
-                with open(out, "w", encoding="utf-8") as f:
-                    json.dump(result, f, ensure_ascii=False, indent=2)
+                write_json_atomic(out, result)
                 rev = result["latest"].get("revenue")
                 gm = result["latest"].get("grossMargin")
                 n = len(result["historical"]["annual"])

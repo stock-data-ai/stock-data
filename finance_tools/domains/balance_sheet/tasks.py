@@ -165,27 +165,36 @@ def _update_one(
             quarterly_list.append(new_q)
 
     # ── 合併 ROE / ROA / OCF / FCF → annual[]（Q4 年度數字）────────
+    # 只在「來源這次真的回了這個年度」時才寫。抓取視窗是 7 年、單次呼叫也可能失敗，
+    # 無條件寫 None 會把上次存好的歷史逐年抹掉：正式資料上 2022–2025 幾乎每檔都有 ocf，
+    # 2021 卻有 800 檔只剩 roe——就是視窗前緣每跑一次往前吃一年。
+    # 來源有回該年度但算不出比率（權益 0／負數）時仍寫 None，那是真的「算不出來」。
+    # 對照 `data_assembler.build_final_data` 的 `_PRESERVE`：這些欄位本來就設計成跨次保留。
     for item in annual_list:
         year = item.get("year")
         if year is None:
             continue
 
         net_income = item.get("netIncome", 0) or 0
-        bs_q4      = bs_by_yq.get((year, 4), {})
-        cf         = cf_by_year.get(year, {})
+        bs_q4      = bs_by_yq.get((year, 4))
+        cf         = cf_by_year.get(year)
 
-        total_assets = bs_q4.get("totalAssets")
-        total_liab   = bs_q4.get("totalLiabilities")
-        equity       = bs_q4.get("equity")
-        ocf          = cf.get("ocf")
-        capex        = cf.get("capex")
+        if bs_q4 is not None:
+            total_assets = bs_q4.get("totalAssets")
+            total_liab   = bs_q4.get("totalLiabilities")
+            equity       = bs_q4.get("equity")
 
-        item["roe"] = round(net_income / equity * 100, 2)       if equity      and equity > 0      else None
-        item["roa"] = round(net_income / total_assets * 100, 2) if total_assets and total_assets > 0 else None
-        item["ocf"] = round(ocf, 0)                             if ocf   is not None else None
-        item["fcf"] = round(ocf + capex, 0)                     if ocf is not None and capex is not None else None
-        # debtRatio 也放年度（Q4 快照），方便年度表格顯示
-        item["debtRatio"] = round(total_liab / total_assets * 100, 2) if total_liab and total_assets and total_assets > 0 else None
+            item["roe"] = round(net_income / equity * 100, 2)       if equity       and equity > 0       else None
+            item["roa"] = round(net_income / total_assets * 100, 2) if total_assets and total_assets > 0 else None
+            # debtRatio 也放年度（Q4 快照），方便年度表格顯示
+            item["debtRatio"] = round(total_liab / total_assets * 100, 2) if total_liab and total_assets and total_assets > 0 else None
+
+        if cf is not None:
+            ocf   = cf.get("ocf")
+            capex = cf.get("capex")
+
+            item["ocf"] = round(ocf, 0)             if ocf is not None else None
+            item["fcf"] = round(ocf + capex, 0)     if ocf is not None and capex is not None else None
 
     financial_data["historical"]["annual"]    = annual_list
     financial_data["historical"]["quarterly"] = sorted(

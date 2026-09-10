@@ -142,13 +142,29 @@ class DataAssembler:
 
         existing_historical = final_data.get('historical', {})
 
-        # Merge quarterly: keep existing records for (year, quarter) not covered by new data
+        # Merge quarterly: keep existing records for (year, quarter) not covered by new data.
+        # 重抓到的季度只帶損益數字；currentRatio/debtRatio 是資產負債表任務（每週一）另外
+        # 補上的季度快照，整筆換掉會把它們沖掉，個股健檢的「資料截止期別」就會倒退一季
+        # （`financialHealth.ts` 取的是最近一季有值的快照）。與下方 annual 的 `_PRESERVE`
+        # 同一個道理，只是保留的欄位落在季度這一層。
+        _PRESERVE_QUARTERLY = ("currentRatio", "debtRatio")
         if quarterly:
+            existing_quarterly = existing_historical.get('quarterly') or []
+            old_by_period = {(q.get('year'), q.get('quarter')): q for q in existing_quarterly}
             new_quarters = {(q['year'], q['quarter']) for q in quarterly}
-            old_quarterly = [q for q in existing_historical.get('quarterly', []) if (q['year'], q['quarter']) not in new_quarters]
-            merged_quarterly = sorted(quarterly + old_quarterly, key=lambda x: (x['year'], x['quarter']), reverse=True)
+            refreshed = []
+            for q in quarterly:
+                old = old_by_period.get((q['year'], q['quarter']), {})
+                merged_q = dict(q)
+                # 新抓到的值優先；只補新資料沒有的欄位。
+                for key in _PRESERVE_QUARTERLY:
+                    if key not in merged_q and key in old:
+                        merged_q[key] = old[key]
+                refreshed.append(merged_q)
+            old_quarterly = [q for q in existing_quarterly if (q.get('year'), q.get('quarter')) not in new_quarters]
+            merged_quarterly = sorted(refreshed + old_quarterly, key=lambda x: (x['year'], x['quarter']), reverse=True)
         else:
-            merged_quarterly = existing_historical.get('quarterly', [])
+            merged_quarterly = existing_historical.get('quarterly') or []
 
         # Rebuild annual from the *full* merged quarterly history. Fetching only uses a
         # ~1yr window (FULL_UPDATE_DAYS), so the freshly-fetched `annual` re-derives recent
