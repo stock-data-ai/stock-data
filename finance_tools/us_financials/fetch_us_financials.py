@@ -17,6 +17,7 @@ import argparse
 import json
 import math
 import os
+import sys
 import tempfile
 import time
 from datetime import datetime, timezone
@@ -25,6 +26,11 @@ from pathlib import Path
 import yfinance as yf
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
+# 這支是用 `uv run finance_tools/us_financials/fetch_us_financials.py` 直接執行的，
+# sys.path[0] 是它自己的目錄，不是 repo root——不補這行就 import 不到 finance_tools。
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from finance_tools.core import merge_policy  # noqa: E402
 OUTPUT_DIR = PROJECT_ROOT / "src" / "data" / "layer3" / "company-financials-us"
 US_TICKERS_FILE = PROJECT_ROOT / "src" / "data" / "layer3" / "us-tickers.json"
 
@@ -88,6 +94,14 @@ def _r2(val):
     if val is None:
         return None
     return round(val, 2)
+
+
+def _first_present(*values):
+    """第一個「不是 None」的值。與 `or` 的差別在於 0 會被當成有效值留下來。"""
+    for v in values:
+        if v is not None:
+            return v
+    return None
 
 
 def _to_usd(val, fx: float = 1.0):
@@ -196,23 +210,25 @@ def build_output(code: str, ticker_obj):
     if len(annual) >= 2 and annual[0].get("revenue") and annual[1].get("revenue"):
         yoy = round((annual[0]["revenue"] / annual[1]["revenue"] - 1) * 100, 1)
 
-    # Margins from info are fractions; fall back to computed values from statements
-    gross_margin = _pct(info.get("grossMargins")) or latest_q.get("grossMargin") or latest_a.get("grossMargin")
-    op_margin = _pct(info.get("operatingMargins")) or latest_q.get("operatingMargin") or latest_a.get("operatingMargin")
-    net_margin = _pct(info.get("profitMargins")) or latest_q.get("netMargin") or latest_a.get("netMargin")
+    # Margins from info are fractions; fall back to computed values from statements.
+    # 用 `is not None` 而不是 `or`：毛利率真的是 0 的時候，`or` 會把它當成缺值
+    # 往下一個來源掉，畫面上就變成別的期別的數字。
+    gross_margin = _first_present(_pct(info.get("grossMargins")), latest_q.get("grossMargin"), latest_a.get("grossMargin"))
+    op_margin = _first_present(_pct(info.get("operatingMargins")), latest_q.get("operatingMargin"), latest_a.get("operatingMargin"))
+    net_margin = _first_present(_pct(info.get("profitMargins")), latest_q.get("netMargin"), latest_a.get("netMargin"))
 
     # marketCap from info is always in the trading currency (USD for US-listed)
     market_cap = _to_usd(info.get("marketCap"))  # no fx — already USD
 
     latest = {
-        "year": latest_q.get("year") or latest_a.get("year"),
+        "year": _first_present(latest_q.get("year"), latest_a.get("year")),
         "quarter": latest_q.get("quarter"),
-        "revenue": latest_q.get("revenue") or latest_a.get("revenue"),
+        "revenue": _first_present(latest_q.get("revenue"), latest_a.get("revenue")),
         "yoy": yoy,
         "grossMargin": gross_margin,
         "operatingMargin": op_margin,
         "netMargin": net_margin,
-        "eps": latest_q.get("eps") or latest_a.get("eps"),
+        "eps": _first_present(latest_q.get("eps"), latest_a.get("eps")),
         "pe": _r2(info.get("trailingPE")),
         "pb": _r2(info.get("priceToBook")),
         "marketCap": market_cap,
@@ -231,6 +247,44 @@ def build_output(code: str, ticker_obj):
         "dataSource": "yahoo-finance",
     }
     return result, fx_note
+
+
+def merge_us_output(existing, fresh):
+    """把這次抓到的併進既有檔案，而不是整檔覆寫。
+
+    2026-09-10 之前是覆寫：yfinance 給幾年就是幾年（實測 201 檔**全部**恰好
+    4 年年報、5 個季度），而且來源只回半套（有 annual、沒 quarterly）時，
+    既有的 quarterly 會被清空。改成與台股同一套 `merge_by_key`：
+    同期間取新、視窗外的舊期間保留、這次沒抓到就原樣留著。
+    """
+    if not existing:
+        return fresh
+
+    merged = dict(existing)
+    merged.update({k: v for k, v in fresh.items() if k != "historical"})
+
+    old_hist = existing.get("historical") or {}
+    new_hist = fresh.get("historical") or {}
+    merged["historical"] = {
+        "annual": merge_policy.merge_by_key(
+            old_hist.get("annual"), new_hist.get("annual"), key=lambda a: a["year"]),
+        "quarterly": merge_policy.merge_by_key(
+            old_hist.get("quarterly"), new_hist.get("quarterly"),
+            key=lambda q: (q["year"], q["quarter"])),
+    }
+    return merged
+
+
+def load_existing(path: Path):
+    """讀既有檔；讀不回來（損壞）時回 None，呼叫端不得覆寫。"""
+    if not path.exists():
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        print(f" [既有檔損壞 {e}；改為整檔重建]", end="")
+        return {}
 
 
 def load_us_topic_codes():
@@ -269,7 +323,7 @@ def main():
                 skipped += 1
             else:
                 out = OUTPUT_DIR / f"{code}.json"
-                write_json_atomic(out, result)
+                write_json_atomic(out, merge_us_output(load_existing(out), result))
                 rev = result["latest"].get("revenue")
                 gm = result["latest"].get("grossMargin")
                 n = len(result["historical"]["annual"])

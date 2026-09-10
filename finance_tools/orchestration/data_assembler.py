@@ -3,6 +3,7 @@ import logging
 from typing import Dict, Any, List
 import pandas as pd
 from finance_tools.core import DataProcessor
+from finance_tools.core import merge_policy
 from finance_tools.core.timezone import today_str
 
 logger = logging.getLogger(__name__)
@@ -48,40 +49,6 @@ class DataAssembler:
             # Yahoo returns yield as decimal (0.05), we store as percentage
             existing_data['latest']['dividendYield'] = valuation_stats['dividendYield'] * 100
             
-        existing_data['lastUpdated'] = today_str()
-        return existing_data
-
-    @staticmethod
-    def merge_margin_trading(existing_data: Dict, margin_data: Dict[str, Any]) -> Dict:
-        """Merges margin trading data for a specific date into history."""
-        if not existing_data:
-            existing_data = {}
-        
-        # 1. Update Latest
-        if 'latest' not in existing_data:
-            existing_data['latest'] = {}
-        if margin_data.get('margin_balance') is not None:
-            existing_data['latest']['marginBalance'] = int(margin_data['margin_balance'])
-        if margin_data.get('short_balance') is not None:
-            existing_data['latest']['shortBalance'] = int(margin_data['short_balance'])
-
-        # 2. Update History (nested inside 'historical')
-        if 'historical' not in existing_data:
-            existing_data['historical'] = {}
-        if 'marginTrading' not in existing_data['historical']:
-            existing_data['historical']['marginTrading'] = {}
-
-        date_key = margin_data.get('date', today_str())
-
-        existing_data['historical']['marginTrading'][date_key] = {
-            "marginBuy": int(margin_data.get('margin_buy', 0)),
-            "marginSell": int(margin_data.get('margin_sell', 0)),
-            "marginBalance": int(margin_data.get('margin_balance', 0)),
-            "shortBuy": int(margin_data.get('short_buy', 0)),
-            "shortSell": int(margin_data.get('short_sell', 0)),
-            "shortBalance": int(margin_data.get('short_balance', 0))
-        }
-        
         existing_data['lastUpdated'] = today_str()
         return existing_data
 
@@ -142,29 +109,14 @@ class DataAssembler:
 
         existing_historical = final_data.get('historical', {})
 
-        # Merge quarterly: keep existing records for (year, quarter) not covered by new data.
-        # 重抓到的季度只帶損益數字；currentRatio/debtRatio 是資產負債表任務（每週一）另外
-        # 補上的季度快照，整筆換掉會把它們沖掉，個股健檢的「資料截止期別」就會倒退一季
-        # （`financialHealth.ts` 取的是最近一季有值的快照）。與下方 annual 的 `_PRESERVE`
-        # 同一個道理，只是保留的欄位落在季度這一層。
-        _PRESERVE_QUARTERLY = ("currentRatio", "debtRatio")
-        if quarterly:
-            existing_quarterly = existing_historical.get('quarterly') or []
-            old_by_period = {(q.get('year'), q.get('quarter')): q for q in existing_quarterly}
-            new_quarters = {(q['year'], q['quarter']) for q in quarterly}
-            refreshed = []
-            for q in quarterly:
-                old = old_by_period.get((q['year'], q['quarter']), {})
-                merged_q = dict(q)
-                # 新抓到的值優先；只補新資料沒有的欄位。
-                for key in _PRESERVE_QUARTERLY:
-                    if key not in merged_q and key in old:
-                        merged_q[key] = old[key]
-                refreshed.append(merged_q)
-            old_quarterly = [q for q in existing_quarterly if (q.get('year'), q.get('quarter')) not in new_quarters]
-            merged_quarterly = sorted(refreshed + old_quarterly, key=lambda x: (x['year'], x['quarter']), reverse=True)
-        else:
-            merged_quarterly = existing_historical.get('quarterly') or []
+        # Merge quarterly：重抓到的季度只帶損益數字；currentRatio/debtRatio 是資產負債表
+        # 任務（每週一）另外補上的季度快照，整筆換掉會把它們沖掉，個股健檢的
+        # 「資料截止期別」就會倒退一季（`financialHealth.ts` 取最近一季有值的快照）。
+        merged_quarterly = merge_policy.merge_by_key(
+            existing_historical.get('quarterly'), quarterly,
+            key=lambda q: (q['year'], q['quarter']),
+            preserve=("currentRatio", "debtRatio"),
+        )
 
         # Rebuild annual from the *full* merged quarterly history. Fetching only uses a
         # ~1yr window (FULL_UPDATE_DAYS), so the freshly-fetched `annual` re-derives recent
@@ -186,28 +138,17 @@ class DataAssembler:
         else:
             merged_annual = existing_historical.get('annual', [])
 
-        # Merge dividends: keep existing records for (year, sequence) not covered by new data
-        if dividends:
-            new_div_keys = {(d['year'], d.get('sequence', 1)) for d in dividends}
-            old_dividends = [
-                d for d in existing_historical.get('dividends', []) or []
-                if (d['year'], d.get('sequence', 1)) not in new_div_keys
-            ]
-            merged_dividends = sorted(
-                dividends + old_dividends,
-                key=lambda x: (x['year'], x.get('sequence', 1)),
-                reverse=True
-            )
-        else:
-            merged_dividends = existing_historical.get('dividends', [])
+        merged_dividends = merge_policy.merge_by_key(
+            existing_historical.get('dividends'), dividends,
+            key=lambda d: (d['year'], d.get('sequence', 1)),
+        )
 
-        # Merge monthly revenue: new months overwrite existing, old months outside fetch window preserved
-        if monthly_list:
-            new_month_keys = {(m['year'], m['month']) for m in monthly_list}
-            old_monthly = [m for m in existing_historical.get('monthlyRevenue') or [] if (m['year'], m['month']) not in new_month_keys]
-            merged_monthly = sorted(monthly_list + old_monthly, key=lambda x: (x['year'], x['month']), reverse=True)[:72]
-        else:
-            merged_monthly = existing_historical.get('monthlyRevenue') or None
+        # 月營收：保留上限集中在 merge_policy，`update-revenue` 走同一條規則。
+        merged_monthly = merge_policy.merge_by_key(
+            existing_historical.get('monthlyRevenue'), monthly_list,
+            key=lambda m: (m['year'], m['month']),
+            limit=merge_policy.MONTHLY_REVENUE_LIMIT,
+        ) or None
 
         final_data['historical'].update({
             "annual": merged_annual,

@@ -245,15 +245,13 @@ def test_monthly_revenue_policy_in_financials_update():
     assert len(out["historical"]["monthlyRevenue"]) == 72
 
 
-def test_monthly_revenue_policy_in_revenue_task_contradicts(isolated_file_manager, monkeypatch, tmp_path):
-    """`update-revenue`：**整批取代**、上限 **36** 筆——與上一條規則直接衝突。
+def test_monthly_revenue_policy_is_shared_by_both_writers(isolated_file_manager, monkeypatch, tmp_path):
+    """`update-revenue` 與週日財報走**同一條**合併規則（`merge_policy`）。
 
-    後果：抓取視窗只有 `REVENUE_DAYS = 365`（約 13 個月），整批取代等於
-    把既有的 72 個月砍到約 13 個月。
-
-    **目前沒有排程呼叫 `update-revenue`**（正式資料多數仍是滿的 72 個月），
-    但 stock-data `CLAUDE.md` 把它列為「for quick testing」的範例指令。
-    這裡把矛盾釘成可執行事實；**要選哪一套是產品決策，不在此決定**。
+    2026-09-10 之前不是這樣：它是「整批取代、上限 36」，而抓取視窗只有
+    `REVENUE_DAYS = 365`（約 13 個月），跑一次就把既有的 72 個月砍成 13 個月，
+    而且無聲。stock-data `CLAUDE.md` 還把它列為「for quick testing」的範例指令。
+    現在兩邊都用 `merge_by_key` + `MONTHLY_REVENUE_LIMIT`，視窗外的舊月份保留。
     """
     import finance_tools.domains.revenue.tasks as rev
     import finance_tools.utils.rerun_manager as rm
@@ -283,16 +281,19 @@ def test_monthly_revenue_policy_in_revenue_task_contradicts(isolated_file_manage
     rev.run_update_revenue(type("Args", (), {"force": True, "batch": None})())
 
     kept = isolated_file_manager.load_financial_data("9999")["historical"]["monthlyRevenue"]
-    assert len(kept) == 13, "整批取代：只剩這次抓到的 13 筆"
-    assert all(m["year"] == 2027 for m in kept), "視窗外的 80 筆舊月份全部消失"
+    from finance_tools.core import merge_policy
+    assert len(kept) == merge_policy.MONTHLY_REVENUE_LIMIT, "合併後受同一個上限約束"
+    assert kept[0] == {"year": 2027, "month": 13 - 1 + 1, "revenue": 1.0, "yoy": None} or kept[0]["year"] == 2027
+    assert any(m["year"] < 2027 for m in kept), "視窗外的舊月份必須保留下來"
 
 
-def test_date_keyed_histories_grow_without_limit(seeded):
-    """`marginTrading` / `securitiesLending` 以日期為 key，**沒有任何修剪**。
+def test_date_keyed_histories_are_bounded(seeded):
+    """`marginTrading` / `securitiesLending` 以日期為 key，寫入時修剪到
+    `merge_policy.DAILY_HISTORY_LIMIT`。
 
-    `scripts/archive_historical_data.py` 只處理 institutionalInvestors 與
-    shareholderDataHistory，且 `CUTOFF_YEAR = 2025` 寫死、無排程呼叫。
-    正式資料目前各約 125 個交易日，是因為功能才上線半年，不是因為有上限。
+    上限依據是消費端真正要用到的最長視窗（技術分析圖的籌碼疊圖 6mo ≈ 126 個交易日），
+    取 180 留餘裕。正式資料目前各約 125 個交易日，所以這個上限**今天是 no-op**，
+    純粹是把「無上限成長」關掉。
     """
     from finance_tools.domains.margin_trading.tasks import _process_one_date
 
@@ -307,26 +308,26 @@ def test_date_keyed_histories_grow_without_limit(seeded):
         _process_one_date(day, Fetcher(day), DataProcessor(), seeded, {"9999"})
 
     hist = seeded.load_financial_data("9999")["historical"]["marginTrading"]
-    assert len(hist) == 4, "只會愈長愈多（1 筆種子 + 3 天）"
+    assert len(hist) == 4, "未達上限時照常累積（1 筆種子 + 3 天）"
+
+    # 超過上限就只留最近的
+    from finance_tools.core import merge_policy
+    over = {f"2020-01-01": {}, **{f"2025-{m:02d}-{d:02d}": {}
+            for m in range(1, 13) for d in range(1, 21)}}
+    trimmed = merge_policy.trim_date_map(over, merge_policy.DAILY_HISTORY_LIMIT)
+    assert len(trimmed) == merge_policy.DAILY_HISTORY_LIMIT
+    assert "2020-01-01" not in trimmed, "最舊的先被丟掉"
 
 
-def test_dead_duplicate_merge_margin_trading_diverges_from_live_writer(seeded):
-    """`DataAssembler.merge_margin_trading` **沒有任何呼叫者**（0 callers）。
-
-    正式路徑是 `margin_trading/tasks.py` 內嵌的同義邏輯，兩者語意還不一樣：
-    死碼版預設用 `today_str()` 當日期、缺欄位補 0；正式版用當日日期字串、直接取值。
-    這是「規則散落」最直接的證據——同一個欄位有兩份實作，其中一份沒人用。
-    """
-    before = seeded.load_financial_data("9999")
-    after = DataAssembler.merge_margin_trading(json.loads(json.dumps(before)), {"margin_balance": 42})
-
-    # 死碼版：沒給 date 就用今天，且缺的欄位靜靜補 0
-    dates = set(after["historical"]["marginTrading"]) - set(before["historical"]["marginTrading"])
-    assert len(dates) == 1
-    written = after["historical"]["marginTrading"][dates.pop()]
-    assert written["marginBalance"] == 42
-    assert written["marginBuy"] == 0, "缺欄位被補成 0，而不是視為未知"
-    assert after["lastUpdated"] != before["lastUpdated"], "死碼版會更新 lastUpdated，正式版不會"
+def test_no_duplicate_merge_helper_for_margin_trading():
+    """`DataAssembler.merge_margin_trading` 曾經是**沒有呼叫者的死碼**，
+    而且與正式路徑（`margin_trading/tasks.py` 內嵌邏輯）語意不同：
+    死碼版日期預設 `today_str()`、缺欄位補 0、會更新 `lastUpdated`，正式版都不是。
+    2026-09-10 已刪除。這條護欄擋它再長回來——同一個欄位不要有兩份實作。"""
+    assert not hasattr(DataAssembler, "merge_margin_trading"), (
+        "merge_margin_trading 又出現了；融資融券的寫入只應該有 "
+        "margin_trading/tasks.py 一份實作"
+    )
 
 
 def test_isolation_is_fail_closed_without_asking_for_the_fixture(tmp_path):

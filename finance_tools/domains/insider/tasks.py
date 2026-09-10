@@ -50,7 +50,12 @@ def run_update_insider_holdings(args):
             continue
 
         try:
-            financial_data = file_mgr.load_financial_data(code) or {
+            financial_data = file_mgr.load_financial_data(code)
+            if financial_data is None:
+                # 檔案損壞：不要用只有內部人持股的骨架覆蓋掉整份歷史。
+                skipped_no_data += 1
+                continue
+            financial_data = financial_data or {
                 "companyCode": code,
                 "companyName": company.get('name', "N/A"),
                 "latest": {},

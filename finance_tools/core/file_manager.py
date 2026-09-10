@@ -166,18 +166,36 @@ class FileManager:
             logger.error(f"Error saving data for {code}: {e}")
             return False
 
-    def load_financial_data(self, code: str) -> Dict[str, Any]:
-        """載入財務數據"""
-        try:
-            file_path = os.path.join(self.financials_dir, f"{code}.json")
-            if not os.path.exists(file_path):
-                return {}
+    def load_financial_data(self, code: str) -> Optional[Dict[str, Any]]:
+        """載入財務數據。**回傳值有三種，呼叫端必須分辨：**
 
+          - `{}`    檔案不存在 → 新公司，可以建新檔。
+          - `None`  檔案在、但**解析失敗**（損壞）→ 這家公司的既有歷史暫時讀不到。
+                    **絕對不可以**拿這次抓到的片段去覆蓋——抓取視窗只有一年，
+                    覆蓋下去就是把多年的季報／月營收無聲換成一年份。
+          - dict    正常。
+
+        損壞的檔案會被移到 `{code}.json.corrupt`（**不刪、不原地覆寫**），
+        接著 `financials-update` 看到 `None` 就改用 `FULL_HISTORY_DAYS` 的完整視窗
+        重建整份歷史。全程不需要任何人工步驟——這條路徑上沒有人會來看 CI 紅燈。
+        """
+        file_path = os.path.join(self.financials_dir, f"{code}.json")
+        if not os.path.exists(file_path):
+            return {}
+        try:
             with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
+        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+            logger.error(f"[{code}] 財報檔損壞（{e}）；移到 .corrupt 並改用完整視窗重建")
+            try:
+                os.replace(file_path, file_path + ".corrupt")
+            except OSError as move_error:
+                logger.error(f"[{code}] 損壞檔移動失敗：{move_error}")
+            return None
         except Exception as e:
+            # 權限、IO 等暫時性問題：不動檔案，也不讓呼叫端拿空資料去覆蓋。
             logger.error(f"Error loading data for {code}: {e}")
-            return {}
+            return None
 
     def file_exists(self, code: str) -> bool:
         """檢查檔案是否存在"""

@@ -5,6 +5,7 @@ from datetime import timedelta
 from datetime import timedelta
 
 from finance_tools.core import FinMindClient, DataProcessor, FileManager
+from finance_tools.core import merge_policy
 from finance_tools.core.timezone import now_tw, today_str
 from finance_tools.domains.revenue.fetcher import RevenueFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing, filter_already_updated
@@ -83,7 +84,14 @@ def run_update_revenue(args):
         if "historical" not in existing_data:
             existing_data["historical"] = {}
 
-        existing_data["historical"]["monthlyRevenue"] = monthly_revenue[:36] if monthly_revenue else None
+        # 與 `build_final_data` 走同一條規則：以 (年,月) 合併、上限集中在 merge_policy。
+        # 舊版是「整批取代、留 36」——抓取視窗只有 REVENUE_DAYS(365)，整批取代等於
+        # 把既有的六年月營收砍成 13 個月，而且無聲。
+        existing_data["historical"]["monthlyRevenue"] = merge_policy.merge_by_key(
+            existing_data["historical"].get("monthlyRevenue"), monthly_revenue,
+            key=lambda m: (m["year"], m["month"]),
+            limit=merge_policy.MONTHLY_REVENUE_LIMIT,
+        ) or None
         existing_data["lastUpdated"] = today_str()
 
         final_data = processor.clean_nan(existing_data)

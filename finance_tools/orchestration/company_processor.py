@@ -4,7 +4,9 @@ import random
 from typing import Dict, Any, Callable
 
 import pandas as pd
+from datetime import timedelta
 from finance_tools.core import DataProcessor, FileManager, FinMindClient
+from finance_tools.core.timezone import now_tw
 from finance_tools.core.api_client import ApiExhaustedError
 import finance_tools.config as config
 from finance_tools.orchestration.fetch_orchestrator import FetchOrchestrator
@@ -115,7 +117,8 @@ class CompanyProcessor:
             "inst": False,
             "div": False,
             "quality": "low",
-            "skipped": False
+            "skipped": False,
+            "rebuilt": False,
         }
 
         if not force_update and self.file_mgr.is_updated_today(code):
@@ -125,6 +128,15 @@ class CompanyProcessor:
 
         logger.debug(f"正在處理 {code} {name}...")
         try:
+            # 0. 先確認既有歷史讀不讀得到。讀不到（檔案損壞）就把視窗放寬，
+            #    讓這一次直接把歷史重建回來，而不是用一年份覆蓋上去。
+            existing_data = self.file_mgr.load_financial_data(code)
+            if existing_data is None:
+                logger.warning(f"  ⚠️  {code} 既有歷史讀不回來，改用完整視窗重建")
+                start_date = (now_tw() - timedelta(days=config.FULL_HISTORY_DAYS)).strftime("%Y-%m-%d")
+                existing_data = {}
+                status["rebuilt"] = True
+
             # 1. 擷取所有需要的資料
             annual_data, quarterly_data, fin_success = self.fetch_orchestrator.fetch_financials(code, start_date)
             status["fin"] = fin_success
@@ -149,7 +161,6 @@ class CompanyProcessor:
                 data_quality = "low"
             status["quality"] = data_quality
 
-            existing_data = self.file_mgr.load_financial_data(code)
             final_data = self.assembler.build_final_data(
                 existing_data, code, name, latest_block,
                 annual_data, quarterly_data, monthly_revenue_df,
@@ -218,6 +229,11 @@ class CompanyProcessor:
                 return True, status
 
             existing_data = self.file_mgr.load_financial_data(code)
+            if existing_data is None:
+                # 損壞的檔案由 financials-update 用完整視窗重建；日更不得拿
+                # 市值／法人這種片段資料去建一份沒有歷史的新檔。
+                logger.warning(f"  ⚠️  {code} 既有歷史讀不回來，日更跳過（等 financials-update 重建）")
+                return True, status
             if status["marketcap"]:
                 existing_data = self.assembler.merge_valuation(existing_data, valuation_stats)
             if status["inst"]:

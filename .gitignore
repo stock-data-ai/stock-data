@@ -43,3 +43,8 @@ finance_tools/assets/dividend_csv/historical/股利所屬年度2024.csv
 finance_tools/assets/dividend_csv/historical/股利所屬年度2025.csv
 src/data/etf/index.json
 cron/node_modules
+
+# 損壞的財報檔會被移到這裡保存（由 load_financial_data 自動處理），不進版控
+*.json.corrupt
+# 原子寫入的暫存檔；正常會被清掉，硬中斷才會殘留
+*.json.tmp

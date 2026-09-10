@@ -30,6 +30,9 @@ RETRY_BACKOFF_FACTOR = 1
 # --- Data Fetching ---
 DEFAULT_SLEEP_RANGE = (1, 3)
 FULL_UPDATE_DAYS = 365  # 抓近1年；歷史資料已存 JSON，MERGE 邏輯保留舊記錄
+# 既有歷史讀不回來時（檔案損壞）改用這個視窗重建。平常不用它純粹是為了省 FinMind
+# 配額，不是來源限制——所以自我修復時可以放寬，讓歷史一次長回來。
+FULL_HISTORY_DAYS = 3650
 REVENUE_DAYS = 365
 DEFAULT_FETCH_DAYS = 90
 

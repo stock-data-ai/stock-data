@@ -50,6 +50,10 @@ def run_import_historical_dividends(args):
         records = csv_data.get(code, [])
 
         financial_data = file_mgr.load_financial_data(code)
+        if financial_data is None:
+            # 檔案損壞：歷史讀不回來。建一份只有股利的新檔會把其餘欄位一起丟掉，
+            # 交給 financials-update 用完整視窗重建。
+            continue
         if not financial_data:
             if not records:
                 continue
