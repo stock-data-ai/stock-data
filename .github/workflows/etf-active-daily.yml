@@ -312,10 +312,22 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "主動型 ETF 持股更新 $(date +%Y-%m-%d)"
+            pushed=false
             for i in 1 2 3; do
-              git pull --rebase -X ours origin main && git push && break
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
               sleep $((i * 5))
             done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，主動型 ETF 持股沒有發布出去"
+              git status --short
+              exit 1
+            fi
           fi
 
       - name: Regenerate stock-to-ETF reverse index
@@ -332,10 +344,22 @@ jobs:
             echo "No changes to reverse index"
           else
             git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
+            pushed=false
             for i in 1 2 3; do
-              git pull --rebase -X ours origin main && git push && break
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
               sleep $((i * 5))
             done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，ETF 個股反向索引沒有發布出去"
+              git status --short
+              exit 1
+            fi
           fi
 
       # commit 之後才推：通知點進去要能看到當日數字。

@@ -72,10 +72,22 @@ jobs:
           DATE_LABEL="${{ inputs.date || '' }}"
           [ -z "$DATE_LABEL" ] && DATE_LABEL=$(date -u +%Y-%m-%d)
           git commit -m "每日更新市值+三大法人數據 $DATE_LABEL"
+          pushed=false
           for i in 1 2 3; do
-            git pull --rebase -X ours origin main && git push && break
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
             sleep $((i * 5))
           done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，市值＋三大法人資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
 
       - name: 執行摘要
         if: always()

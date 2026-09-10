@@ -46,7 +46,12 @@ jobs:
               # 2026-08-31：daily-update 從 16:30／17:05／21:05 改為 19:30／21:05、
               # chip-topic 從 18:00 改為 20:00——改走 FinMind 後個股資料比證交所晚 2~3 小時。
               {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5], 'lenient': True},
-              {'label': '15:00 Update Heatmap Data',                  'workflow_name': 'Update Heatmap Data｜更新熱力圖（stock_map）',                  'hour': 15, 'minute': 0},
+              # 熱力圖（原 15:00）已於 2026-09-03 隨 workflow 一起搬回 stock_map（commit 5804508637
+              # 刪了本 repo 的 update-heatmap.yml 與那條 cron），但這份清單當時沒跟著刪，於是
+              # 2026-09-04~09-09 連續六天報「15:00 Update Heatmap Data 未執行」——19 項全綠、
+              # 只有這一筆假紅，每天寄一封「異常」信。現由 scripts/guards/check-cron-consistency.mjs
+              # 擋住同類漂移：清單裡的 workflow_name 必須真的存在於 .github/workflows/。
+              # 熱力圖現在由 stock_map 自己的 health-check.yml 監控三班，這裡不再列。
               {'label': '15:30 Update Stock Tags',                    'workflow_name': 'Update Stock Tags｜更新選股標籤（stock_map）',                  'hour': 15, 'minute': 30},
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
@@ -195,33 +200,49 @@ jobs:
               secs  = max(0, int((end - start).total_seconds()))
               return f"{secs // 60}m{secs % 60:02d}s"
 
+          # 視窗內多筆 run 的先後順序。**不依賴 API 回傳的陣列順序**——那個順序沒有契約，
+          # 分頁與 rerun 都會改變它。依序比 run_started_at（沒有就退回 created_at）、
+          # run_attempt、id，三者都是 GitHub run 物件自帶的欄位，結果穩定可重現。
+          def run_order(r):
+              started = r.get('run_started_at') or r['created_at']
+              return (
+                  datetime.fromisoformat(started.replace('Z', '+00:00')),
+                  r.get('run_attempt') or 1,
+                  r['id'],
+              )
+
           results = []
           for job in required:
               start, end = job_window(job)
-              # 依 created_at 由早到晚排序：視窗內有多筆時（例如同一 workflow 的備援跑），
-              # 取最早的那筆才對應到這個時段，否則會抓到後面時段的 run 而標錯執行時間。
-              runs = sorted(
-                  (r for r in workflow_runs
-                   if r['name'] == job['workflow_name']
-                   and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end),
-                  key=lambda r: r['created_at'],
-              )
-              success_run = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] == 'success'), None)
-              failed_run  = next((r for r in runs if r['status'] == 'completed' and r['conclusion'] != 'success'), None)
-              running_run = next((r for r in runs if r['status'] in ('in_progress', 'queued', 'waiting')), None)
-
-              if success_run:
-                  status, run = 'ok', success_run
-              elif failed_run:
-                  status, run = 'failed', failed_run
-              elif running_run:
-                  status, run = 'running', running_run
+              runs = [
+                  r for r in workflow_runs
+                  if r['name'] == job['workflow_name']
+                  and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end
+              ]
+              # 判定 run＝視窗內**最後**發生的那一筆。
+              # 先前是「找到任何一筆成功就判 ok」，於是同一視窗「先成功、後失敗」會被判成
+              # 成功（W6-F7）。最容易命中的是 _reusable-data-job 的自我鏈式重跑：
+              # 第 1 輪成功、最後一輪耗盡 exit 1，健康檢查仍報 ✅。
+              # 顯示的執行時間也一併改用判定 run——表上的時間必須就是被判定的那一次，
+              # 否則會出現「狀態說失敗、時間卻是成功那筆」的錯配。
+              run = max(runs, key=run_order) if runs else None
+              if run is None:
+                  status = 'missing'
+              elif run['status'] in ('in_progress', 'queued', 'waiting'):
+                  status = 'running'
+              elif run['conclusion'] == 'success':
+                  status = 'ok'
               else:
-                  status, run = 'missing', None
+                  status = 'failed'
+
+              # 視窗內先前有成功、但判定 run 不是成功：最容易被誤讀的情況，明講出來。
+              superseded = status != 'ok' and any(
+                  r is not run and r['status'] == 'completed' and r['conclusion'] == 'success'
+                  for r in runs)
 
               started_at = (run or {}).get('run_started_at') or (run or {}).get('created_at')
               results.append({
-                  'label':    job['label'],
+                  'label':    job['label'] + ('（稍早曾成功，最後一次未成功）' if superseded else ''),
                   'sched':    f"{job['hour']:02d}:{job['minute']:02d}",
                   'status':   status,
                   'workflow_name': job['workflow_name'],

@@ -354,6 +354,7 @@ jobs:
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "${{ inputs.commit_message }} $(date -u +%Y-%m-%d) [round ${ROUND}]"
 
+          pushed=false
           for i in 1 2 3; do
             # Pull with rebase, but abort if JSON files get corrupted by text merge
             git pull --rebase -X ours origin main
@@ -373,9 +374,25 @@ jobs:
               git commit --amend --no-edit
             fi
 
-            git push && break
+            if git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
             sleep $((i * 5))
           done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            #
+            # 附帶效果（刻意的）：下一步「Trigger rerun if needed」沒有 if:，
+            # 預設是 success()，所以推不出去時**不會**再鏈一輪重跑。
+            # 這是對的——這一輪已經寫好的資料都沒落地，鏈下一輪只會重算失敗的那批，
+            # 成功的那批仍然遺失。應該讓這個 run 紅著讓人來看。
+            echo "::error::推送失敗三次，${{ inputs.summary_title }} 的資料沒有發布出去（round ${ROUND}）"
+            git status --short
+            exit 1
+          fi
 
       - name: Trigger rerun if needed
         env:

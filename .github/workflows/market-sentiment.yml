@@ -79,10 +79,22 @@ jobs:
           git add src/data/market/sentiment.json src/data/market/margin_history.json src/data/market/institutional_history.json
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "每日更新市場情緒數據 $(date -u +%Y-%m-%d)"
+          pushed=false
           for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && break
+            if git pull --rebase -X theirs origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
             sleep $((i * 5))
           done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，市場情緒資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
 
       # commit 之後才推：通知點進去要能看到當日數字。
       # 本 workflow 一天跑 4 輪，防重複由 push-broadcast 的 pushLog（key 含日期）把關。

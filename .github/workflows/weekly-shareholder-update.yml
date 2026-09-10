@@ -109,10 +109,22 @@ jobs:
           git add src/data/layer3/company-financials/
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "每週更新 TDCC 股權分散數據 $(date -u +%Y-%m-%d)"
+          pushed=false
           for i in 1 2 3; do
-            git pull --rebase -X ours origin main && git push && break
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
             sleep $((i * 5))
           done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，TDCC 股權分散資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
 
   compute-big-holders:
     needs: fetch-tdcc
@@ -168,7 +180,19 @@ jobs:
           git add src/data/market/weekly_big_holders.json
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "更新大戶加碼排行 $(date -u +%Y-%m-%d)"
+          pushed=false
           for i in 1 2 3; do
-            git pull --rebase -X ours origin main && git push && break
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
             sleep $((i * 5))
           done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，大戶加碼排行沒有發布出去"
+            git status --short
+            exit 1
+          fi
