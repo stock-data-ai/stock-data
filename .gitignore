@@ -24,8 +24,9 @@ cron/package-lock.json
 # Claude Code local settings
 .claude/
 
-# Archive (本地備份，不上傳)
-src/data/layer3/company-financials-archive/
+# 封存目錄**要**進版控——那是「搬走」不是「刪掉」。
+# 內容是 gzip（實測壓縮比約 13x，597 MB → 約 46 MB），按整年切、寫過就不再變動，
+# 所以 git 只會存一次，不會每天長出新 blob。2026-09-10 解除忽略。
 
 # 個人筆記
 *.md

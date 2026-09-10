@@ -48,6 +48,15 @@ jobs:
           set -o pipefail
           uv run finance_tools/cli.py prune-financials 2>&1 | tee /tmp/prune.log
 
+      # 歷史封存：主檔只留當年＋前一年的三大法人／大戶明細，更舊的搬進
+      # company-financials-archive/{year}/{code}.json.gz（gzip，壓縮比約 13x）。
+      # **是搬不是刪**，而且按整年切——某一年一旦封存就不再變動，git 只會存一次。
+      # 冪等：沒有跨年就什麼都不做，絕大多數日子是 no-op。
+      - name: Archive old history｜把舊年度明細搬進 archive
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py archive-history 2>&1 | tee /tmp/archive.log
+
       # 市值估值（本益比／淨值比／殖利率／收盤價）與個股三大法人已於 2026-08-26 改走
       # FinMind（證交所來函後移除 www.twse.com.tw 的 BWIBBU_d／MI_INDEX／T86）。
       # **沒帶 token 會整批 400**：全市場查詢需付費層，register 等級只能逐檔查。
@@ -68,6 +77,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/layer3/company-financials/
+          # archive-history 把舊年度搬到這裡；不 add 就等於白搬（主檔少了、封存沒進版控）。
+          git add src/data/layer3/company-financials-archive/ 2>/dev/null || true
           git diff --cached --quiet && { echo "沒有變更需要提交。"; exit 0; }
           DATE_LABEL="${{ inputs.date || '' }}"
           [ -z "$DATE_LABEL" ] && DATE_LABEL=$(date -u +%Y-%m-%d)

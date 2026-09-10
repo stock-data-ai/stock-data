@@ -1,140 +1,180 @@
+"""把舊年度的三大法人與大戶明細搬到 archive，讓主檔不再無限成長。
+
+**為什麼要有這支**：`historical.institutionalInvestors` 每天新增一筆、從來沒有東西刪舊的。
+2026-09-10 實測：整個 `company-financials/` 是 **1.5 GB**，光三大法人就佔 **879 MB**
+（每家平均 1544 個日期）。個股頁每開一家就要下載那一整包，而畫面上真正用得到的
+最長只有籌碼疊圖的 6 個月（約 126 個交易日）。
+
+**保留策略：當年 + 前一年**（也就是 12～24 個月，永遠不少於一年）。
+為什麼不用「往回滾 365 天」——那會讓封存檔**每天都變動**：
+2341 個 gzip 檔每天重寫一次，git 每次都存一份完整新 blob，一年下來會多出好幾 GB。
+按整年切，某一年一旦被封存就**永遠不再變動**，git 只存一次。
+
+**是搬不是刪。** 舊資料寫進 `company-financials-archive/{year}/{code}.json.gz`。
+gzip 是因為這種資料重複度極高——實測壓縮比 **12.9x**，597 MB 壓成約 46 MB，
+放進版控完全可以接受。
+
+用法：uv run finance_tools/cli.py archive-history [--dry-run] [--limit=N]
+      （冪等；沒有可封存的年度時什麼都不做）
 """
-將 company-financials/{code}.json 中的三大法人與大戶歷史資料，
-按年份拆分到 company-financials-archive/{year}/{code}.json。
 
-只處理：
-  - historical.institutionalInvestors (三大法人，key=日期字串)
-  - shareholderDataHistory (大戶，key=YYYYMMDD)
-
-財務資料 (annual/quarterly/monthlyRevenue/dividends) 不動。
-主檔保留 >= CUTOFF_YEAR 的資料，舊的移到 archive。
-"""
-
+import gzip
 import json
+import logging
+import os
 import sys
-from pathlib import Path
+import tempfile
 from collections import defaultdict
+from pathlib import Path
 
-BASE = Path(__file__).parent.parent.parent / "src/data/layer3"
-SRC_DIR = BASE / "company-financials"
+from finance_tools.core.file_manager import FileManager
+from finance_tools.core.timezone import now_tw
+
+logger = logging.getLogger(__name__)
+
+BASE = Path(__file__).resolve().parents[2] / "src/data/layer3"
 ARCHIVE_DIR = BASE / "company-financials-archive"
-CUTOFF_YEAR = 2025  # 保留 >= 這個年份
+
+#: 主檔保留「當年 + 前 KEEP_PAST_YEARS 年」。1 = 當年加去年。
+KEEP_PAST_YEARS = 1
+
+#: 這兩個集合會被搬走；key 都是日期字串（`YYYY-MM-DD` 或 `YYYYMMDD`），前四碼是年份。
+ARCHIVABLE = (
+    ("historical", "institutionalInvestors"),
+    (None, "shareholderDataHistory"),
+)
 
 
-def get_year(s: str):
+def _year_of(key) -> int:
     try:
-        return int(str(s)[:4])
+        return int(str(key)[:4])
     except (ValueError, TypeError):
-        return None
+        return -1
 
 
-def split_dict_by_year(d: dict):
-    by_year = defaultdict(dict)
-    for k, v in d.items():
-        y = get_year(k)
-        if y is not None:
-            by_year[y][k] = v
-    return dict(by_year)
+def _container(data: dict, path):
+    """`("historical", "x")` → `data["historical"]`；`(None, "x")` → `data`。"""
+    parent, _ = path
+    return data.get(parent) if parent else data
 
 
-def process_file(src_path: Path, dry_run: bool = False) -> dict:
-    with open(src_path, encoding="utf-8") as f:
-        data = json.load(f)
-
-    code = data.get("companyCode", src_path.stem)
-    hist = data.get("historical", {})
-
-    # 分年收集 archive 資料（只包含三大法人與大戶）
-    archive_by_year = defaultdict(lambda: {
-        "companyCode": code,
-        "companyName": data.get("companyName", ""),
-    })
-
-    # 三大法人
-    ii = hist.get("institutionalInvestors")
-    ii_kept = {}
-    if isinstance(ii, dict):
-        by_year = split_dict_by_year(ii)
-        for y, entries in by_year.items():
-            if y < CUTOFF_YEAR:
-                archive_by_year[y]["institutionalInvestors"] = entries
-            else:
-                ii_kept.update(entries)
-
-    # 大戶
-    sdh = data.get("shareholderDataHistory")
-    sdh_kept = {}
-    if isinstance(sdh, dict):
-        by_year = split_dict_by_year(sdh)
-        for y, entries in by_year.items():
-            if y < CUTOFF_YEAR:
-                archive_by_year[y]["shareholderDataHistory"] = entries
-            else:
-                sdh_kept.update(entries)
-
-    archived_years = sorted(archive_by_year.keys())
-
-    if not dry_run and archived_years:
-        # 寫入 archive 檔案
-        for year, archive_data in archive_by_year.items():
-            year_dir = ARCHIVE_DIR / str(year)
-            year_dir.mkdir(parents=True, exist_ok=True)
-            out_path = year_dir / f"{code}.json"
-            # 若已存在則合併（避免重複執行時覆蓋）
-            if out_path.exists():
-                with open(out_path, encoding="utf-8") as f:
-                    existing = json.load(f)
-                if "institutionalInvestors" in archive_data:
-                    existing.setdefault("institutionalInvestors", {}).update(
-                        archive_data["institutionalInvestors"]
-                    )
-                if "shareholderDataHistory" in archive_data:
-                    existing.setdefault("shareholderDataHistory", {}).update(
-                        archive_data["shareholderDataHistory"]
-                    )
-                archive_data = existing
-            with open(out_path, "w", encoding="utf-8") as f:
-                json.dump(archive_data, f, ensure_ascii=False, indent=2)
-
-        # 更新主檔：只保留 CUTOFF_YEAR+ 的三大法人與大戶
-        if isinstance(ii, dict):
-            data["historical"]["institutionalInvestors"] = ii_kept
-        if isinstance(sdh, dict):
-            data["shareholderDataHistory"] = sdh_kept
-
-        with open(src_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
-
-    return {"code": code, "archived_years": archived_years}
+def _split_by_year(records: dict, cutoff_year: int):
+    """回傳 (要保留的, {年份: 要封存的})。年份解析不出來的一律保留。"""
+    keep, archive = {}, defaultdict(dict)
+    for key, value in records.items():
+        year = _year_of(key)
+        if 0 <= year < cutoff_year:
+            archive[year][key] = value
+        else:
+            keep[key] = value
+    return keep, dict(archive)
 
 
-def main():
-    dry_run = "--dry-run" in sys.argv
-    limit = None
-    for arg in sys.argv[1:]:
-        if arg.startswith("--limit="):
-            limit = int(arg.split("=")[1])
+def _write_gz_atomic(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.stem}_", suffix=".gz.tmp")
+    try:
+        with os.fdopen(fd, "wb") as raw:
+            # mtime=0：同樣的內容要產生同樣的 bytes，否則每次執行都是新 blob。
+            with gzip.GzipFile(fileobj=raw, mode="wb", compresslevel=9, mtime=0) as gz:
+                gz.write(json.dumps(payload, ensure_ascii=False, sort_keys=True,
+                                    separators=(",", ":")).encode("utf-8"))
+            raw.flush()
+            os.fsync(raw.fileno())
+        os.replace(tmp, path)
+    except Exception:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
 
-    src_files = sorted(SRC_DIR.glob("*.json"))
+
+def _read_gz(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        with gzip.open(path, "rt", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        # 封存檔讀不回來就不要動它，也不要拿新資料覆蓋掉——寧可這次跳過。
+        logger.error(f"封存檔損壞，跳過 {path}：{e}")
+        raise
+
+
+def process_file(file_mgr: FileManager, code: str, cutoff_year: int, dry_run: bool) -> dict:
+    data = file_mgr.load_financial_data(code)
+    if not data:
+        # None（損壞）也走這裡：不碰它，等 financials-update 重抓。
+        return {"code": code, "archived": {}, "skipped": True}
+
+    to_archive = defaultdict(dict)
+    updates = []
+    for path in ARCHIVABLE:
+        container = _container(data, path)
+        if not isinstance(container, dict):
+            continue
+        records = container.get(path[1])
+        if not isinstance(records, dict) or not records:
+            continue
+        keep, archive = _split_by_year(records, cutoff_year)
+        if not archive:
+            continue
+        for year, entries in archive.items():
+            to_archive[year][path[1]] = entries
+        updates.append((container, path[1], keep))
+
+    if not to_archive:
+        return {"code": code, "archived": {}, "skipped": False}
+
+    counts = {y: sum(len(v) for v in blocks.values()) for y, blocks in to_archive.items()}
+    if dry_run:
+        return {"code": code, "archived": counts, "skipped": False}
+
+    # 先把封存寫成功，再動主檔——順序顛倒的話中途失敗就是真的少一段資料。
+    for year, blocks in to_archive.items():
+        out = ARCHIVE_DIR / str(year) / f"{code}.json.gz"
+        merged = _read_gz(out)
+        merged.setdefault("companyCode", code)
+        for field, entries in blocks.items():
+            merged.setdefault(field, {}).update(entries)
+        _write_gz_atomic(out, merged)
+
+    for container, field, keep in updates:
+        container[field] = keep
+    if not file_mgr.save_financial_data(code, data):
+        raise RuntimeError(f"{code} 主檔寫入失敗；封存已寫好，重跑即可（冪等）")
+
+    return {"code": code, "archived": counts, "skipped": False}
+
+
+def run(dry_run: bool = False, limit=None) -> dict:
+    file_mgr = FileManager()
+    cutoff_year = now_tw().year - KEEP_PAST_YEARS
+    codes = sorted(file_mgr.list_financial_codes())
     if limit:
-        src_files = src_files[:limit]
+        codes = codes[:limit]
 
-    total = len(src_files)
-    print("%sProcessing %d files..." % ("[DRY RUN] " if dry_run else "", total))
+    print(f"[archive] 保留 {cutoff_year} 年（含）以後；{cutoff_year - 1} 年（含）以前搬進 archive")
+    total_records = 0
+    touched = 0
+    per_year = defaultdict(int)
+    for code in codes:
+        result = process_file(file_mgr, code, cutoff_year, dry_run)
+        if result["archived"]:
+            touched += 1
+            for year, n in result["archived"].items():
+                per_year[year] += n
+                total_records += n
 
-    year_counts = defaultdict(int)
-    for i, src_path in enumerate(src_files, 1):
-        result = process_file(src_path, dry_run=dry_run)
-        for y in result["archived_years"]:
-            year_counts[y] += 1
-        if i % 200 == 0 or i == total:
-            print("  %d/%d done" % (i, total))
-
-    print("\nArchive summary (files per year):")
-    for y in sorted(year_counts):
-        print("  %d: %d files" % (y, year_counts[y]))
-    print("Done!")
+    verb = "預計搬" if dry_run else "已搬"
+    print(f"[archive] {verb} {total_records} 筆／{touched} 家公司")
+    for year in sorted(per_year, reverse=True):
+        print(f"[archive]   {year}: {per_year[year]} 筆")
+    if not touched:
+        print("[archive] 沒有可封存的年度，什麼都沒做")
+    return {"cutoff_year": cutoff_year, "records": total_records, "companies": touched}
 
 
 if __name__ == "__main__":
-    main()
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    lim = next((int(a.split("=")[1]) for a in sys.argv[1:] if a.startswith("--limit=")), None)
+    run(dry_run="--dry-run" in sys.argv, limit=lim)

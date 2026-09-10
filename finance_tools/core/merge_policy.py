@@ -27,10 +27,11 @@ DAILY_HISTORY_LIMIT = 180
 #: 內部人歷史每月只有一筆合計（約 100 bytes）。
 UNBOUNDED = ("quarterly", "annual", "dividends", "insiderHoldingsHistory")
 
-#: `institutionalInvestors` 目前無上限（正式資料中位數已 1544 個日期）。
-#: 它有既存的 `scripts/archive_historical_data.py` 會把舊資料**搬到** archive 目錄
-#: 而不是刪除，但那支沒有被任何排程呼叫。要收斂它等於搬動六年份的正式資料，
-#: 屬於資料遷移而非合併規則，**不在這支的職責內**，也不應由合併路徑順手做掉。
+#: `institutionalInvestors` 與 `shareholderDataHistory` **不在這裡收斂**——
+#: 它們由 `scripts/archive_historical_data.py` 按整年**搬進** archive（不是刪除），
+#: 主檔只留當年＋前一年。放在那邊而不是合併路徑，是因為那是資料搬遷：
+#: 要寫封存檔、要保證搬走的每一筆都找得回來，而且必須按整年切才不會讓 git
+#: 每天長出 2341 個新 blob。合併路徑只管「這一筆怎麼併」，不管「舊的搬去哪」。
 INST_INVESTORS_LIMIT: Optional[int] = None
 
 

@@ -18,6 +18,7 @@ Commands:
   check-quality         - 檢查資料品質。
   compute-big-holders   - 計算大戶加碼排行並輸出 weekly_big_holders.json。
   prune-financials      - 刪掉已不在 companies-all.json 名單上的財報檔（下市清除）。
+  archive-history       - 把舊年度的三大法人／大戶明細搬進 archive，主檔只留當年＋前一年。
 
 Common Options:
   --code CODE           - 處理單一公司（股票代碼）。
@@ -192,6 +193,19 @@ def main():
     )
     parser_prune.add_argument("--dry-run", action="store_true", help="只列出會刪哪些，不真的刪。")
     parser_prune.set_defaults(func=lambda args: run_prune_financials(dry_run=args.dry_run))
+
+    # --- 'archive-history' command ---
+    parser_archive = subparsers.add_parser(
+        "archive-history",
+        help="把舊年度的三大法人／大戶明細搬進 company-financials-archive（gzip），主檔只留當年＋前一年。冪等。",
+    )
+    parser_archive.add_argument("--dry-run", action="store_true", help="只統計會搬哪些，不寫任何檔。")
+    parser_archive.add_argument("--limit", type=int, default=None, help="只處理前 N 家（測試用）。")
+    parser_archive.set_defaults(
+        func=lambda args: __import__(
+            "finance_tools.scripts.archive_historical_data", fromlist=["run"]
+        ).run(dry_run=args.dry_run, limit=args.limit)
+    )
 
     # --- 'generate-chip-topic' command ---
     parser_chip = subparsers.add_parser(
