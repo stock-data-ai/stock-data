@@ -394,12 +394,12 @@ def test_duplicate_quarter_within_one_batch_is_not_deduplicated():
     assert hist["annual"][0]["revenue"] == 200.0
 
 
-def test_us_main_records_writer_failure_but_still_returns_normally(tmp_path, monkeypatch, capsys):
-    """**現況**：美股 CLI 的 `main()` 在寫檔失敗時只計入 `errors` 並印出來，然後正常返回。
+def test_us_main_exits_nonzero_when_nothing_was_written(tmp_path, monkeypatch, capsys):
+    """美股 CLI：寫檔失敗會被記錄，而且**一檔都沒寫成就回非零**。
 
-    FIX-4 保證的是「原檔不被截斷」，不是「整條 CLI 會以非零狀態結束」。
-    這個界線在修正前就存在，不是本次引入的 regression；此處只記錄，
-    不在此更改 CLI 的 failure semantics（見 handoff F-04 / D8）。
+    2026-09-11 之前它永遠回 0——`update-us-financials.yml` 有 `set -o pipefail`，
+    但腳本永遠成功，所以 200 檔全部抓失敗 CI 照樣綠燈。那是 WS-06 修過的
+    同一類 bug（「推送失敗不再判成綠燈」），先前把它列為「另案」是錯的判斷。
 
     同時證明 `main()` 走的確實是 `write_json_atomic`，而不是別的寫檔路徑。"""
     from finance_tools.us_financials import fetch_us_financials as us
@@ -421,7 +421,7 @@ def test_us_main_records_writer_failure_but_still_returns_normally(tmp_path, mon
     monkeypatch.setattr(us, "write_json_atomic", spy)
 
     # 成功路徑：main 確實呼叫 atomic writer，檔案寫成
-    assert us.main() is None
+    assert us.main() == 0, "有寫成就回 0"
     assert calls == [tmp_path / "NVDA.json"], "main 必須走 write_json_atomic"
     assert json.loads((tmp_path / "NVDA.json").read_text())["companyCode"] == "NVDA"
     assert "1 saved" in capsys.readouterr().out
@@ -436,8 +436,9 @@ def test_us_main_records_writer_failure_but_still_returns_normally(tmp_path, mon
     monkeypatch.undo()
 
     out = capsys.readouterr().out
-    assert returned is None, "現況：寫檔失敗仍正常返回，沒有非零離開狀態"
-    assert "ERROR" in out and "1 errors" in out, "現況：失敗有被記錄下來"
+    assert returned == 1, "一檔都沒寫成必須回非零，否則 CI 永遠綠燈"
+    assert "ERROR" in out and "1 errors" in out, "失敗有被記錄下來"
+    assert "FAILED" in out
     # 原子性仍成立：先前那份好的檔案沒有被截斷
     assert json.loads((tmp_path / "NVDA.json").read_text())["companyCode"] == "NVDA"
     assert [f for f in __import__("os").listdir(tmp_path) if f.endswith(".tmp")] == []

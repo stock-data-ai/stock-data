@@ -352,6 +352,14 @@ def main():
 
     print(f"\nDone: {ok} saved, {skipped} skipped, {errors} errors → {OUTPUT_DIR}")
 
+    # 一檔都沒寫成卻回報成功，等於 CI 永遠綠燈、沒有人會知道美股資料停更了。
+    # `skipped` 是正常的（TWD 報表由台股管線負責、或該檔真的沒有財報），
+    # 所以判準是「有東西要處理，卻一個都沒成功」。
+    if codes and ok == 0:
+        print(f"FAILED: {len(codes)} 檔都沒有寫入（skipped {skipped} / errors {errors}）")
+        return 1
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main() or 0)
