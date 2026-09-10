@@ -1,16 +1,28 @@
-"""財報檔的合併規則與保留上限 —— **唯一的宣告處**。
+"""財報檔的合併規則 —— **唯一的宣告處**。
 
 為什麼要有這支：`company-financials/{code}.json` 由 11 支程式各自 load → 改 → save，
 規則散在每個呼叫端，於是同一個欄位長出兩套互斥的政策
 （`monthlyRevenue` 一邊是「合併、留 72」、另一邊是「整批取代、留 36」，
-跑到後者就把五年歷史砍成 13 個月）。數字寫在這裡，改一次就到處生效。
+跑到後者就把六年歷史砍成 13 個月）。規則寫在這裡，改一次就到處生效。
 
-保留上限的依據一律是**消費端真正要用到的最長視窗**，不是憑感覺：
+**保留政策分兩層，依資料頻率決定，不是憑感覺：**
+
+| 類別 | 集合 | 規則 | 舊資料 |
+|---|---|---|---|
+| 期別型列表（低頻，一年最多 12 筆） | `quarterly` `annual` `dividends` `insiderHoldingsHistory` | 不設限 | — |
+| 同上 | `monthlyRevenue` | `MONTHLY_REVENUE_LIMIT` = 72 筆 | 丟棄 |
+| 日期型字典（高頻，一年約 245 筆） | `institutionalInvestors` `marginTrading` `securitiesLending` `shareholderDataHistory` | 主檔留當年＋前一年 | **搬進封存** |
+
+為什麼月營收可以直接丟而日期型要封存：量級差兩個數量級。
+2026-09-11 實測每檔平均 —— 月營收 **4 KB**（且 App 只看 36 個月，上限是需求的 2 倍）、
+三大法人 **384 KB**。丟掉 4 KB 裡最舊的部分不值得為它蓋一套封存機制。
+
+消費端真正用得到的最長視窗（決定「當年＋前一年」夠不夠）：
   - 個股頁的融資融券／借券／三大法人卡片：`slice(0, 20)` → 20 個交易日
-  - 技術分析圖開籌碼疊圖：最長 `6mo` → 約 126 個交易日  ← 目前的上界
+  - 技術分析圖開籌碼疊圖：最長 `6mo` → 約 126 個交易日  ← 上界
   - `build_chip_history.py`：`KEEP_DAYS = 30`
   - AI 籌碼分析：只取最新一筆
-取 180 是在上界之上留約 1.4 倍餘裕，同時把「無上限成長」關掉。
+最少保留 12 個月（約 245 個交易日）＝上界的 1.9 倍。
 """
 
 from typing import Any, Callable, Dict, Iterable, List, Optional
@@ -20,19 +32,21 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 #: 月營收保留幾筆。六年，個股頁的年度／月度表格都在這個範圍內。
 MONTHLY_REVENUE_LIMIT = 72
 
-#: 以日期為 key 的籌碼歷史保留幾個交易日。依據見模組 docstring。
-DAILY_HISTORY_LIMIT = 180
-
 #: 這些集合刻意不設上限——季報／年報／股利是低頻且有長期查詢價值，
 #: 內部人歷史每月只有一筆合計（約 100 bytes）。
 UNBOUNDED = ("quarterly", "annual", "dividends", "insiderHoldingsHistory")
 
-#: `institutionalInvestors` 與 `shareholderDataHistory` **不在這裡收斂**——
-#: 它們由 `scripts/archive_historical_data.py` 按整年**搬進** archive（不是刪除），
-#: 主檔只留當年＋前一年。放在那邊而不是合併路徑，是因為那是資料搬遷：
-#: 要寫封存檔、要保證搬走的每一筆都找得回來，而且必須按整年切才不會讓 git
-#: 每天長出 2341 個新 blob。合併路徑只管「這一筆怎麼併」，不管「舊的搬去哪」。
-INST_INVESTORS_LIMIT: Optional[int] = None
+#: **所有以日期為 key 的歷史**（三大法人、融資融券、借券、大戶）都不在這裡收斂——
+#: 一律由 `scripts/archive_historical_data.py` 按整年**搬進** archive（不是刪除），
+#: 主檔只留當年＋前一年。
+#:
+#: 為什麼不在合併路徑做：那是資料搬遷，要寫封存檔、要保證搬走的每一筆都找得回來，
+#: 而且必須按整年切，否則封存檔天天變動、git 每天長出 2341 個新 blob。
+#: 合併路徑只管「這一筆怎麼併」，不管「舊的搬去哪」。
+#:
+#: 曾經有第二套規則（`DAILY_HISTORY_LIMIT = 180`：寫入時按**筆數**刪掉融資融券／
+#: 借券的舊紀錄）。那是錯的——同一類資料兩套規則、兩種單位（年 vs 筆數）、
+#: 兩種下場（封存 vs 刪除）。2026-09-11 移除，全部統一走封存。
 
 
 # ── 合併原語 ──────────────────────────────────────────────────────────
@@ -74,15 +88,3 @@ def merge_by_key(
     merged.extend(r for r in existing if key(r) not in new_keys)
     merged.sort(key=key, reverse=True)
     return merged[:limit] if limit else merged
-
-
-def trim_date_map(records: Optional[Dict[str, Any]], limit: Optional[int]) -> Dict[str, Any]:
-    """以日期字串為 key 的歷史，只留最近 `limit` 筆。`limit` 為 None 則不動。
-
-    key 是 `YYYY-MM-DD`（字典序＝時間序），所以直接用字串排序即可。
-    """
-    records = records or {}
-    if not limit or len(records) <= limit:
-        return records
-    keep = sorted(records, reverse=True)[:limit]
-    return {d: records[d] for d in sorted(keep)}

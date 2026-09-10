@@ -245,6 +245,10 @@ def build_output(code: str, ticker_obj):
         "lastUpdated": datetime.now(tz=timezone.utc).strftime("%Y-%m-%d"),
         "dataQuality": "medium",
         "dataSource": "yahoo-finance",
+        # 報表幣別要存下來。累積合併之後，若某公司改了報表幣別（例如 EUR→USD），
+        # 舊年度是用舊匯率換算的，跟新年度併在一起就是兩種幣別混在同一個檔裡，
+        # 而且看不出來。存了才擋得掉——見 `merge_us_output`。
+        "financialCurrency": fin_currency,
     }
     return result, fx_note
 
@@ -258,6 +262,14 @@ def merge_us_output(existing, fresh):
     同期間取新、視窗外的舊期間保留、這次沒抓到就原樣留著。
     """
     if not existing:
+        return fresh
+
+    old_currency = existing.get("financialCurrency")
+    new_currency = fresh.get("financialCurrency")
+    if old_currency and new_currency and old_currency != new_currency:
+        # 幣別換了就不能併——舊年度是用舊幣別的匯率換算的，沒辦法回頭重算。
+        # 整份重建（就是 2026-09-10 以前的行為），讓所有年度回到同一個幣別。
+        print(f" [報表幣別 {old_currency}→{new_currency}，整份重建]", end="")
         return fresh
 
     merged = dict(existing)

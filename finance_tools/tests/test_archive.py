@@ -26,6 +26,8 @@ def sample(code, years=(2020, 2023, 2025, 2026)):
                 f"{y}-06-1{i}": {"foreign_net_buy": float(y + i)}
                 for y in years for i in range(3)
             },
+            "marginTrading": {f"{y}-06-15": {"marginBalance": y} for y in years},
+            "securitiesLending": {f"{y}-06-15": {"sblBalance": y} for y in years},
         },
         "shareholderDataHistory": {f"{y}0615": [{"level": y}] for y in years},
         "lastUpdated": "2026-01-01",
@@ -72,11 +74,27 @@ def test_every_archived_record_is_recoverable(staged, tmp_path):
             assert stored["institutionalInvestors"][key] == old_ii[key], f"{code} {key} 對不上"
 
 
-def test_keeps_current_and_previous_year(staged):
+@pytest.mark.parametrize("field", ["institutionalInvestors", "marginTrading", "securitiesLending"])
+def test_keeps_current_and_previous_year(staged, field):
+    """四個日期集合走**同一套**規則——不會有一半封存、一半被刪。"""
     archive.run()
-    kept = staged.load_financial_data("1101")["historical"]["institutionalInvestors"]
+    kept = staged.load_financial_data("1101")["historical"][field]
     years = {k[:4] for k in kept}
-    assert years == {"2025", "2026"}, f"應只留當年＋前一年，實際 {sorted(years)}"
+    assert years == {"2025", "2026"}, f"{field} 應只留當年＋前一年，實際 {sorted(years)}"
+
+
+@pytest.mark.parametrize("field", ["marginTrading", "securitiesLending"])
+def test_daily_chip_history_is_archived_not_deleted(staged, tmp_path, field):
+    """融資融券／借券的舊資料是**搬走**，不是刪掉。"""
+    before = staged.load_financial_data("1101")["historical"][field]
+    archive.run()
+    after = staged.load_financial_data("1101")["historical"][field]
+    moved = set(before) - set(after)
+    assert moved, "應該有搬走的年度"
+    for key in moved:
+        path = tmp_path / "company-financials-archive" / key[:4] / "1101.json.gz"
+        with gzip.open(path, "rt", encoding="utf-8") as f:
+            assert json.load(f)[field][key] == before[key], f"{field} {key} 沒搬到封存"
 
 
 def test_shareholder_history_is_archived_too(staged, tmp_path):
@@ -116,3 +134,27 @@ def test_corrupt_main_file_is_left_alone(isolated_file_manager, tmp_path, monkey
 
     with open(path, encoding="utf-8") as f:
         assert f.read() == '{"broken', "壞檔必須原封不動"
+
+
+def test_prune_removes_archive_together_with_the_main_file(isolated_file_manager, tmp_path, monkeypatch):
+    """下市清除要把封存檔一起帶走——「不留墓碑」對主檔與封存是同一個政策。"""
+    import finance_tools.scripts.prune_financials as prune
+
+    monkeypatch.setattr(prune, "ARCHIVE_DIR", tmp_path / "arch")
+    for year in ("2023", "2024"):
+        d = tmp_path / "arch" / year
+        d.mkdir(parents=True)
+        (d / "9999.json.gz").write_bytes(b"x")
+        (d / "2330.json.gz").write_bytes(b"y")
+    isolated_file_manager.save_financial_data("9999", {"companyCode": "9999"})
+    isolated_file_manager.save_financial_data("2330", {"companyCode": "2330"})
+
+    monkeypatch.setattr(prune, "FileManager", lambda: isolated_file_manager)
+    monkeypatch.setattr(isolated_file_manager, "load_companies",
+                        lambda: [{"code": "2330", "name": "台積電"}])
+
+    prune.run()
+
+    assert not (tmp_path / "arch" / "2023" / "9999.json.gz").exists(), "下市公司的封存要一起刪"
+    assert not (tmp_path / "arch" / "2024" / "9999.json.gz").exists()
+    assert (tmp_path / "arch" / "2023" / "2330.json.gz").exists(), "在架上的公司不能被碰"

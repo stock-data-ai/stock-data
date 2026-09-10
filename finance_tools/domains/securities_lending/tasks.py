@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 
 from finance_tools.core import DataProcessor, FileManager
-from finance_tools.core import merge_policy
 from finance_tools.core.timezone import now_tw
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.securities_lending.fetcher import SecuritiesLendingFetcher
@@ -72,8 +71,6 @@ def _process_one_date(target_date: str, fetcher, processor, file_mgr, company_co
         record = {k: _to_lots(v) for k, v in values.items()}
         existing_data.setdefault("historical", {}).setdefault("securitiesLending", {})[formatted_date] = record
         existing_data.setdefault("latest", {}).update({"sblBalance": record["sblBalance"]})
-        existing_data["historical"]["securitiesLending"] = merge_policy.trim_date_map(
-            existing_data["historical"]["securitiesLending"], merge_policy.DAILY_HISTORY_LIMIT)
 
         if file_mgr.save_financial_data(code, processor.clean_nan(existing_data)):
             success_count += 1

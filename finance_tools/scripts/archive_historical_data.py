@@ -38,9 +38,12 @@ ARCHIVE_DIR = BASE / "company-financials-archive"
 #: 主檔保留「當年 + 前 KEEP_PAST_YEARS 年」。1 = 當年加去年。
 KEEP_PAST_YEARS = 1
 
-#: 這兩個集合會被搬走；key 都是日期字串（`YYYY-MM-DD` 或 `YYYYMMDD`），前四碼是年份。
+#: **所有以日期為 key 的歷史**都走這條，一套規則、一個下場。
+#: key 是日期字串（`YYYY-MM-DD` 或 `YYYYMMDD`），前四碼就是年份。
 ARCHIVABLE = (
     ("historical", "institutionalInvestors"),
+    ("historical", "marginTrading"),
+    ("historical", "securitiesLending"),
     (None, "shareholderDataHistory"),
 )
 

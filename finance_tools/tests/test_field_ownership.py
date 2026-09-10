@@ -287,38 +287,32 @@ def test_monthly_revenue_policy_is_shared_by_both_writers(isolated_file_manager,
     assert any(m["year"] < 2027 for m in kept), "視窗外的舊月份必須保留下來"
 
 
-def test_date_keyed_histories_are_bounded(seeded):
-    """`marginTrading` / `securitiesLending` 以日期為 key，寫入時修剪到
-    `merge_policy.DAILY_HISTORY_LIMIT`。
+def test_date_keyed_histories_accumulate_and_are_only_bounded_by_archiving(seeded):
+    """以日期為 key 的歷史在**寫入路徑**不做任何修剪——只會一直累積。
 
-    上限依據是消費端真正要用到的最長視窗（技術分析圖的籌碼疊圖 6mo ≈ 126 個交易日），
-    取 180 留餘裕。正式資料目前各約 125 個交易日，所以這個上限**今天是 no-op**，
-    純粹是把「無上限成長」關掉。
+    收斂統一交給 `archive-history`：主檔留當年＋前一年，更舊的按整年**搬進**封存。
+    這裡釘住的是「寫入者不得自己刪」：曾經有第二套規則（寫入時按筆數砍掉舊紀錄），
+    造成同一類資料一半封存、一半被刪，2026-09-11 移除。
     """
+    from finance_tools.core import merge_policy
     from finance_tools.domains.margin_trading.tasks import _process_one_date
 
+    assert not hasattr(merge_policy, "trim_date_map"), \
+        "寫入路徑不該再有按筆數刪除的第二套規則"
+    assert not hasattr(merge_policy, "DAILY_HISTORY_LIMIT")
+
     class Fetcher:
-        def __init__(self, date): self.date = date
         def fetch_all(self, d):
             return pd.DataFrame([{"stock_id": "9999", "margin_buy": 1, "margin_sell": 2,
                                   "margin_balance": 3, "short_buy": 4, "short_sell": 5,
                                   "short_balance": 6}])
 
     for day in ("20251202", "20251203", "20251204"):
-        _process_one_date(day, Fetcher(day), DataProcessor(), seeded, {"9999"})
+        _process_one_date(day, Fetcher(), DataProcessor(), seeded, {"9999"})
 
     hist = seeded.load_financial_data("9999")["historical"]["marginTrading"]
-    assert len(hist) == 4, "未達上限時照常累積（1 筆種子 + 3 天）"
-
-    # 超過上限就只留最近的
-    from finance_tools.core import merge_policy
-    over = {f"2020-01-01": {}, **{f"2025-{m:02d}-{d:02d}": {}
-            for m in range(1, 13) for d in range(1, 21)}}
-    trimmed = merge_policy.trim_date_map(over, merge_policy.DAILY_HISTORY_LIMIT)
-    assert len(trimmed) == merge_policy.DAILY_HISTORY_LIMIT
-    assert "2020-01-01" not in trimmed, "最舊的先被丟掉"
-
-
+    assert len(hist) == 4, "照常累積（1 筆種子 + 3 天），不自行刪除"
+    assert "2025-12-01" in hist, "舊日期必須留著，收斂是封存的事"
 def test_no_duplicate_merge_helper_for_margin_trading():
     """`DataAssembler.merge_margin_trading` 曾經是**沒有呼叫者的死碼**，
     而且與正式路徑（`margin_trading/tasks.py` 內嵌邏輯）語意不同：

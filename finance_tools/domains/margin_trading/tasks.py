@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any
 
 from finance_tools.core import DataProcessor, FileManager
-from finance_tools.core import merge_policy
 from finance_tools.core.timezone import now_tw, today_str
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.margin_trading.fetcher import MarginTradingFetcher
@@ -60,9 +59,6 @@ def _process_one_date(target_date: str, fetcher, processor, file_mgr, company_co
             "marginBalance": int(row['margin_balance']),
             "shortBalance": int(row['short_balance']),
         })
-        # 以日期為 key 的歷史沒有任何修剪機制，不收斂就會一直長。上限依據見 merge_policy。
-        existing_data["historical"]["marginTrading"] = merge_policy.trim_date_map(
-            existing_data["historical"]["marginTrading"], merge_policy.DAILY_HISTORY_LIMIT)
 
         if file_mgr.save_financial_data(code, processor.clean_nan(existing_data)):
             success_count += 1

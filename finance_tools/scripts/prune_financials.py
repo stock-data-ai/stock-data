@@ -9,6 +9,9 @@
 
 **不留墓碑。** 「不在名單上」本身就是下游要的訊號；要考古翻 stock_map 的 git。
 
+下市時**封存檔一起刪**（`company-financials-archive/{year}/{code}.json.gz`）：
+「不留墓碑」對主檔與封存必須是同一個政策，否則下市公司會留下一半資料在封存裡。
+
 護欄（誤刪的代價遠高於留著孤兒）：
   - 名單本身要過 `FileManager.load_companies()` 的下界檢查（台股 ≥ 2000 檔）
   - 單次刪除上限 max(20, 2%)，超過視為名單殘缺，整批中止
@@ -19,10 +22,14 @@
 
 import logging
 import os
+from pathlib import Path
 
 from finance_tools.core.file_manager import FileManager
 
 logger = logging.getLogger(__name__)
+
+#: 封存目錄。下市清除要連同這裡的 `{year}/{code}.json.gz` 一起刪。
+ARCHIVE_DIR = Path(__file__).resolve().parents[2] / "src/data/layer3/company-financials-archive"
 
 PRUNE_MAX_RATIO = 0.02
 PRUNE_MIN_ABS = 20
@@ -45,11 +52,17 @@ def run(dry_run: bool = False) -> dict:
 
     for code in orphans:
         path = os.path.join(fm.financials_dir, f"{code}.json")
+        archived = sorted(ARCHIVE_DIR.glob(f"*/{code}.json.gz"))
+        extra = f"，連同 {len(archived)} 個封存年度" if archived else ""
         if dry_run:
-            print(f"[prune] (dry-run) 會刪 {code}")
+            print(f"[prune] (dry-run) 會刪 {code}{extra}")
         else:
             os.remove(path)
-            print(f"[prune] 刪除 {code}（已不在 companies-all.json）")
+            # 封存檔一起走。「不留墓碑」對主檔與封存必須是同一個政策，
+            # 否則下市公司會留下一半資料在封存裡，而且永遠沒人會發現。
+            for gz in archived:
+                gz.unlink()
+            print(f"[prune] 刪除 {code}（已不在 companies-all.json）{extra}")
 
     print(
         f"[prune] 名單 {len(roster)} 檔｜目錄 {len(on_disk)} 檔｜"

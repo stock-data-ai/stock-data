@@ -207,3 +207,35 @@ def test_zero_is_a_real_value_not_a_missing_one():
     assert first(None, 5) == 5
     assert first(None, None) is None
     assert first(0.0, 1.0) == 0.0
+
+
+def test_us_merge_refuses_to_mix_reporting_currencies():
+    """報表幣別換了就不併——舊年度是用舊幣別換算的，併在一起看不出來。
+
+    這是**累積合併**才有的風險：2026-09-10 之前是整檔覆寫，每次都只有一種幣別。
+    """
+    existing = {"financialCurrency": "EUR",
+                "historical": {"annual": [{"year": 2020, "revenue": 100}], "quarterly": []}}
+    fresh = {"financialCurrency": "USD",
+             "historical": {"annual": [{"year": 2025, "revenue": 200}], "quarterly": []}}
+
+    merged = _us().merge_us_output(existing, fresh)
+    assert merged is fresh, "幣別不同時整份重建，不得把兩種幣別併在一起"
+
+
+def test_us_merge_proceeds_when_currency_is_unchanged():
+    existing = {"financialCurrency": "USD",
+                "historical": {"annual": [{"year": 2020, "revenue": 100}], "quarterly": []}}
+    fresh = {"financialCurrency": "USD",
+             "historical": {"annual": [{"year": 2025, "revenue": 200}], "quarterly": []}}
+    merged = _us().merge_us_output(existing, fresh)
+    assert [a["year"] for a in merged["historical"]["annual"]] == [2025, 2020]
+
+
+def test_us_merge_still_works_on_files_written_before_currency_was_recorded():
+    """舊檔沒有 financialCurrency 欄位——不能因此就拒絕合併。"""
+    existing = {"historical": {"annual": [{"year": 2020, "revenue": 100}], "quarterly": []}}
+    fresh = {"financialCurrency": "USD",
+             "historical": {"annual": [{"year": 2025, "revenue": 200}], "quarterly": []}}
+    merged = _us().merge_us_output(existing, fresh)
+    assert [a["year"] for a in merged["historical"]["annual"]] == [2025, 2020]
