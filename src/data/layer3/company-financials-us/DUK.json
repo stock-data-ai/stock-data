@@ -3,16 +3,16 @@
   "companyName": "Duke Energy Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 7592000000,
+    "quarter": 1,
+    "revenue": 9178000000,
     "yoy": 6.2,
     "grossMargin": 51.97,
     "operatingMargin": 27.5,
     "netMargin": 16.0,
-    "eps": 1.38,
-    "pe": 18.11,
-    "pb": 1.74,
-    "marketCap": 93735796736
+    "eps": 1.97,
+    "pe": 17.98,
+    "pb": 1.73,
+    "marketCap": 93073055744
   },
   "historical": {
     "annual": [
@@ -26,6 +26,12 @@
         "grossMargin": 51.18,
         "operatingMargin": 26.61,
         "netMargin": 15.41,
+        "native": {
+          "revenue": 32237000000,
+          "grossProfit": 16498000000,
+          "operatingIncome": 8577000000,
+          "netIncome": 4968000000
+        },
         "revenueYoY": 6.2
       },
       {
@@ -38,6 +44,12 @@
         "grossMargin": 50.06,
         "operatingMargin": 26.15,
         "netMargin": 14.9,
+        "native": {
+          "revenue": 30357000000,
+          "grossProfit": 15197000000,
+          "operatingIncome": 7938000000,
+          "netIncome": 4524000000
+        },
         "revenueYoY": 4.5
       },
       {
@@ -50,6 +62,12 @@
         "grossMargin": 47.34,
         "operatingMargin": 24.44,
         "netMargin": 9.78,
+        "native": {
+          "revenue": 29060000000,
+          "grossProfit": 13756000000,
+          "operatingIncome": 7103000000,
+          "netIncome": 2841000000
+        },
         "revenueYoY": 1.0
       },
       {
@@ -61,7 +79,13 @@
         "eps": 3.33,
         "grossMargin": 45.11,
         "operatingMargin": 22.33,
-        "netMargin": 8.86
+        "netMargin": 8.86,
+        "native": {
+          "revenue": 28768000000,
+          "grossProfit": 12976000000,
+          "operatingIncome": 6424000000,
+          "netIncome": 2550000000
+        }
       }
     ],
     "quarterly": [
@@ -87,7 +111,13 @@
         "eps": 1.97,
         "grossMargin": 48.83,
         "operatingMargin": 25.51,
-        "netMargin": 16.89
+        "netMargin": 16.89,
+        "native": {
+          "revenue": 9178000000,
+          "grossProfit": 4482000000,
+          "operatingIncome": 2341000000,
+          "netIncome": 1550000000
+        }
       },
       {
         "year": 2025,
@@ -99,7 +129,13 @@
         "eps": 1.5,
         "grossMargin": 50.68,
         "operatingMargin": 26.51,
-        "netMargin": 14.92
+        "netMargin": 14.92,
+        "native": {
+          "revenue": 7938000000,
+          "grossProfit": 4023000000,
+          "operatingIncome": 2104000000,
+          "netIncome": 1184000000
+        }
       },
       {
         "year": 2025,
@@ -111,7 +147,13 @@
         "eps": 1.81,
         "grossMargin": 51.29,
         "operatingMargin": 27.12,
-        "netMargin": 16.64
+        "netMargin": 16.64,
+        "native": {
+          "revenue": 8542000000,
+          "grossProfit": 4381000000,
+          "operatingIncome": 2317000000,
+          "netIncome": 1421000000
+        }
       },
       {
         "year": 2025,
@@ -123,11 +165,37 @@
         "eps": 1.25,
         "grossMargin": 50.84,
         "operatingMargin": 24.23,
-        "netMargin": 13.11
+        "netMargin": 13.11,
+        "native": {
+          "revenue": 7508000000,
+          "grossProfit": 3817000000,
+          "operatingIncome": 1819000000,
+          "netIncome": 984000000
+        }
+      },
+      {
+        "year": 2025,
+        "quarter": 1,
+        "revenue": 8249000000,
+        "grossProfit": 4277000000,
+        "operatingIncome": 2337000000,
+        "netIncome": 1379000000,
+        "eps": null,
+        "grossMargin": 51.85,
+        "operatingMargin": 28.33,
+        "netMargin": 16.72,
+        "native": {
+          "revenue": 8249000000,
+          "grossProfit": 4277000000,
+          "operatingIncome": 2337000000,
+          "netIncome": 1379000000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-09-06",
+  "lastUpdated": "2026-09-11",
   "dataQuality": "medium",
-  "dataSource": "yahoo-finance"
+  "dataSource": "yahoo-finance",
+  "financialCurrency": "USD",
+  "fxRateToUSD": 1.0
 }

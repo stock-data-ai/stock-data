@@ -10,9 +10,9 @@
     "operatingMargin": 66.13,
     "netMargin": 50.78,
     "eps": 2.97,
-    "pe": 31.95,
-    "pb": 19.88,
-    "marketCap": 700273459200
+    "pe": 31.25,
+    "pb": 19.46,
+    "marketCap": 685598441472
   },
   "historical": {
     "annual": [
@@ -26,6 +26,12 @@
         "grossMargin": 80.36,
         "operatingMargin": 66.39,
         "netMargin": 50.14,
+        "native": {
+          "revenue": 40000000000,
+          "grossProfit": 32145000000,
+          "operatingIncome": 26556000000,
+          "netIncome": 20058000000
+        },
         "revenueYoY": 11.3
       },
       {
@@ -38,6 +44,12 @@
         "grossMargin": 80.4,
         "operatingMargin": 66.96,
         "netMargin": 54.95,
+        "native": {
+          "revenue": 35926000000,
+          "grossProfit": 28884000000,
+          "operatingIncome": 24057000000,
+          "netIncome": 19743000000
+        },
         "revenueYoY": 10.0
       },
       {
@@ -50,6 +62,12 @@
         "grossMargin": 79.89,
         "operatingMargin": 67.15,
         "netMargin": 52.9,
+        "native": {
+          "revenue": 32653000000,
+          "grossProfit": 26086000000,
+          "operatingIncome": 21927000000,
+          "netIncome": 17273000000
+        },
         "revenueYoY": 11.4
       },
       {
@@ -61,7 +79,13 @@
         "eps": 7.0,
         "grossMargin": 80.44,
         "operatingMargin": 67.15,
-        "netMargin": 51.03
+        "netMargin": 51.03,
+        "native": {
+          "revenue": 29310000000,
+          "grossProfit": 23577000000,
+          "operatingIncome": 19681000000,
+          "netIncome": 14957000000
+        }
       }
     ],
     "quarterly": [
@@ -75,7 +99,13 @@
         "eps": 2.97,
         "grossMargin": 76.46,
         "operatingMargin": 61.29,
-        "netMargin": 48.38
+        "netMargin": 48.38,
+        "native": {
+          "revenue": 11633000000,
+          "grossProfit": 8895000000,
+          "operatingIncome": 7130000000,
+          "netIncome": 5628000000
+        }
       },
       {
         "year": 2026,
@@ -87,7 +117,13 @@
         "eps": 3.14,
         "grossMargin": 81.29,
         "operatingMargin": 67.35,
-        "netMargin": 53.62
+        "netMargin": 53.62,
+        "native": {
+          "revenue": 11230000000,
+          "grossProfit": 9129000000,
+          "operatingIncome": 7563000000,
+          "netIncome": 6021000000
+        }
       },
       {
         "year": 2025,
@@ -99,7 +135,13 @@
         "eps": 3.03,
         "grossMargin": 81.68,
         "operatingMargin": 68.3,
-        "netMargin": 53.69
+        "netMargin": 53.69,
+        "native": {
+          "revenue": 10901000000,
+          "grossProfit": 8904000000,
+          "operatingIncome": 7445000000,
+          "netIncome": 5853000000
+        }
       },
       {
         "year": 2025,
@@ -111,7 +153,13 @@
         "eps": 2.62,
         "grossMargin": 81.53,
         "operatingMargin": 65.75,
-        "netMargin": 47.46
+        "netMargin": 47.46,
+        "native": {
+          "revenue": 10724000000,
+          "grossProfit": 8743000000,
+          "operatingIncome": 7051000000,
+          "netIncome": 5090000000
+        }
       },
       {
         "year": 2025,
@@ -123,11 +171,19 @@
         "eps": 2.69,
         "grossMargin": 80.6,
         "operatingMargin": 66.77,
-        "netMargin": 51.83
+        "netMargin": 51.83,
+        "native": {
+          "revenue": 10172000000,
+          "grossProfit": 8199000000,
+          "operatingIncome": 6792000000,
+          "netIncome": 5272000000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-09-06",
+  "lastUpdated": "2026-09-11",
   "dataQuality": "medium",
-  "dataSource": "yahoo-finance"
+  "dataSource": "yahoo-finance",
+  "financialCurrency": "USD",
+  "fxRateToUSD": 1.0
 }
