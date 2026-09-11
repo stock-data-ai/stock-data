@@ -183,3 +183,21 @@ def test_prune_removes_archive_together_with_the_main_file(isolated_file_manager
     assert not (tmp_path / "arch" / "2023" / "9999.json.gz").exists(), "下市公司的封存要一起刪"
     assert not (tmp_path / "arch" / "2024" / "9999.json.gz").exists()
     assert (tmp_path / "arch" / "2023" / "2330.json.gz").exists(), "在架上的公司不能被碰"
+
+
+def test_prune_sees_files_whose_code_is_not_four_digits(isolated_file_manager, monkeypatch, tmp_path):
+    """名單外的檔不論代號長相都要清——只看 4 碼時，006205／006208 兩個 ETF 測試檔躺了四個月。"""
+    import os
+    import finance_tools.scripts.prune_financials as prune
+
+    monkeypatch.setattr(prune, "ARCHIVE_DIR", tmp_path / "arch")
+    for code in ("2330", "006205", "006208"):
+        isolated_file_manager.save_financial_data(code, {"companyCode": code})
+    monkeypatch.setattr(prune, "FileManager", lambda: isolated_file_manager)
+    monkeypatch.setattr(isolated_file_manager, "load_companies",
+                        lambda: [{"code": "2330", "name": "台積電"}])
+
+    prune.run()
+
+    left = sorted(f[:-5] for f in os.listdir(isolated_file_manager.financials_dir) if f.endswith(".json"))
+    assert left == ["2330"]

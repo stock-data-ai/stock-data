@@ -82,11 +82,15 @@ class FileManager:
         return companies
 
     def list_financial_codes(self) -> set[str]:
-        """company-financials/ 目錄裡實際存在的 4 碼台股檔。這是「儲存了什麼」，不是名單。"""
+        """company-financials/ 目錄裡實際存在的**所有**財報檔代號。這是「儲存了什麼」，不是名單。
+
+        不再只收 4 碼：該不該在這裡由名單決定，不由代號長相決定。只收 4 碼時，
+        2026-05 股利重構留下的 006205、006208 兩個 ETF 測試檔對 `prune-financials` 是隱形的，
+        躺了四個月沒人發現（2026-09-11 修正）。
+        """
         if not os.path.isdir(self.financials_dir):
             return set()
-        codes = (fn[:-5] for fn in os.listdir(self.financials_dir) if fn.endswith(".json"))
-        return {c for c in codes if c.isdigit() and len(c) == 4}
+        return {fn[:-5] for fn in os.listdir(self.financials_dir) if fn.endswith(".json")}
 
     def load_all_companies_with_details(self) -> Dict[str, Any]:
         """
