@@ -1,4 +1,4 @@
-"""壞檔自我修復（D7）、美股累積（D8）、0/null 不混同（F-12）。
+"""壞檔自我修復（D7）、美股累積（D8）、美股匯率（D9）、0/null 不混同（F-12）。
 
 設計前提：**這條路徑上沒有人會來看 CI 紅燈**，所以任何修復都必須全自動、
 不得依賴人工步驟（使用者 2026-09-10 裁示）。測試因此驗的是「自己會好」，
@@ -336,3 +336,105 @@ def test_us_merge_still_works_on_files_written_before_currency_was_recorded():
              "historical": {"annual": [{"year": 2025, "revenue": 200}], "quarterly": []}}
     merged = _us().merge_us_output(existing, fresh)
     assert [a["year"] for a in merged["historical"]["annual"]] == [2025, 2020]
+
+
+# ── D9：美股匯率——原幣留著，美元每次從原幣重算 ─────────────────────────
+
+def _eur_year(year, native_revenue, fx):
+    us = _us()
+    return us.apply_fx([{"year": year, "revenue": None, "grossProfit": None,
+                         "operatingIncome": None, "netIncome": None,
+                         "native": {"revenue": native_revenue, "grossProfit": None,
+                                    "operatingIncome": None, "netIncome": None}}], fx)[0]
+
+
+def test_old_years_are_recomputed_with_the_current_rate():
+    """營收每年都是 100 億歐元：掉出 yfinance 視窗的 2021 年不得停在舊匯率。
+
+    回歸測試：累積合併之後，2021 年停在 1.05、其餘年度用 1.17，
+    圖上 2021→2022 就出現 11% 的「成長」——全部是匯率造成的。
+    """
+    E = 10_000_000_000  # 100 億
+    existing = {"financialCurrency": "EUR", "fxRateToUSD": 1.05,
+                "historical": {"annual": [_eur_year(2021, E, 1.05)], "quarterly": []}}
+    fresh = {"financialCurrency": "EUR", "fxRateToUSD": 1.17,
+             "historical": {"annual": [_eur_year(y, E, 1.17) for y in (2025, 2024, 2023, 2022)],
+                            "quarterly": []}}
+
+    merged = _us().merge_us_output(existing, fresh)
+    usd = {a["year"]: a["revenue"] for a in merged["historical"]["annual"]}
+
+    assert len(set(usd.values())) == 1, f"所有年度要用同一個匯率，實際 {usd}"
+    assert usd[2021] == round(E * 1.17)
+    assert merged["historical"]["annual"][-1]["native"]["revenue"] == E, "原幣永遠不動"
+
+
+def test_records_written_before_native_existed_are_left_as_is():
+    """舊紀錄沒有原幣可以重算——原樣保留，不得清成 None。"""
+    legacy = {"year": 2020, "revenue": 123}
+    fresh = {"fxRateToUSD": 1.17, "historical": {"annual": [_eur_year(2025, 100, 1.17)], "quarterly": []}}
+    merged = _us().merge_us_output({"historical": {"annual": [dict(legacy)], "quarterly": []}}, fresh)
+    assert merged["historical"]["annual"][-1] == legacy
+
+
+class _FakeTicker:
+    """最小的 yfinance.Ticker 替身：兩年年報、一季季報。"""
+
+    def __init__(self, currency, info_extra=None):
+        import pandas as pd
+        cols = [pd.Timestamp("2025-12-31"), pd.Timestamp("2024-12-31")]
+        rows = ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Diluted EPS"]
+        self.income_stmt = pd.DataFrame(
+            [[200.0, 100.0], [80.0, 40.0], [40.0, 20.0], [20.0, 10.0], [2.0, 1.0]],
+            index=rows, columns=cols)
+        self.quarterly_income_stmt = self.income_stmt[[cols[0]]].rename(
+            columns={cols[0]: pd.Timestamp("2025-09-30")})
+        self.info = {"financialCurrency": currency, "longName": "Test Co", **(info_extra or {})}
+
+
+def test_build_output_keeps_native_and_converts_to_usd(monkeypatch):
+    us = _us()
+    monkeypatch.setattr(us, "_fx_cache", {"JPY": 0.0067})
+    result, _ = us.build_output("SONY", _FakeTicker("JPY"))
+    a25 = result["historical"]["annual"][0]
+    assert a25["native"]["revenue"] == 200 and a25["revenue"] == round(200 * 0.0067)
+    assert a25["revenueYoY"] == 100.0, "年增率用原幣算，與匯率無關"
+    assert a25["eps"] == 2.0, "EPS 維持原幣"
+    assert result["fxRateToUSD"] == 0.0067 and result["financialCurrency"] == "JPY"
+    assert result["latest"]["revenue"] == round(200 * 0.0067)
+
+
+def test_missing_fx_rate_skips_the_company_instead_of_using_1(monkeypatch):
+    """匯率取不到不得當成 1——日圓會被當成美元，錯 150 倍，而且畫面上看不出來。"""
+    us = _us()
+    monkeypatch.setattr(us, "_fx_cache", {})
+
+    class _NoRate:
+        info = {}
+    monkeypatch.setattr(us.yf, "Ticker", lambda symbol: _NoRate())
+
+    with pytest.raises(RuntimeError, match="匯率取不到"):
+        us.build_output("SONY", _FakeTicker("JPY"))
+
+
+def test_usd_reporter_never_asks_for_a_rate(monkeypatch):
+    us = _us()
+    monkeypatch.setattr(us.yf, "Ticker", lambda symbol: (_ for _ in ()).throw(AssertionError("不該查匯率")))
+    result, _ = us.build_output("NVDA", _FakeTicker("USD"))
+    assert result["historical"]["annual"][0]["revenue"] == 200
+
+
+def test_oldest_fresh_year_gets_its_yoy_once_the_previous_year_is_on_file():
+    """yfinance 給 2022–2025；2021 已經累積在檔裡 → 2022 的年增率補得出來。"""
+    existing = {"fxRateToUSD": 1.0,
+                "historical": {"annual": [_eur_year(2021, 100, 1.0)], "quarterly": []}}
+    fresh = {"fxRateToUSD": 1.0, "historical": {"annual": [
+        _eur_year(2023, 150, 1.0), _eur_year(2022, 120, 1.0)], "quarterly": []}}
+    merged = _us().merge_us_output(existing, fresh)
+    yoy = {a["year"]: a.get("revenueYoY") for a in merged["historical"]["annual"]}
+    assert yoy == {2023: 25.0, 2022: 20.0, 2021: None}
+
+
+def test_yoy_is_not_computed_across_a_missing_year():
+    rows = [_eur_year(2025, 200, 1.0), _eur_year(2023, 100, 1.0)]
+    assert [r.get("revenueYoY") for r in _us().fill_revenue_yoy(rows)] == [None, None]

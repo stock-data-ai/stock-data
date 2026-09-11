@@ -2,9 +2,12 @@
 """
 Fetch US stock financial data from Yahoo Finance (yfinance).
 Outputs to src/data/layer3/company-financials-us/{CODE}.json
-Same schema as company-financials/{code}.json. All monetary values in USD 億.
+Same schema as company-financials/{code}.json. Monetary fields are raw USD.
 
-Non-USD companies (e.g. ASML/EUR) are converted to USD at fetch time.
+Non-USD companies (e.g. ASML/EUR): the reporting-currency figures are kept in each
+record's `native`, and the USD fields are recomputed from them on every run with
+that run's rate (`fxRateToUSD`) — all years at once, so old years never keep a stale rate.
+If the rate can't be fetched, that company is skipped and its file left untouched.
 Companies whose financialCurrency is TWD are skipped (already in company-financials/).
 
 Usage:
@@ -59,18 +62,21 @@ def write_json_atomic(path: Path, data) -> None:
 
 
 def get_fx_rate(from_currency: str) -> float:
-    """Return 1 unit of from_currency in USD. Returns 1.0 if already USD."""
+    """1 單位 from_currency 等於多少 USD。取不到就 **raise**，不可以當成 1。
+
+    舊版取不到時回 1.0：日圓就被當成美元存進去（Sony 營收會變成 13 兆美元），
+    而且畫面上看不出來。現在所有年度每次都用這個匯率重算，當成 1 的傷害會擴及整份檔，
+    所以寧可這一家這次不更新（舊檔原封不動，下一次再試）。
+    """
     if from_currency == "USD":
         return 1.0
     if from_currency in _fx_cache:
         return _fx_cache[from_currency]
-    ticker = f"{from_currency}USD=X"
-    try:
-        rate = yf.Ticker(ticker).info.get("regularMarketPrice") or 1.0
-        _fx_cache[from_currency] = float(rate)
-        return float(rate)
-    except Exception:
-        return 1.0
+    rate = yf.Ticker(f"{from_currency}USD=X").info.get("regularMarketPrice")
+    if not rate or rate <= 0:
+        raise RuntimeError(f"{from_currency}→USD 匯率取不到")
+    _fx_cache[from_currency] = float(rate)
+    return float(rate)
 
 
 def _v(col, row: str):
@@ -111,77 +117,97 @@ def _to_usd(val, fx: float = 1.0):
     return round(val * fx)
 
 
-def build_annual(ticker_obj, fx: float):
+#: 金額欄位。**原幣**存在每筆紀錄的 `native` 裡、永遠不動；同名的美元欄位每次執行都用
+#: 當次匯率從原幣重算（`apply_fx`），**所有年度一起算**。
+#:
+#: 為什麼不直接只存原幣：App 顯示金額時只有「億／兆」，沒有幣別；已上架的舊版 App 又改不到，
+#: 日圓直接存進去會被讀成美元（Sony 營收 13 兆日圓 → 畫面上的「13 兆」）。
+#: 為什麼不只存美元：累積合併後，掉出 yfinance 4 年視窗的舊年度會停在當時的匯率，
+#: 跟新年度的匯率不同，長期圖表就會出現「匯率造成的假成長」。兩份都存，兩個問題都沒有。
+#: EPS 與各項 margin 不在這裡：EPS 一直是原幣（每股）、margin 是比率，都跟匯率無關。
+MONEY_FIELDS = ("revenue", "grossProfit", "operatingIncome", "netIncome")
+
+
+def _round(val):
+    return None if val is None else round(val)
+
+
+def _income_row(col):
+    """一個期別的損益 → 紀錄（美元欄位先留空，由 `apply_fx` 填）。沒有營收就回 None。"""
+    revenue = _v(col, "Total Revenue")
+    if revenue is None:
+        return None
+    gross_profit = _v(col, "Gross Profit")
+    op_income = _v(col, "Operating Income")
+    net_income = _v(col, "Net Income")
+    eps = _first_present(_v(col, "Diluted EPS"), _v(col, "Basic EPS"))
+    native = {"revenue": revenue, "grossProfit": gross_profit,
+              "operatingIncome": op_income, "netIncome": net_income}
+    return {
+        **{f: None for f in MONEY_FIELDS},   # 先佔位，維持既有檔案的欄位順序
+        "eps": _r2(eps),                     # 原幣（每股），幣別見檔案頂層 financialCurrency
+        "grossMargin": _r2(gross_profit / revenue * 100) if gross_profit and revenue else None,
+        "operatingMargin": _r2(op_income / revenue * 100) if op_income and revenue else None,
+        "netMargin": _r2(net_income / revenue * 100) if net_income and revenue else None,
+        "native": {f: _round(v) for f, v in native.items()},
+    }
+
+
+def apply_fx(rows, fx: float):
+    """用同一個匯率把每筆的原幣金額換成美元，寫進同名欄位。回傳 rows 本身。
+
+    沒有 `native` 的紀錄（2026-09-11 以前寫入的）無從重算，原樣保留。
+    """
+    for row in rows or []:
+        native = row.get("native")
+        if not native:
+            continue
+        for field in MONEY_FIELDS:
+            row[field] = _to_usd(native.get(field), fx)
+    return rows
+
+
+def build_annual(ticker_obj):
     df = ticker_obj.income_stmt
     if df is None or df.empty:
         return []
 
     rows = []
     for col in df.columns:
-        revenue = _v(df[col], "Total Revenue")
-        if revenue is None:
-            continue
-        gross_profit = _v(df[col], "Gross Profit")
-        op_income = _v(df[col], "Operating Income")
-        net_income = _v(df[col], "Net Income")
-        eps = _v(df[col], "Diluted EPS") or _v(df[col], "Basic EPS")
-
-        gm = _r2(gross_profit / revenue * 100) if gross_profit and revenue else None
-        om = _r2(op_income / revenue * 100) if op_income and revenue else None
-        nm = _r2(net_income / revenue * 100) if net_income and revenue else None
-
-        rows.append({
-            "year": col.year,
-            "revenue": _to_usd(revenue, fx),
-            "grossProfit": _to_usd(gross_profit, fx),
-            "operatingIncome": _to_usd(op_income, fx),
-            "netIncome": _to_usd(net_income, fx),
-            "eps": _r2(eps),         # EPS stays in original currency (per-share)
-            "grossMargin": gm,
-            "operatingMargin": om,
-            "netMargin": nm,
-        })
+        row = _income_row(df[col])
+        if row is not None:
+            rows.append({"year": col.year, **row})
 
     rows.sort(key=lambda x: x["year"], reverse=True)
-    for i, row in enumerate(rows):
-        if i + 1 < len(rows):
-            prev = rows[i + 1].get("revenue")
-            if row["revenue"] and prev:
-                row["revenueYoY"] = round((row["revenue"] / prev - 1) * 100, 1)
-    return rows
+    return fill_revenue_yoy(rows)
 
 
-def build_quarterly(ticker_obj, fx: float):
+def fill_revenue_yoy(annual):
+    """年營收年增率：用**原幣**、只跟**前一個年度**比（中間缺年就不算）。
+
+    合併後也要再跑一次：yfinance 只給 4 年，最舊那年在抓取當下沒有前一年可比；
+    累積下來之後前一年就在檔裡了，這時才補得出來。沒有原幣的舊紀錄維持原值。
+    """
+    by_year = {a["year"]: a for a in annual or []}
+    for row in annual or []:
+        prev = by_year.get(row["year"] - 1)
+        cur_rev = (row.get("native") or {}).get("revenue")
+        prev_rev = ((prev or {}).get("native") or {}).get("revenue")
+        if cur_rev and prev_rev:
+            row["revenueYoY"] = round((cur_rev / prev_rev - 1) * 100, 1)
+    return annual
+
+
+def build_quarterly(ticker_obj):
     df = ticker_obj.quarterly_income_stmt
     if df is None or df.empty:
         return []
 
     rows = []
     for col in df.columns:
-        revenue = _v(df[col], "Total Revenue")
-        if revenue is None:
-            continue
-        gross_profit = _v(df[col], "Gross Profit")
-        op_income = _v(df[col], "Operating Income")
-        net_income = _v(df[col], "Net Income")
-        eps = _v(df[col], "Diluted EPS") or _v(df[col], "Basic EPS")
-
-        gm = _r2(gross_profit / revenue * 100) if gross_profit and revenue else None
-        om = _r2(op_income / revenue * 100) if op_income and revenue else None
-        nm = _r2(net_income / revenue * 100) if net_income and revenue else None
-
-        rows.append({
-            "year": col.year,
-            "quarter": (col.month - 1) // 3 + 1,
-            "revenue": _to_usd(revenue, fx),
-            "grossProfit": _to_usd(gross_profit, fx),
-            "operatingIncome": _to_usd(op_income, fx),
-            "netIncome": _to_usd(net_income, fx),
-            "eps": _r2(eps),
-            "grossMargin": gm,
-            "operatingMargin": om,
-            "netMargin": nm,
-        })
+        row = _income_row(df[col])
+        if row is not None:
+            rows.append({"year": col.year, "quarter": (col.month - 1) // 3 + 1, **row})
 
     rows.sort(key=lambda x: (x["year"], x["quarter"]), reverse=True)
     return rows
@@ -197,8 +223,8 @@ def build_output(code: str, ticker_obj):
     fx = get_fx_rate(fin_currency)
     fx_note = f" [fx {fin_currency}→USD={fx:.4f}]" if fin_currency != "USD" else ""
 
-    annual = build_annual(ticker_obj, fx)
-    quarterly = build_quarterly(ticker_obj, fx)
+    annual = apply_fx(build_annual(ticker_obj), fx)
+    quarterly = apply_fx(build_quarterly(ticker_obj), fx)
 
     if not annual and not quarterly:
         return None, "no financial data"
@@ -249,6 +275,8 @@ def build_output(code: str, ticker_obj):
         # 舊年度是用舊匯率換算的，跟新年度併在一起就是兩種幣別混在同一個檔裡，
         # 而且看不出來。存了才擋得掉——見 `merge_us_output`。
         "financialCurrency": fin_currency,
+        # 這次換算用的匯率（1 單位 financialCurrency = ? USD）。合併時用它把舊年度一起重算。
+        "fxRateToUSD": fx,
     }
     return result, fx_note
 
@@ -260,6 +288,9 @@ def merge_us_output(existing, fresh):
     4 年年報、5 個季度），而且來源只回半套（有 annual、沒 quarterly）時，
     既有的 quarterly 會被清空。改成與台股同一套 `merge_by_key`：
     同期間取新、視窗外的舊期間保留、這次沒抓到就原樣留著。
+
+    合併完再用這次的匯率把**所有年度**從原幣重算成美元（`apply_fx`），
+    所以留下來的舊年度不會停在當年抓取時的匯率。
     """
     if not existing:
         return fresh
@@ -267,7 +298,7 @@ def merge_us_output(existing, fresh):
     old_currency = existing.get("financialCurrency")
     new_currency = fresh.get("financialCurrency")
     if old_currency and new_currency and old_currency != new_currency:
-        # 幣別換了就不能併——舊年度是用舊幣別的匯率換算的，沒辦法回頭重算。
+        # 幣別換了就不能併——舊年度的原幣是另一種貨幣，用新幣別的匯率重算會錯。
         # 整份重建（就是 2026-09-10 以前的行為），讓所有年度回到同一個幣別。
         print(f" [報表幣別 {old_currency}→{new_currency}，整份重建]", end="")
         return fresh
@@ -284,11 +315,20 @@ def merge_us_output(existing, fresh):
             old_hist.get("quarterly"), new_hist.get("quarterly"),
             key=lambda q: (q["year"], q["quarter"])),
     }
+    fx = fresh.get("fxRateToUSD")
+    if fx:
+        apply_fx(merged["historical"]["annual"], fx)
+        apply_fx(merged["historical"]["quarterly"], fx)
+    fill_revenue_yoy(merged["historical"]["annual"])
     return merged
 
 
 def load_existing(path: Path):
-    """讀既有檔；讀不回來（損壞）時回 None，呼叫端不得覆寫。"""
+    """讀既有檔；不存在或讀不回來（損壞）都回 `{}`，也就是整檔重建。
+
+    與台股不同，這裡損壞就直接重建：美股只有這一支寫入者，沒有「其他人要退開」的問題；
+    代價是視窗外累積的舊年度會跟著壞檔一起丟失（要救就從 git 拿上一版）。
+    """
     if not path.exists():
         return {}
     try:
