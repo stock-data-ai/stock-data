@@ -109,6 +109,12 @@ Three-stage reusable workflow (`.github/workflows/_reusable-data-job.yml`):
 2. **Run** — 4 parallel batches, each with a dedicated FinMind API token
 3. **Merge** — Combine artifacts, validate JSON, commit, trigger rerun if failures remain
 
+**財報檔的合併**：六個 workflow 都推 `company-financials/`，推送前是 `git pull --rebase -X ours`。
+`.gitattributes` 把這些檔導到 `finance_tools/scripts/json_merge_driver.py`（JSON 結構三方合併），
+**每個 workflow 還要自己 `git config merge.company-json.driver ...`**（config 不隨 repo 走），
+漏了就退回逐行合併：可能拼出壞 JSON，或讓 `-X ours` 把這次寫的資料整段丟掉（2026-09-11 實測重現）。
+新增會推財報檔的 workflow 時，`test_json_merge_driver.py` 會擋。
+
 **Rerun mechanism**: Workflows self-chain via `gh workflow run` up to `MAX_RERUN_ROUNDS=4` times with a 65-minute delay (API quota reset window). Permanent failures (where failure count doesn't decrease) are written to `permanent_failures_<type>.txt` and excluded from future retries.
 
 **Schedules**: read `cron/wrangler.toml`, `cron/src/index.ts` and the dispatched workflows. Previous timetable prose here was stale; it is not an operational authority. Deployed Worker versions / enabled schedules require production verification; do not deploy to verify this file.

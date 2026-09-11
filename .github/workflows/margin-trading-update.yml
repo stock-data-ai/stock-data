@@ -168,6 +168,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
           git add src/data/layer3/company-financials/ src/data/market/chip-history.json
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
           git commit -m "更新融資融券與借券數據 $(date -u +%Y-%m-%d)"
