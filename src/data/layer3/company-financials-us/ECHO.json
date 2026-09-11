@@ -1,18 +1,18 @@
 {
-  "companyCode": "SATS",
+  "companyCode": "ECHO",
   "companyName": "EchoStar Corporation",
   "latest": {
     "year": 2026,
     "quarter": 2,
     "revenue": 3576164000,
     "yoy": -5.2,
-    "grossMargin": 27.08,
-    "operatingMargin": 8.91,
-    "netMargin": -97.56,
+    "grossMargin": 29.54,
+    "operatingMargin": 14.28,
+    "netMargin": -38.71,
     "eps": 24.12,
     "pe": null,
-    "pb": 5.34,
-    "marketCap": 30115971072
+    "pb": 1.88,
+    "marketCap": 26681571328
   },
   "historical": {
     "annual": [
@@ -26,6 +26,12 @@
         "grossMargin": 25.82,
         "operatingMargin": -0.61,
         "netMargin": -96.62,
+        "native": {
+          "revenue": 15004989000,
+          "grossProfit": 3874667000,
+          "operatingIncome": -91135000,
+          "netIncome": -14497180000
+        },
         "revenueYoY": -5.2
       },
       {
@@ -38,6 +44,12 @@
         "grossMargin": 25.61,
         "operatingMargin": -1.92,
         "netMargin": -0.76,
+        "native": {
+          "revenue": 15825516000,
+          "grossProfit": 4052939000,
+          "operatingIncome": -304070000,
+          "netIncome": -119546000
+        },
         "revenueYoY": -7.0
       },
       {
@@ -50,6 +62,12 @@
         "grossMargin": 29.8,
         "operatingMargin": 2.84,
         "netMargin": -10.0,
+        "native": {
+          "revenue": 17015598000,
+          "grossProfit": 5070267000,
+          "operatingIncome": 483190000,
+          "netIncome": -1702057000
+        },
         "revenueYoY": -8.7
       },
       {
@@ -61,7 +79,13 @@
         "eps": 8.05,
         "grossMargin": 34.47,
         "operatingMargin": 11.99,
-        "netMargin": 13.3
+        "netMargin": 13.3,
+        "native": {
+          "revenue": 18634246000,
+          "grossProfit": 6423769000,
+          "operatingIncome": 2233549000,
+          "netIncome": 2477720000
+        }
       }
     ],
     "quarterly": [
@@ -75,7 +99,13 @@
         "eps": 24.12,
         "grossMargin": 34.37,
         "operatingMargin": 14.28,
-        "netMargin": 236.63
+        "netMargin": 236.63,
+        "native": {
+          "revenue": 3576164000,
+          "grossProfit": 1229043000,
+          "operatingIncome": 510652000,
+          "netIncome": 8462372000
+        }
       },
       {
         "year": 2026,
@@ -87,7 +117,13 @@
         "eps": -0.51,
         "grossMargin": 30.87,
         "operatingMargin": 8.91,
-        "netMargin": -4.01
+        "netMargin": -4.01,
+        "native": {
+          "revenue": 3667489000,
+          "grossProfit": 1132314000,
+          "operatingIncome": 326688000,
+          "netIncome": -146885000
+        }
       },
       {
         "year": 2025,
@@ -99,7 +135,13 @@
         "eps": null,
         "grossMargin": 29.38,
         "operatingMargin": 9.77,
-        "netMargin": -31.8
+        "netMargin": -31.8,
+        "native": {
+          "revenue": 3796014000,
+          "grossProfit": 1115103000,
+          "operatingIncome": 370812000,
+          "netIncome": -1207183000
+        }
       },
       {
         "year": 2025,
@@ -111,7 +153,13 @@
         "eps": -44.37,
         "grossMargin": 23.58,
         "operatingMargin": -4.44,
-        "netMargin": -353.63
+        "netMargin": -353.63,
+        "native": {
+          "revenue": 3614258000,
+          "grossProfit": 852371000,
+          "operatingIncome": -160407000,
+          "netIncome": -12781196000
+        }
       },
       {
         "year": 2025,
@@ -123,11 +171,19 @@
         "eps": -1.06,
         "grossMargin": 24.41,
         "operatingMargin": -5.73,
-        "netMargin": -8.22
+        "netMargin": -8.22,
+        "native": {
+          "revenue": 3724959000,
+          "grossProfit": 909141000,
+          "operatingIncome": -213408000,
+          "netIncome": -306132000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-08-23",
+  "lastUpdated": "2026-09-11",
   "dataQuality": "medium",
-  "dataSource": "yahoo-finance"
+  "dataSource": "yahoo-finance",
+  "financialCurrency": "USD",
+  "fxRateToUSD": 1.0
 }
