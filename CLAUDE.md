@@ -45,6 +45,13 @@ uv run finance_tools/cli.py update-revenue --limit 10
 # 內部人持股（月頻全量，一次拿全市場再逐家併進 company-financials）
 uv run finance_tools/cli.py update-insider-holdings --force
 
+# 日期型歷史封存：主檔只留當年＋前一年，更舊的整年搬進 company-financials-archive/（gzip）
+# daily-update 每天會自動跑；--dry-run 真的不寫任何檔
+uv run finance_tools/cli.py archive-history --dry-run
+
+# 下市清除：名單上沒有的公司刪主檔，連同封存一起刪
+uv run finance_tools/cli.py prune-financials --dry-run
+
 # Run tests
 uv run pytest finance_tools/tests/
 ```
@@ -72,7 +79,15 @@ GitHub Pages (public static JSON API)
 ### finance_tools/ Structure
 
 - **cli.py** — Entry point; dispatches to task modules
-- **core/** — Shared abstractions: `api_client.py` (FinMind quota management), `file_manager.py` (atomic JSON writes), `data_processor.py`, `timezone.py`, `trading_day.py`, `exceptions.py`
+- **core/** — Shared abstractions: `api_client.py` (FinMind quota management), `file_manager.py` (atomic JSON writes), `data_processor.py`, `merge_policy.py`, `timezone.py`, `trading_day.py`, `exceptions.py`
+  - `merge_policy.py` — **合併規則與保留上限的唯一宣告處**（`merge_by_key`）。11 支程式都會寫
+    `company-financials/{code}.json`，規則散在各處時曾長出兩套互斥的月營收政策。
+    欄位歸誰管見 stock_map `docs/features/platform/財報檔欄位歸屬.md`。
+  - `file_manager.load_financial_data()` 有**三種回傳值**：`{}`＝檔案不存在、`None`＝**檔案壞掉**、
+    dict＝正常。看到 `None` 的寫入者一律跳過（不得拿片段覆寫），只有 `financials-update`
+    會放寬到 `FULL_HISTORY_DAYS` 重抓把歷史長回來。壞檔**留在原地**，它就是重抓的訊號。
+  - `data_processor.normalize_item_name()` — FinMind 科目名稱的括號有半形／全形兩種寫法且依年度而異，
+    比對前一律正規化。漏掉會讓整年的營業現金流對不上（2021 年曾因此缺 823 家）。
 - **domains/** — 一個資料領域一個資料夾，內含 `fetcher.py`（抓＋正規化）與 `tasks.py`（CLI 任務）。
   現有：`balance_sheet`、`company_info`、`dividends`、`financials`、`insider`、
   `institutional_investors`、`margin_trading`、`market_sentiment`、`revenue`、
@@ -118,6 +133,9 @@ News data goes to Cloudflare D1; financial data goes to JSON files committed to 
     一家最多 250 人，每期都留明細會讓檔案幾個月就翻倍。
     對外顯示的質押比用 `boardTotals`（只算董監事本人）而不是 `totals`（全體內部人）——
     市場慣稱的「董監持股質押比」不含經理人與大股東，用錯會跟其他網站對不起來。
+- `src/data/layer3/company-financials-archive/{year}/{code}.json.gz` — 日期型歷史（三大法人、融資融券、借券、大戶）
+  超過「當年＋前一年」的部分。**是搬不是刪**；按整年切，某一年封存後就不再變動（git 只存一次）。
+  gzip 壓縮比約 13x。App 不讀，是保存不是服務。
 - `rerun_queue_<type>.txt` — Failed companies pending retry (committed)
 - `permanent_failures_<type>.txt` — Companies with unrecoverable failures (committed)
 
