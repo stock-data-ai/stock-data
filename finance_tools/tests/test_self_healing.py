@@ -159,6 +159,38 @@ def test_daily_update_backs_off_on_corrupt_file(isolated_file_manager):
             "日更不得覆寫壞檔——它是重抓的訊號"
 
 
+def test_shareholder_job_backs_off_on_corrupt_file(isolated_file_manager, monkeypatch):
+    """大戶排程看到壞檔要跳過，不得建一份只有大戶資料的骨架蓋上去。
+
+    回歸測試：原本 `if not financial_data:` 把 None（壞檔）當成新公司，
+    建骨架存檔——歷史沒了，壞檔訊號也跟著消失。旁邊的正常公司要照常寫入。
+    """
+    from types import SimpleNamespace
+    from finance_tools.core.timezone import now_tw
+    from finance_tools.domains.shareholder import tasks
+
+    path = corrupt(isolated_file_manager)
+    isolated_file_manager.save_financial_data("1101", {"companyCode": "1101", "historical": {}})
+
+    today = now_tw().strftime("%Y%m%d")
+    levels = [{"序": i, "holding_range": f"L{i}", "holder_count": 10, "shares": 100,
+               "ratio_pct": 1.0, "data_date": today} for i in range(1, 16)]
+    tdcc = {code: levels for code in ("9999", "1101")}
+
+    monkeypatch.setattr(tasks, "FileManager", lambda: isolated_file_manager)
+    monkeypatch.setattr(tasks, "fetch_all_tdcc_shareholding_via_api", lambda: tdcc)
+    monkeypatch.setattr(tasks, "load_companies_for_processing", lambda *a: [
+        {"code": "9999", "name": "壞檔"}, {"code": "1101", "name": "台泥"}])
+    monkeypatch.setattr(tasks, "save_quality_report", lambda *a: None)
+
+    tasks.run_fetch_shareholder_data(SimpleNamespace(force=True, code=None, rerun=None, batch=None))
+
+    with open(path, encoding="utf-8") as f:
+        assert f.read() == '{"companyCode": "9999", "histor', "壞檔必須原封不動"
+    assert today in isolated_file_manager.load_financial_data("1101")["shareholderDataHistory"], \
+        "正常公司照常寫入（確認真的有跑到寫檔那一步）"
+
+
 # ── D8：美股改成累積 ──────────────────────────────────────────────────
 
 def _us():

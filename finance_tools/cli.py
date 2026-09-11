@@ -67,6 +67,7 @@ from finance_tools.domains.market_sentiment.tasks import (
 )
 from finance_tools.scripts.compute_weekly_big_holders import run as run_compute_big_holders
 from finance_tools.scripts.prune_financials import run as run_prune_financials
+from finance_tools.scripts.archive_historical_data import main as run_archive_history
 from finance_tools.scripts.generate_chip_topic import run as run_generate_chip_topic
 from finance_tools.scripts.generate_disposition_forecast import run as run_generate_disposition_forecast
 
@@ -202,9 +203,7 @@ def main():
     parser_archive.add_argument("--dry-run", action="store_true", help="只統計會搬哪些，不寫任何檔。")
     parser_archive.add_argument("--limit", type=int, default=None, help="只處理前 N 家（測試用）。")
     parser_archive.set_defaults(
-        func=lambda args: __import__(
-            "finance_tools.scripts.archive_historical_data", fromlist=["run"]
-        ).run(dry_run=args.dry_run, limit=args.limit)
+        func=lambda args: sys.exit(run_archive_history(dry_run=args.dry_run, limit=args.limit))
     )
 
     # --- 'generate-chip-topic' command ---

@@ -98,8 +98,9 @@ def _read_gz(path: Path) -> dict:
         with gzip.open(path, "rt", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        # 封存檔讀不回來就不要動它，也不要拿新資料覆蓋掉——寧可這次跳過。
-        logger.error(f"封存檔損壞，跳過 {path}：{e}")
+        # 封存檔讀不回來就不要動它，也不要拿新資料覆蓋掉。raise 讓 `process_file`
+        # 在動主檔之前就停下；`run` 會接住、只跳過這一家，其餘照常封存。
+        logger.error(f"封存檔損壞 {path}：{e}")
         raise
 
 
@@ -160,8 +161,17 @@ def run(dry_run: bool = False, limit=None) -> dict:
     total_records = 0
     touched = 0
     per_year = defaultdict(int)
+    failed = []
     for code in codes:
-        result = process_file(file_mgr, code, cutoff_year, dry_run)
+        # 一家出錯只跳過那一家。整批中止的話，daily-update 後面寫當日市值的步驟
+        # 也會跟著不跑——一個壞掉的封存檔就能讓每天的市值都停更。
+        # 中途失敗是安全的：封存先寫、主檔後寫，最壞只是同一筆兩邊都有，重跑即收斂。
+        try:
+            result = process_file(file_mgr, code, cutoff_year, dry_run)
+        except Exception as e:
+            logger.error(f"[archive] {code} 失敗，跳過：{e}")
+            failed.append(code)
+            continue
         if result["archived"]:
             touched += 1
             for year, n in result["archived"].items():
@@ -172,12 +182,20 @@ def run(dry_run: bool = False, limit=None) -> dict:
     print(f"[archive] {verb} {total_records} 筆／{touched} 家公司")
     for year in sorted(per_year, reverse=True):
         print(f"[archive]   {year}: {per_year[year]} 筆")
-    if not touched:
+    if not touched and not failed:
         print("[archive] 沒有可封存的年度，什麼都沒做")
-    return {"cutoff_year": cutoff_year, "records": total_records, "companies": touched}
+    if failed:
+        print(f"[archive] {len(failed)} 家失敗（已跳過，主檔未動）：{', '.join(failed[:20])}")
+    return {"cutoff_year": cutoff_year, "records": total_records, "companies": touched,
+            "failed": failed}
+
+
+def main(dry_run: bool = False, limit=None) -> int:
+    """CLI 進入點：有任何一家失敗就回 1，讓 CI 亮紅燈（但其他公司已照常封存）。"""
+    return 1 if run(dry_run=dry_run, limit=limit)["failed"] else 0
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     lim = next((int(a.split("=")[1]) for a in sys.argv[1:] if a.startswith("--limit=")), None)
-    run(dry_run="--dry-run" in sys.argv, limit=lim)
+    sys.exit(main(dry_run="--dry-run" in sys.argv, limit=lim))

@@ -136,6 +136,31 @@ def test_corrupt_main_file_is_left_alone(isolated_file_manager, tmp_path, monkey
         assert f.read() == '{"broken', "壞檔必須原封不動"
 
 
+def test_one_corrupt_archive_does_not_stop_the_others(staged, tmp_path):
+    """一家的封存檔壞掉只跳過那一家，其餘照常封存；CLI 回非零讓 CI 亮紅燈。
+
+    回歸測試：原本一個 raise 就整批中止，daily-update 排在後面的
+    「寫當日市值」步驟也跟著不跑。
+    """
+    bad = tmp_path / "company-financials-archive" / "2020" / "1101.json.gz"
+    bad.parent.mkdir(parents=True)
+    bad.write_bytes(b"not gzip")
+    before_1101 = staged.load_financial_data("1101")
+
+    result = archive.run()
+
+    assert result["failed"] == ["1101"]
+    assert staged.load_financial_data("1101") == before_1101, "失敗的那家主檔不得動"
+    assert bad.read_bytes() == b"not gzip", "壞掉的封存檔不得被覆寫"
+    kept = staged.load_financial_data("2330")["historical"]["institutionalInvestors"]
+    assert {k[:4] for k in kept} == {"2025", "2026"}, "其他公司照常封存"
+    assert archive.main() == 1, "有失敗就回非零"
+
+
+def test_cli_exit_code_is_zero_when_nothing_failed(staged):
+    assert archive.main() == 0
+
+
 def test_prune_removes_archive_together_with_the_main_file(isolated_file_manager, tmp_path, monkeypatch):
     """下市清除要把封存檔一起帶走——「不留墓碑」對主檔與封存是同一個政策。"""
     import finance_tools.scripts.prune_financials as prune

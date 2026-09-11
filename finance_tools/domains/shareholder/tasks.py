@@ -87,6 +87,12 @@ def run_fetch_shareholder_data(args):
         if tdcc_data_list:
             try:
                 financial_data = file_mgr.load_financial_data(code)
+                if financial_data is None:
+                    # 檔案損壞：歷史讀不回來。建一份只有大戶資料的骨架會把其餘欄位
+                    # 一起蓋掉，壞檔也就不再是「要重抓」的訊號。
+                    logger.warning(f"  ⚠️  {code} {name}: 財報檔損壞，跳過（等 financials-update 重建）")
+                    quality_issues.append(f"{code} {name}: 財報檔損壞，跳過")
+                    continue
                 if not financial_data:
                     financial_data = {
                         "companyCode": code,
