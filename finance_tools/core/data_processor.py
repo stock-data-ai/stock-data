@@ -10,6 +10,19 @@ from typing import List, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
+# FinMind 的科目名稱同一個科目有半形與全形括號兩種寫法，而且**依年度而異**：
+# 現金流量表 2020～2023 年混用（2020、2021 最嚴重），2024 年起全部全形。
+# 程式裡的科目清單只寫全形，於是「營業活動之淨現金流入(流出)」整年對不上，
+# ocf 變 None、fcf 跟著算不出來。2026-09-11 實測 823 家公司的 2021 年就是這樣缺的。
+# 三張報表比對前一律先正規化；損益表目前沒遇到，但它對不上的科目會變成 **0**
+# 而不是 None，比現金流量表更危險，所以一併預防。
+_HALF_TO_FULL = str.maketrans({"(": "（", ")": "）"})
+
+
+def normalize_item_name(name) -> str:
+    """科目名稱正規化：半形括號 → 全形、去掉首尾空白。"""
+    return str(name).translate(_HALF_TO_FULL).strip()
+
 
 class DataProcessor:
     """數據處理器 - 統一處理財務數據
@@ -166,6 +179,9 @@ class DataProcessor:
             ],
             "EPS": ["基本每股盈餘", "基本每股盈餘（元）", "EPS"],
         }
+
+        financials_df = financials_df.copy()
+        financials_df["origin_name"] = financials_df["origin_name"].map(normalize_item_name)
 
         name_to_key = {
             name: key for key, names in TARGET_ITEMS.items() for name in names
@@ -392,6 +408,7 @@ class DataProcessor:
         }
 
         bs_df = bs_df.copy()
+        bs_df["origin_name"] = bs_df["origin_name"].map(normalize_item_name)
         bs_df["date"] = pd.to_datetime(bs_df["date"])
         bs_df["_metric"] = bs_df["origin_name"].map(all_names)
         bs_df = bs_df.dropna(subset=["_metric"])
@@ -447,6 +464,7 @@ class DataProcessor:
         CAPEX_NAMES = ["取得不動產、廠房及設備", "購置不動產、廠房及設備"]
 
         cf_df = cf_df.copy()
+        cf_df["origin_name"] = cf_df["origin_name"].map(normalize_item_name)
         cf_df["date"] = pd.to_datetime(cf_df["date"])
 
         # 只取年底 (Q4 = 12月)

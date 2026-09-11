@@ -442,3 +442,44 @@ def test_us_main_exits_nonzero_when_nothing_was_written(tmp_path, monkeypatch, c
     # 原子性仍成立：先前那份好的檔案沒有被截斷
     assert json.loads((tmp_path / "NVDA.json").read_text())["companyCode"] == "NVDA"
     assert [f for f in __import__("os").listdir(tmp_path) if f.endswith(".tmp")] == []
+
+
+# ── 科目名稱的半形／全形括號 ───────────────────────────────────────────
+
+def test_cash_flow_matches_half_width_parentheses():
+    """FinMind 現金流量表 2020～2023 年的科目名稱混用半形括號。
+
+    只認全形時，「營業活動之淨現金流入(流出)」整年對不上 → ocf=None → fcf 算不出來。
+    2026-09-11 直接打 FinMind 實測：823 家公司的 2021 年就是這樣缺的
+    （1101 台泥 2021 年回的是半形；1102 亞泥回全形所以一直正常）。
+    先前（handoff §41）誤判成「來源沒給」，其實來源一直都有。"""
+    df = pd.DataFrame([
+        {"date": "2021-12-31", "origin_name": "營業活動之淨現金流入(流出)", "value": 18_970_000_000.0},
+        {"date": "2021-12-31", "origin_name": "取得不動產、廠房及設備", "value": -16_552_788_000.0},
+    ])
+    parsed = DataProcessor.process_cash_flows("1101", df)
+    assert parsed[2021]["ocf"] == 18_970_000_000.0, "半形括號的營業活動現金流必須認得"
+    assert parsed[2021]["capex"] == -16_552_788_000.0
+
+
+def test_full_width_parentheses_still_work():
+    df = pd.DataFrame([
+        {"date": "2021-12-31", "origin_name": "營業活動之淨現金流入（流出）", "value": 8_596_708_000.0},
+        {"date": "2021-12-31", "origin_name": "取得不動產、廠房及設備", "value": -3_250_124_000.0},
+    ])
+    assert DataProcessor.process_cash_flows("1102", df)[2021]["ocf"] == 8_596_708_000.0
+
+
+def test_income_statement_half_width_does_not_silently_become_zero():
+    """損益表對不上的科目會變成 **0**（不是 None），比現金流量表更危險。
+    目前 FinMind 損益表全是全形，這條是預防：半形也必須認得。"""
+    df = pd.DataFrame([
+        {"date": "2021-12-31", "origin_name": "營業收入", "value": 1000.0},
+        {"date": "2021-12-31", "origin_name": "營業毛利(毛損)", "value": 400.0},
+        {"date": "2021-12-31", "origin_name": "營業利益(損失)", "value": 200.0},
+        {"date": "2021-12-31", "origin_name": "本期淨利(淨損)", "value": 150.0},
+        {"date": "2021-12-31", "origin_name": "基本每股盈餘(元)", "value": 1.5},
+    ])
+    _, quarterly = DataProcessor.process_financials("9999", df)
+    q = quarterly[0]
+    assert (q["grossProfit"], q["operatingIncome"], q["netIncome"], q["eps"]) == (400.0, 200.0, 150.0, 1.5)
