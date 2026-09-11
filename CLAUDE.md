@@ -8,9 +8,9 @@ Taiwan stock financial data pipeline that fetches data from FinMind API, TDCC, a
 
 ## Agent safety / Cross-workspace instructions
 
-This pipeline and sibling `stock_map` are one system. For cross-repo data operations read stock_map's `AGENTS.md` / `CLAUDE.md` and `.claude/skills/_shared/agent-safety.md` (Q1–Q3); this file supplies data-workspace details, not an override of those safety restrictions. If the paired checkout is unavailable or instructions conflict, stop the affected write and report it; do not infer policy from historical notes.
+This pipeline and sibling `stock_map` are one system. For cross-repo data operations read stock_map's `AGENTS.md` / `CLAUDE.md` and `.claude/skills/_shared/agent-safety.md` (Q2/Q3); this file supplies data-workspace details, not an override of those safety restrictions. If the paired checkout is unavailable or instructions conflict, stop the affected write and report it; do not infer policy from historical notes.
 
-Company-topic semantic decisions remain quarantined, even when initiated here. Local copies of app metadata/topic indexes are inputs, not a new app source of truth; confirm the input version before use. Financial history and ETF accumulated metadata are not assumed rebuildable from a fresh clone.
+Company-topic content follows stock_map's `docs/guides/COMPANY_TOPIC_STANDARD.md`, even when initiated here. Local copies of app metadata/topic indexes are inputs, not a new app source of truth; confirm the input version before use. Financial history and ETF accumulated metadata are not assumed rebuildable from a fresh clone.
 
 ## Package Manager
 

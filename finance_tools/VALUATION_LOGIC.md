@@ -1,54 +1,53 @@
 # 📈 台灣股市：市值與估值更新邏輯 (Valuation & Market Cap)
 
-本文件說明 `stock-data` 專案中更新個股「市值」與「估值指標 (PE, PB, Yield)」的整合邏輯。
+本文件說明個股「市值」與「估值指標（本益比、股價淨值比、殖利率）」如何寫進
+`src/data/layer3/company-financials/{code}.json` 的 `latest` 區塊。
+**以程式為準**；本檔於 2026-09-11 依現行程式改寫（舊版描述的是已退役的 yfinance 逐股抓取）。
 
 ---
 
-## 1. 核心目標
-每日從 **Yahoo Finance** 同步獲取個股的最新市場數據，並精確更新至 `src/data/layer3/company-financials/{code}.json`。
-此整合流程確保了市值與估值指標（本益比、股價淨值比、殖利率）的一致性與即時性。
+## 1. 流程
 
----
+```
+uv run finance_tools/cli.py update-marketcap-inst        ← daily-update workflow 呼叫
+  → finance_tools/orchestration/marketcap_inst_update.py  ← 一次抓全市場（估值＋三大法人）
+      → finance_tools/domains/valuation/twse_valuation_fetcher.py  (TWSEValuationFetcher.fetch_all)
+  → finance_tools/orchestration/company_processor.py      (CompanyProcessor.process_daily_only，逐家)
+      → _build_valuation：收盤價 × 發行股數 = 市值
+      → finance_tools/orchestration/data_assembler.py      (DataAssembler.merge_valuation)
+```
 
-## 2. 相關程式結構
+## 2. 資料來源（`twse_valuation_fetcher.py`）
 
-| 角色 | 檔案路徑 | 功能說明 |
-| :--- | :--- | :--- |
-| **進入點 (CLI)** | `finance_tools/cli.py` | 指令 `update-marketcap` 現在會同時觸發市值與估值更新。 |
-| **任務控管 (Task)** | `finance_tools/tasks/daily/marketcap.py` | 負責批次管理與迴圈執行。 |
-| **核心流程 (Logic)** | `finance_tools/processing/company_processor.py` | `process_marketcap_only` 已升級為處理完整估值統計。 |
-| **數據調度 (Orch)** | `finance_tools/processing/fetch_orchestrator.py` | `fetch_valuation_stats` 負責向 Fetcher 請求數據。 |
-| **數據抓取 (Fetcher)**| `finance_tools/fetchers/yahoo_fetcher.py` | 透過 `yfinance` 取得 `marketCap`, `trailingPE`, `priceToBook`, `dividendYield`。 |
-| **數據整合 (Merge)** | `finance_tools/processing/data_assembler.py` | `merge_valuation` 負責將多個指標填入 JSON 的 `latest` 區塊。 |
+| 板別 | 來源 | 內容 |
+|---|---|---|
+| 上市 | FinMind `TaiwanStockPER`＋`TaiwanStockPrice` | 本益比／股價淨值比／殖利率、收盤價 |
+| 上櫃 | 櫃買 OpenAPI `tpex_mainboard_quotes`＋`tpex_mainboard_peratio_analysis`（開放資料） | 同上；覆蓋 FinMind 回來的上櫃代號 |
 
----
+- 不再抓 `www.twse.com.tw` 的 BWIBBU_d／MI_INDEX（2026-08-26 證交所來函後移除，理由寫在該檔 `_fetch_listed` docstring）。
+- 市值＝收盤價 × `companies-all.json` 的 `gov.capital.issuedCommonShares`；沒有股數就不寫市值。
 
-## 3. 執行流程 (Step-by-Step)
+## 3. 欄位對應
 
-1.  **啟動**：每日自動化腳本執行 `update-marketcap`。
-2.  **抓取數據**：調用 `YahooFetcher` 一次性取得所有關鍵指標。
-3.  **數值轉換**：
-    *   `trailingPE` -> `peRatio`
-    *   `priceToBook` -> `pbRatio`
-    *   `dividendYield` -> `dividendYield` (轉換為百分比)
-4.  **數據整合**：更新 JSON 文件中的 `latest` 區塊與 `lastUpdated` 時間。
-5.  **存檔**：完成更新。
+| 抓到的值 | `_build_valuation` 產出 | `merge_valuation` 寫入 `latest` |
+|---|---|---|
+| 收盤價 × 發行股數 | `marketCap` | `marketCap` |
+| 本益比 | `trailingPE` | `pe` |
+| 股價淨值比 | `priceToBook` | `pb` |
+| 殖利率（來源是百分比，如 1.84） | `dividendYield`（除以 100 → 0.0184） | `dividendYield`（乘回 100，存百分比） |
 
----
+值為 `None` 的欄位不覆寫；有寫入就更新檔案的 `lastUpdated`。
 
-## 4. 更新頻率與優勢
+## 4. 邊界
 
-*   **頻率**：每週一至週五盤後執行。
-*   **優勢**：
-    *   **即時性**：不再需要等到週六才更新 PE/PB。
-    *   **效能**：減少對 FinMind API 的依賴，降低被限流的風險。
-    *   **簡化**：原本週六的 `update-valuation` 任務現在僅作為備援，核心數據已由每日任務覆蓋。
+- 找不到該公司的當日資料＝今日無資料，不算失敗、不進 rerun queue。
+- 財報檔讀不回來（壞檔）時日更跳過，等 `financials-update` 用完整視窗重建（見 repo 根目錄 `CLAUDE.md`）。
+- 同日已更新過會跳過，`--force` 才重跑。
 
----
+## 5. 排程與指令
 
-## 5. 常用指令
+排程看 `cron/wrangler.toml` 與 `cron/src/index.ts`（dispatch `daily-update.yml`），不在本檔重寫時刻。
 
 ```bash
-# 每日更新 (包含市值、PE、PB、殖利率)
-uv run finance_tools/cli.py update-marketcap --code 2330
+uv run finance_tools/cli.py update-marketcap-inst --code 2330   # 會寫正式 JSON，不是驗證
 ```
