@@ -1,6 +1,14 @@
 {
   "latest": {
-    "marketCap": 11685000000.0
+    "marketCap": 11685000000.0,
+    "year": 2026,
+    "quarter": 2,
+    "revenue": 94493000.0,
+    "yoy": 0,
+    "grossMargin": 58.34,
+    "operatingMargin": -8.66,
+    "netMargin": -5.27,
+    "eps": -0.19
   },
   "lastUpdated": "2026-09-11",
   "historical": {
@@ -26,7 +34,88 @@
         "dealer_net_buy": 0.0,
         "code": "7415"
       }
-    }
+    },
+    "annual": [
+      {
+        "year": 2026,
+        "revenue": 94493000.0,
+        "grossProfit": 55125000.0,
+        "operatingIncome": -8180000.0,
+        "netIncome": -4984000.0,
+        "eps": -0.19,
+        "grossMargin": 58.34,
+        "operatingMargin": -8.66,
+        "netMargin": -5.27,
+        "note": "累季",
+        "revenueYoY": null
+      },
+      {
+        "year": 2025,
+        "revenue": 136667000.0,
+        "grossProfit": 104553000.0,
+        "operatingIncome": -53234000.0,
+        "netIncome": 121205000.0,
+        "eps": 9.05,
+        "grossMargin": 76.5,
+        "operatingMargin": -38.95,
+        "netMargin": 88.69,
+        "note": "累季",
+        "revenueYoY": null
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 2,
+        "revenue": 94493000.0,
+        "grossProfit": 55125000.0,
+        "operatingIncome": -8180000.0,
+        "netIncome": -4984000.0,
+        "eps": -0.19,
+        "grossMargin": 58.34,
+        "operatingMargin": -8.66,
+        "netMargin": -5.27
+      },
+      {
+        "year": 2025,
+        "quarter": 4,
+        "revenue": 136667000.0,
+        "grossProfit": 104553000.0,
+        "operatingIncome": -53234000.0,
+        "netIncome": 121205000.0,
+        "eps": 9.05,
+        "grossMargin": 76.5,
+        "operatingMargin": -38.95,
+        "netMargin": 88.69
+      }
+    ],
+    "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 8,
+        "revenue": 10388000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 7,
+        "revenue": 10387000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 6,
+        "revenue": 33517000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 5,
+        "revenue": 267000.0,
+        "yoy": null
+      }
+    ],
+    "dividends": null
   },
   "shareholderDataHistory": {
     "20260904": [
@@ -402,5 +491,8 @@
         "pledgePct": 0.0
       }
     }
-  }
+  },
+  "companyCode": "7415",
+  "companyName": "元澄半導體科技股份有限公司",
+  "dataQuality": "high"
 }

@@ -5,7 +5,7 @@
     "year": 2026,
     "quarter": 2,
     "revenue": 474322000.0,
-    "yoy": 0,
+    "yoy": 41.5,
     "grossMargin": 26.87,
     "operatingMargin": 3.64,
     "netMargin": 2.74,
@@ -138,12 +138,64 @@
         "operatingMargin": 6.23,
         "netMargin": 1.6,
         "note": "累季",
-        "revenueYoY": null,
+        "revenueYoY": -16.6,
         "roe": 1.57,
         "roa": 0.79,
         "ocf": null,
         "fcf": null,
         "debtRatio": 49.48
+      },
+      {
+        "year": 2019,
+        "revenue": 1270256000.0,
+        "grossProfit": 475611000.0,
+        "operatingIncome": 81608000.0,
+        "netIncome": 67863000.0,
+        "eps": 1.22,
+        "grossMargin": 37.44,
+        "operatingMargin": 6.42,
+        "netMargin": 5.34,
+        "note": "累季",
+        "revenueYoY": 1.52
+      },
+      {
+        "year": 2018,
+        "revenue": 1251196000.0,
+        "grossProfit": 464257000.0,
+        "operatingIncome": 69047000.0,
+        "netIncome": 83853000.0,
+        "eps": 1.16,
+        "grossMargin": 37.11,
+        "operatingMargin": 5.52,
+        "netMargin": 6.7,
+        "note": "累季",
+        "revenueYoY": 10.6
+      },
+      {
+        "year": 2017,
+        "revenue": 1131310000.0,
+        "grossProfit": 420541000.0,
+        "operatingIncome": 50078000.0,
+        "netIncome": 680000.0,
+        "eps": -0.57,
+        "grossMargin": 37.17,
+        "operatingMargin": 4.43,
+        "netMargin": 0.06,
+        "note": "累季",
+        "revenueYoY": 219.01
+      },
+      {
+        "year": 2016,
+        "revenue": 354627000.0,
+        "grossProfit": 133580000.0,
+        "operatingIncome": -47069000.0,
+        "netIncome": -33808000.0,
+        "eps": -0.35,
+        "grossMargin": 37.67,
+        "operatingMargin": -13.27,
+        "netMargin": -9.53,
+        "note": "累季",
+        "revenueYoY": null
       }
     ],
     "quarterly": [
@@ -408,70 +460,156 @@
       {
         "year": 2019,
         "quarter": 4,
+        "revenue": 683404000.0,
+        "grossProfit": 273417000.0,
+        "operatingIncome": 69952000.0,
+        "netIncome": 35721000.0,
+        "eps": 0.83,
+        "grossMargin": 40.01,
+        "operatingMargin": 10.24,
+        "netMargin": 5.23,
         "currentRatio": 249.24,
         "debtRatio": 50.87
+      },
+      {
+        "year": 2019,
+        "quarter": 2,
+        "revenue": 586852000.0,
+        "grossProfit": 202194000.0,
+        "operatingIncome": 11656000.0,
+        "netIncome": 32142000.0,
+        "eps": 0.39,
+        "grossMargin": 34.45,
+        "operatingMargin": 1.99,
+        "netMargin": 5.48
+      },
+      {
+        "year": 2018,
+        "quarter": 4,
+        "revenue": 684156000.0,
+        "grossProfit": 266888000.0,
+        "operatingIncome": 48727000.0,
+        "netIncome": 73277000.0,
+        "eps": 1.03,
+        "grossMargin": 39.01,
+        "operatingMargin": 7.12,
+        "netMargin": 10.71
+      },
+      {
+        "year": 2018,
+        "quarter": 2,
+        "revenue": 567040000.0,
+        "grossProfit": 197369000.0,
+        "operatingIncome": 20320000.0,
+        "netIncome": 10576000.0,
+        "eps": 0.13,
+        "grossMargin": 34.81,
+        "operatingMargin": 3.58,
+        "netMargin": 1.87
+      },
+      {
+        "year": 2017,
+        "quarter": 4,
+        "revenue": 799199000.0,
+        "grossProfit": 293156000.0,
+        "operatingIncome": 73837000.0,
+        "netIncome": 48062000.0,
+        "eps": 0.01,
+        "grossMargin": 36.68,
+        "operatingMargin": 9.24,
+        "netMargin": 6.01
+      },
+      {
+        "year": 2017,
+        "quarter": 2,
+        "revenue": 332111000.0,
+        "grossProfit": 127385000.0,
+        "operatingIncome": -23759000.0,
+        "netIncome": -47382000.0,
+        "eps": -0.58,
+        "grossMargin": 38.36,
+        "operatingMargin": -7.15,
+        "netMargin": -14.27
+      },
+      {
+        "year": 2016,
+        "quarter": 4,
+        "revenue": 354627000.0,
+        "grossProfit": 133580000.0,
+        "operatingIncome": -47069000.0,
+        "netIncome": -33808000.0,
+        "eps": -0.35,
+        "grossMargin": 37.67,
+        "operatingMargin": -13.27,
+        "netMargin": -9.53
       }
     ],
     "monthlyRevenue": [
       {
         "year": 2026,
+        "month": 8,
+        "revenue": 132509000.0,
+        "yoy": 23.41
+      },
+      {
+        "year": 2026,
         "month": 7,
         "revenue": 138605000.0,
-        "yoy": null
+        "yoy": -0.4
       },
       {
         "year": 2026,
         "month": 6,
         "revenue": 118547000.0,
-        "yoy": null
+        "yoy": 6.34
       },
       {
         "year": 2026,
         "month": 5,
         "revenue": 113502000.0,
-        "yoy": null
+        "yoy": 9.02
       },
       {
         "year": 2026,
         "month": 4,
         "revenue": 234095000.0,
-        "yoy": null
+        "yoy": 95.94
       },
       {
         "year": 2026,
         "month": 3,
         "revenue": 173782000.0,
-        "yoy": null
+        "yoy": 28.87
       },
       {
         "year": 2026,
         "month": 2,
         "revenue": 119217000.0,
-        "yoy": null
+        "yoy": 11.28
       },
       {
         "year": 2026,
         "month": 1,
         "revenue": 161815000.0,
-        "yoy": null
+        "yoy": 134.92
       },
       {
         "year": 2025,
         "month": 12,
         "revenue": 105543000.0,
-        "yoy": null
+        "yoy": 32.37
       },
       {
         "year": 2025,
         "month": 11,
         "revenue": 48123000.0,
-        "yoy": null
+        "yoy": -52.86
       },
       {
         "year": 2025,
         "month": 10,
         "revenue": 57599000.0,
-        "yoy": null
+        "yoy": -45.98
       },
       {
         "year": 2025,

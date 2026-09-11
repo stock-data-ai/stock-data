@@ -1,6 +1,14 @@
 {
   "latest": {
-    "marketCap": 21878392000.0
+    "marketCap": 21878392000.0,
+    "year": 2026,
+    "quarter": 2,
+    "revenue": 678588000.0,
+    "yoy": 0,
+    "grossMargin": 34.35,
+    "operatingMargin": 26.01,
+    "netMargin": 25.78,
+    "eps": 1.3
   },
   "lastUpdated": "2026-09-11",
   "historical": {
@@ -26,7 +34,100 @@
         "dealer_net_buy": 0.0,
         "code": "7873"
       }
-    }
+    },
+    "annual": [
+      {
+        "year": 2026,
+        "revenue": 678588000.0,
+        "grossProfit": 233096000.0,
+        "operatingIncome": 176501000.0,
+        "netIncome": 174912000.0,
+        "eps": 1.3,
+        "grossMargin": 34.35,
+        "operatingMargin": 26.01,
+        "netMargin": 25.78,
+        "note": "累季",
+        "revenueYoY": null
+      },
+      {
+        "year": 2025,
+        "revenue": 1053221000.0,
+        "grossProfit": 261472000.0,
+        "operatingIncome": 170545000.0,
+        "netIncome": 158509000.0,
+        "eps": 1.31,
+        "grossMargin": 24.83,
+        "operatingMargin": 16.19,
+        "netMargin": 15.05,
+        "note": "累季",
+        "revenueYoY": null
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 2,
+        "revenue": 678588000.0,
+        "grossProfit": 233096000.0,
+        "operatingIncome": 176501000.0,
+        "netIncome": 174912000.0,
+        "eps": 1.3,
+        "grossMargin": 34.35,
+        "operatingMargin": 26.01,
+        "netMargin": 25.78
+      },
+      {
+        "year": 2025,
+        "quarter": 4,
+        "revenue": 1053221000.0,
+        "grossProfit": 261472000.0,
+        "operatingIncome": 170545000.0,
+        "netIncome": 158509000.0,
+        "eps": 1.31,
+        "grossMargin": 24.83,
+        "operatingMargin": 16.19,
+        "netMargin": 15.05
+      }
+    ],
+    "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 8,
+        "revenue": 138448000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 7,
+        "revenue": 132800000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 6,
+        "revenue": 127442000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 5,
+        "revenue": 121651000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 4,
+        "revenue": 116772000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 3,
+        "revenue": 107556000.0,
+        "yoy": null
+      }
+    ],
+    "dividends": null
   },
   "shareholderDataHistory": {
     "20260904": [
@@ -493,5 +594,8 @@
         "pledgePct": 0.0
       }
     }
-  }
+  },
+  "companyCode": "7873",
+  "companyName": "瑞峰半導體股份有限公司",
+  "dataQuality": "high"
 }

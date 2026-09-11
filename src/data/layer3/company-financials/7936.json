@@ -1,6 +1,14 @@
 {
   "latest": {
-    "marketCap": 628863100.0
+    "marketCap": 628863100.0,
+    "year": 2026,
+    "quarter": 2,
+    "revenue": 167680000.0,
+    "yoy": 0,
+    "grossMargin": 30.94,
+    "operatingMargin": 7.23,
+    "netMargin": 7.58,
+    "eps": 0.42
   },
   "lastUpdated": "2026-09-11",
   "historical": {
@@ -26,7 +34,76 @@
         "dealer_net_buy": 0.0,
         "code": "7936"
       }
-    }
+    },
+    "annual": [
+      {
+        "year": 2026,
+        "revenue": 167680000.0,
+        "grossProfit": 51872000.0,
+        "operatingIncome": 12122000.0,
+        "netIncome": 12703000.0,
+        "eps": 0.42,
+        "grossMargin": 30.94,
+        "operatingMargin": 7.23,
+        "netMargin": 7.58,
+        "note": "累季",
+        "revenueYoY": null
+      },
+      {
+        "year": 2025,
+        "revenue": 225517000.0,
+        "grossProfit": 46025000.0,
+        "operatingIncome": -20041000.0,
+        "netIncome": -19541000.0,
+        "eps": null,
+        "grossMargin": 20.41,
+        "operatingMargin": -8.89,
+        "netMargin": -8.66,
+        "note": "累季",
+        "revenueYoY": null
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 2,
+        "revenue": 167680000.0,
+        "grossProfit": 51872000.0,
+        "operatingIncome": 12122000.0,
+        "netIncome": 12703000.0,
+        "eps": 0.42,
+        "grossMargin": 30.94,
+        "operatingMargin": 7.23,
+        "netMargin": 7.58
+      },
+      {
+        "year": 2025,
+        "quarter": 4,
+        "revenue": 225517000.0,
+        "grossProfit": 46025000.0,
+        "operatingIncome": -20041000.0,
+        "netIncome": -19541000.0,
+        "eps": null,
+        "grossMargin": 20.41,
+        "operatingMargin": -8.89,
+        "netMargin": -8.66
+      }
+    ],
+    "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 8,
+        "revenue": 20973000.0,
+        "yoy": null
+      },
+      {
+        "year": 2026,
+        "month": 7,
+        "revenue": 23648000.0,
+        "yoy": null
+      }
+    ],
+    "dividends": null
   },
   "shareholderDataHistory": {
     "20260904": [
@@ -394,5 +471,8 @@
         "pledgePct": 0.0
       }
     }
-  }
+  },
+  "companyCode": "7936",
+  "companyName": "寰聖國際實業股份有限公司",
+  "dataQuality": "high"
 }
