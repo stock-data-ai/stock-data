@@ -30,9 +30,15 @@ RETRY_BACKOFF_FACTOR = 1
 # --- Data Fetching ---
 DEFAULT_SLEEP_RANGE = (1, 3)
 FULL_UPDATE_DAYS = 365  # 抓近1年；歷史資料已存 JSON，MERGE 邏輯保留舊記錄
-# 既有歷史讀不回來時（檔案損壞）改用這個視窗重建。平常不用它純粹是為了省 FinMind
-# 配額，不是來源限制——所以自我修復時可以放寬，讓歷史一次長回來。
+# 檔裡的歷史「不夠」時改用這個視窗，讓歷史一次長回來（見下方兩個門檻）。
+# FinMind 配額按**請求次數**計（`user_count`／`api_request_limit`），抓十年跟抓一年
+# 都是一次請求；平常只抓一年，是因為舊的已經存在檔裡，不必每週重抓。
 FULL_HISTORY_DAYS = 3650
+# 「歷史不夠」的判準：有營收的季度少於 8 季，或月營收少於 24 個月。
+# 一年視窗最多只帶回 5 季／13 個月，所以門檻必須高於這個數字——
+# 否則「只抓過一年」的檔永遠被當成夠了（日更先建的空殼、壞檔重建失敗後的空殼都是這樣）。
+MIN_QUARTERS_FOR_NORMAL_WINDOW = 8
+MIN_MONTHS_FOR_NORMAL_WINDOW = 24
 REVENUE_DAYS = 365
 DEFAULT_FETCH_DAYS = 90
 

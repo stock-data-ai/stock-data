@@ -84,8 +84,11 @@ GitHub Pages (public static JSON API)
     `company-financials/{code}.json`，規則散在各處時曾長出兩套互斥的月營收政策。
     欄位歸誰管見 stock_map `docs/features/platform/財報檔欄位歸屬.md`。
   - `file_manager.load_financial_data()` 有**三種回傳值**：`{}`＝檔案不存在、`None`＝**檔案壞掉**、
-    dict＝正常。看到 `None` 的寫入者一律跳過（不得拿片段覆寫），只有 `financials-update`
-    會放寬到 `FULL_HISTORY_DAYS` 重抓把歷史長回來。壞檔**留在原地**，它就是重抓的訊號。
+    dict＝正常。看到 `None` 的寫入者一律跳過（不得拿片段覆寫）。壞檔**留在原地**。
+  - `financials-update` 抓多長**看「檔裡的歷史夠不夠」，不看檔案在不在／壞不壞**
+    （`company_processor.history_is_short`：有營收的季度 < 8 或月營收 < 24 → `FULL_HISTORY_DAYS`）。
+    新公司（日更會先建只有市值的空殼）、壞檔、放寬後抓失敗寫出的空殼，全都落在「不夠」，
+    沒補齊前每週都會再試。門檻必須高於一年視窗帶回的 5 季／13 個月，否則空殼會被當成夠了。
   - `data_processor.normalize_item_name()` — FinMind 科目名稱的括號有半形／全形兩種寫法且依年度而異，
     比對前一律正規化。漏掉會讓整年的營業現金流對不上（2021 年曾因此缺 823 家）。
 - **domains/** — 一個資料領域一個資料夾，內含 `fetcher.py`（抓＋正規化）與 `tasks.py`（CLI 任務）。

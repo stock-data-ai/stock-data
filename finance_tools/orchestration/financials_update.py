@@ -109,6 +109,7 @@ def run_financials_update(args):
     success_count = 0
     fin_count = 0
     rev_count = 0
+    full_window_count = 0
     failed_companies = []
     quality_issues = []
 
@@ -129,6 +130,8 @@ def run_financials_update(args):
                 force_update=is_force_update,
             )
 
+            if status.get("full_window"):
+                full_window_count += 1
             if success:
                 success_count += 1
                 if not status.get("skipped"):
@@ -163,6 +166,8 @@ def run_financials_update(args):
 
     logger.info(f"\n{'='*60}")
     logger.info(f"更新完成: {success_count}/{len(companies)} 家公司 (損益表 {fin_count} / 月營收 {rev_count})")
+    if full_window_count:
+        logger.info(f"   歷史不足、改用完整視窗: {full_window_count} 家（持續出現同一批＝來源本來就只有這麼多，例如新上市）")
     if failed_companies:
         logger.warning(f"失敗/剩餘: {len(failed_companies)} 家公司")
         logger.warning(f"   失敗/剩餘公司代碼 (前10個): {', '.join(sorted(list(set(failed_companies)))[:10])}{'...' if len(set(failed_companies)) > 10 else ''}")

@@ -15,6 +15,16 @@ from finance_tools.orchestration.data_assembler import DataAssembler
 from finance_tools.domains.institutional_investors.calculator import InstRatioCalculator
 logger = logging.getLogger(__name__)
 
+
+def history_is_short(data: Dict[str, Any]) -> bool:
+    """檔裡的季報或月營收少於門檻（見 `config.MIN_*_FOR_NORMAL_WINDOW`）。"""
+    hist = (data or {}).get("historical") or {}
+    quarters = sum(1 for q in hist.get("quarterly") or [] if q.get("revenue") is not None)
+    months = len(hist.get("monthlyRevenue") or [])
+    return (quarters < config.MIN_QUARTERS_FOR_NORMAL_WINDOW
+            or months < config.MIN_MONTHS_FOR_NORMAL_WINDOW)
+
+
 class CompanyProcessor:
     """
     Encapsulates the logic for processing all financial data for a single company
@@ -118,7 +128,7 @@ class CompanyProcessor:
             "div": False,
             "quality": "low",
             "skipped": False,
-            "rebuilt": False,
+            "full_window": False,
         }
 
         if not force_update and self.file_mgr.is_updated_today(code):
@@ -128,14 +138,18 @@ class CompanyProcessor:
 
         logger.debug(f"正在處理 {code} {name}...")
         try:
-            # 0. 先確認既有歷史讀不讀得到。讀不到（檔案損壞）就把視窗放寬，
-            #    讓這一次直接把歷史重建回來，而不是用一年份覆蓋上去。
+            # 0. 檔裡的歷史不夠就把視窗放寬，讓這一次直接把歷史長回來。
+            #    判準看「檔裡有多少」，不看「檔案在不在／壞不壞」：新公司（日更會先建
+            #    只有市值的空殼）、壞檔、上次放寬卻抓失敗而寫出的空殼，全都落在「不夠」，
+            #    而且沒補齊之前每一輪都會再試——訊號不會因為寫過一次檔就消失。
             existing_data = self.file_mgr.load_financial_data(code)
             if existing_data is None:
-                logger.warning(f"  ⚠️  {code} 既有歷史讀不回來，改用完整視窗重建")
-                start_date = (now_tw() - timedelta(days=config.FULL_HISTORY_DAYS)).strftime("%Y-%m-%d")
+                logger.warning(f"  ⚠️  {code} 財報檔損壞，視同沒有歷史")
                 existing_data = {}
-                status["rebuilt"] = True
+            if history_is_short(existing_data):
+                logger.info(f"  ↺ {code} 歷史不足，改用完整視窗（{config.FULL_HISTORY_DAYS} 天）")
+                start_date = (now_tw() - timedelta(days=config.FULL_HISTORY_DAYS)).strftime("%Y-%m-%d")
+                status["full_window"] = True
 
             # 1. 擷取所有需要的資料
             annual_data, quarterly_data, fin_success = self.fetch_orchestrator.fetch_financials(code, start_date)

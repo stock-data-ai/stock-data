@@ -27,6 +27,13 @@ GOOD = {
 }
 
 
+@pytest.fixture(autouse=True)
+def _no_sleep(monkeypatch):
+    """`process_company` 每個抓取步驟之間會 sleep 1～3 秒（對 FinMind 客氣），測試不需要。"""
+    import finance_tools.config as config
+    monkeypatch.setattr(config, "DEFAULT_SLEEP_RANGE", (0, 0))
+
+
 def corrupt(file_mgr, code="9999"):
     """把檔案弄壞（模擬磁碟／傳輸損壞），回傳原始 bytes。"""
     import os
@@ -120,7 +127,7 @@ def test_corrupt_file_triggers_full_window_rebuild(isolated_file_manager):
 
     ok, status = proc.process_company("9999", "測試公司", one_year, force_update=True)
 
-    assert ok and status["rebuilt"] is True
+    assert ok and status["full_window"] is True
     asked = proc.fetch_orchestrator.financials_fetcher.seen[0]
     assert asked < one_year, f"必須放寬視窗；實際用了 {asked}"
     expected = (now_tw() - timedelta(days=config.FULL_HISTORY_DAYS)).strftime("%Y-%m-%d")
@@ -130,13 +137,71 @@ def test_corrupt_file_triggers_full_window_rebuild(isolated_file_manager):
     assert len(rebuilt["historical"]["quarterly"]) == 28, "歷史一次長回來"
 
 
+def _m(year, month):
+    return {"year": year, "month": month, "revenue": 5.0, "yoy": None}
+
+
+def _healthy(quarters=8, months=24):
+    """歷史剛好達到門檻的正常檔。"""
+    return {
+        "companyCode": "9999", "companyName": "測試公司", "latest": {},
+        "historical": {
+            "quarterly": [_q(2024 + i // 4, i % 4 + 1) for i in range(quarters)],
+            "monthlyRevenue": [_m(2024 + i // 12, i % 12 + 1) for i in range(months)],
+        },
+    }
+
+
 def test_healthy_file_keeps_the_normal_window(isolated_file_manager):
-    """沒壞就不要浪費 API 配額——視窗維持呼叫端給的那個。"""
-    isolated_file_manager.save_financial_data("9999", json.loads(json.dumps(GOOD)))
+    """歷史夠就不必重抓十年——視窗維持呼叫端給的那個。"""
+    isolated_file_manager.save_financial_data("9999", _healthy())
     proc = _processor(isolated_file_manager, [_q(2026, 1)], [])
     ok, status = proc.process_company("9999", "測試公司", "2025-09-10", force_update=True)
-    assert ok and status["rebuilt"] is False
+    assert ok and status["full_window"] is False
     assert proc.fetch_orchestrator.financials_fetcher.seen == ["2025-09-10"]
+
+
+@pytest.mark.parametrize("label,data", [
+    # 日更比週日早碰到新公司，會先建一份只有市值的檔；它是合法 JSON，
+    # 舊的「檔案不存在才算新公司」判準看不出來，只抓一年。
+    ("日更建的空殼", {"companyCode": "9999", "latest": {"marketCap": 1}}),
+    ("季報不足 8 季", _healthy(quarters=5)),
+    # 舊版 update-revenue 整批取代、留 36 → 實際只剩 13 個月（2026-09-11 實測 259 家 < 24）
+    ("月營收不足 24 個月", _healthy(months=13)),
+])
+def test_short_history_gets_the_full_window(isolated_file_manager, label, data):
+    isolated_file_manager.save_financial_data("9999", data)
+    proc = _processor(isolated_file_manager, [_q(2026, 1)], [])
+    ok, status = proc.process_company("9999", "測試公司", "2025-09-10", force_update=True)
+    assert status["full_window"] is True, f"{label} 應放寬視窗"
+    assert proc.fetch_orchestrator.financials_fetcher.seen[0] < "2025-09-10"
+
+
+def test_failed_full_window_retries_next_round(isolated_file_manager):
+    """壞檔 → 放寬視窗 → 那一輪 FinMind 抓失敗。
+
+    回歸測試：原本這時會寫出一份合法的空殼，下一輪讀得回來就只抓一年，
+    歷史永遠回不來。現在判準是「夠不夠」，空殼一樣不夠，下一輪照樣放寬。
+    """
+    from finance_tools.orchestration.company_processor import CompanyProcessor
+    corrupt(isolated_file_manager)
+    failing = CompanyProcessor(
+        processor=DataProcessor(), file_mgr=isolated_file_manager, finmind_client=object(),
+        financials_fetcher=_Fetcher(([], [], False)),
+        revenue_fetcher=_Fetcher((None, False)),
+        all_companies_details={},
+        institutional_investors_shares_fetcher=lambda *a: (pd.DataFrame(), False),
+    )
+    failing.process_company("9999", "測試公司", "2025-09-10", force_update=True)
+
+    quarters = [_q(2019 + i // 4, i % 4 + 1) for i in range(28)]
+    months = [_m(2020 + i // 12, i % 12 + 1) for i in range(72)]
+    proc = _processor(isolated_file_manager, quarters, months)
+    ok, status = proc.process_company("9999", "測試公司", "2025-09-10", force_update=True)
+
+    assert status["full_window"] is True, "上一輪失敗的空殼，這一輪仍要放寬"
+    healed = isolated_file_manager.load_financial_data("9999")["historical"]
+    assert len(healed["quarterly"]) == 28 and len(healed["monthlyRevenue"]) == 72
 
 
 def test_daily_update_backs_off_on_corrupt_file(isolated_file_manager):
