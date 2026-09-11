@@ -14,10 +14,20 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # 600 多檔 × (1.5 秒間隔＋抓取) ≈ 25 分鐘
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # 名單一律讀 stock_map 的 companies-all.json（美股＝有題材分析的那 600 多家）。
+      # 2026-09-11 以前讀的是 repo 內手寫的 us-tickers.json（5/27 的 198 檔，之後沒人維護），
+      # 後來新增分析的 432 家美股從來沒抓過財報，而且完全沒有錯誤訊息。
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -59,7 +69,9 @@ jobs:
             echo "| 狀態 | $STATUS |"
           } >> $GITHUB_STEP_SUMMARY
 
+      # always()：抓取步驟因「失敗超過 10%」判紅時，已經抓成功的仍要發布出去。
       - name: Commit and push
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

@@ -99,7 +99,10 @@ GitHub Pages (public static JSON API)
   `company-financials/{code}.json`，一個領域一個 `merge_*`）、`fetch_orchestrator.py`（批次協調）、
   `check_quality.py`（資料品質＋下市殘留偵測）、`financials_update.py`、`marketcap_inst_update.py`
 - **disposition/** — 處置股預測（獨立於 domains，自成一套流程）
-- **us_financials/** — 美股財報，與台股走不同管線
+- **us_financials/** — 美股財報，與台股走不同管線。**名單讀 companies-all.json 的美股代號**
+  （＝有題材分析的美股），不讀任何手寫清單：2026-09-11 以前讀 `us-tickers.json`（5/27 的 198 檔），
+  之後新增分析的 432 家從來沒抓過財報。不在名單上的檔會被清掉（上限 max(20, 2%)）。
+  非美元報表存兩份：`native` 原幣永遠不動、美元欄位每次從原幣重算
 - **utils/** — `company_list_loader.py` (resolve --code/--topic to list), `rerun_manager.py` (track failures), `quality_report.py`, `finmind.py`（FinMind 共用取數）
 
 ### CI/CD Pipeline (GitHub Actions)

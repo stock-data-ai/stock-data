@@ -20,6 +20,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 import tempfile
 import time
@@ -34,8 +35,19 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from finance_tools.core import merge_policy  # noqa: E402
+from finance_tools.core.file_manager import resolve_companies_all_path  # noqa: E402
 OUTPUT_DIR = PROJECT_ROOT / "src" / "data" / "layer3" / "company-financials-us"
-US_TICKERS_FILE = PROJECT_ROOT / "src" / "data" / "layer3" / "us-tickers.json"
+
+#: 美股代號：大寫字母，允許一段連字號（BRK-B）。台股是 4 碼數字、日韓帶 .JP／.KS／.KQ。
+US_CODE_RE = re.compile(r"[A-Z]+(?:-[A-Z]+)?")
+#: 美股名單下界（2026-09-11 實測 631）。低於此視為抓到殘缺名單——寧可整批失敗，
+#: 也不要拿半份名單去跑，更不能拿它去清檔。
+ROSTER_MIN_US = 400
+#: 清孤兒檔的上限，與台股 `prune_financials` 同一套：單次最多 max(20, 2%)，超過視為名單殘缺。
+PRUNE_MAX_RATIO = 0.02
+PRUNE_MIN_ABS = 20
+#: 失敗（例外）超過名單的這個比例就回非零——少數幾檔抓不到是常態，大批抓不到是出事了。
+MAX_ERROR_RATIO = 0.10
 
 # Companies that report in TWD are already covered by the Taiwan stock pipeline
 SKIP_FINANCIAL_CURRENCIES = {"TWD"}
@@ -339,22 +351,58 @@ def load_existing(path: Path):
         return {}
 
 
-def load_us_topic_codes():
-    with open(US_TICKERS_FILE, encoding="utf-8") as f:
-        data = json.load(f)
-    return data["tickers"]
+def load_us_roster():
+    """美股名單：stock_map `companies-all.json` 裡的美股代號（＝有題材分析的美股）。
+
+    **2026-09-11 以前讀的是 `us-tickers.json`**——5/27 建爬蟲時手寫的 198 檔，之後沒人維護。
+    後來陸續新增分析的 **432 家美股從來沒抓過財報**：公司頁財報分頁、AI 分析的基本面、
+    持股健檢全部是「無資料」，而且沒有任何錯誤訊息。台股 2026-09-09 踩過同一個坑
+    （掃目錄當名單），規則一樣：**名單一律讀 stock_map，儲存目錄不是名單，手寫清單也不是。**
+
+    名單缺席或殘缺時直接拋出，不退回任何備用清單——那等於把病根接回去。
+    """
+    path = resolve_companies_all_path()
+    if path is None:
+        raise RuntimeError("找不到 companies-all.json。CI 應先執行 .github/actions/fetch-roster。")
+    with open(path, encoding="utf-8") as f:
+        roster = json.load(f)
+    codes = sorted(c for c, d in roster.items()
+                   if US_CODE_RE.fullmatch(c) and not (d or {}).get("isETF"))
+    if len(codes) < ROSTER_MIN_US:
+        raise RuntimeError(f"companies-all.json 美股只有 {len(codes)} 檔（下界 {ROSTER_MIN_US}），"
+                           "疑似抓到殘缺檔，本次不處理任何公司。")
+    return codes
+
+
+def prune_orphans(roster_codes, dry_run: bool = False):
+    """刪掉不在名單上的美股財報檔（下市、移出所有題材、當初誤建的測試檔）。回傳被刪的代號。
+
+    與台股 `prune_financials` 同一個政策：不留墓碑、單次上限 max(20, 2%)，超過就整批不刪。
+    """
+    on_disk = {p.name[:-5] for p in OUTPUT_DIR.glob("*.json")}
+    orphans = sorted(on_disk - set(roster_codes))
+    cap = max(PRUNE_MIN_ABS, int(len(on_disk) * PRUNE_MAX_RATIO))
+    if len(orphans) > cap:
+        print(f"[prune] 不在名單上的有 {len(orphans)} 檔，超過單次上限 {cap}，疑似名單殘缺，本次不刪")
+        return []
+    for code in orphans:
+        if not dry_run:
+            (OUTPUT_DIR / f"{code}.json").unlink()
+        print(f"[prune] {'(dry-run) 會刪' if dry_run else '刪除'} {code}（不在 companies-all.json）")
+    return orphans
 
 
 def main():
     parser = argparse.ArgumentParser(description="Fetch US stock financials → 億 USD JSON")
     parser.add_argument("codes", nargs="*", help="US tickers (e.g. ARM NVDA AAPL)")
-    parser.add_argument("--all-topics", action="store_true", help="All US companies with topics")
+    parser.add_argument("--all-topics", action="store_true",
+                        help="名單上所有美股（stock_map companies-all.json），並清掉不在名單上的舊檔")
     parser.add_argument("--delay", type=float, default=1.5, help="Delay between requests (s)")
     args = parser.parse_args()
 
     if args.all_topics:
-        codes = load_us_topic_codes()
-        print(f"Found {len(codes)} US companies with topics")
+        codes = load_us_roster()
+        print(f"名單：companies-all.json 美股 {len(codes)} 檔")
     elif args.codes:
         codes = [c.upper() for c in args.codes]
     else:
@@ -397,6 +445,16 @@ def main():
     # 所以判準是「有東西要處理，卻一個都沒成功」。
     if codes and ok == 0:
         print(f"FAILED: {len(codes)} 檔都沒有寫入（skipped {skipped} / errors {errors}）")
+        return 1
+
+    # 名單模式才清孤兒：手動指定幾檔時，其餘的檔不在 codes 裡是正常的。
+    # 放在「至少有寫成」之後——整批失敗時不動任何既有檔。
+    if args.all_topics:
+        prune_orphans(codes)
+
+    if errors > len(codes) * MAX_ERROR_RATIO:
+        print(f"FAILED: {errors}/{len(codes)} 檔抓取失敗，超過 {MAX_ERROR_RATIO:.0%}"
+              "（已成功的照常寫入，但這不是正常的零星失敗）")
         return 1
     return 0
 
