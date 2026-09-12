@@ -9,6 +9,9 @@ dependencies = [
     "pandas>=2.3.3",
     "tqdm>=4.67.1",
     "requests",
+    # 直接 import（finance_tools/utils/tls.py 要拿 certifi 的 bundle 去合併自備中繼憑證），
+    # 不是只靠 requests 帶進來的傳遞相依。
+    "certifi",
     "beautifulsoup4",
     "selenium>=4.36.0",
     "webdriver-manager>=4.0.1",
