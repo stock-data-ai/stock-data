@@ -15,33 +15,53 @@
   "topHoldings": [
     {
       "name": "臺股期貨",
-      "weight": 155.86,
-      "shares": 44730,
+      "weight": 122.48,
+      "shares": 33950,
       "foreignCode": "202609TX",
-      "previousWeight": 155.49,
-      "weightChange": 0.37,
-      "previousShares": 44950,
-      "sharesChange": -220
+      "previousWeight": 155.86,
+      "weightChange": -33.38,
+      "previousShares": 44730,
+      "sharesChange": -10780
     },
     {
       "name": "台積電",
-      "weight": 40.98,
+      "weight": 42.91,
       "shares": 45587000,
       "code": "2330",
-      "previousWeight": 41.16,
-      "weightChange": -0.18,
+      "previousWeight": 40.98,
+      "weightChange": 1.93,
       "previousShares": 45587000,
       "sharesChange": 0
     },
     {
+      "name": "臺股期貨",
+      "weight": 31.2,
+      "shares": 8615,
+      "foreignCode": "202610TX",
+      "previousWeight": 155.86,
+      "weightChange": -124.66,
+      "previousShares": 44730,
+      "sharesChange": -36115
+    },
+    {
       "name": "台灣50ETF股票期貨",
-      "weight": 3.14,
-      "shares": 7800,
+      "weight": 2.86,
+      "shares": 6800,
       "foreignCode": "202609NYF",
-      "previousWeight": 3.12,
-      "weightChange": 0.02,
+      "previousWeight": 3.14,
+      "weightChange": -0.28,
       "previousShares": 7800,
-      "sharesChange": 0
+      "sharesChange": -1000
+    },
+    {
+      "name": "台灣50ETF股票期貨",
+      "weight": 0.42,
+      "shares": 1000,
+      "foreignCode": "202610NYF",
+      "previousWeight": 3.14,
+      "weightChange": -2.72,
+      "previousShares": 7800,
+      "sharesChange": -6800
     }
   ],
   "holdingsHistory": {
@@ -398,7 +418,35 @@
         "weight": 3.14,
         "shares": 7800
       }
+    ],
+    "2026-09-11": [
+      {
+        "name": "臺股期貨",
+        "weight": 122.48,
+        "shares": 33950
+      },
+      {
+        "name": "台積電",
+        "weight": 42.91,
+        "shares": 45587000,
+        "code": "2330"
+      },
+      {
+        "name": "臺股期貨",
+        "weight": 31.2,
+        "shares": 8615
+      },
+      {
+        "name": "台灣50ETF股票期貨",
+        "weight": 2.86,
+        "shares": 6800
+      },
+      {
+        "name": "台灣50ETF股票期貨",
+        "weight": 0.42,
+        "shares": 1000
+      }
     ]
   },
-  "lastUpdated": "2026-09-04"
+  "lastUpdated": "2026-09-11"
 }
