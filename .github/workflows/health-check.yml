@@ -56,13 +56,15 @@ jobs:
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
+              # 2026-09-13 daily-update 兩班改成週一到週六（週日沒有新資料可撈，見 cron/wrangler.toml）。
+              # 注意本清單的 days 是 Python %w（0=Sun），與 Cloudflare cron 的 1=Sun 差一位。
               {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
-              {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30},
+              {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30, 'days': [1,2,3,4,5,6]},
               {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},
               {'label': '19:45 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 19, 'minute': 45, 'days': [1,2,3,4,5]},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
-              {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5},
+              {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5,  'days': [1,2,3,4,5,6]},
               {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '21:30 Margin & Lending Update',             'workflow_name': 'Margin Trading Update｜融資融券與借券更新',                    'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},

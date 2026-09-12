@@ -37,8 +37,10 @@ const CRON_MAP: Record<string, CronJob> = {
   // 晚 2~3 小時（當日 17:05 尚無資料、19:05 已有），原本 16:30／17:05 兩輪必定失敗，
   // 連帶讓 chip-topic 18:00 因上游資料過舊而中止。證交所 OpenAPI 沒有 T86 的替代品，
   // 只能把整條鏈往後移。19:30 是依單一觀測點推的，若仍偏早需再往後。
-  '30 11 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 19:30 每天（第一次）
-  '05 13 * * *':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },              // 台灣 21:05 每天（備援）
+  // 2026-09-13 拿掉週日那班，理由見 cron/wrangler.toml 同一處註解（週末沒有新的當日資料，
+  // 週六留著是為了撿 FinMind 外資持股的補正）。
+  '30 11 * * 2,3,4,5,6,7': { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 19:30 週一到週六（第一次）
+  '05 13 * * 2,3,4,5,6,7': { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 21:05 週一到週六（備援）
   '45 11 * * 2,3,4,5,6':  { workflow: 'generate-chip-topic.yml' },                                 // 台灣 19:45 週一到週五（daily-update 19:30 約 6 分鐘跑完；下游每日焦點 routine 20:00 依賴這班的產出）
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
   '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
