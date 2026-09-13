@@ -3,16 +3,16 @@
   "companyName": "AeroVironment, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 641616000,
+    "quarter": 3,
+    "revenue": 480490000,
     "yoy": 140.9,
-    "grossMargin": 25.32,
-    "operatingMargin": 2.81,
-    "netMargin": -13.41,
-    "eps": 1.25,
+    "grossMargin": 26.47,
+    "operatingMargin": -2.27,
+    "netMargin": -10.13,
+    "eps": -0.1,
     "pe": null,
     "pb": 1.69,
-    "marketCap": 7473947136
+    "marketCap": 7455905792
   },
   "historical": {
     "annual": [
@@ -91,6 +91,24 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "revenue": 480490000,
+        "grossProfit": 124599000,
+        "operatingIncome": -10871000,
+        "netIncome": -5066000,
+        "eps": -0.1,
+        "grossMargin": 25.93,
+        "operatingMargin": -2.26,
+        "netMargin": -1.05,
+        "native": {
+          "revenue": 480490000,
+          "grossProfit": 124599000,
+          "operatingIncome": -10871000,
+          "netIncome": -5066000
+        }
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "revenue": 641616000,
         "grossProfit": 202625000,
@@ -114,7 +132,7 @@
         "grossProfit": 98794000,
         "operatingIncome": -27732000,
         "netIncome": -243823000,
-        "eps": -3.15,
+        "eps": -4.9,
         "grossMargin": 24.21,
         "operatingMargin": -6.8,
         "netMargin": -59.75,
@@ -181,7 +199,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-09-11",
+  "lastUpdated": "2026-09-13",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
