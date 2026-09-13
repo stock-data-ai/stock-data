@@ -14,6 +14,7 @@ from typing import Dict, Optional
 
 import requests
 
+from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.retry import retry as _retry
 from finance_tools.utils.finmind import fetch_finmind
 
@@ -155,9 +156,8 @@ class TWSEInstitutionalFetcher:
     # ──────────────────────────────────────────────────────────────
     def _fetch_otc(self) -> Optional[Dict[str, InstitutionalRecord]]:
         try:
-            req = urllib.request.Request(self.TPEX_URL, headers=_BROWSER_HEADERS)
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+            # 櫃買大檔會傳到一半斷線，要用續傳版（見 utils/http_fetch.py）
+            data = http_get_json(self.TPEX_URL, headers=_BROWSER_HEADERS, timeout=30)
             if not data:
                 return None
 

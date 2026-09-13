@@ -27,6 +27,7 @@ import logging
 import time
 import urllib.request
 from typing import Any, Dict, List, Optional
+from finance_tools.utils.http_fetch import get_json as http_get_json
 
 logger = logging.getLogger(__name__)
 
@@ -139,11 +140,10 @@ def _fetch(url: str) -> Optional[List[Dict[str, Any]]]:
 
     機房 IP 打 TPEx 會間歇性被重置，重試一次多半就過——本機測不出這個症狀。
     """
-    req = urllib.request.Request(url, headers=_HEADERS)
     for attempt in range(RETRIES):
         try:
-            with urllib.request.urlopen(req, timeout=TIMEOUT_SEC) as res:
-                return json.loads(res.read().decode("utf-8"))
+            # 櫃買大檔會傳到一半斷線，要用續傳版（見 utils/http_fetch.py）
+            return http_get_json(url, headers=_HEADERS, timeout=TIMEOUT_SEC)
         except Exception as e:
             logger.warning(f"  {url} 第 {attempt + 1}/{RETRIES} 次失敗：{e}")
             if attempt < RETRIES - 1:

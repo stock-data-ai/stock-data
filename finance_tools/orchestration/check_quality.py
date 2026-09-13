@@ -3,6 +3,7 @@ import logging
 import json
 import urllib.request
 import finance_tools.config as config
+from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.rerun_manager import RerunManager
 
 logger = logging.getLogger(__name__)
@@ -35,8 +36,8 @@ def _report_delisted(output_dir):
     live = set()
     for url in _LISTING_SOURCES:
         try:
-            req = urllib.request.Request(url, headers=_HEADERS)
-            rows = json.loads(urllib.request.urlopen(req, timeout=60).read())
+            # 櫃買大檔會傳到一半斷線，要用續傳版（見 utils/http_fetch.py）
+            rows = http_get_json(url, headers=_HEADERS, timeout=60)
         except Exception as e:
             logger.warning(f"下市殘留檢查：{url} 抓取失敗（{e}），本次跳過")
             return

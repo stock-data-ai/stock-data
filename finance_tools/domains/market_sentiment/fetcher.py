@@ -27,6 +27,7 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
+from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.finmind import fetch_finmind
 
 logger = logging.getLogger(__name__)
@@ -138,11 +139,8 @@ class MarketSentimentFetcher:
         Note: this endpoint always returns the latest trading day (no date param).
         """
         try:
-            resp = requests.get(
-                self.TPEX_INSTITUTIONAL_URL, headers=self.headers, timeout=15
-            )
-            resp.raise_for_status()
-            rows = resp.json()
+            # 櫃買大檔會傳到一半斷線，要用續傳版（見 utils/http_fetch.py）
+            rows = http_get_json(self.TPEX_INSTITUTIONAL_URL, headers=self.headers, timeout=15)
 
             # Investor names have leading full-width spaces for sub-items; strip them.
             # TPEx uses "外資及陸資(不含自營商)" (not "不含外資自營商")
@@ -241,9 +239,7 @@ class MarketSentimentFetcher:
         """
         roc = f"{dt.year - 1911}{dt.month:02}{dt.day:02}"
         try:
-            resp = requests.get(self.TPEX_MARGIN_URL, headers=self.headers, timeout=20)
-            resp.raise_for_status()
-            rows = [r for r in (resp.json() or []) if str(r.get("Date", "")).strip() == roc]
+            rows = [r for r in (http_get_json(self.TPEX_MARGIN_URL, headers=self.headers, timeout=20) or []) if str(r.get("Date", "")).strip() == roc]
             if not rows:
                 return None
 

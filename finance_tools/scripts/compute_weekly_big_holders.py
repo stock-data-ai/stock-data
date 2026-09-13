@@ -26,6 +26,7 @@ from collections import Counter
 
 import requests
 
+from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.core.file_manager import resolve_companies_all_path
 from finance_tools.utils.retry import retry as _retry
 from finance_tools.utils.twse_url import bust
@@ -80,6 +81,9 @@ def big_holder_ratio(snapshot: list, min_lots: int) -> tuple[float, int]:
 
 
 def _fetch_json(url: str) -> list:
+    if "tpex.org.tw" in url:
+        # 櫃買大檔會傳到一半斷線，要用續傳版（見 finance_tools/utils/http_fetch.py）
+        return http_get_json(bust(url), headers=_HEADERS, timeout=30)
     resp = requests.get(bust(url), headers=_HEADERS, timeout=30)
     resp.raise_for_status()
     return resp.json()

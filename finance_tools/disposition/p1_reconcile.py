@@ -24,6 +24,7 @@ import json, os, sys, re, math, time, datetime, statistics, itertools
 import requests
 
 from finance_tools.utils.finmind import fetch_finmind
+from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.stock_info import stock_info
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
@@ -138,9 +139,15 @@ def _bust(url):
 @retry(stop=stop_after_attempt(5),
        wait=wait_exponential(multiplier=1, min=2, max=20),
        retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout,
-                                      requests.exceptions.JSONDecodeError)),
+                                      requests.exceptions.JSONDecodeError,
+                                      # 櫃買走 urllib 續傳版，斷線／壞 JSON 的例外型別不同
+                                      OSError, json.JSONDecodeError)),
        reraise=True)
 def fj(url):
+    if "tpex.org.tw" in url:
+        # 櫃買大檔會傳到一半斷線（2026-09-12 起），requests 只能整份重來、常斷在同一處。
+        # 見 finance_tools/utils/http_fetch.py。
+        return http_get_json(_bust(url), headers=_HEADERS, timeout=25)
     r = _SESSION.get(_bust(url), timeout=25)
     r.raise_for_status()
     return r.json()
