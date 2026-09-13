@@ -46,7 +46,7 @@ uv run finance_tools/cli.py update-revenue --limit 10
 uv run finance_tools/cli.py update-insider-holdings --force
 
 # 日期型歷史封存：主檔只留當年＋前一年，更舊的整年搬進 company-financials-archive/（gzip）
-# daily-update 每天會自動跑；--dry-run 真的不寫任何檔
+# daily-update 週一~週六會自動跑（週日沒新資料，2026-09-13 起不跑）；--dry-run 真的不寫任何檔
 uv run finance_tools/cli.py archive-history --dry-run
 
 # 下市清除：名單上沒有的公司刪主檔，連同封存一起刪
