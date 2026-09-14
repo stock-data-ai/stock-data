@@ -99,7 +99,7 @@ test('T1 reverse: any CHECK_JOBS entry pointing at a missing workflow is caught'
 test('T2 reverse: removing a CHECK_JOBS entry for a dispatched workflow is caught', () => {
     const dir = fixture('t2');
     edit(dir, '.github/workflows/health-check.yml', (s) =>
-        s.split('\n').filter((l) => !l.includes("'label': '19:00 MOPS Scraper'")).join('\n'));
+        s.split('\n').filter((l) => !l.includes("MOPS Scraper｜")).join('\n'));
     const r = runGuard(dir);
     assert.equal(r.status, 1, r.out);
     assert.match(r.out, /scraper-mops\.yml.*壞了不會通知/s);
@@ -160,8 +160,8 @@ test('T3 reverse: dispatching a workflow file that does not exist is caught', ()
 test('reverse: a CHECK_JOBS time that drifts from the cron is caught', () => {
     const dir = fixture('time');
     edit(dir, '.github/workflows/health-check.yml', (s) =>
-        s.replace("{'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0}",
-            "{'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 18, 'minute': 0}"));
+        s.replace("{'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0}",
+            "{'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 18, 'minute': 0}"));
     const r = runGuard(dir);
     assert.equal(r.status, 1, r.out);
     assert.match(r.out, /信上的時間會誤導人/);
@@ -207,10 +207,14 @@ test('reverse: lenient on a shift with nothing later to cover it is caught', () 
     assert.match(r.out, /永遠不會生效/);
 });
 
-test('the existing lenient entry is the early market-sentiment shift and it is covered', () => {
+test('existing lenient entries are early shifts with a later same-workflow refresh', () => {
     const yml = fs.readFileSync(path.join(repoRoot, '.github/workflows/health-check.yml'), 'utf-8');
     const lenient = [...yml.matchAll(/\{'label': '([^']+)'[^}]*'lenient':\s*True[^}]*\}/g)].map((m) => m[1]);
-    assert.deepEqual(lenient, ['15:55 Market Sentiment Update'],
+    assert.deepEqual(lenient, [
+        '15:55 Market Sentiment Update',
+        '12:00 MOPS Scraper｜午間刷新',
+        '17:00 MOPS Scraper｜盤後刷新',
+    ],
         'lenient is for shifts that deliberately race ahead of the data, not for flaky ones');
 });
 

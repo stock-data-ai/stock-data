@@ -58,7 +58,9 @@ jobs:
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
               # 2026-09-13 daily-update 兩班改成週一到週六（週日沒有新資料可撈，見 cron/wrangler.toml）。
               # 注意本清單的 days 是 Python %w（0=Sun），與 Cloudflare cron 的 1=Sun 差一位。
-              {'label': '19:00 MOPS Scraper',                        'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 19, 'minute': 0},
+              {'label': '12:00 MOPS Scraper｜午間刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 12, 'minute': 0, 'lenient': True},
+              {'label': '17:00 MOPS Scraper｜盤後刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 17, 'minute': 0, 'lenient': True},
+              {'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
               {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30, 'days': [1,2,3,4,5,6]},
               {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},

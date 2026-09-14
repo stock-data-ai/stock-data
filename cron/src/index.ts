@@ -43,7 +43,9 @@ const CRON_MAP: Record<string, CronJob> = {
   '05 13 * * 2,3,4,5,6,7': { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 21:05 週一到週六（備援）
   '45 11 * * 2,3,4,5,6':  { workflow: 'generate-chip-topic.yml' },                                 // 台灣 19:45 週一到週五（daily-update 19:30 約 6 分鐘跑完；下游每日焦點 routine 20:00 依賴這班的產出）
   '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
-  '0 11 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 19:00 每天
+  '0 4 * * *':            { workflow: 'scraper-mops.yml' },                                         // 台灣 12:00 每天
+  '0 9 * * *':            { workflow: 'scraper-mops.yml' },                                         // 台灣 17:00 每天
+  '0 12 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 20:00 每天（20:30 通知前刷新）
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
   '55 13 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 21:55 週一到週五（第四次，融資融券公布後）
   '05 11 * * 2,3,4,5,6':  { workflow: 'generate-disposition-forecast.yml' },                       // 台灣 19:05 週一到週五（提早出爐；價量已結算。此時融資融券款7尚未公布，由下方備援補齊）
