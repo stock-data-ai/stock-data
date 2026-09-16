@@ -14,10 +14,10 @@
     "marketCap": 823804933.8000001,
     "pe": "Infinity",
     "pb": 1.23,
-    "marginBalance": 629,
-    "shortBalance": 1,
+    "marginBalance": 630,
+    "shortBalance": 0,
     "dividendYield": 0.0,
-    "sblBalance": 252
+    "sblBalance": 251
   },
   "historical": {
     "annual": [
@@ -9696,6 +9696,14 @@
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 1
+      },
+      "2026-09-16": {
+        "marginBuy": 1,
+        "marginSell": 0,
+        "marginBalance": 630,
+        "shortBuy": 1,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     },
     "securitiesLending": {
@@ -10599,6 +10607,13 @@
         "sblBalance": 252,
         "sblShortSales": 0,
         "sblReturns": 4,
+        "sblAdjustments": 0,
+        "sblAvailable": 17
+      },
+      "2026-09-16": {
+        "sblBalance": 251,
+        "sblShortSales": 0,
+        "sblReturns": 1,
         "sblAdjustments": 0,
         "sblAvailable": 17
       }
