@@ -14,31 +14,31 @@
   "topHoldings": [
     {
       "name": "恆生指數期貨",
-      "weight": 201.38,
-      "shares": 631,
+      "weight": 199.46,
+      "shares": 622,
       "foreignCode": "202609HSI",
-      "previousWeight": 200.12,
-      "weightChange": 1.26,
-      "previousShares": 649,
-      "sharesChange": -18
+      "previousWeight": 201.38,
+      "weightChange": -1.92,
+      "previousShares": 631,
+      "sharesChange": -9
     },
     {
       "name": "MARGIN",
-      "weight": 74.09,
-      "shares": 287907562,
+      "weight": 74.04,
+      "shares": 285475642,
       "foreignCode": "M_HKD",
-      "previousWeight": 0.25,
-      "weightChange": 73.84,
+      "previousWeight": 0.27,
+      "weightChange": 73.77,
       "previousShares": 4161662,
-      "sharesChange": 283745900
+      "sharesChange": 281313980
     },
     {
       "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
-      "weight": 25.65,
+      "weight": 25.71,
       "shares": 402165656,
       "foreignCode": "DA_NTD",
-      "previousWeight": 23.96,
-      "weightChange": 1.69,
+      "previousWeight": 25.65,
+      "weightChange": 0.06,
       "previousShares": 402165656,
       "sharesChange": 0
     },
@@ -47,8 +47,8 @@
       "weight": 0.27,
       "shares": 4161662,
       "foreignCode": "M_NTD",
-      "previousWeight": 0.25,
-      "weightChange": 0.02,
+      "previousWeight": 0.27,
+      "weightChange": 0.0,
       "previousShares": 4161662,
       "sharesChange": 0
     }
@@ -415,7 +415,29 @@
         "weight": 0.27,
         "shares": 4161662
       }
+    ],
+    "2026-09-18": [
+      {
+        "name": "恆生指數期貨",
+        "weight": 199.46,
+        "shares": 622
+      },
+      {
+        "name": "MARGIN",
+        "weight": 74.04,
+        "shares": 285475642
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 25.71,
+        "shares": 402165656
+      },
+      {
+        "name": "MARGIN",
+        "weight": 0.27,
+        "shares": 4161662
+      }
     ]
   },
-  "lastUpdated": "2026-09-11"
+  "lastUpdated": "2026-09-18"
 }
