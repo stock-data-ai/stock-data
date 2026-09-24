@@ -46,3 +46,67 @@ jobs:
             }
 
             console.log(`Deleted ${deleted} old workflow runs.`);
+
+  # ── 每月第一個週一：把 git 歷史壓成單一 commit ─────────────────────────────
+  # 為什麼：資料排程每天重寫上千個公司檔，git 每改一次就整份留底——一週約長 0.9 GB，
+  # 2026-04-08 壓過一次，到 09-25 又長回 26.5 GB。網站內容（Pages 讀 main 的最新一版）
+  # 不受影響，歷史對這個 repo 沒有用處，只拖慢 clone／fetch。
+  # 做法照 crates.io index：commit-tree 取同一棵樹、無父 commit，再 --force-with-lease。
+  #
+  # 安全條件（缺一不做）：
+  #   1. 其他 workflow 沒有 in_progress／queued——資料排程推送前會 `git pull --rebase`，
+  #      若它的起點是壓縮前的歷史，rebase 會把整串舊歷史重放回來。等最多 20 分鐘，
+  #      還有人在跑就**失敗**（寧可這個月不壓，也不能跟資料排程撞車）。
+  #   2. --force-with-lease 綁定 checkout 當下的 tip：這中間有人推了，推送自動失敗。
+  #   3. 壓完比對新舊 tree hash 一致才推。
+  #
+  # 壓完之後：本機的 clone 要 `git fetch && git reset --hard origin/main`（無本地 commit 時）；
+  # 有沒推的本地 commit 則 `git rebase --onto origin/main <壓縮前 tip>`，tip 寫在 commit 訊息裡。
+  # GitHub 端的空間由 GitHub 背景 GC 自行回收；兩個月沒降再找 GitHub Support。
+  squash-history:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: 只在每月第一個週一執行
+        id: gate
+        run: |
+          day=$(TZ=Asia/Taipei date +%d)
+          if [ "$day" -le 7 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "本月已過第一週（${day} 日），跳過。"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 等其他 workflow 跑完
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in $(seq 1 20); do
+            busy=$(gh api "repos/${{ github.repository }}/actions/runs?per_page=100" \
+              --jq "[.workflow_runs[] | select(.id != ${{ github.run_id }}) | select(.status==\"in_progress\" or .status==\"queued\")] | length")
+            [ "$busy" = "0" ] && { echo "沒有其他 workflow 在跑"; exit 0; }
+            echo "還有 ${busy} 個 workflow 在跑，1 分鐘後再看（${i}/20）"
+            sleep 60
+          done
+          echo "::error::20 分鐘後仍有 workflow 在跑，本月不壓縮歷史"
+          exit 1
+
+      - uses: actions/checkout@v6
+        if: steps.gate.outputs.run == 'true'
+        with:
+          fetch-depth: 1
+
+      - name: 壓成單一 commit 並推送
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          OLD=$(git rev-parse HEAD)
+          NEW=$(git commit-tree "${OLD}^{tree}" -m "chore: 壓縮 git 歷史為單一 commit $(TZ=Asia/Taipei date +%F)（壓縮前 tip ${OLD}）")
+          [ "$(git rev-parse "${NEW}^{tree}")" = "$(git rev-parse "${OLD}^{tree}")" ] || { echo "::error::tree 不一致，不推"; exit 1; }
+          git push --force-with-lease="main:${OLD}" origin "${NEW}:refs/heads/main"
+          echo "已壓縮：${OLD} → ${NEW}"
