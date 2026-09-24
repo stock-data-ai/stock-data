@@ -1,0 +1,204 @@
+name: Weekly Shareholder Update (Saturday)｜股東結構（週六）
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force update even if already updated today'
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: data-pipeline-shareholder
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  fetch-tdcc:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # 下市清除先於抓資料：TDCC 對已終止買賣的個股照發資料，不先刪掉，下面那步會把它們續命。
+      # 刪除由「Commit result」的 git add 目錄一起收進 commit。
+      - name: Prune delisted｜刪掉已下市的財報檔
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py prune-financials 2>&1 | tee /tmp/prune.log
+
+      - name: Fetch TDCC shareholding data
+        run: |
+          set -o pipefail
+          MAX=3
+          for attempt in $(seq 1 $MAX); do
+            if uv run finance_tools/cli.py fetch-shareholder-data --force 2>&1 | tee /tmp/run.log; then
+              break
+            fi
+            grep -q "STALE:" /tmp/run.log && { echo "TDCC 尚未發布新一期，重試無意義，直接失敗。"; exit 1; }
+            [ $attempt -lt $MAX ] && { echo "Attempt $attempt 失敗，30 秒後重試..."; sleep 30; } || exit 1
+          done
+
+      # 內部人持股（董監、經理人、大股東）：資料是**月頻**，但掛在這班週跑的排程裡。
+      # 端點只回最新一期，換月與否用「檔案內容有沒有 diff」判斷即可，不必自己算月初；
+      # 而它與股權分散同型（一次拿全市場、逐家併進 company-financials），
+      # 沒有理由為了每月一次的資料再開一個 workflow。
+      - name: Update insider holdings｜內部人持股
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-insider-holdings --force 2>&1 | tee /tmp/insider.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          RESULT=$(grep -oP 'OK 完成: \K\d+/\d+(?= 間)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          DATA_DATE=$(grep -oP 'TDCC 資料日期: \K\d{8}' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          WARN_COUNT=$(grep -c "⚠" "$LOG" 2>/dev/null || echo "0")
+          {
+            echo "## 股東結構更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **TDCC 尚未發布新一期資料，本次未更新任何數據。** 等 TDCC 發布後再手動重跑。"
+              echo "> $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| TDCC 資料日期 | $DATA_DATE |"
+            echo "| 更新公司數 | $RESULT |"
+            echo "| 資料異常跳過 | ${WARN_COUNT} 筆 |"
+            echo "| 狀態 | $STATUS |"
+            if [ "$WARN_COUNT" -gt 0 ]; then
+              echo ""
+              echo "### ⚠ 資料品質警示（跳過的公司）"
+              echo '```'
+              grep "⚠" "$LOG" 2>/dev/null || true
+              echo '```'
+            fi
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "每週更新 TDCC 股權分散數據 $(date -u +%Y-%m-%d)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，TDCC 股權分散資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
+
+  compute-big-holders:
+    needs: fetch-tdcc
+    if: always() && needs.fetch-tdcc.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Compute big holders ranking
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py compute-big-holders 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          WRITTEN=$(grep "written →" /tmp/run.log 2>/dev/null | tail -1 | sed 's/.*written → //' || echo "—")
+          {
+            echo "## 大戶加碼排行計算 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 輸出檔案 | $WRITTEN |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/market/weekly_big_holders.json
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "更新大戶加碼排行 $(date -u +%Y-%m-%d)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，大戶加碼排行沒有發布出去"
+            git status --short
+            exit 1
+          fi

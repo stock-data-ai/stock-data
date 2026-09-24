@@ -1,0 +1,49 @@
+# Node
+cron/node_modules
+cron/package-lock.json
+
+# Environment
+.env
+/.venv/
+
+# Python
+**/__pycache__/
+*.pyc
+*.log
+.pytest_cache/
+.mypy_cache/
+
+# Backup/Editor files
+*.bak
+*~
+*.json.fix
+
+# macOS
+**/.DS_Store
+
+# Claude Code local settings
+.claude/
+
+# 封存目錄**要**進版控——那是「搬走」不是「刪掉」。
+# 內容是 gzip（實測壓縮比約 13x，597 MB → 約 46 MB），按整年切、寫過就不再變動，
+# 所以 git 只會存一次，不會每天長出新 blob。2026-09-10 解除忽略。
+
+# 個人筆記
+*.md
+!CLAUDE.md
+!finance_tools/QUICK_START.md
+!Web_Crawler/money_udn/README.md
+
+# Crawler progress/temp files
+Web_Crawler/money_udn/.init_progress.json
+台股etf上市清單.csv
+finance_tools/assets/dividend_csv/historical/股利所屬年度2021.csv
+finance_tools/assets/dividend_csv/historical/股利所屬年度2022.csv
+finance_tools/assets/dividend_csv/historical/股利所屬年度2023.csv
+finance_tools/assets/dividend_csv/historical/股利所屬年度2024.csv
+finance_tools/assets/dividend_csv/historical/股利所屬年度2025.csv
+src/data/etf/index.json
+cron/node_modules
+
+# 原子寫入的暫存檔；正常會被清掉，硬中斷才會殘留
+*.json.tmp

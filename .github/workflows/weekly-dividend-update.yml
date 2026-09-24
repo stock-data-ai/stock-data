@@ -1,0 +1,81 @@
+name: Weekly Dividend Update (Saturday)｜股利資料（週六）
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: data-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-dividends:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run MOPS dividend update
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-dividends 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          # "OK MOPS dividend update: X 更新, Y 跳過（無 JSON）, Z 年份保留 CSV"
+          UPDATED=$(grep -oP 'OK MOPS dividend update: \K\d+(?= 更新)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          SKIPPED=$(grep -oP '\d+(?= 跳過)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          KEPT=$(grep -oP '\d+(?= 年份保留)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 股利資料更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 更新公司數 | $UPDATED |"
+            echo "| 跳過（無 JSON） | $SKIPPED |"
+            echo "| 保留 CSV 年份 | $KEPT |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/layer3/company-financials/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "股利更新(MOPS) $(date +'%Y-%m-%d')"
+            pushed=false
+            for i in 1 2 3; do
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
+              sleep $((i * 5))
+            done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，股利資料沒有發布出去"
+              git status --short
+              exit 1
+            fi
+          fi

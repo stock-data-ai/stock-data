@@ -1,0 +1,48 @@
+name: Cleanup old workflow runs｜清理舊 workflow 記錄
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete workflow runs older than 7 days
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const days = 7;
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - days);
+
+            let page = 1;
+            let deleted = 0;
+
+            while (true) {
+              const runs = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+                page
+              });
+
+              if (runs.data.workflow_runs.length === 0) break;
+
+              for (const run of runs.data.workflow_runs) {
+                if (new Date(run.created_at) < cutoff) {
+                  await github.rest.actions.deleteWorkflowRun({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    run_id: run.id
+                  });
+                  deleted++;
+                }
+              }
+
+              page++;
+            }
+
+            console.log(`Deleted ${deleted} old workflow runs.`);

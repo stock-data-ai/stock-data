@@ -1,0 +1,3 @@
+# 財報檔用 JSON 結構三方合併，不做逐行文字合併（驅動與啟用方式見 finance_tools/scripts/json_merge_driver.py）。
+# 只寫這行不夠：每個 workflow 還要 git config merge.company-json.driver，否則退回預設逐行合併。
+src/data/layer3/company-financials/*.json merge=company-json

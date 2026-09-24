@@ -1,0 +1,54 @@
+name: Weekly Balance Sheet Update (Monday)｜資產負債表（週）
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task identifier (for rerun chaining)'
+        required: false
+        default: 'weekly-monday'
+        type: string
+      rerun_round:
+        description: 'Rerun round (auto-set by self-chaining, 0=initial run)'
+        required: false
+        default: '0'
+        type: string
+      delay_minutes:
+        description: 'Minutes to wait before start (for API quota reset)'
+        required: false
+        default: '0'
+        type: string
+      batch:
+        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        required: false
+        default: '0'
+        type: string
+      force:
+        description: 'Force update even if already updated today'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: data-pipeline-balance-sheet
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  pipeline:
+    uses: ./.github/workflows/_reusable-data-job.yml
+    with:
+      commands_json: '[{"id":"balance_sheet","cli":"update-balance-sheet","label":"資產負債表/現金流量"}]'
+      artifact_prefix: weekly-balance-sheet
+      commit_message: "資產負債表/現金流量更新"
+      caller_workflow: weekly-balance-sheet-update.yml
+      caller_task: weekly-monday
+      summary_title: "資產負債表/現金流量更新"
+      rerun_round: ${{ inputs.rerun_round || '0' }}
+      delay_minutes: ${{ inputs.delay_minutes || '0' }}
+      batch: ${{ inputs.batch || '0' }}
+      force: ${{ inputs.force || false }}
+    secrets: inherit

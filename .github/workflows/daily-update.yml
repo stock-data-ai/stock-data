@@ -1,0 +1,197 @@
+name: Daily Update｜每日更新（市值＋三大法人）
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '補跑日期 (YYYYMMDD)，留空 = 今天'
+        required: false
+        default: ''
+      force:
+        description: '強制重新更新（跳過已更新今日的公司）'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+
+      - name: Setup uv + Python
+        uses: astral-sh/setup-uv@v8.0.0
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: pyproject.toml
+      - run: uv sync --all-extras --dev
+
+      # 下市清除：名單沒有的財報檔刪掉。每天跑一次就夠——其他 job 的名單也讀 companies-all，
+      # 孤兒檔不會再被續抓，只是躺著等這步收走。刪除由下方「提交變更」的 git add 目錄一起收進 commit。
+      - name: Prune delisted｜刪掉已下市的財報檔
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py prune-financials 2>&1 | tee /tmp/prune.log
+
+      # 市值估值（本益比／淨值比／殖利率／收盤價）與個股三大法人已於 2026-08-26 改走
+      # FinMind（證交所來函後移除 www.twse.com.tw 的 BWIBBU_d／MI_INDEX／T86）。
+      # **沒帶 token 會整批 400**：全市場查詢需付費層，register 等級只能逐檔查。
+      - name: 執行每日更新
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          ARGS=""
+          [ -n "${{ inputs.date }}" ] && ARGS="$ARGS --date ${{ inputs.date }}"
+          [ "${{ inputs.force }}" = "true" ] && ARGS="$ARGS --force"
+          set -o pipefail
+          uv run finance_tools/cli.py update-marketcap-inst $ARGS 2>&1 | tee /tmp/run.log
+
+      # 歷史封存：主檔只留當年＋前一年的日期型歷史（三大法人、融資融券、借券、大戶），
+      # 更舊的搬進 company-financials-archive/{year}/{code}.json.gz（gzip，壓縮比約 13x）。
+      # **是搬不是刪**，而且按整年切——某一年一旦封存就不再變動，git 只會存一次。
+      # 冪等：沒有跨年就什麼都不做，絕大多數日子是 no-op（全市場掃一次約 10 秒）。
+      # **排在當日更新之後**：封存是整理，不是發布。排在前面時它一失敗，
+      # 後面寫當日市值的步驟就不跑。always()：當日更新判紅（資料已寫入）時照樣整理。
+      - name: Archive old history｜把舊年度明細搬進 archive
+        if: always()
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py archive-history 2>&1 | tee /tmp/archive.log
+
+      # 更新步驟可能「資料已寫入但整批判紅」（例如上市估值缺漏），此時仍要把寫好的資料收進 repo
+      - name: 提交變更
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/layer3/company-financials/
+          # archive-history 把舊年度搬到這裡；不 add 就等於白搬（主檔少了、封存沒進版控）。
+          git add src/data/layer3/company-financials-archive/ 2>/dev/null || true
+          git diff --cached --quiet && { echo "沒有變更需要提交。"; exit 0; }
+          DATE_LABEL="${{ inputs.date || '' }}"
+          [ -z "$DATE_LABEL" ] && DATE_LABEL=$(date -u +%Y-%m-%d)
+          git commit -m "每日更新市值+三大法人數據 $DATE_LABEL"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，市值＋三大法人資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          [ ! -f "$LOG" ] && echo "（無 log，更新前步驟即失敗）" >> $GITHUB_STEP_SUMMARY && exit 0
+
+          {
+            TARGET="${{ inputs.date }}"
+            [ -z "$TARGET" ] && TARGET=$(date -u +%Y-%m-%d)
+            echo "## 每日更新｜$TARGET"
+            echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **交易日但未取得當日資料，本次未更新。** $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
+            echo "| 資料來源 | 狀態 | 筆數 |"
+            echo "|---------|:----:|-----:|"
+
+            # TWSE T86 上市三大法人
+            if grep -q "TWSE T86:.*支上市股票" "$LOG"; then
+              N=$(grep "TWSE T86:.*支上市股票" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              echo "| TWSE 上市三大法人 | ✅ | $N |"
+            else
+              echo "| TWSE 上市三大法人 | ⚠️ 無資料（非交易日或 API 失敗）| — |"
+            fi
+
+            # TPEx 上櫃三大法人
+            if grep -q "TPEx:.*支上櫃股票" "$LOG"; then
+              N=$(grep "TPEx:.*支上櫃股票" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              echo "| TPEx 上櫃三大法人 | ✅ | $N |"
+            else
+              echo "| TPEx 上櫃三大法人 | ❌ 失敗 | — |"
+            fi
+
+            # 外資持股（上市 / 上櫃 各自判斷——只看其中一邊會讓另一邊整組掛掉還顯示 ✅）
+            if grep -q "外資持股比例合計" "$LOG"; then
+              N=$(grep "外資持股比例合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              grep -q "TWSE MI_QFIIS: .*支上市股票" "$LOG" && TW=1 || TW=0
+              grep -q "TPEx tpex_3insti_qfii: .*支上櫃股票" "$LOG" && TP=1 || TP=0
+              case "$TW$TP" in
+                11) echo "| 外資持股比例 | ✅ | $N |" ;;
+                10) echo "| 外資持股比例 | ⚠️ 僅上市（上櫃失敗）| $N |" ;;
+                01) echo "| 外資持股比例 | ⚠️ 僅上櫃（**上市失敗**）| $N |" ;;
+                *)  echo "| 外資持股比例 | ❌ 失敗 | — |" ;;
+              esac
+            else
+              echo "| 外資持股比例 | ❌ 失敗 | — |"
+            fi
+
+            # 收盤價/PE/PB/殖利率（上市 / 上櫃 各自判斷）
+            if grep -q "市值估值合計" "$LOG"; then
+              N=$(grep "市值估值合計" "$LOG" | grep -o '[0-9,]*  *支' | tr -d ' ' | head -1)
+              grep -q "TWSE 市值估值: .*支上市股票" "$LOG" && TW=1 || TW=0
+              grep -q "TPEx 市值估值: .*支上櫃股票" "$LOG" && TP=1 || TP=0
+              case "$TW$TP" in
+                11) echo "| 收盤價／PE／PB／殖利率 | ✅ | $N |" ;;
+                10) echo "| 收盤價／PE／PB／殖利率 | ⚠️ 僅上市（上櫃失敗）| $N |" ;;
+                01) echo "| 收盤價／PE／PB／殖利率 | ⚠️ 僅上櫃（**上市失敗**）| $N |" ;;
+                *)  echo "| 收盤價／PE／PB／殖利率 | ❌ 失敗 | — |" ;;
+              esac
+            else
+              echo "| 收盤價／PE／PB／殖利率 | ❌ 失敗 | — |"
+            fi
+
+            echo ""
+
+            # 公司更新結果
+            if grep -q "每日更新完成" "$LOG"; then
+              RESULT=$(grep "每日更新完成" "$LOG" | grep -o '[0-9]*/[0-9]*' | head -1)
+              echo "**公司更新完成：$RESULT 家**"
+            fi
+
+            # 無市值
+            if grep -q "今日無市值資料" "$LOG"; then
+              N=$(grep "今日無市值資料" "$LOG" | grep -o '[0-9]* 家' | head -1)
+              echo "> ⚠️ 無市值資料：$N（記錄於 quality report）"
+            fi
+
+            # 失敗原因
+            if grep -q "❌.*中止執行" "$LOG"; then
+              echo ""
+              echo "### ❌ 批次撈取失敗"
+              echo '```'
+              grep "❌" "$LOG"
+              echo '```'
+            fi
+
+          } >> $GITHUB_STEP_SUMMARY

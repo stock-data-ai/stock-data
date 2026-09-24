@@ -1,0 +1,419 @@
+name: Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）
+
+on:
+  workflow_dispatch:
+    inputs:
+      codes:
+        description: '指定 ETF 代碼（空白分隔，留空=全部）'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: etf-active
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # index.json 必須在爬蟲之前取得：fetch_active_etf_cmoney.py 的主動型清單
+      # 是開跑時從這份檔案動態讀的，排在爬蟲之後等於新上市 ETF 要隔一天才被認得。
+      - name: Fetch stock_map ETF index.json (for categoryId/issuer)
+        id: fetch_index
+        continue-on-error: true
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
+          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
+
+      # ── 官網爬蟲（暫停觀察，以 CMoney 為主）─────────────────────────────
+
+      - name: Run active ETF crawler (統一投信 — 00403A 00981A 00988A)
+        if: false
+        id: unipres
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00403A|00981A|00988A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_unipres.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_unipres.py
+          fi
+
+      - name: Run active ETF crawler (群益投信 — 00982A 00992A 00997A)
+        if: false
+        id: capital
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00982A|00992A|00997A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_capital.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_capital.py
+          fi
+
+      - name: Run active ETF crawler (野村投信 — 00980A 00985A 00999A)
+        if: false
+        id: nomura
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00980A|00985A|00999A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_nomura.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_nomura.py
+          fi
+
+      - name: Set up Node.js (for 元大投信 NUXT parser)
+        if: false
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run active ETF crawler (元大投信 — 00990A)
+        if: false
+        id: yuanta
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00990A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_yuanta.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_yuanta.py
+          fi
+
+      - name: Run active ETF crawler (中信投信 — 00406A 00983A 00995A)
+        if: false
+        id: ctbc
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00406A|00983A|00995A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_ctbc.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_ctbc.py
+          fi
+
+      - name: Run active ETF crawler (復華投信 — 00991A 00998A)
+        if: false
+        id: fuhwa
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A|00998A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_fuhwa.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_fuhwa.py
+          fi
+
+      - name: Run active ETF crawler (安聯投信 — 00984A 00993A)
+        if: false
+        id: allianz
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00984A|00993A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_allianz.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_allianz.py
+          fi
+
+      - name: Run active ETF crawler (台新投信 — 00986A 00987A)
+        if: false
+        id: taishin
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00986A|00987A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_taishin.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_taishin.py
+          fi
+
+      - name: Run active ETF crawler (第一金投信 — 00994A)
+        if: false
+        id: first_financial
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00994A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_first_financial.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_first_financial.py
+          fi
+
+      - name: Run active ETF crawler (兆豐投信 — 00996A)
+        if: false
+        id: mega
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00996A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_mega.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_mega.py
+          fi
+
+      - name: Run active ETF crawler (國泰投信 — 00400A)
+        if: false
+        id: cathay
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00400A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_cathay.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_cathay.py
+          fi
+
+      - name: Run active ETF crawler (富邦投信 — 00405A)
+        if: false
+        id: fubon
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00405A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_fubon.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_fubon.py
+          fi
+
+      # ── CMoney（主力來源）────────────────────────────────────────────────
+
+      - name: CMoney API 主力更新（主動型 ETF，清單讀 index.json）
+        if: always()
+        id: cmoney
+        continue-on-error: true
+        run: uv run python etf_Crawler/fetch_active_etf_cmoney.py
+
+      - name: Job Summary
+        if: always()
+        run: |
+          echo "## 主動型 ETF 持股更新結果（CMoney 主力）" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| ETF | 投信 | 狀態 | 資料日期 |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|------|------|---------|" >> $GITHUB_STEP_SUMMARY
+
+          etf_row() {
+            local code=$1 issuer=$2 status=$3 date=$4
+            local emoji
+            case "$status" in
+              updated)   emoji="✅ 已更新" ;;
+              unchanged) emoji="⏸ 無更新" ;;
+              failed)    emoji="❌ 失敗" ;;
+              "")        emoji="⏭️ 略過" ;;
+              *)         emoji="❓" ;;
+            esac
+            echo "| $code | $issuer | $emoji | $date |" >> $GITHUB_STEP_SUMMARY
+          }
+
+          etf_row "00403A" "統一投信"   "${{ steps.cmoney.outputs.CMONEY_00403A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00403A_DATE }}"
+          etf_row "00981A" "統一投信"   "${{ steps.cmoney.outputs.CMONEY_00981A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00981A_DATE }}"
+          etf_row "00988A" "統一投信"   "${{ steps.cmoney.outputs.CMONEY_00988A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00988A_DATE }}"
+          etf_row "00982A" "群益投信"   "${{ steps.cmoney.outputs.CMONEY_00982A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00982A_DATE }}"
+          etf_row "00992A" "群益投信"   "${{ steps.cmoney.outputs.CMONEY_00992A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00992A_DATE }}"
+          etf_row "00997A" "群益投信"   "${{ steps.cmoney.outputs.CMONEY_00997A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00997A_DATE }}"
+          etf_row "00980A" "野村投信"   "${{ steps.cmoney.outputs.CMONEY_00980A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00980A_DATE }}"
+          etf_row "00985A" "野村投信"   "${{ steps.cmoney.outputs.CMONEY_00985A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00985A_DATE }}"
+          etf_row "00999A" "野村投信"   "${{ steps.cmoney.outputs.CMONEY_00999A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00999A_DATE }}"
+          etf_row "00990A" "元大投信"   "${{ steps.cmoney.outputs.CMONEY_00990A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00990A_DATE }}"
+          etf_row "00406A" "中信投信"   "${{ steps.cmoney.outputs.CMONEY_00406A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00406A_DATE }}"
+          etf_row "00983A" "中信投信"   "${{ steps.cmoney.outputs.CMONEY_00983A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00983A_DATE }}"
+          etf_row "00995A" "中信投信"   "${{ steps.cmoney.outputs.CMONEY_00995A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00995A_DATE }}"
+          etf_row "00991A" "復華投信"   "${{ steps.cmoney.outputs.CMONEY_00991A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00991A_DATE }}"
+          etf_row "00998A" "復華投信"   "${{ steps.cmoney.outputs.CMONEY_00998A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00998A_DATE }}"
+          etf_row "00984A" "安聯投信"   "${{ steps.cmoney.outputs.CMONEY_00984A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00984A_DATE }}"
+          etf_row "00993A" "安聯投信"   "${{ steps.cmoney.outputs.CMONEY_00993A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00993A_DATE }}"
+          etf_row "00986A" "台新投信"   "${{ steps.cmoney.outputs.CMONEY_00986A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00986A_DATE }}"
+          etf_row "00987A" "台新投信"   "${{ steps.cmoney.outputs.CMONEY_00987A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00987A_DATE }}"
+          etf_row "00994A" "第一金投信" "${{ steps.cmoney.outputs.CMONEY_00994A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00994A_DATE }}"
+          etf_row "00996A" "兆豐投信"   "${{ steps.cmoney.outputs.CMONEY_00996A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00996A_DATE }}"
+          etf_row "00400A" "國泰投信"   "${{ steps.cmoney.outputs.CMONEY_00400A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00400A_DATE }}"
+          etf_row "00405A" "富邦投信"   "${{ steps.cmoney.outputs.CMONEY_00405A_STATUS }}" "${{ steps.cmoney.outputs.CMONEY_00405A_DATE }}"
+
+      - name: Commit & push updated ETF data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/etf/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "主動型 ETF 持股更新 $(date +%Y-%m-%d)"
+            pushed=false
+            for i in 1 2 3; do
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
+              sleep $((i * 5))
+            done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，主動型 ETF 持股沒有發布出去"
+              git status --short
+              exit 1
+            fi
+          fi
+
+      - name: Regenerate stock-to-ETF reverse index
+        id: reverse_index
+        continue-on-error: true
+        run: uv run python etf_Crawler/generate_stock_etf_index.py
+
+      - name: Commit & push reverse index
+        id: push_reverse_index
+        continue-on-error: true
+        run: |
+          git add src/data/etf-by-stock/
+          if git diff --cached --quiet; then
+            echo "No changes to reverse index"
+          else
+            git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
+            pushed=false
+            for i in 1 2 3; do
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
+              sleep $((i * 5))
+            done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，ETF 個股反向索引沒有發布出去"
+              git status --short
+              exit 1
+            fi
+          fi
+
+      # commit 之後才推：通知點進去要能看到當日數字。
+      # 彙總算法在 stock_map（與 App 的主動式 ETF 統計面板共用），這裡只負責觸發；
+      # 防重複由 endpoint 的 pushLog（key＝CMoney 資料日期）把關，一天三輪只會推一次。
+      #
+      # **必須重試等 GitHub Pages 部署**：endpoint 讀的是 stock-data-ai.github.io 上的明細，
+      # 而 Pages 在 commit 後要數分鐘才重建。commit 完立刻打，endpoint 讀到的是「上一輪」的
+      # 快照（2026-08-24 實例：20:33 打過去回「僅 11/22 檔」＝17:55 那版，Pages 追上後其實是 16/22，
+      # 但那時已經沒人再打端點，當天整個沒推）。
+      # 這與 stock_map 規則引擎的 `live: { path, probe }`（輪詢 /live 等部署）是同一件事。
+      - name: 推播主動式 ETF 持股異動
+        id: push_active_etf
+        continue-on-error: true
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "缺 CRON_SECRET，跳過推播"
+            exit 0
+          fi
+          # 最多等 12 分鐘（Pages 重建通常 1~5 分鐘）
+          for i in $(seq 1 12); do
+            RESP=$(curl -sS -w '\n%{http_code}' -X POST \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -H "Content-Type: application/json" \
+              -d '{}' \
+              "https://aistockmap.com/api/cron/push-active-etf")
+            CODE=$(echo "$RESP" | tail -n1)
+            BODY=$(echo "$RESP" | sed '$d')
+            echo "[$i/12] HTTP $CODE $BODY"
+            [ "$CODE" = "200" ] || { echo "❌ 推播失敗 HTTP $CODE"; exit 1; }
+            # 「尚未到齊」＝Pages 還沒追上，等一分鐘再試；其餘結果（已推、已推過、無異動）即定案
+            case "$BODY" in
+              *尚未到齊*) sleep 60 ;;
+              *) echo "✅ 定案"; exit 0 ;;
+            esac
+          done
+          echo "⏱ 等滿 12 分鐘資料仍未到齊，本輪放棄（下一輪會再試）"
+
+      # 上面幾步用 continue-on-error 是為了「壞一步不擋住後面」，不是為了放它們過關。
+      # 這裡逐一複查，否則反向索引默默停更、燈還是全綠（etf-by-stock/ 會過期沒人知道）。
+      - name: Fail if any step failed
+        if: always()
+        run: |
+          FAILED=""
+          check () { [ "$2" = "success" ] || FAILED="$FAILED $1"; }
+          check CMoney爬蟲       "${{ steps.cmoney.outcome }}"
+          check 取得index.json   "${{ steps.fetch_index.outcome }}"
+          check 重建反向索引     "${{ steps.reverse_index.outcome }}"
+          check 推送反向索引     "${{ steps.push_reverse_index.outcome }}"
+          check 推播主動式ETF    "${{ steps.push_active_etf.outcome }}"
+          if [ -n "$FAILED" ]; then
+            echo "❌ 失敗步驟:$FAILED"
+            exit 1
+          fi
+          echo "✅ 全部步驟成功"

@@ -1,0 +1,532 @@
+name: Manual Health Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  checks: read
+  contents: read
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      # /live 新鮮度那條要讀 repo 裡的 forecast 快照來比對。沒有這步 glob 永遠是空的，
+      # 該檢查會靜靜降級成「無法比對」——2026-08-15 加進來後就這樣黃燈了五天沒人發現。
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run health check and send report email
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 << 'PYEOF'
+          import os, json, re, urllib.parse, urllib.request, sys, hmac, hashlib
+          from datetime import datetime, timedelta, timezone
+
+          GH_TOKEN              = os.environ['GH_TOKEN']
+          AWS_ACCESS_KEY_ID     = os.environ.get('AWS_SES_ACCESS_KEY_ID', '')
+          AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SES_SECRET_ACCESS_KEY', '')
+          AWS_REGION            = os.environ.get('AWS_SES_REGION', 'ap-northeast-1')
+          REPO                  = os.environ['REPO']
+          STEP_SUMMARY_PATH     = os.environ.get('GITHUB_STEP_SUMMARY', '')
+
+          # 注意：排程由外部 dispatcher 觸發（cron/wrangler.toml 的 stock-data-cron Worker），
+          # 本清單是唯一一份檢查清單（Worker 那邊已不再各留一份，避免兩份漂移）。
+          # 這裡的 hour/minute 只是「預期時間」，用來切出比對視窗。改排程時務必同步改這裡。
+          CHECK_JOBS = [
+              {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
+              # lenient：這班刻意排在資料公布之前搶頭香，抓不到是常態不是故障。
+              # 只有「後面的班也全滅」才算異常。
+              # 2026-08-31：daily-update 從 16:30／17:05／21:05 改為 19:30／21:05、
+              # chip-topic 從 18:00 改為 20:00——改走 FinMind 後個股資料比證交所晚 2~3 小時。
+              {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5], 'lenient': True},
+              # 熱力圖（原 15:00）已於 2026-09-03 隨 workflow 一起搬回 stock_map（commit 5804508637
+              # 刪了本 repo 的 update-heatmap.yml 與那條 cron），但這份清單當時沒跟著刪，於是
+              # 2026-09-04~09-09 連續六天報「15:00 Update Heatmap Data 未執行」——19 項全綠、
+              # 只有這一筆假紅，每天寄一封「異常」信。現由 scripts/guards/check-cron-consistency.mjs
+              # 擋住同類漂移：清單裡的 workflow_name 必須真的存在於 .github/workflows/。
+              # 熱力圖現在由 stock_map 自己的 health-check.yml 監控三班，這裡不再列。
+              {'label': '15:30 Update Stock Tags',                    'workflow_name': 'Update Stock Tags｜更新選股標籤（stock_map）',                  'hour': 15, 'minute': 30},
+              {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
+              {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
+              {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
+              # 2026-09-13 daily-update 兩班改成週一到週六（週日沒有新資料可撈，見 cron/wrangler.toml）。
+              # 注意本清單的 days 是 Python %w（0=Sun），與 Cloudflare cron 的 1=Sun 差一位。
+              {'label': '12:00 MOPS Scraper｜午間刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 12, 'minute': 0, 'lenient': True},
+              {'label': '17:00 MOPS Scraper｜盤後刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 17, 'minute': 0, 'lenient': True},
+              {'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0},
+              {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
+              {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30, 'days': [1,2,3,4,5,6]},
+              {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},
+              {'label': '19:45 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 19, 'minute': 45, 'days': [1,2,3,4,5]},
+              {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
+              {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5,  'days': [1,2,3,4,5,6]},
+              {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
+              {'label': '21:30 Margin & Lending Update',             'workflow_name': 'Margin Trading Update｜融資融券與借券更新',                    'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
+              {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
+              # 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘。原排 23:30、比 23:00 健康檢查晚，
+              # 所以長期不在清單裡（2026-08-17 那班失敗過一整天沒人發現）；已提前到 22:30 並納入檢查。
+              {'label': '22:30 Generate Disposition Forecast（備援）', 'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 22, 'minute': 30, 'days': [1,2,3,4,5]},
+              {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
+              {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
+              {'label': '週六 09:30 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 30, 'days': [6]},
+              {'label': '週六 11:00 Weekly Dividend Update',         'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）',           'hour': 11, 'minute': 0,  'days': [6]},
+              {'label': '週日 09:01 Weekly Financials Update',        'workflow_name': 'Weekly Financials Update (Sunday)｜財務報表更新（週日）',        'hour': 9,  'minute': 1,  'days': [0]},
+              {'label': '週日 10:00 Update US Financials',           'workflow_name': 'Update US Financials｜美股財務更新',                           'hour': 10, 'minute': 0,  'days': [0]},
+              {'label': '週日 11:00 Weekly Balance Sheet Update',    'workflow_name': 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）',        'hour': 11, 'minute': 0,  'days': [0]},
+              {'label': '週一 03:00 Cleanup old workflow runs',      'workflow_name': 'Cleanup old workflow runs｜清理舊 workflow 記錄',              'hour': 3,  'minute': 0,  'days': [1]},
+          ]
+
+          now        = datetime.now(timezone.utc)
+          taiwan_now = now + timedelta(hours=8)
+          tw_date    = taiwan_now.strftime('%Y-%m-%d')
+          tw_day     = int(taiwan_now.strftime('%w'))
+          tw_start_utc = datetime(taiwan_now.year, taiwan_now.month, taiwan_now.day, tzinfo=timezone.utc) - timedelta(hours=8)
+          since = tw_start_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+          until = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+          GH_HEADERS = {
+              'Authorization': f'Bearer {GH_TOKEN}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+              'User-Agent': 'stock-data-health-check',
+          }
+
+          def gh_get(path):
+              url = f'https://api.github.com{path}' if path.startswith('/') else path
+              req = urllib.request.Request(url, headers=GH_HEADERS)
+              with urllib.request.urlopen(req) as resp:
+                  return json.loads(resp.read())
+
+          # ── Fetch today's workflow runs ──────────────────────────────────────
+          workflow_runs = []
+          for page in range(1, 6):
+              query = urllib.parse.urlencode({'created': f'{since}..{until}', 'per_page': '100', 'page': str(page)})
+              page_runs = gh_get(f'/repos/{REPO}/actions/runs?{query}')['workflow_runs']
+              workflow_runs.extend(page_runs)
+              if len(page_runs) < 100:
+                  break
+
+          # ── Fetch GITHUB_STEP_SUMMARY content for a run via check-runs API ──
+          def get_job_summary(run_id):
+              try:
+                  jobs = gh_get(f'/repos/{REPO}/actions/runs/{run_id}/jobs').get('jobs', [])
+                  parts = []
+                  for job in jobs:
+                      try:
+                          cr = gh_get(f'/repos/{REPO}/check-runs/{job["id"]}')
+                          text = (cr.get('output') or {}).get('text') or ''
+                          if text.strip():
+                              parts.append(text.strip())
+                      except Exception:
+                          pass
+                  return '\n\n'.join(parts) if parts else None
+              except Exception:
+                  return None
+
+          # ── markdown → HTML (handles headings + tables) ──────────────────────
+          def md_to_html(md):
+              lines = md.split('\n')
+              out = []
+              in_table = False
+              header_done = False
+
+              TD  = 'style="padding:5px 12px;border:1px solid #e2e8f0"'
+              TH  = 'style="padding:6px 12px;text-align:left;border:1px solid #e2e8f0;background:#f8fafc;white-space:nowrap"'
+              TBL = 'style="border-collapse:collapse;width:100%;font-size:13px;margin:6px 0 14px"'
+
+              def close_table():
+                  nonlocal in_table, header_done
+                  if in_table:
+                      out.append('</tbody></table>')
+                      in_table = False
+                      header_done = False
+
+              for raw in lines:
+                  line = raw.rstrip()
+
+                  if line.startswith('## '):
+                      close_table()
+                      out.append(f'<h3 style="margin:20px 0 8px;color:#111827;font-size:15px">{line[3:]}</h3>')
+                  elif line.startswith('### '):
+                      close_table()
+                      out.append(f'<h4 style="margin:14px 0 6px;color:#374151;font-size:14px">{line[4:]}</h4>')
+                  elif line.startswith('|'):
+                      if all(c in '|- :' for c in line.replace('|', '')):
+                          continue
+                      cells = [c.strip() for c in line.split('|')[1:-1]]
+                      if not in_table:
+                          in_table = True
+                          header_done = False
+                          out.append(f'<table {TBL}>')
+                      if not header_done:
+                          out.append(f'<thead><tr>{"".join(f"<th {TH}>{c}</th>" for c in cells)}</tr></thead><tbody>')
+                          header_done = True
+                      else:
+                          out.append(f'<tr>{"".join(f"<td {TD}>{c}</td>" for c in cells)}</tr>')
+                  else:
+                      close_table()
+                      if line.strip():
+                          text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
+                          out.append(f'<p style="margin:3px 0;font-size:13px">{text}</p>')
+
+              close_table()
+              return '\n'.join(out)
+
+          # ── Build result rows ────────────────────────────────────────────────
+          def job_start_utc(job):
+              return datetime(taiwan_now.year, taiwan_now.month, taiwan_now.day,
+                              job['hour'], job['minute'], tzinfo=timezone.utc) - timedelta(hours=8)
+
+          required = [job for job in CHECK_JOBS if 'days' not in job or tw_day in job['days']]
+
+          def job_window(job):
+              start = job_start_utc(job)
+              next_starts = sorted(
+                  job_start_utc(c) for c in required
+                  if c['workflow_name'] == job['workflow_name'] and job_start_utc(c) > start
+              )
+              return start, next_starts[0] if next_starts else now
+
+          def fmt_tw_time(iso_str):
+              dt = datetime.fromisoformat(iso_str.replace('Z', '+00:00')) + timedelta(hours=8)
+              return dt.strftime('%H:%M')
+
+          def fmt_duration(start_iso, end_iso):
+              start = datetime.fromisoformat(start_iso.replace('Z', '+00:00'))
+              end   = datetime.fromisoformat(end_iso.replace('Z', '+00:00'))
+              secs  = max(0, int((end - start).total_seconds()))
+              return f"{secs // 60}m{secs % 60:02d}s"
+
+          # 視窗內多筆 run 的先後順序。**不依賴 API 回傳的陣列順序**——那個順序沒有契約，
+          # 分頁與 rerun 都會改變它。依序比 run_started_at（沒有就退回 created_at）、
+          # run_attempt、id，三者都是 GitHub run 物件自帶的欄位，結果穩定可重現。
+          def run_order(r):
+              started = r.get('run_started_at') or r['created_at']
+              return (
+                  datetime.fromisoformat(started.replace('Z', '+00:00')),
+                  r.get('run_attempt') or 1,
+                  r['id'],
+              )
+
+          results = []
+          for job in required:
+              start, end = job_window(job)
+              runs = [
+                  r for r in workflow_runs
+                  if r['name'] == job['workflow_name']
+                  and start <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < end
+              ]
+              # 判定 run＝視窗內**最後**發生的那一筆。
+              # 先前是「找到任何一筆成功就判 ok」，於是同一視窗「先成功、後失敗」會被判成
+              # 成功（W6-F7）。最容易命中的是 _reusable-data-job 的自我鏈式重跑：
+              # 第 1 輪成功、最後一輪耗盡 exit 1，健康檢查仍報 ✅。
+              # 顯示的執行時間也一併改用判定 run——表上的時間必須就是被判定的那一次，
+              # 否則會出現「狀態說失敗、時間卻是成功那筆」的錯配。
+              run = max(runs, key=run_order) if runs else None
+              if run is None:
+                  status = 'missing'
+              elif run['status'] in ('in_progress', 'queued', 'waiting'):
+                  status = 'running'
+              elif run['conclusion'] == 'success':
+                  status = 'ok'
+              else:
+                  status = 'failed'
+
+              # 視窗內先前有成功、但判定 run 不是成功：最容易被誤讀的情況，明講出來。
+              superseded = status != 'ok' and any(
+                  r is not run and r['status'] == 'completed' and r['conclusion'] == 'success'
+                  for r in runs)
+
+              started_at = (run or {}).get('run_started_at') or (run or {}).get('created_at')
+              results.append({
+                  'label':    job['label'] + ('（稍早曾成功，最後一次未成功）' if superseded else ''),
+                  'sched':    f"{job['hour']:02d}:{job['minute']:02d}",
+                  'status':   status,
+                  'workflow_name': job['workflow_name'],
+                  'lenient':  job.get('lenient', False),
+                  'run_time': fmt_tw_time(started_at) if started_at else '—',
+                  'duration': (fmt_duration(started_at, run['updated_at'])
+                               if started_at and run and run['status'] == 'completed' else
+                               ('進行中' if status == 'running' else '—')),
+                  'url':      (run or {}).get('html_url'),
+                  'run_id':   (run or {}).get('id'),
+              })
+
+          # ── 早班沒搶到不算異常，前提是後面真的有班補上 ──────────────────────
+          # **不可以直接把早班改成綠的**——那就變回假綠燈了。這裡只在「同一個 workflow
+          # 今天稍後確實有一班成功」時才降級；後面全滅時早班照樣是紅的。
+          for i, r in enumerate(results):
+              # 只寬容 'failed'（跑了、但資料還沒公布）。'missing' 代表這班根本沒被觸發，
+              # 那是排程本身壞了，跟搶不搶得到資料無關，一律維持紅燈。
+              if r['lenient'] and r['status'] == 'failed' and any(
+                      later['workflow_name'] == r['workflow_name'] and later['status'] == 'ok'
+                      for later in results[i + 1:]):
+                  r['status'] = 'late'
+
+          # ── 端到端檢查：/live 的資料日有沒有跟上我們算出來的 ────────────────
+          # 為什麼要這條：CI 全綠、git 有推、資料也對，但只要 Cloudflare Pages 建置失敗，
+          # 使用者看到的就是舊資料，而且**沒有任何一個既有檢查會發現**。
+          # 2026-08-14 因 podcast 公開投影沒同步，部署連續失敗 14 次、卡了一天多才被人問出來。
+          # 比對「最新一份預警快照的資料日」vs「線上 /live 的 as_of」——一條就涵蓋
+          # 排程有沒有跑、git 有沒有推、CF 有沒有部署成功。
+          def check_live_freshness():
+              import glob, time
+              snaps = sorted(glob.glob('finance_tools/disposition/forecasts/forecast_*.json'))
+              expected = os.path.basename(snaps[-1])[9:17] if snaps else None
+              live = None
+              for attempt in range(3):        # 網站偶發抖動不該讓整份報告變紅
+                  try:
+                      req = urllib.request.Request(
+                          'https://aistockmap.com/live/disposition-forecast.json',
+                          headers={'User-Agent': 'stock-data-health-check'})
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          live = json.loads(resp.read().decode('utf-8')).get('as_of')
+                      break
+                  except Exception as e:
+                      print(f'[live] 第 {attempt + 1}/3 次取得失敗: {e}')
+                      if attempt < 2:
+                          time.sleep(5)
+              if not expected or not live:
+                  # **比對不出來 = 這條檢查自己壞了，不是「排程沒跑」。** 原本標成 missing／
+                  # 「未執行」，看起來只是某一班沒跑到，所以 2026-08-15 少 checkout 之後，
+                  # 它靜靜黃燈了五天沒人看出來。標成失敗才會逼人去看它為什麼比不了。
+                  broken = '讀不到本地快照（checkout 是否遺漏？）' if not expected else f'連不上線上（本地快照 {expected}）'
+                  status, detail = 'failed', f'檢查失效：{broken}'
+              elif live >= expected:
+                  status, detail = 'ok', f'線上 {live}'
+              else:
+                  # 落後就是部署沒成功 —— 去 Cloudflare Pages 看 build log
+                  status, detail = 'failed', f'線上 {live} 落後快照 {expected}'
+              results.append({
+                  'label': f'/live 資料新鮮度（{detail}）', 'sched': '—', 'status': status,
+                  'workflow_name': None, 'lenient': False,
+                  'run_time': '—', 'duration': '—', 'url': None, 'run_id': None,
+              })
+
+          check_live_freshness()
+
+          # ── 端到端檢查：每日題材焦點有沒有真的發布 ──────────────────────────
+          # 為什麼要這條：每日焦點的失敗是**靜默降級**，不是紅燈。產報告的 Claude 雲端
+          # routine 每天都跑、每天都「成功」結束——它只是判定籌碼資料不是當天的就中止不
+          # 產報告（daily-focus skill 明訂這是可接受的降級：寧可缺一天也不要出錯的報告）。
+          # 於是「有沒有跑、成不成功」全綠，使用者卻連著幾天看不到報告。
+          # 2026-08-31~09-02 就這樣過了三天沒人發現：上游改走 FinMind 後籌碼資料晚 2~3
+          # 小時，routine 還排在 19:30，每天都讀到昨天的籌碼而中止。
+          #
+          # 而且 routine 不是 GitHub Actions，不會出現在上面的 run 歷史裡；發布用的
+          # daily-report-publish.yml 又在 stock_map repo，這裡也查不到。所以唯一抓得到的
+          # 方式是問線上 API「最新一篇是哪天」，拿它跟最新交易日比——一條涵蓋 routine 沒
+          # 觸發、中止、PR 沒 merge、D1 沒寫、edge cache 沒失效全部失敗模式。
+          def check_daily_report():
+              import glob, time
+              # 交易日基準沿用 forecast 快照（已 checkout，且與 /live 那條同一個來源）。
+              # 假日自動成立：沒有新交易日，基準就停在上一個交易日。
+              snaps = sorted(glob.glob('finance_tools/disposition/forecasts/forecast_*.json'))
+              raw = os.path.basename(snaps[-1])[9:17] if snaps else None
+              expected = f'{raw[:4]}-{raw[4:6]}-{raw[6:8]}' if raw else None
+              latest = None
+              for attempt in range(3):        # 網站偶發抖動不該讓整份報告變紅
+                  try:
+                      req = urllib.request.Request(
+                          'https://aistockmap.com/api/daily-report?list=1',
+                          headers={'User-Agent': 'stock-data-health-check'})
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          reports = json.loads(resp.read().decode('utf-8')).get('reports') or []
+                      latest = reports[0]['date'] if reports else None
+                      break
+                  except Exception as e:
+                      print(f'[daily-report] 第 {attempt + 1}/3 次取得失敗: {e}')
+                      if attempt < 2:
+                          time.sleep(5)
+              if not expected or not latest:
+                  # 同 /live 那條：比對不出來 = 這條檢查自己壞了，標成失敗才會逼人去看。
+                  broken = '讀不到本地快照（checkout 是否遺漏？）' if not expected else '線上 API 無回應或無報告'
+                  status, detail = 'failed', f'檢查失效：{broken}'
+              elif latest >= expected:
+                  status, detail = 'ok', f'最新 {latest}'
+              else:
+                  status, detail = 'failed', f'最新 {latest} 落後交易日 {expected}'
+              results.append({
+                  'label': f'每日題材焦點發布（{detail}）', 'sched': '—', 'status': status,
+                  'workflow_name': None, 'lenient': False,
+                  'run_time': '—', 'duration': '—', 'url': None, 'run_id': None,
+              })
+
+          check_daily_report()
+
+          ok_n   = sum(1 for r in results if r['status'] == 'ok')
+          fail_n = sum(1 for r in results if r['status'] == 'failed')
+          miss_n = sum(1 for r in results if r['status'] in ('missing', 'running'))
+          late_n = sum(1 for r in results if r['status'] == 'late')
+          all_good = fail_n == 0 and miss_n == 0          # late 不算異常，但仍會列出來
+
+          STATUS_EMOJI = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄', 'late': '🟡'}
+          STATUS_LABEL = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中',
+                          'late': '早班未搶到（後續已補）'}
+          ROW_COLOR    = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb',
+                          'running': '#eff6ff', 'late': '#f8fafc'}
+
+          # ── Fetch per-workflow summaries (deduplicated by run_id) ────────────
+          print('撈取各 workflow 詳細摘要...')
+          seen_run_ids = set()
+          workflow_summaries = []
+          for r in results:
+              rid = r.get('run_id')
+              if rid and rid not in seen_run_ids:
+                  seen_run_ids.add(rid)
+                  print(f"  {r['label']} (run {rid})...")
+                  summary_md = get_job_summary(rid)
+                  if summary_md:
+                      workflow_summaries.append((r['label'], r['url'], summary_md))
+                      print(f"    → {len(summary_md)} chars")
+                  else:
+                      print(f"    → 無 summary")
+
+          # ── Build GITHUB_STEP_SUMMARY (Markdown) ────────────────────────────
+          md  = f"## stock_data 健康檢查 — {tw_date}\n\n"
+          md += f"✅ **{ok_n}** 成功　❌ **{fail_n}** 失敗　⚠️ **{miss_n}** 未執行 / 進行中"
+          md += (f"　🟡 **{late_n}** 早班未搶到" if late_n else "") + "\n\n"
+          md += "| 排程 | 任務 | 狀態 | 執行時間（台灣） | 耗時 |\n"
+          md += "|------|------|:----:|:--------------:|:----:|\n"
+          for r in results:
+              name = f"[{r['label']}]({r['url']})" if r['url'] else r['label']
+              md += f"| {r['sched']} | {name} | {STATUS_EMOJI[r['status']]} {STATUS_LABEL[r['status']]} | {r['run_time']} | {r['duration']} |\n"
+
+          if workflow_summaries:
+              md += "\n---\n\n## 各任務詳細摘要\n\n"
+              for label, url, content in workflow_summaries:
+                  link = f"[{label}]({url})" if url else label
+                  md += f"### 📋 {link}\n\n{content}\n\n---\n\n"
+
+          if STEP_SUMMARY_PATH:
+              with open(STEP_SUMMARY_PATH, 'a', encoding='utf-8') as f:
+                  f.write(md)
+          print(md)
+
+          # ── Build HTML Email ─────────────────────────────────────────────────
+          rows_html = ''
+          for r in results:
+              color = ROW_COLOR[r['status']]
+              name  = f'<a href="{r["url"]}" style="color:#1d4ed8">{r["label"]}</a>' if r['url'] else r['label']
+              rows_html += (
+                  f'<tr style="background:{color};border-bottom:1px solid #e2e8f0">'
+                  f'<td style="padding:7px 14px;font-family:monospace;white-space:nowrap">{r["sched"]}</td>'
+                  f'<td style="padding:7px 14px">{name}</td>'
+                  f'<td style="padding:7px 14px;text-align:center;white-space:nowrap">{STATUS_EMOJI[r["status"]]} {STATUS_LABEL[r["status"]]}</td>'
+                  f'<td style="padding:7px 14px;font-family:monospace;text-align:center">{r["run_time"]}</td>'
+                  f'<td style="padding:7px 14px;font-family:monospace;text-align:center">{r["duration"]}</td>'
+                  f'</tr>\n'
+              )
+
+          detail_sections_html = ''
+          for label, url, content in workflow_summaries:
+              link = f'<a href="{url}" style="color:#1d4ed8">{label}</a>' if url else label
+              detail_sections_html += (
+                  f'<div style="margin-top:28px;border-top:2px solid #e2e8f0;padding-top:16px">'
+                  f'<h3 style="margin:0 0 10px;font-size:15px;color:#111827">📋 {link}</h3>'
+                  f'{md_to_html(content)}'
+                  f'</div>\n'
+              )
+
+          html = f'''<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;max-width:860px;margin:24px auto;padding:0 16px">
+          <h2 style="border-bottom:2px solid #e2e8f0;padding-bottom:10px;margin-bottom:16px">
+            stock_data 健康檢查 — {tw_date}
+          </h2>
+          <p style="font-size:16px;margin-bottom:20px">
+            ✅ <strong>{ok_n}</strong> 成功 &nbsp;
+            ❌ <strong>{fail_n}</strong> 失敗 &nbsp;
+            ⚠️ <strong>{miss_n}</strong> 未執行 / 進行中
+            {f'&nbsp; 🟡 <strong>{late_n}</strong> 早班未搶到' if late_n else ''}
+          </p>
+          <table style="border-collapse:collapse;width:100%;font-size:13px;border:1px solid #e2e8f0">
+            <thead>
+              <tr style="background:#f8fafc">
+                <th style="padding:9px 14px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap">排程</th>
+                <th style="padding:9px 14px;text-align:left;border-bottom:2px solid #e2e8f0">任務</th>
+                <th style="padding:9px 14px;text-align:center;border-bottom:2px solid #e2e8f0;white-space:nowrap">狀態</th>
+                <th style="padding:9px 14px;text-align:center;border-bottom:2px solid #e2e8f0;white-space:nowrap">執行時間</th>
+                <th style="padding:9px 14px;text-align:center;border-bottom:2px solid #e2e8f0;white-space:nowrap">耗時</th>
+              </tr>
+            </thead>
+            <tbody>
+          {rows_html}
+            </tbody>
+          </table>
+          {detail_sections_html}
+          </body></html>'''
+
+          subj = (f"✅ [{tw_date}] stock_data 全部正常" if all_good
+                  else f"⚠️ [{tw_date}] stock_data 異常 — {fail_n} 失敗 {miss_n} 未執行")
+
+          # ── AWS SES v2 via SigV4 ────────────────────────────────────────────────
+          def _sign(key, msg):
+              return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
+
+          def _get_signing_key(secret, date_stamp, region, service):
+              k = _sign(('AWS4' + secret).encode('utf-8'), date_stamp)
+              k = _sign(k, region)
+              k = _sign(k, service)
+              return _sign(k, 'aws4_request')
+
+          def send_ses_email(subject, html_body):
+              if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY:
+                  print('[Health Check] AWS SES credentials not set, skipping email')
+                  return
+              service  = 'ses'
+              host     = f'email.{AWS_REGION}.amazonaws.com'
+              endpoint = f'https://{host}/v2/email/outbound-emails'
+              payload  = json.dumps({
+                  'FromEmailAddress': 'noreply@aistockmap.com',
+                  'Destination': {'ToAddresses': ['rf9550106@gmail.com']},
+                  'Content': {
+                      'Simple': {
+                          'Subject': {'Data': subject, 'Charset': 'UTF-8'},
+                          'Body': {'Html': {'Data': html_body, 'Charset': 'UTF-8'}},
+                      }
+                  },
+              }).encode('utf-8')
+              now_dt     = datetime.now(timezone.utc)
+              amz_date   = now_dt.strftime('%Y%m%dT%H%M%SZ')
+              date_stamp = now_dt.strftime('%Y%m%d')
+              payload_hash = hashlib.sha256(payload).hexdigest()
+              canonical_headers = f'content-type:application/json\nhost:{host}\nx-amz-date:{amz_date}\n'
+              signed_headers = 'content-type;host;x-amz-date'
+              canonical_request = '\n'.join([
+                  'POST', '/v2/email/outbound-emails', '',
+                  canonical_headers, signed_headers, payload_hash,
+              ])
+              credential_scope = f'{date_stamp}/{AWS_REGION}/{service}/aws4_request'
+              string_to_sign = '\n'.join([
+                  'AWS4-HMAC-SHA256', amz_date, credential_scope,
+                  hashlib.sha256(canonical_request.encode('utf-8')).hexdigest(),
+              ])
+              signing_key = _get_signing_key(AWS_SECRET_ACCESS_KEY, date_stamp, AWS_REGION, service)
+              signature = hmac.new(signing_key, string_to_sign.encode('utf-8'), hashlib.sha256).hexdigest()
+              auth_header = (
+                  f'AWS4-HMAC-SHA256 Credential={AWS_ACCESS_KEY_ID}/{credential_scope}, '
+                  f'SignedHeaders={signed_headers}, Signature={signature}'
+              )
+              req = urllib.request.Request(
+                  endpoint, data=payload,
+                  headers={
+                      'Content-Type': 'application/json',
+                      'X-Amz-Date': amz_date,
+                      'Authorization': auth_header,
+                  },
+                  method='POST',
+              )
+              with urllib.request.urlopen(req) as resp:
+                  print(f'SES response: {resp.status}')
+
+          send_ses_email(subj, html)
+
+          if not all_good:
+              sys.exit(1)
+          PYEOF

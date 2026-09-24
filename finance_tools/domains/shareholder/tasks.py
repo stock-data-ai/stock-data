@@ -1,0 +1,186 @@
+import sys
+import logging
+from datetime import datetime
+
+from finance_tools.core.file_manager import FileManager
+from finance_tools.core.timezone import now_tw, today_str
+from finance_tools.domains.shareholder.fetcher import fetch_all_tdcc_shareholding_via_api
+from finance_tools.utils.company_list_loader import load_companies_for_processing
+from finance_tools.utils.quality_report import save_quality_report
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def run_fetch_shareholder_data(args):
+    """
+    處理抓取並儲存 TDCC 股權分散數據的任務 (API 全量更新模式)
+    """
+    logger.info("正在透過 TDCC API 抓取股權分散數據...")
+
+    file_mgr = FileManager()
+
+    # 對於股權分散表 API 模式，分批處理是沒有意義的（因為一次拿全市場 CSV）。
+    # 強制不分批，除非是在重新執行 (rerun) 或指定公司 (code) 模式。
+    if not getattr(args, "code", None) and not getattr(args, "rerun", None):
+        if getattr(args, "batch", None):
+            logger.info("檢測到批次參數，但股權分散表任務將強制以完整模式執行以提高效率。")
+            args.batch = None
+
+    # 1. 載入需要處理的公司列表
+    all_potential_companies = load_companies_for_processing(args, file_mgr, None)
+    if not all_potential_companies:
+        logger.info("沒有選定公司進行處理。退出。")
+        return
+
+    # 2. 一次 request 拿全市場資料；失敗直接 exit 1，不走重試
+    tdcc_all_market_data = fetch_all_tdcc_shareholding_via_api()
+    if not tdcc_all_market_data:
+        logger.error("無法從 TDCC API 獲取任何資料。終止任務。")
+        sys.exit(1)
+
+    # 2.5 檢查資料日期：TDCC 每週五為資料日期、週六發布。若拿到的資料日期距今超過 7 天，
+    # 代表 TDCC 尚未發布新一期（抓到的是上一期舊資料），必須失敗而非假成功。
+    sample_records = next(iter(tdcc_all_market_data.values()))
+    raw_data_date = str(sample_records[0].get("data_date", ""))
+    try:
+        data_date = datetime.strptime(raw_data_date, "%Y%m%d").date()
+    except ValueError:
+        logger.error(f"無法解析 TDCC 資料日期「{raw_data_date}」。終止任務。")
+        sys.exit(1)
+    age_days = (now_tw().date() - data_date).days
+    if age_days > 7:
+        logger.error(
+            f"STALE: TDCC 資料日期仍為 {raw_data_date}（距今 {age_days} 天），尚未發布新一期，終止任務。"
+        )
+        sys.exit(1)
+    logger.info(f"TDCC 資料日期: {raw_data_date}（距今 {age_days} 天）")
+
+    # 3. 過濾出需要更新的公司 (除非 force，否則檢查是否已有數據)
+    companies_to_process = []
+    skipped_count = 0
+    for comp in all_potential_companies:
+        code = comp['code']
+        if not args.force:
+            financial_data = file_mgr.load_financial_data(code)
+            if financial_data and financial_data.get('shareholderDataRecent'):
+                logger.info(f"  ✓ 跳過公司 {code} {comp.get('name')} (已有數據)")
+                skipped_count += 1
+                continue
+        companies_to_process.append(comp)
+
+    if not companies_to_process:
+        logger.info(f"所有 {len(all_potential_companies)} 間公司都已有數據。退出。")
+        return
+
+    logger.info(f"\n開始整合 {len(companies_to_process)} 間公司的數據 (已跳過 {skipped_count} 間)...")
+
+    # 4. 處理並儲存
+    success_count = 0
+    quality_issues = []
+
+    for idx, company in enumerate(companies_to_process, 1):
+        code = company['code']
+        name = company.get('name', "N/A")
+
+        tdcc_data_list = tdcc_all_market_data.get(code)
+
+        if tdcc_data_list:
+            try:
+                financial_data = file_mgr.load_financial_data(code)
+                if financial_data is None:
+                    # 檔案損壞：歷史讀不回來。建一份只有大戶資料的骨架會把其餘欄位
+                    # 一起蓋掉，壞檔也就不再是「要重抓」的訊號。
+                    logger.warning(f"  ⚠️  {code} {name}: 財報檔損壞，跳過（等 financials-update 重建）")
+                    quality_issues.append(f"{code} {name}: 財報檔損壞，跳過")
+                    continue
+                if not financial_data:
+                    financial_data = {
+                        "companyCode": code,
+                        "companyName": name,
+                        "latest": {},
+                        "historical": {},
+                        "shareholderDataHistory": {}
+                    }
+
+                if 'shareholderDataHistory' not in financial_data:
+                    financial_data['shareholderDataHistory'] = {}
+
+                raw_date = tdcc_data_list[0].get('data_date')
+                formatted_date = raw_date  # keep YYYYMMDD format
+
+                clean_records = [
+                    {
+                        "序": r["序"],
+                        "holding_range": r["holding_range"],
+                        "holder_count": r["holder_count"],
+                        "shares": r["shares"],
+                        "ratio_pct": r["ratio_pct"]
+                    }
+                    for r in tdcc_data_list
+                ]
+
+                # Validate data completeness
+                # Note: TDCC's 合計 row always has holder_count=0 (shares-only summary); use sum of levels instead.
+                non_total_records = [r for r in clean_records if r["holding_range"] != "合計"]
+                total_people = sum(r.get("holder_count", 0) for r in non_total_records)
+
+                if len(non_total_records) < 15:
+                    logger.warning(
+                        f"  ⚠ {code} {name}: 資料不完整，僅取得 {len(non_total_records)}/15 個分級 "
+                        f"(日期 {formatted_date})，跳過此次更新"
+                    )
+                    quality_issues.append(f"{code} {name}: 資料不完整 ({len(non_total_records)}/15 levels, {formatted_date})")
+                    success_count += 1
+                    continue
+
+                if total_people == 0:
+                    logger.warning(
+                        f"  ⚠ {code} {name}: 全部分級人數皆為 0 (日期 {formatted_date})，跳過此次更新"
+                    )
+                    quality_issues.append(f"{code} {name}: 全部分級人數為 0 ({formatted_date})")
+                    success_count += 1
+                    continue
+
+                # Cross-check against previous data to catch extreme drops (>90% in one week)
+                prev_history = financial_data.get('shareholderDataHistory', {})
+                if prev_history:
+                    prev_dates = sorted(prev_history.keys(), reverse=True)
+                    if prev_dates:
+                        prev_records = prev_history[prev_dates[0]]
+                        prev_total = sum(
+                            r.get("holder_count", 0) for r in prev_records if r["holding_range"] != "合計"
+                        )
+                        if prev_total > 100 and total_people < prev_total * 0.1:
+                            logger.warning(
+                                f"  ⚠ {code} {name}: 合計人數異常下降 {prev_total} → {total_people} "
+                                f"(日期 {formatted_date})，跳過此次更新"
+                            )
+                            quality_issues.append(
+                                f"{code} {name}: 人數異常下降 {prev_total}→{total_people} ({formatted_date})"
+                            )
+                            success_count += 1
+                            continue
+
+                financial_data['shareholderDataHistory'][formatted_date] = clean_records
+                financial_data['shareholderDataRecent'] = clean_records
+                financial_data['lastUpdated'] = today_str()
+
+                if file_mgr.save_financial_data(code, financial_data):
+                    logger.info(f"[{idx}/{len(companies_to_process)}] OK {code} {name}")
+                    success_count += 1
+                else:
+                    logger.error(f"[{idx}/{len(companies_to_process)}] X {code} {name} 儲存失敗")
+            except Exception as e:
+                logger.error(f"  ❌ 處理 {code} 時發生錯誤: {e}")
+        else:
+            # 沒在 API 裡找到 (可能是新股、減資中、或非數字代碼)
+            if code.isdigit():
+                logger.warning(f"  ! API 中查無 {code} {name} 的資料")
+                quality_issues.append(f"{code} {name}: API 無資料")
+            success_count += 1  # 視為完成(跳過)
+
+    save_quality_report("shareholder", None, quality_issues)
+
+    logger.info(f"\n{'='*60}")
+    logger.info(f"OK 完成: {success_count}/{len(companies_to_process)} 間公司")
+    logger.info(f"{'='*60}\n")
