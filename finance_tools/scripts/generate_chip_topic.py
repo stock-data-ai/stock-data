@@ -220,7 +220,9 @@ def compute(topics_list: list, companies_index: list) -> dict:
 
     print(f"[chip_topic] 三大法人資料日期: {newest_inst_date}")
     return {
-        "lastUpdated": today.isoformat(),
+        # 標**資料日**，不是執行日。休市日照跑時標執行日，會把上一交易日的籌碼說成今天
+        # （2026-09-25 中秋，stock_map 因此推了一則「題材籌碼（9/25）」，內容全是 9/24 的）。
+        "lastUpdated": newest_inst_date or today.isoformat(),
         "topics": results,
     }
 
@@ -254,6 +256,14 @@ def _push_to_stock_map(output: dict, pat: str) -> None:
 
 def run(dry_run: bool = False) -> None:
     pat = os.getenv("STOCK_MAP_PAT") if not dry_run else None
+
+    # 休市日沒有新的三大法人資料，算出來的就是上一交易日那份——不寫檔、不推送。
+    # cron 只按星期排（週一~五），國定假日要靠這裡擋；否則 stock_map 會收到一份
+    # 內容不變、日期卻換成今天的 chip-topic.json，觸發題材籌碼推播。
+    today = now_tw().date()
+    if not is_tw_trading_day(today):
+        print(f"[chip_topic] {today.isoformat()} 休市，跳過（不產出、不推送）")
+        return
 
     print("[chip_topic] 讀取 topics + companies index...")
     topics_list = _load_stock_map_file("src/data/layer0/topics.json", pat)
