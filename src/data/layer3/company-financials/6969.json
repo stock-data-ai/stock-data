@@ -8044,7 +8044,7 @@
       }
     }
   },
-  "lastUpdated": "2026-09-24",
+  "lastUpdated": "2026-09-26",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -11466,106 +11466,220 @@
         "shares": 0,
         "ratio_pct": 0.0
       }
+    ],
+    "20260924": [
+      {
+        "序": 1,
+        "holding_range": "1-999",
+        "holder_count": 210,
+        "shares": 35203,
+        "ratio_pct": 0.08
+      },
+      {
+        "序": 2,
+        "holding_range": "1,000-5,000",
+        "holder_count": 1025,
+        "shares": 2101433,
+        "ratio_pct": 4.79
+      },
+      {
+        "序": 3,
+        "holding_range": "5,001-10,000",
+        "holder_count": 200,
+        "shares": 1619018,
+        "ratio_pct": 3.69
+      },
+      {
+        "序": 4,
+        "holding_range": "10,001-15,000",
+        "holder_count": 61,
+        "shares": 804281,
+        "ratio_pct": 1.83
+      },
+      {
+        "序": 5,
+        "holding_range": "15,001-20,000",
+        "holder_count": 46,
+        "shares": 858034,
+        "ratio_pct": 1.95
+      },
+      {
+        "序": 6,
+        "holding_range": "20,001-30,000",
+        "holder_count": 49,
+        "shares": 1266718,
+        "ratio_pct": 2.88
+      },
+      {
+        "序": 7,
+        "holding_range": "30,001-40,000",
+        "holder_count": 29,
+        "shares": 1080819,
+        "ratio_pct": 2.46
+      },
+      {
+        "序": 8,
+        "holding_range": "40,001-50,000",
+        "holder_count": 15,
+        "shares": 685893,
+        "ratio_pct": 1.56
+      },
+      {
+        "序": 9,
+        "holding_range": "50,001-100,000",
+        "holder_count": 47,
+        "shares": 3326153,
+        "ratio_pct": 7.58
+      },
+      {
+        "序": 10,
+        "holding_range": "100,001-200,000",
+        "holder_count": 25,
+        "shares": 3702553,
+        "ratio_pct": 8.44
+      },
+      {
+        "序": 11,
+        "holding_range": "200,001-400,000",
+        "holder_count": 18,
+        "shares": 4847373,
+        "ratio_pct": 11.05
+      },
+      {
+        "序": 12,
+        "holding_range": "400,001-600,000",
+        "holder_count": 6,
+        "shares": 3086711,
+        "ratio_pct": 7.03
+      },
+      {
+        "序": 13,
+        "holding_range": "600,001-800,000",
+        "holder_count": 1,
+        "shares": 780000,
+        "ratio_pct": 1.77
+      },
+      {
+        "序": 14,
+        "holding_range": "800,001-1,000,000",
+        "holder_count": 2,
+        "shares": 1823000,
+        "ratio_pct": 4.15
+      },
+      {
+        "序": 15,
+        "holding_range": "1,000,001以上",
+        "holder_count": 6,
+        "shares": 17840000,
+        "ratio_pct": 40.67
+      },
+      {
+        "序": 16,
+        "holding_range": "合計",
+        "holder_count": 0,
+        "shares": 0,
+        "ratio_pct": 0.0
+      }
     ]
   },
   "shareholderDataRecent": [
     {
       "序": 1,
       "holding_range": "1-999",
-      "holder_count": 212,
-      "shares": 34273,
-      "ratio_pct": 0.07
+      "holder_count": 210,
+      "shares": 35203,
+      "ratio_pct": 0.08
     },
     {
       "序": 2,
       "holding_range": "1,000-5,000",
-      "holder_count": 1032,
-      "shares": 2112480,
-      "ratio_pct": 4.81
+      "holder_count": 1025,
+      "shares": 2101433,
+      "ratio_pct": 4.79
     },
     {
       "序": 3,
       "holding_range": "5,001-10,000",
-      "holder_count": 196,
-      "shares": 1589501,
-      "ratio_pct": 3.62
+      "holder_count": 200,
+      "shares": 1619018,
+      "ratio_pct": 3.69
     },
     {
       "序": 4,
       "holding_range": "10,001-15,000",
-      "holder_count": 56,
-      "shares": 736081,
-      "ratio_pct": 1.67
+      "holder_count": 61,
+      "shares": 804281,
+      "ratio_pct": 1.83
     },
     {
       "序": 5,
       "holding_range": "15,001-20,000",
-      "holder_count": 47,
-      "shares": 878034,
-      "ratio_pct": 2.0
+      "holder_count": 46,
+      "shares": 858034,
+      "ratio_pct": 1.95
     },
     {
       "序": 6,
       "holding_range": "20,001-30,000",
-      "holder_count": 50,
-      "shares": 1304363,
-      "ratio_pct": 2.97
+      "holder_count": 49,
+      "shares": 1266718,
+      "ratio_pct": 2.88
     },
     {
       "序": 7,
       "holding_range": "30,001-40,000",
       "holder_count": 29,
-      "shares": 1076774,
-      "ratio_pct": 2.45
+      "shares": 1080819,
+      "ratio_pct": 2.46
     },
     {
       "序": 8,
       "holding_range": "40,001-50,000",
-      "holder_count": 13,
-      "shares": 597022,
-      "ratio_pct": 1.36
+      "holder_count": 15,
+      "shares": 685893,
+      "ratio_pct": 1.56
     },
     {
       "序": 9,
       "holding_range": "50,001-100,000",
       "holder_count": 47,
-      "shares": 3302757,
-      "ratio_pct": 7.53
+      "shares": 3326153,
+      "ratio_pct": 7.58
     },
     {
       "序": 10,
       "holding_range": "100,001-200,000",
-      "holder_count": 26,
-      "shares": 3736820,
-      "ratio_pct": 8.52
+      "holder_count": 25,
+      "shares": 3702553,
+      "ratio_pct": 8.44
     },
     {
       "序": 11,
       "holding_range": "200,001-400,000",
       "holder_count": 18,
-      "shares": 4916373,
-      "ratio_pct": 11.2
+      "shares": 4847373,
+      "ratio_pct": 11.05
     },
     {
       "序": 12,
       "holding_range": "400,001-600,000",
       "holder_count": 6,
-      "shares": 3082711,
-      "ratio_pct": 7.02
+      "shares": 3086711,
+      "ratio_pct": 7.03
     },
     {
       "序": 13,
       "holding_range": "600,001-800,000",
-      "holder_count": 0,
-      "shares": 0,
-      "ratio_pct": 0.0
+      "holder_count": 1,
+      "shares": 780000,
+      "ratio_pct": 1.77
     },
     {
       "序": 14,
       "holding_range": "800,001-1,000,000",
-      "holder_count": 3,
-      "shares": 2650000,
-      "ratio_pct": 6.04
+      "holder_count": 2,
+      "shares": 1823000,
+      "ratio_pct": 4.15
     },
     {
       "序": 15,
