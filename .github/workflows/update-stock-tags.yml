@@ -19,9 +19,10 @@ on:
       mode:
         description: '更新模式'
         required: false
-        default: 'topic-with-futures'
+        default: 'all-with-futures'
         type: choice
         options:
+          - all-with-futures
           - topic-with-futures
           - futures-only
           - topic-only
@@ -57,7 +58,9 @@ jobs:
         working-directory: stock_map
         run: |
           set -o pipefail
-          MODE="${{ github.event.inputs.mode || 'topic-with-futures' }}"
+          MODE="${{ github.event.inputs.mode || 'all-with-futures' }}"
+          # 預設算**全部公司**（2026-09-28 起）：公司頁不再前端另算標籤、一律讀 stock-tags.json，
+          # 只算有題材的（約 1,800 家）會讓其餘約 1,500 家台股的公司頁沒有財務標籤。約 14 分鐘。
           case "$MODE" in
             futures-only)
               python scripts/maintenance/generate_stock_tags.py --futures-only 2>&1 | tee /tmp/tags.log
@@ -65,8 +68,11 @@ jobs:
             topic-only)
               python scripts/maintenance/generate_stock_tags.py --topic-only 2>&1 | tee /tmp/tags.log
               ;;
-            *)
+            topic-with-futures)
               python scripts/maintenance/generate_stock_tags.py --topic-only --with-futures 2>&1 | tee /tmp/tags.log
+              ;;
+            *)
+              python scripts/maintenance/generate_stock_tags.py --with-futures 2>&1 | tee /tmp/tags.log
               ;;
           esac
 
@@ -74,7 +80,7 @@ jobs:
         if: always()
         run: |
           LOG=/tmp/tags.log
-          MODE="${{ github.event.inputs.mode || 'topic-with-futures' }}"
+          MODE="${{ github.event.inputs.mode || 'all-with-futures' }}"
           FUTURES=$(grep -oP 'Found \K\d+(?= stocks with futures)' "$LOG" 2>/dev/null | tail -1 || echo "—")
           PROCESSED=$(grep -oP 'Done: \K\d+(?= processed)' "$LOG" 2>/dev/null | tail -1 || echo "—")
           SKIPPED=$(grep -oP '\d+(?= skipped)' "$LOG" 2>/dev/null | tail -1 || echo "—")

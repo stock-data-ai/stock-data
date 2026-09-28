@@ -64,7 +64,8 @@ class FinancialCalculator:
         rev = {(m.get('year'), m.get('month')): m.get('revenue') for m in monthly}
         for m in monthly:
             curr, prev = m.get('revenue'), rev.get((m.get('year', 0) - 1, m.get('month')))
-            m['yoy'] = round((curr - prev) / prev * 100, 2) if (curr and prev and prev > 0) else None
+            # 本月營收 0 是真實的 −100%，不是缺值；只有本月或去年同月缺資料才是 None
+            m['yoy'] = round((curr - prev) / prev * 100, 2) if (curr is not None and prev and prev > 0) else None
         return monthly
 
     @staticmethod
