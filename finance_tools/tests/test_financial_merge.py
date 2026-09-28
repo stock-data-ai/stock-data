@@ -137,7 +137,34 @@ def test_monthly_revenue_outside_window_preserved_up_to_cap():
     hist = build({"historical": {"quarterly": [], "annual": [], "monthlyRevenue": old}},
                  monthly=[{"year": 2027, "month": 1, "revenue": 1.0, "yoy": None}])
     assert len(hist["monthlyRevenue"]) == 72
-    assert hist["monthlyRevenue"][0] == {"year": 2027, "month": 1, "revenue": 1.0, "yoy": None}
+    # yoy 用合併後的完整歷史重算：2026/1 營收 72（i=72）→ (1-72)/72
+    assert hist["monthlyRevenue"][0] == {"year": 2027, "month": 1, "revenue": 1.0, "yoy": -98.61}
+
+
+def test_monthly_yoy_recomputed_from_merged_history():
+    """抓取視窗只有一年，去年同月多半在「既有歷史」裡——yoy 必須合併後才算（2026-09-28 稽核：
+    2,209 家的月營收 yoy 整份是 None，取用端永遠拿不到）。缺去年同月的是 None，不是 0。"""
+    old = [{"year": 2025, "month": 9, "revenue": 100.0, "yoy": None}]
+    hist = build({"historical": {"quarterly": [], "annual": [], "monthlyRevenue": old}},
+                 monthly=[{"year": 2026, "month": 9, "revenue": 140.0, "yoy": None},
+                          {"year": 2026, "month": 8, "revenue": 50.0, "yoy": None}])
+    by = {(m["year"], m["month"]): m["yoy"] for m in hist["monthlyRevenue"]}
+    assert by[(2026, 9)] == 40.0
+    assert by[(2026, 8)] is None
+    assert by[(2025, 9)] is None
+
+
+def test_latest_quarter_yoy_uses_merged_history_not_zero():
+    """latest.yoy 用合併後的季度歷史算；找不到去年同季是 None，不可以是 0（會被讀成持平）。"""
+    existing = {"latest": {}, "historical": {"quarterly": [quarter(2025, 2, revenue=100.0)], "annual": []}}
+    final = DataAssembler.build_final_data(
+        existing, "2330", "x", {"year": 2026, "quarter": 2, "yoy": 0},
+        [], [quarter(2026, 2, revenue=140.0)], [], [], "high", {})
+    assert final["latest"]["yoy"] == 40.0
+    lone = DataAssembler.build_final_data(
+        {"latest": {}, "historical": {"quarterly": [], "annual": []}}, "2330", "x",
+        {"year": 2026, "quarter": 2, "yoy": 0}, [], [quarter(2026, 2, revenue=140.0)], [], [], "high", {})
+    assert lone["latest"]["yoy"] is None
 
 
 # ── 2. 同期間重跑不產生重複或非預期差異 ───────────────────────────────────

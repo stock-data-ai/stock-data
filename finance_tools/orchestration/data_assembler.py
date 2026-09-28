@@ -4,6 +4,7 @@ from typing import Dict, Any, List
 import pandas as pd
 from finance_tools.core import DataProcessor
 from finance_tools.core import merge_policy
+from finance_tools.domains.financials.calculator import FinancialCalculator
 from finance_tools.core.timezone import today_str
 
 logger = logging.getLogger(__name__)
@@ -149,6 +150,12 @@ class DataAssembler:
             key=lambda m: (m['year'], m['month']),
             limit=merge_policy.MONTHLY_REVENUE_LIMIT,
         ) or None
+
+        # 年增率一律用**合併後的完整歷史**重算：抓取視窗只有一年，去年同期多半不在視窗裡
+        FinancialCalculator.fill_monthly_yoy(merged_monthly)
+        if final_data['latest'].get('year') is not None:
+            final_data['latest']['yoy'] = FinancialCalculator.quarter_yoy(
+                merged_quarterly, final_data['latest'].get('year'), final_data['latest'].get('quarter'))
 
         final_data['historical'].update({
             "annual": merged_annual,

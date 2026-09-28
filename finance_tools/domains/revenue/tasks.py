@@ -6,6 +6,7 @@ from datetime import timedelta
 
 from finance_tools.core import FinMindClient, DataProcessor, FileManager
 from finance_tools.core import merge_policy
+from finance_tools.domains.financials.calculator import FinancialCalculator
 from finance_tools.core.timezone import now_tw, today_str
 from finance_tools.domains.revenue.fetcher import RevenueFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing, filter_already_updated
@@ -92,6 +93,8 @@ def run_update_revenue(args):
             key=lambda m: (m["year"], m["month"]),
             limit=merge_policy.MONTHLY_REVENUE_LIMIT,
         ) or None
+        # 與 build_final_data 同一條：合併後用完整歷史重算年增率
+        FinancialCalculator.fill_monthly_yoy(existing_data["historical"]["monthlyRevenue"])
         existing_data["lastUpdated"] = today_str()
 
         final_data = processor.clean_nan(existing_data)
