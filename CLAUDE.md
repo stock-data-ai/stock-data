@@ -128,12 +128,11 @@ Four FinMind API tokens stored in `FINMIND_API_TOKENS` (comma-separated secret).
 
 ### Web Crawlers (Web_Crawler/)
 
-- **economic_daily_scraper.py** — Selenium-based Economic Daily news scraper
 - **mops_scraper.py** — HTTP-based MOPS (公開資訊觀測站) crawler
-- **money_udn/init_database.py** — Topic-rotation coordinator for news crawling
-- **cloudflare_d1_client.py** — Stores scraped news to Cloudflare D1 (not committed to repo)
+- **cloudflare_d1_client.py** — Writes MOPS announcements to Cloudflare D1
 
-News data goes to Cloudflare D1; financial data goes to JSON files committed to the repo.
+MOPS announcements go to Cloudflare D1; financial data goes to JSON files committed to the repo.
+個股新聞不在本 repo：由 stock_map 的 `/api/cron/news-ingest` 從 FinMind 匯入（2026-09-30 起取代經濟日報爬蟲）。
 
 ### Key Data Files
 

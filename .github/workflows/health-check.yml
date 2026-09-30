@@ -40,7 +40,6 @@ jobs:
           # 本清單是唯一一份檢查清單（Worker 那邊已不再各留一份，避免兩份漂移）。
           # 這裡的 hour/minute 只是「預期時間」，用來切出比對視窗。改排程時務必同步改這裡。
           CHECK_JOBS = [
-              {'label': '07:00 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 7,  'minute': 0},
               # lenient：這班刻意排在資料公布之前搶頭香，抓不到是常態不是故障。
               # 只有「後面的班也全滅」才算異常。
               # 2026-08-31：daily-update 從 16:30／17:05／21:05 改為 19:30／21:05、
@@ -67,7 +66,6 @@ jobs:
               {'label': '19:45 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 19, 'minute': 45, 'days': [1,2,3,4,5]},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5,  'days': [1,2,3,4,5,6]},
-              {'label': '21:30 Economic Daily Scraper',              'workflow_name': 'Economic Daily Scraper｜經濟日報爬蟲',                         'hour': 21, 'minute': 30},
               {'label': '21:30 Margin & Lending Update',             'workflow_name': 'Margin Trading Update｜融資融券與借券更新',                    'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
               # 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘。原排 23:30、比 23:00 健康檢查晚，

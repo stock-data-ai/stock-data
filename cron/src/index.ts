@@ -16,7 +16,6 @@ interface CronJob {
 }
 
 const CRON_MAP: Record<string, CronJob> = {
-  '0 23 * * *':           { workflow: 'scraper-economic-daily.yml' },                               // 台灣 07:00 每天
   '0 0 * * 7':            { workflow: 'etf-holdings-update.yml' },                                  // 台灣 08:00 週六
   '0 1 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:00 週六（第一次）
   '30 1 * * 7':          { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:30 週六（第二次備援）
@@ -55,7 +54,6 @@ const CRON_MAP: Record<string, CronJob> = {
   // 推播前等 GitHub Pages 部署的重試次數更少（2026-08-25 實測 20:30 那輪等了 8 分鐘）。
   // 改這裡要同步改 health-check.yml 的『21:00 Active ETF』那筆，否則健康檢查每天報缺班。
   '0 13 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 21:00 每天（第三次）
-  '30 13 * * *':          { workflow: 'scraper-economic-daily.yml' },                               // 台灣 21:30 每天
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };
 

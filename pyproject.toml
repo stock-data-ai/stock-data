@@ -13,8 +13,6 @@ dependencies = [
     # 不是只靠 requests 帶進來的傳遞相依。
     "certifi",
     "beautifulsoup4",
-    "selenium>=4.36.0",
-    "webdriver-manager>=4.0.1",
     "undetected-chromedriver>=3.5.0",
     "python-dotenv>=1.2.1",
     "jsonschema>=4.22.0",
