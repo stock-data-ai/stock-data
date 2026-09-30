@@ -5132,6 +5132,29 @@
         "code": "2064",
         "foreign_ratio": 0.15,
         "foreign_shares": 106
+      },
+      "2026-09-29": {
+        "dealer_hedging_buy": 0.0,
+        "dealer_self_buy": 0.0,
+        "foreign_buy": 148.0,
+        "foreign_dealer_buy": 0.0,
+        "trust_buy": 0.0,
+        "dealer_hedging_net_buy": 0.0,
+        "dealer_self_net_buy": -0.002,
+        "foreign_net_buy": 0.0,
+        "foreign_dealer_net_buy": 0.0,
+        "trust_net_buy": 0.0,
+        "dealer_hedging_sell": 0.0,
+        "dealer_self_sell": 0.002,
+        "foreign_sell": 148.0,
+        "foreign_dealer_sell": 0.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 0.0,
+        "dealer_sell": 0.002,
+        "dealer_net_buy": -0.002,
+        "code": "2064",
+        "foreign_ratio": 0.15,
+        "foreign_shares": 106
       }
     },
     "annual": [
@@ -7145,6 +7168,22 @@
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 0
+      },
+      "2026-09-29": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 56,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
+      },
+      "2026-09-30": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 56,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     },
     "securitiesLending": {
@@ -8099,10 +8138,17 @@
         "sblReturns": 0,
         "sblAdjustments": 0,
         "sblAvailable": 37
+      },
+      "2026-09-30": {
+        "sblBalance": 41,
+        "sblShortSales": 0,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 37
       }
     }
   },
-  "lastUpdated": "2026-09-27",
+  "lastUpdated": "2026-09-29",
   "latest": {
     "year": 2026,
     "quarter": 2,
@@ -8113,9 +8159,9 @@
     "netMargin": -0.56,
     "eps": -0.04,
     "dividendFrequency": "年",
-    "marketCap": 818094000.0,
-    "pe": 590.0,
-    "pb": 0.88,
+    "marketCap": 825027000.0,
+    "pe": 595.0,
+    "pb": 0.89,
     "marginBalance": 56,
     "shortBalance": 0,
     "dividendYield": 0.0,

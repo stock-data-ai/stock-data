@@ -11,13 +11,13 @@
     "netMargin": -10.02,
     "eps": -3.15,
     "dividendFrequency": "年",
-    "marketCap": 27474505740.0,
+    "marketCap": 31090461600.0,
     "pe": 0.0,
-    "pb": 0.92,
-    "marginBalance": 23714,
-    "shortBalance": 414,
+    "pb": 1.04,
+    "marginBalance": 29745,
+    "shortBalance": 630,
     "dividendYield": 0.0,
-    "sblBalance": 16625
+    "sblBalance": 15023
   },
   "historical": {
     "annual": [
@@ -8721,6 +8721,52 @@
         "code": "6456",
         "foreign_ratio": 47.54,
         "foreign_shares": 160673
+      },
+      "2026-09-29": {
+        "dealer_hedging_buy": 358.529,
+        "dealer_self_buy": 63.0,
+        "foreign_buy": 2608.1,
+        "foreign_dealer_buy": 0.0,
+        "trust_buy": 0.0,
+        "dealer_hedging_net_buy": 262.529,
+        "dealer_self_net_buy": 62.0,
+        "foreign_net_buy": 721.0999999999999,
+        "foreign_dealer_net_buy": 0.0,
+        "trust_net_buy": 0.0,
+        "dealer_hedging_sell": 96.0,
+        "dealer_self_sell": 1.0,
+        "foreign_sell": 1887.0,
+        "foreign_dealer_sell": 0.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 421.529,
+        "dealer_sell": 97.0,
+        "dealer_net_buy": 324.529,
+        "code": "6456",
+        "foreign_ratio": 47.15,
+        "foreign_shares": 159356
+      },
+      "2026-09-30": {
+        "dealer_hedging_buy": 579.465,
+        "dealer_self_buy": 123.0,
+        "foreign_buy": 18926.271,
+        "foreign_dealer_buy": 0.0,
+        "trust_buy": 0.0,
+        "dealer_hedging_net_buy": -212.644,
+        "dealer_self_net_buy": -67.0,
+        "foreign_net_buy": 5754.197,
+        "foreign_dealer_net_buy": 0.0,
+        "trust_net_buy": 0.0,
+        "dealer_hedging_sell": 792.109,
+        "dealer_self_sell": 190.0,
+        "foreign_sell": 13172.074,
+        "foreign_dealer_sell": 0.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 702.465,
+        "dealer_sell": 982.109,
+        "dealer_net_buy": -279.644,
+        "code": "6456",
+        "foreign_ratio": 48.69,
+        "foreign_shares": 164575
       }
     },
     "marginTrading": {
@@ -9787,6 +9833,22 @@
         "shortBuy": 42,
         "shortSell": 75,
         "shortBalance": 414
+      },
+      "2026-09-29": {
+        "marginBuy": 3465,
+        "marginSell": 2120,
+        "marginBalance": 25059,
+        "shortBuy": 16,
+        "shortSell": 200,
+        "shortBalance": 580
+      },
+      "2026-09-30": {
+        "marginBuy": 7709,
+        "marginSell": 3020,
+        "marginBalance": 29745,
+        "shortBuy": 91,
+        "shortSell": 141,
+        "shortBalance": 630
       }
     },
     "securitiesLending": {
@@ -10741,10 +10803,24 @@
         "sblReturns": 622,
         "sblAdjustments": 0,
         "sblAvailable": 1671
+      },
+      "2026-09-29": {
+        "sblBalance": 15652,
+        "sblShortSales": 197,
+        "sblReturns": 1170,
+        "sblAdjustments": 0,
+        "sblAvailable": 1838
+      },
+      "2026-09-30": {
+        "sblBalance": 15023,
+        "sblShortSales": 244,
+        "sblReturns": 873,
+        "sblAdjustments": 0,
+        "sblAvailable": 2454
       }
     }
   },
-  "lastUpdated": "2026-09-27",
+  "lastUpdated": "2026-09-30",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [

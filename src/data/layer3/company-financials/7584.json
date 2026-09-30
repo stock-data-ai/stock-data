@@ -11,10 +11,10 @@
     "netMargin": 0.86,
     "eps": 0.14,
     "dividendFrequency": "年",
-    "marketCap": 447788377.59999996,
+    "marketCap": 472482589.59999996,
     "pe": 0.0,
-    "pb": 1.0,
-    "dividendYield": 1.51,
+    "pb": 1.05,
+    "dividendYield": 1.43,
     "marginBalance": 12,
     "shortBalance": 0,
     "sblBalance": 18
@@ -6576,6 +6576,29 @@
         "code": "7584",
         "foreign_ratio": 25.46,
         "foreign_shares": 4192
+      },
+      "2026-09-29": {
+        "dealer_hedging_buy": 0.0,
+        "dealer_self_buy": 0.0,
+        "foreign_buy": 0.0,
+        "foreign_dealer_buy": 0.0,
+        "trust_buy": 0.0,
+        "dealer_hedging_net_buy": 0.0,
+        "dealer_self_net_buy": -0.019,
+        "foreign_net_buy": -1.0,
+        "foreign_dealer_net_buy": 0.0,
+        "trust_net_buy": 0.0,
+        "dealer_hedging_sell": 0.0,
+        "dealer_self_sell": 0.019,
+        "foreign_sell": 1.0,
+        "foreign_dealer_sell": 0.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 0.0,
+        "dealer_sell": 0.019,
+        "dealer_net_buy": -0.019,
+        "code": "7584",
+        "foreign_ratio": 25.45,
+        "foreign_shares": 4191
       }
     },
     "marginTrading": {
@@ -7634,6 +7657,22 @@
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 0
+      },
+      "2026-09-29": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 12,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
+      },
+      "2026-09-30": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 12,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     },
     "securitiesLending": {
@@ -8588,10 +8627,17 @@
         "sblReturns": 0,
         "sblAdjustments": 0,
         "sblAvailable": 12
+      },
+      "2026-09-30": {
+        "sblBalance": 18,
+        "sblShortSales": 0,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 2
       }
     }
   },
-  "lastUpdated": "2026-09-27",
+  "lastUpdated": "2026-09-30",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
