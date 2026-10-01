@@ -50,293 +50,30 @@ jobs:
             -o src/data/etf/index.json
           echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
 
-      # ── 官網爬蟲（主力來源）─────────────────────────────────────────────
-      # 2026-10-01 恢復：CMoney API 開始回 Auth Failed，29 檔整批停更；之前它本來就比官網慢
-      # 一天，00986A 還在它那裡停了一週（9/24），官網停用時沒有任何備援。
-      # 群益、台新官網標的是申購買回清單日（下一交易日），爬蟲裡已換回持股所屬交易日。
-
-      - name: Run active ETF crawler (統一投信 — 00403A 00981A 00988A)
-        id: unipres
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00403A|00981A|00988A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_unipres.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_unipres.py
-          fi
-
-      - name: Run active ETF crawler (群益投信 — 00982A 00992A 00997A)
-        id: capital
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00982A|00992A|00997A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_capital.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_capital.py
-          fi
-
-      - name: Run active ETF crawler (野村投信 — 00980A 00985A 00999A)
-        id: nomura
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00980A|00985A|00999A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_nomura.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_nomura.py
-          fi
-
+      # 元大官網是 NUXT 頁面，爬蟲要用 node 解析
       - name: Set up Node.js (for 元大投信 NUXT parser)
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Run active ETF crawler (元大投信 — 00990A)
-        id: yuanta
+      # ── 分層抓取 ─────────────────────────────────────────────────────────
+      # 每一層只處理還沒拿到應有日期的 ETF，已完成的跳過：官網 → CMoney → FinMind（預設關）。
+      # 一天三班本身就是重試；最後一班（台北 20 點後）仍有缺才寄信、才讓這一步失敗。
+      # 細節見 etf_Crawler/run_active_etf.py 開頭註解與 stock_map docs/features/market/ETF功能邏輯.md。
+      - name: 分層抓取（官網 → CMoney → FinMind）
+        id: crawl
         continue-on-error: true
+        env:
+          CODES: ${{ inputs.codes }}
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+          # FinMind 層：在 repo Variables 設 ETF_FINMIND_FALLBACK=true 才啟用（對外顯示授權確認前保持關閉）
+          ETF_FINMIND_FALLBACK: ${{ vars.ETF_FINMIND_FALLBACK }}
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
         run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00990A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_yuanta.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_yuanta.py
-          fi
-
-      - name: Run active ETF crawler (中信投信 — 00406A 00983A 00995A)
-        id: ctbc
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00406A|00983A|00995A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_ctbc.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_ctbc.py
-          fi
-
-      - name: Run active ETF crawler (復華投信 — 00991A 00998A)
-        id: fuhwa
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00991A|00998A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_fuhwa.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_fuhwa.py
-          fi
-
-      - name: Run active ETF crawler (安聯投信 — 00984A 00993A)
-        id: allianz
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00984A|00993A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_allianz.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_allianz.py
-          fi
-
-      - name: Run active ETF crawler (台新投信 — 00986A 00987A)
-        id: taishin
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00986A|00987A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_taishin.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_taishin.py
-          fi
-
-      - name: Run active ETF crawler (第一金投信 — 00994A 00408A)
-        id: first_financial
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00994A|00408A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_first_financial.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_first_financial.py
-          fi
-
-      - name: Run active ETF crawler (兆豐投信 — 00996A)
-        id: mega
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00996A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_mega.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_mega.py
-          fi
-
-      - name: Run active ETF crawler (國泰投信 — 00400A)
-        id: cathay
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00400A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_cathay.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_cathay.py
-          fi
-
-      - name: Run active ETF crawler (富邦投信 — 00405A)
-        id: fubon
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00405A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_fubon.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_fubon.py
-          fi
-
-      - name: Run active ETF crawler (凱基投信 — 00407A)
-        id: kgi
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00407A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_kgi.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_kgi.py
-          fi
-
-      - name: Run active ETF crawler (永豐投信 — 00410A)
-        id: sinopac
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00410A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_sinopac.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_sinopac.py
-          fi
-
-      - name: Run active ETF crawler (聯博投信 — 00404A)
-        id: allianceb
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00404A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_allianceb.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_allianceb.py
-          fi
-
-      - name: Run active ETF crawler (摩根投信 — 00401A 00989A)
-        id: jpmorgan
-        continue-on-error: true
-        run: |
-          if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00401A|00989A)$" | tr '\n' ' ' | xargs)
-            if [ -n "$FILTERED" ]; then
-              uv run python etf_Crawler/fetch_active_etf_jpmorgan.py $FILTERED
-            else
-              echo "SKIPPED=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            uv run python etf_Crawler/fetch_active_etf_jpmorgan.py
-          fi
-
-      # ── CMoney（備援）───────────────────────────────────────────────────
-      # 只補官網沒更新到的（needs_update 比本地日期新才寫）。2026-10-01 起 29 檔都有官網爬蟲，
-      # 它主要接住「新上市、還沒寫爬蟲」的主動型（清單讀 index.json）；它失敗不算整班失敗，
-      # 停更改由 23:00 健康檢查的資料新鮮度警示抓。
-
-      - name: CMoney API 備援（主動型 ETF，清單讀 index.json）
-        if: always()
-        id: cmoney
-        continue-on-error: true
-        run: uv run python etf_Crawler/fetch_active_etf_cmoney.py
-
-      - name: Job Summary
-        if: always()
-        run: |
-          # 直接讀寫完的檔案，不讀各步驟 outputs：同一檔可能被官網或 CMoney 任一邊更新，
-          # 看最後的 lastUpdated 才知道這一班結束時網站上會是哪一天。
-          uv run python - >> $GITHUB_STEP_SUMMARY <<'PY'
-          import json
-          from pathlib import Path
-          idx = json.load(open("src/data/etf/index.json", encoding="utf-8"))
-          rows = idx if isinstance(idx, list) else list(idx.values())
-          active = sorted(r.get("code") for r in rows if str(r.get("code", "")).endswith("A"))
-          dates = {}
-          for c in active:
-              p = Path(f"src/data/etf/{c}.json")
-              dates[c] = json.load(open(p, encoding="utf-8")).get("lastUpdated") if p.exists() else None
-          latest = max((d for d in dates.values() if d), default=None)
-          print("## 主動型 ETF 持股資料日期（官網主力、CMoney 備援）\n")
-          print(f"最新資料日 {latest}，落後的排在前面\n")
-          print("| ETF | 名稱 | 投信 | 資料日期 |")
-          print("|-----|------|------|---------|")
-          meta = {r.get("code"): r for r in rows}
-          for c in sorted(active, key=lambda c: (dates[c] or "", c)):
-              mark = "" if dates[c] == latest else " ⚠️"
-              m = meta.get(c, {})
-              print(f"| {c} | {m.get('name', '')} | {m.get('issuer', '')} | {dates[c]}{mark} |")
-          PY
+          # CODES 經 env 傳、腳本內只當代號用，不內插進指令
+          uv run python etf_Crawler/run_active_etf.py $CODES
 
       - name: Commit & push updated ETF data
         run: |
@@ -399,7 +136,7 @@ jobs:
 
       # commit 之後才推：通知點進去要能看到當日數字。
       # 彙總算法在 stock_map（與 App 的主動式 ETF 統計面板共用），這裡只負責觸發；
-      # 防重複由 endpoint 的 pushLog（key＝CMoney 資料日期）把關，一天三輪只會推一次。
+      # 防重複由 endpoint 的 pushLog（key＝持股資料日期）把關，一天三輪只會推一次。
       #
       # **必須重試等 GitHub Pages 部署**：endpoint 讀的是 stock-data-ai.github.io 上的明細，
       # 而 Pages 在 commit 後要數分鐘才重建。commit 完立刻打，endpoint 讀到的是「上一輪」的
@@ -442,22 +179,7 @@ jobs:
         run: |
           FAILED=""
           check () { [ "$2" = "success" ] || FAILED="$FAILED $1"; }
-          check 統一官網         "${{ steps.unipres.outcome }}"
-          check 群益官網         "${{ steps.capital.outcome }}"
-          check 野村官網         "${{ steps.nomura.outcome }}"
-          check 元大官網         "${{ steps.yuanta.outcome }}"
-          check 中信官網         "${{ steps.ctbc.outcome }}"
-          check 復華官網         "${{ steps.fuhwa.outcome }}"
-          check 安聯官網         "${{ steps.allianz.outcome }}"
-          check 台新官網         "${{ steps.taishin.outcome }}"
-          check 第一金官網       "${{ steps.first_financial.outcome }}"
-          check 兆豐官網         "${{ steps.mega.outcome }}"
-          check 國泰官網         "${{ steps.cathay.outcome }}"
-          check 富邦官網         "${{ steps.fubon.outcome }}"
-          check 凱基官網         "${{ steps.kgi.outcome }}"
-          check 永豐官網         "${{ steps.sinopac.outcome }}"
-          check 聯博官網         "${{ steps.allianceb.outcome }}"
-          check 摩根官網         "${{ steps.jpmorgan.outcome }}"
+          check 分層抓取         "${{ steps.crawl.outcome }}"
           check 取得index.json   "${{ steps.fetch_index.outcome }}"
           check 重建反向索引     "${{ steps.reverse_index.outcome }}"
           check 推送反向索引     "${{ steps.push_reverse_index.outcome }}"

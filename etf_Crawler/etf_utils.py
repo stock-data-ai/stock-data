@@ -180,6 +180,14 @@ def write_holdings_update(
                 return h.get("code") or h.get("foreignCode") or h.get("name", "")
             return h.get("code") or h.get("name", "")
 
+        # 日期不倒退：分層補資料後，同一檔可能先被 A 來源寫到 D，再被 B 來源拿到 D-1。
+        # 舊的那份只補進 history（若還沒有），不動 topHoldings／lastUpdated，
+        # 否則畫面會從今天退回昨天，加減碼也會拿錯基準。
+        prev_date = data.get("lastUpdated")
+        if not history_only and prev_date and tran_date < prev_date:
+            print(f"  [SKIP] {etf_code} 來源日期 {tran_date} 早於現有 {prev_date}，只補歷史")
+            history_only = True
+
         if history_only:
             if tran_date in data["holdingsHistory"]:
                 print(f"  [SKIP] {tran_date} 已存在")
