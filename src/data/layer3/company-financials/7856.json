@@ -14,7 +14,8 @@
     "pe": 159.38,
     "pb": 64.14,
     "dividendYield": 0.02,
-    "dividendFrequency": "年"
+    "dividendFrequency": "年",
+    "sblBalance": 0
   },
   "historical": {
     "annual": [
@@ -3235,6 +3236,15 @@
         "code": "7856",
         "foreign_ratio": 15.86,
         "foreign_shares": 5235
+      }
+    },
+    "securitiesLending": {
+      "2026-10-01": {
+        "sblBalance": 0,
+        "sblShortSales": 0,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 219
       }
     }
   },
