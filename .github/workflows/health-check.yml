@@ -525,6 +525,61 @@ jobs:
 
           send_ses_email(subj, html)
 
+          # ── 主動式 ETF 資料新鮮度（另寄一封）────────────────────────────────
+          # 上面只看 workflow 成敗。2026-09 CMoney 對 00986A 回 9/24 舊資料一週，程式判斷
+          # 「已是最新」略過、燈是綠的；10-01 CMoney 回 Auth Failed 的那封又混在大表裡。
+          # 所以直接看檔案的 lastUpdated，落後 2 個交易日以上就單獨寄一封。
+          # 海外型（00988A、00983A、00998A）官網本來就晚一天，落後 1 天不算。
+          def _tw_holidays():
+              try:
+                  with urllib.request.urlopen('https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule', timeout=15) as r:
+                      rows = json.loads(r.read())
+                  return {f"{int(x['Date'][:3]) + 1911}-{x['Date'][3:5]}-{x['Date'][5:]}"
+                          for x in rows if len(str(x.get('Date', ''))) == 7 and '交易日' not in x.get('Name', '')}
+              except Exception as e:
+                  print(f'[ETF freshness] 休市表取得失敗（{e}），只跳週末')
+                  return set()
+
+          _hol = _tw_holidays()
+          def _is_td(d):
+              return d.weekday() < 5 and d.isoformat() not in _hol
+          def _td_on_or_before(d):
+              while not _is_td(d):
+                  d -= timedelta(days=1)
+              return d
+
+          last_td = _td_on_or_before(taiwan_now.date())
+          threshold = _td_on_or_before(last_td - timedelta(days=1)).isoformat()
+
+          stale = []
+          for p in sorted(__import__('pathlib').Path('src/data/etf').glob('*A.json')):
+              try:
+                  d = json.load(open(p, encoding='utf-8'))
+              except Exception:
+                  continue
+              lu = d.get('lastUpdated') or ''
+              if lu < threshold:
+                  stale.append((p.stem, d.get('name', ''), lu or '—'))
+
+          print(f'[ETF freshness] 最近交易日 {last_td}，門檻 {threshold}，落後 {len(stale)} 檔')
+          if stale:
+              rows_html = ''.join(
+                  f'<tr><td style="padding:5px 12px;border:1px solid #e2e8f0">{c}</td>'
+                  f'<td style="padding:5px 12px;border:1px solid #e2e8f0">{n}</td>'
+                  f'<td style="padding:5px 12px;border:1px solid #e2e8f0">{lu}</td></tr>'
+                  for c, n, lu in stale)
+              etf_html = (
+                  f'<p>最近交易日 {last_td}；以下主動式 ETF 的持股資料早於 {threshold}（落後 2 個交易日以上）。</p>'
+                  f'<table style="border-collapse:collapse;font-size:13px"><thead><tr>'
+                  f'<th style="padding:6px 12px;border:1px solid #e2e8f0;text-align:left">ETF</th>'
+                  f'<th style="padding:6px 12px;border:1px solid #e2e8f0;text-align:left">名稱</th>'
+                  f'<th style="padding:6px 12px;border:1px solid #e2e8f0;text-align:left">資料日期</th>'
+                  f'</tr></thead><tbody>{rows_html}</tbody></table>'
+                  f'<p>先看 <a href="https://github.com/{REPO}/actions/workflows/etf-active-daily.yml">主動型 ETF 持股 workflow</a> '
+                  f'的 Job Summary 與各官網爬蟲步驟 log。</p>')
+              send_ses_email(f'🚨 主動式 ETF 持股停更：{len(stale)} 檔（{tw_date}）', etf_html)
+              all_good = False
+
           if not all_good:
               sys.exit(1)
           PYEOF
