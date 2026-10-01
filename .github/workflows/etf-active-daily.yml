@@ -270,9 +270,24 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_sinopac.py
           fi
 
+      - name: Run active ETF crawler (聯博投信 — 00404A)
+        id: allianceb
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.codes }}" ]; then
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00404A)$" | tr '\n' ' ' | xargs)
+            if [ -n "$FILTERED" ]; then
+              uv run python etf_Crawler/fetch_active_etf_allianceb.py $FILTERED
+            else
+              echo "SKIPPED=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            uv run python etf_Crawler/fetch_active_etf_allianceb.py
+          fi
+
       # ── CMoney（備援）───────────────────────────────────────────────────
       # 只補官網沒更新到的（needs_update 比本地日期新才寫）。也是目前沒有官網爬蟲的
-      # 3 檔（摩根 00401A／00989A、聯博 00404A）唯一來源；它失敗不算整班失敗，
+      # 2 檔（摩根 00401A／00989A）唯一來源；它失敗不算整班失敗，
       # 那幾檔停更改由資料新鮮度檢查抓。
 
       - name: CMoney API 備援（主動型 ETF，清單讀 index.json）
@@ -426,6 +441,7 @@ jobs:
           check 富邦官網         "${{ steps.fubon.outcome }}"
           check 凱基官網         "${{ steps.kgi.outcome }}"
           check 永豐官網         "${{ steps.sinopac.outcome }}"
+          check 聯博官網         "${{ steps.allianceb.outcome }}"
           check 取得index.json   "${{ steps.fetch_index.outcome }}"
           check 重建反向索引     "${{ steps.reverse_index.outcome }}"
           check 推送反向索引     "${{ steps.push_reverse_index.outcome }}"
