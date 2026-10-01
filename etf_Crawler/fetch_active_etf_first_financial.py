@@ -12,6 +12,7 @@ fetch_active_etf_first_financial.py
 
 支援 ETF：
   00994A  主動第一金台股優 (Internal ID: 182)
+  00408A  主動第一金優股息 (Internal ID: 183)
 """
 
 import json
@@ -46,6 +47,7 @@ HEADERS = {
 # 第一金投信主動型 ETF 代號與內部 ID 映射
 FIRST_FINANCIAL_ACTIVE_ETFS = {
     "00994A": "182",  # 主動第一金台股優
+    "00408A": "183",  # 主動第一金優股息（官網 cNo=183；2026-10-01 對過 CMoney 9/29 持股股數一致）
 }
 
 session = create_session()

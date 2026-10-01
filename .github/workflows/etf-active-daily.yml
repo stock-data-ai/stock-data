@@ -180,12 +180,12 @@ jobs:
             uv run python etf_Crawler/fetch_active_etf_taishin.py
           fi
 
-      - name: Run active ETF crawler (第一金投信 — 00994A)
+      - name: Run active ETF crawler (第一金投信 — 00994A 00408A)
         id: first_financial
         continue-on-error: true
         run: |
           if [ -n "${{ inputs.codes }}" ]; then
-            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00994A)$" | tr '\n' ' ' | xargs)
+            FILTERED=$(echo "${{ inputs.codes }}" | tr ' ' '\n' | grep -E "^(00994A|00408A)$" | tr '\n' ' ' | xargs)
             if [ -n "$FILTERED" ]; then
               uv run python etf_Crawler/fetch_active_etf_first_financial.py $FILTERED
             else
@@ -242,7 +242,7 @@ jobs:
 
       # ── CMoney（備援）───────────────────────────────────────────────────
       # 只補官網沒更新到的（needs_update 比本地日期新才寫）。也是目前沒有官網爬蟲的
-      # 6 檔（摩根、聯博、凱基、第一金 00408A、永豐）唯一來源；它失敗不算整班失敗，
+      # 5 檔（摩根 00401A／00989A、聯博 00404A、凱基 00407A、永豐 00410A）唯一來源；它失敗不算整班失敗，
       # 那幾檔停更改由資料新鮮度檢查抓。
 
       - name: CMoney API 備援（主動型 ETF，清單讀 index.json）
