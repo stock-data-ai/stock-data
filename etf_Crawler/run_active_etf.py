@@ -7,7 +7,7 @@
   1. 官網爬蟲（各投信一支，見 OFFICIAL）
   2. CMoney（網頁訪客 token；兆豐官網在 GitHub Actions 會 403，平常靠這層補）
   3. FinMind TaiwanStockActiveETFHolding（ETF_FINMIND_FALLBACK=true 才啟用，
-     對外顯示授權確認前保持關閉）
+     2026-10-01 確認 Sponsor 條款允許對外呈現後開啟）
 
 一天三班（16:00／17:55／21:00）本身就是重試：前一班沒補到的，下一班從頭再走一次。
 最後一班（台北 20 點以後）走完仍有缺，寄錯誤信。
@@ -179,7 +179,7 @@ def main():
                 if current_date(c) != before[c]:
                     source[c] = "CMoney"
 
-        # ── 第 3 層：FinMind（授權確認前預設關閉）──
+        # ── 第 3 層：FinMind（repo Variable 開關，可在故障時關閉）──
         need = pending(codes, last_td)
         if need and os.environ.get("ETF_FINMIND_FALLBACK", "").lower() == "true":
             before = {c: current_date(c) for c in need}

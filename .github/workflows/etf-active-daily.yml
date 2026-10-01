@@ -57,7 +57,7 @@ jobs:
           node-version: '20'
 
       # ── 分層抓取 ─────────────────────────────────────────────────────────
-      # 每一層只處理還沒拿到應有日期的 ETF，已完成的跳過：官網 → CMoney → FinMind（預設關）。
+      # 每一層只處理還沒拿到應有日期的 ETF，已完成的跳過：官網 → CMoney → FinMind。
       # 一天三班本身就是重試；最後一班（台北 20 點後）仍有缺才寄信、才讓這一步失敗。
       # 細節見 etf_Crawler/run_active_etf.py 開頭註解與 stock_map docs/features/market/ETF功能邏輯.md。
       - name: 分層抓取（官網 → CMoney → FinMind）
@@ -66,7 +66,7 @@ jobs:
         env:
           CODES: ${{ inputs.codes }}
           FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
-          # FinMind 層：在 repo Variables 設 ETF_FINMIND_FALLBACK=true 才啟用（對外顯示授權確認前保持關閉）
+          # FinMind 層：repo Variable ETF_FINMIND_FALLBACK=true 啟用（2026-10-01 起開；設 false 可單獨關掉這層）
           ETF_FINMIND_FALLBACK: ${{ vars.ETF_FINMIND_FALLBACK }}
           AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
           AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}

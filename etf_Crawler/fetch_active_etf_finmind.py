@@ -5,8 +5,8 @@
 資料集：TaiwanStockActiveETFHolding（Sponsor 等級）。date 為持股日（2026-10-01 對過
 00991A／00404A／00410A 等，與官網持股日股數相同）。
 
-**預設不啟用**：run_active_etf.py 只在 ETF_FINMIND_FALLBACK=true 時呼叫。
-FinMind 原始資料對外顯示需確認 Sponsor 條款涵蓋此資料集（見 stock_map 的資料來源與授權.md）。
+run_active_etf.py 只在 ETF_FINMIND_FALLBACK=true（repo Variable，2026-10-01 起開啟）時呼叫。
+授權：2026-10-01 確認 FinMind Sponsor 條款允許對外呈現此資料集（見 stock_map 的資料來源與授權.md）。
 
 輸出格式對齊 CMoney／官網舊檔：台股有 code、海外股只有名稱；期貨保留、選擇權不收；
 現金列名稱 CASH、shares 放金額。
