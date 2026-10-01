@@ -19,6 +19,7 @@ API: https://www.cmoney.tw/api/cm/MobileService/ashx/GetDtnoData.ashx
 """
 
 import json
+import re
 import sys
 import time
 from datetime import date
@@ -115,6 +116,28 @@ def ensure_skeleton(etf_code: str) -> None:
 
 session = create_session()
 
+# 2026-10-01 起 GetDtnoData 要求驗證（不帶回 Error Code 101 Auth Failed）。
+# CMoney ETF 網頁會在 SSR 裡發一組訪客 JWT（is_guest=true，約一天有效），
+# 任何打開網頁的人都拿得到；每次執行先取一組帶上即可，不需要帳號。
+TOKEN_PAGE = "https://www.cmoney.tw/etf/tw/00981A/fundholding"
+_GUEST_TOKEN_RE = re.compile(r'tokens:\{at:"([^"]+)"')
+_guest_token = None
+
+
+def guest_token() -> str:
+    global _guest_token
+    if _guest_token is None:
+        try:
+            page = session.get(TOKEN_PAGE, headers=HEADERS, timeout=30).text
+            m = _GUEST_TOKEN_RE.search(page)
+            _guest_token = m.group(1) if m else ""
+            if not _guest_token:
+                print("[WARN] CMoney 網頁找不到訪客 token，API 多半會回 Auth Failed")
+        except Exception as e:                                 # noqa: BLE001
+            print(f"[WARN] 取得 CMoney 訪客 token 失敗：{e}")
+            _guest_token = ""
+    return _guest_token
+
 
 def _parse_rows(rows: list) -> dict:
     """把 API rows 依日期分組，回傳 {date_str: [holdings]}，日期由舊到新排序。"""
@@ -165,12 +188,12 @@ def fetch_holdings_all_dates(etf_code: str, dtrange: int = 30) -> dict:
                 "ParamStr": f"AssignID={etf_code};MTPeriod=0;DTMode=0;DTRange={dtrange};DTOrder=1;MajorTable=M722;",
                 "FilterNo": "0",
             },
-            headers=HEADERS,
+            headers={**HEADERS, "Authorization": f"Bearer {guest_token()}"},
             timeout=30,
         )
         resp.raise_for_status()
         body = resp.json()
-        # CMoney 拒絕時一樣回 HTTP 200，錯誤放在 body.Error（2026-10-01 起 Code 101 Auth Failed）。
+        # CMoney 拒絕時一樣回 HTTP 200，錯誤放在 body.Error（token 失效就是 Code 101 Auth Failed）。
         # 以前只讀 Data，驗證失敗被印成「無資料」，查了半天才知道是 API 要驗證了。
         if body.get("Error"):
             err = body["Error"]
