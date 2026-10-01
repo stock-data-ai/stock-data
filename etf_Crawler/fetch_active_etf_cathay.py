@@ -38,6 +38,9 @@ REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 
 API_BASE = "https://cwapi.cathaysite.com.tw/api/ETF/GetIndexStockWeights"
+# 權重那支沒有股數；官網「持股權重概覽」（?tab=etf3）的股數來自這支，必須帶 searchDate，
+# 不帶回「查無資料」。日期用 GetIndexStockWeights 回的那天，兩邊才是同一份。
+SHARES_API = "https://cwapi.cathaysite.com.tw/api/ETF/GetETFDetailStockList"
 BASE_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -59,6 +62,32 @@ session = create_session()
 def _clean_name(name: str) -> str:
     """去除股票名稱中的多餘空白。"""
     return " ".join(name.split())
+
+def _fetch_shares(fund_code: str, raw_date: str) -> dict:
+    """{代號: 股數}。抓不到回空 dict——只少了股數，權重照寫，不讓整檔失敗。
+
+    2026-10-01 以前只抓權重，00400A 換到官網來源的第一天 shares 全是空的，
+    加減碼股數整批變 0（CMoney 那段時間是有股數的）。
+    """
+    try:
+        resp = session.get(SHARES_API, params={"fundCode": fund_code, "searchDate": raw_date},
+                           headers=BASE_HEADERS, timeout=45)
+        resp.raise_for_status()
+        data = resp.json()
+        out = {}
+        for r in data.get("result") or []:
+            code = str(r.get("stockCode", "")).strip()
+            try:
+                out[code] = int(str(r.get("volumn", "")).replace(",", ""))
+            except ValueError:
+                continue
+        if not out:
+            print(f"  [WARN] 股數 API 無資料（{data.get('returnMessage')}），本次只有權重")
+        return out
+    except Exception as e:                                     # noqa: BLE001
+        print(f"  [WARN] 股數 API 失敗（{e}），本次只有權重")
+        return {}
+
 
 def fetch_holdings(etf_code: str, fund_code: str) -> tuple:
     """
@@ -95,6 +124,8 @@ def fetch_holdings(etf_code: str, fund_code: str) -> tuple:
             raw_date = result.get("date", "")
             tran_date = raw_date.replace("/", "-") if raw_date else None
 
+            shares_map = _fetch_shares(fund_code, raw_date) if raw_date else {}
+
             holdings = []
             for s in stocks:
                 code_raw = str(s.get("stockCode", "")).strip()
@@ -111,6 +142,8 @@ def fetch_holdings(etf_code: str, fund_code: str) -> tuple:
                     continue
 
                 entry: dict = {"name": name, "weight": weight}
+                if code_raw in shares_map:
+                    entry["shares"] = shares_map[code_raw]
                 if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
                     entry["code"] = code_raw
 
