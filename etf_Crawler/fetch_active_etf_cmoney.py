@@ -169,7 +169,14 @@ def fetch_holdings_all_dates(etf_code: str, dtrange: int = 30) -> dict:
             timeout=30,
         )
         resp.raise_for_status()
-        rows = resp.json().get("Data", [])
+        body = resp.json()
+        # CMoney 拒絕時一樣回 HTTP 200，錯誤放在 body.Error（2026-10-01 起 Code 101 Auth Failed）。
+        # 以前只讀 Data，驗證失敗被印成「無資料」，查了半天才知道是 API 要驗證了。
+        if body.get("Error"):
+            err = body["Error"]
+            print(f"API 錯誤 Code={err.get('Code')} {err.get('Message')}")
+            return {}
+        rows = body.get("Data", [])
         if not rows:
             print("無資料")
             return {}

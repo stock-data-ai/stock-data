@@ -28,7 +28,7 @@ import json
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, pcf_to_holdings_date, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import Optional
 
@@ -110,7 +110,8 @@ def fetch_holdings(etf_code: str, fund_id: str) -> tuple:
                     continue
                 return [], None
 
-            tran_date = _parse_date(stocks[0].get("date1", ""))
+            # date1 是申購買回清單日（下一交易日），換回持股所屬交易日
+            tran_date = pcf_to_holdings_date(_parse_date(stocks[0].get("date1", "")))
 
             holdings = []
             for s in stocks:

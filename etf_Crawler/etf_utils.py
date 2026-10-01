@@ -7,11 +7,14 @@ etf_utils.py — 主動式 ETF 爬蟲共用工具
   write_holdings_update()    統一寫入 topHoldings / holdingsHistory
   record_unchanged_snapshot() 無更新時仍記錄當日快照
   write_github_output()      輸出逐筆 ETF 狀態到 GITHUB_OUTPUT
+  pcf_to_holdings_date()     申購買回清單日期 → 持股所屬交易日
+  today_tw()                 台北今天
 """
 
 import json
 import os
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
+from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -20,6 +23,53 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 HISTORY_KEEP_DAYS = 30
+
+TWSE_HOLIDAY_URL = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
+
+
+def today_tw() -> str:
+    """台北今天（CI 跑在 UTC，不能用 date.today()）。"""
+    return (datetime.now(timezone.utc) + timedelta(hours=8)).date().isoformat()
+
+
+@lru_cache(maxsize=1)
+def _tw_holidays() -> frozenset:
+    """證交所 OpenAPI 休市表（當年）。名稱含「交易日」的是開始／最後交易日，那天有開盤，要排除。
+    抓不到就回空集合，退化成只跳週末。"""
+    try:
+        rows = requests.get(TWSE_HOLIDAY_URL, timeout=15).json()
+        out = set()
+        for r in rows:
+            roc = str(r.get("Date", ""))
+            if len(roc) != 7 or "交易日" in r.get("Name", ""):
+                continue
+            out.add(f"{int(roc[:3]) + 1911}-{roc[3:5]}-{roc[5:]}")
+        return frozenset(out)
+    except Exception as e:                                     # noqa: BLE001
+        print(f"  [WARN] 休市表取得失敗（{e}），只跳週末")
+        return frozenset()
+
+
+def prev_trading_day(iso: str) -> str:
+    """iso 之前（不含）最近的台股交易日。"""
+    d = date.fromisoformat(iso) - timedelta(days=1)
+    holidays = _tw_holidays()
+    while d.weekday() >= 5 or d.isoformat() in holidays:
+        d -= timedelta(days=1)
+    return d.isoformat()
+
+
+def pcf_to_holdings_date(pub_date: Optional[str]) -> Optional[str]:
+    """申購買回清單公告日 → 持股所屬交易日（往回一個交易日）。
+
+    群益、台新官網的日期是「下一交易日的申購買回清單」，內容是前一交易日收盤後的持股：
+    2026-10-01 收盤後兩家都標 10-02。其他投信標的是持股日本身。不換算的話同一份持股
+    會比別家多一天，推播取全體眾數日期時會被拉偏；而且不能只在「日期 > 今天」才換——
+    16:00 官網還掛著前一天公告的清單時，日期剛好等於今天，內容卻是昨天的持股。
+    """
+    if not pub_date:
+        return pub_date
+    return prev_trading_day(pub_date)
 
 
 def create_session() -> requests.Session:
@@ -67,7 +117,7 @@ def record_unchanged_snapshot(
     讓歷史記錄連續、不留空白交易日。
     topHoldings 與 lastUpdated 不更動。
     """
-    today = date.today().isoformat()
+    today = today_tw()
     if "holdingsHistory" not in data:
         data["holdingsHistory"] = {}
 
@@ -109,6 +159,15 @@ def write_holdings_update(
         if not tran_date:
             print(f"  [SKIP] 無法取得資料日期，跳過寫入")
             return False
+
+        # 保險：持股不可能屬於未來。新接的官網若也標申購買回清單日，在這裡被攔下並告警，
+        # 該在爬蟲裡改用 pcf_to_holdings_date()。
+        today = today_tw()
+        if tran_date > today:
+            fixed = min(prev_trading_day(tran_date), today)
+            print(f"  [WARN] {etf_code} 來源日期 {tran_date} 晚於今天，改記為 {fixed}"
+                  f"（若此來源是申購買回清單日，爬蟲應改用 pcf_to_holdings_date）")
+            tran_date = fixed
 
         if "holdingsHistory" not in data:
             data["holdingsHistory"] = {}

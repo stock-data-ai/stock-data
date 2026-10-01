@@ -29,7 +29,7 @@ import re
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, pcf_to_holdings_date, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import Optional
 
@@ -79,7 +79,8 @@ def fetch_holdings(etf_code: str) -> tuple:
             html = resp.text
 
             m = re.search(r'id="PUB_DATE"[^>]+value="([^"]+)"', html)
-            data_date = m.group(1) if m else None
+            # PUB_DATE 是「申購買回清單公告」日（下一交易日），換回持股所屬交易日
+            data_date = pcf_to_holdings_date(m.group(1) if m else None)
 
             idx = html.find('<th>代號</th>')
             if idx == -1:

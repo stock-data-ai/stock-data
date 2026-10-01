@@ -34,7 +34,7 @@ import json
 import sys
 import time
 from datetime import date, timedelta
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, prev_trading_day, today_tw, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -114,22 +114,31 @@ def _parse_excel(content: bytes) -> List[dict]:
     return holdings
 
 
+LOOKBACK_TRADING_DAYS = 5
+
+
 def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = None) -> Tuple[List[dict], Optional[str]]:
     """
     回傳 (holdings, tran_date_str)。
-    search_date: "YYYY-MM-DD" 或 None（從 HTML 取最新日期）。
+    search_date: "YYYY-MM-DD" 或 None（取最近一個有資料的交易日）。
+
+    不指定日期時從台北今天往回找最多 LOOKBACK_TRADING_DAYS 個交易日。
+    海外型（00998A）官網晚一天才發布，以前只查今天，永遠是空檔，整檔停在 CMoney 的舊資料。
     """
+    if not search_date:
+        d = today_tw()
+        for _ in range(LOOKBACK_TRADING_DAYS + 1):
+            holdings, tran_date = fetch_holdings(etf_code, fund_id, search_date=d)
+            if holdings:
+                return holdings, tran_date
+            d = prev_trading_day(d)
+        return [], None
     max_attempts = 3
     for attempt in range(1, max_attempts + 1):
         try:
-            if search_date:
-                date_compact = search_date.replace('-', '')
-                tran_date = search_date
-                print(f"  指定日期: {tran_date}")
-            else:
-                tran_date = date.today().isoformat()
-                date_compact = date.today().strftime('%Y%m%d')
-                print(f"  查詢日期: {tran_date}")
+            date_compact = search_date.replace('-', '')
+            tran_date = search_date
+            print(f"  查詢日期: {tran_date}")
 
             excel_url = EXCEL_URL.format(fund_id=fund_id, date_compact=date_compact)
             print(f"  下載 {excel_url}")
