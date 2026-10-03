@@ -13,6 +13,7 @@ etf_utils.py — 主動式 ETF 爬蟲共用工具
 
 import json
 import os
+import re
 from datetime import date, datetime, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -87,6 +88,30 @@ def create_session() -> requests.Session:
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     return session
+
+
+# 2026-10-01 起 CMoney GetDtnoData 要求驗證（不帶回 Error Code 101 Auth Failed）。
+# CMoney ETF 網頁會在 SSR 裡發一組訪客 JWT（is_guest=true，約一天有效），
+# 任何打開網頁的人都拿得到；每次執行先取一組帶上即可，不需要帳號。
+# 主動型（每日）與被動型（週更）爬蟲共用，避免只修一支。
+CMONEY_TOKEN_PAGE = "https://www.cmoney.tw/etf/tw/00981A/fundholding"
+_CMONEY_GUEST_TOKEN_RE = re.compile(r'tokens:\{at:"([^"]+)"')
+_cmoney_guest_token: Optional[str] = None
+
+
+def cmoney_guest_token(session: requests.Session, headers: dict) -> str:
+    global _cmoney_guest_token
+    if _cmoney_guest_token is None:
+        try:
+            page = session.get(CMONEY_TOKEN_PAGE, headers=headers, timeout=30).text
+            m = _CMONEY_GUEST_TOKEN_RE.search(page)
+            _cmoney_guest_token = m.group(1) if m else ""
+            if not _cmoney_guest_token:
+                print("[WARN] CMoney 網頁找不到訪客 token，API 多半會回 Auth Failed")
+        except Exception as e:                                 # noqa: BLE001
+            print(f"[WARN] 取得 CMoney 訪客 token 失敗：{e}")
+            _cmoney_guest_token = ""
+    return _cmoney_guest_token
 
 
 def clean_snapshot(h: dict, *, has_foreign_code: bool = False) -> dict:

@@ -19,11 +19,10 @@ API: https://www.cmoney.tw/api/cm/MobileService/ashx/GetDtnoData.ashx
 """
 
 import json
-import re
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import cmoney_guest_token, create_session, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import Optional
 
@@ -116,27 +115,9 @@ def ensure_skeleton(etf_code: str) -> None:
 
 session = create_session()
 
-# 2026-10-01 起 GetDtnoData 要求驗證（不帶回 Error Code 101 Auth Failed）。
-# CMoney ETF 網頁會在 SSR 裡發一組訪客 JWT（is_guest=true，約一天有效），
-# 任何打開網頁的人都拿得到；每次執行先取一組帶上即可，不需要帳號。
-TOKEN_PAGE = "https://www.cmoney.tw/etf/tw/00981A/fundholding"
-_GUEST_TOKEN_RE = re.compile(r'tokens:\{at:"([^"]+)"')
-_guest_token = None
-
 
 def guest_token() -> str:
-    global _guest_token
-    if _guest_token is None:
-        try:
-            page = session.get(TOKEN_PAGE, headers=HEADERS, timeout=30).text
-            m = _GUEST_TOKEN_RE.search(page)
-            _guest_token = m.group(1) if m else ""
-            if not _guest_token:
-                print("[WARN] CMoney 網頁找不到訪客 token，API 多半會回 Auth Failed")
-        except Exception as e:                                 # noqa: BLE001
-            print(f"[WARN] 取得 CMoney 訪客 token 失敗：{e}")
-            _guest_token = ""
-    return _guest_token
+    return cmoney_guest_token(session, HEADERS)
 
 
 def _parse_rows(rows: list) -> dict:

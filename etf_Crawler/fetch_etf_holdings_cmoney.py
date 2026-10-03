@@ -23,7 +23,7 @@ import sys
 import time
 from datetime import date
 from pathlib import Path
-from etf_utils import create_session, write_holdings_update
+from etf_utils import cmoney_guest_token, create_session, write_holdings_update
 
 try:
     import requests
@@ -100,11 +100,17 @@ def fetch_all_dates(etf_code: str, dtrange: int = 1) -> dict:
                 "ParamStr": f"AssignID={etf_code};MTPeriod=0;DTMode=0;DTRange={dtrange};DTOrder=1;MajorTable=M722;",
                 "FilterNo": "0",
             },
-            headers=HEADERS,
+            headers={**HEADERS, "Authorization": f"Bearer {cmoney_guest_token(session, HEADERS)}"},
             timeout=30,
         )
         resp.raise_for_status()
-        rows = resp.json().get("Data", [])
+        body = resp.json()
+        # CMoney 拒絕時一樣回 HTTP 200，錯誤放在 body.Error（token 失效就是 Code 101 Auth Failed）。
+        if body.get("Error"):
+            err = body["Error"]
+            print(f"API 錯誤 Code={err.get('Code')} {err.get('Message')}")
+            return {}
+        rows = body.get("Data", [])
         if not rows:
             print("無資料")
             return {}
