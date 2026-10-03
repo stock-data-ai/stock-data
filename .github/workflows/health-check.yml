@@ -72,8 +72,15 @@ jobs:
               # 所以長期不在清單裡（2026-08-17 那班失敗過一整天沒人發現）；已提前到 22:30 並納入檢查。
               {'label': '22:30 Generate Disposition Forecast（備援）', 'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 22, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
+              # backup：cron worker 在本週已成功時刻意不 dispatch，所以「沒跑」不等於故障。
+              # 只有本週（台灣週六 00:00 起）同 workflow 確實已有成功 run 時才判為 skipped；
+              # 前面都沒成功卻沒跑，照樣是「未執行」紅燈。
               {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
-              {'label': '週六 09:30 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 30, 'days': [6]},
+              {'label': '週六 12:00 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 12, 'minute': 0,  'days': [6], 'backup': True},
+              {'label': '週六 16:00 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 16, 'minute': 0,  'days': [6], 'backup': True},
+              {'label': '週日 08:30 Weekly Shareholder Update（最後一班）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',     'hour': 8,  'minute': 30, 'days': [0], 'backup': True},
+              {'label': '週六 10:00 Weekly Insider Holdings',        'workflow_name': 'Weekly Insider Holdings｜內部人持股（週六）',                  'hour': 10, 'minute': 0,  'days': [6]},
+              {'label': '週日 10:20 Weekly Insider Holdings（備援）', 'workflow_name': 'Weekly Insider Holdings｜內部人持股（週六）',                  'hour': 10, 'minute': 20, 'days': [0], 'backup': True},
               {'label': '週六 11:00 Weekly Dividend Update',         'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）',           'hour': 11, 'minute': 0,  'days': [6]},
               {'label': '週日 09:01 Weekly Financials Update',        'workflow_name': 'Weekly Financials Update (Sunday)｜財務報表更新（週日）',        'hour': 9,  'minute': 1,  'days': [0]},
               {'label': '週日 10:00 Update US Financials',           'workflow_name': 'Update US Financials｜美股財務更新',                           'hour': 10, 'minute': 0,  'days': [0]},
@@ -268,6 +275,32 @@ jobs:
                       for later in results[i + 1:]):
                   r['status'] = 'late'
 
+          # ── 備援班：本週已成功，worker 刻意不 dispatch ─────────────────────────
+          # 只把 'missing' 降成 'skipped'，而且前提是本週起點（台灣週六 00:00）到這班預期時間之間，
+          # 同 workflow 確實有一筆成功 run。今天的 run 已在 workflow_runs；週日那班要往回看到週六，
+          # 所以本週較早的 run 另外抓。
+          week_start_utc = tw_start_utc - timedelta(days=(tw_day + 1) % 7)
+          week_runs = []      # 只在真的有備援班要判斷時才抓
+
+          def week_success_before(workflow_name, before):
+              if not week_runs:
+                  since_week = week_start_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+                  for page in range(1, 6):
+                      query = urllib.parse.urlencode({'created': f'{since_week}..{until}', 'per_page': '100', 'page': str(page)})
+                      page_runs = gh_get(f'/repos/{REPO}/actions/runs?{query}')['workflow_runs']
+                      week_runs.extend(page_runs)
+                      if len(page_runs) < 100:
+                          break
+              return any(
+                  r['name'] == workflow_name and r['status'] == 'completed' and r['conclusion'] == 'success'
+                  and week_start_utc <= datetime.fromisoformat(r['created_at'].replace('Z', '+00:00')) < before
+                  for r in week_runs)
+
+          for job, r in zip(required, results):
+              if job.get('backup') and r['status'] == 'missing' and \
+                      week_success_before(job['workflow_name'], job_start_utc(job)):
+                  r['status'] = 'skipped'
+
           # ── 端到端檢查：/live 的資料日有沒有跟上我們算出來的 ────────────────
           # 為什麼要這條：CI 全綠、git 有推、資料也對，但只要 Cloudflare Pages 建置失敗，
           # 使用者看到的就是舊資料，而且**沒有任何一個既有檢查會發現**。
@@ -365,11 +398,11 @@ jobs:
           late_n = sum(1 for r in results if r['status'] == 'late')
           all_good = fail_n == 0 and miss_n == 0          # late 不算異常，但仍會列出來
 
-          STATUS_EMOJI = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄', 'late': '🟡'}
+          STATUS_EMOJI = {'ok': '✅', 'failed': '❌', 'missing': '⚠️', 'running': '🔄', 'late': '🟡', 'skipped': '⏭️'}
           STATUS_LABEL = {'ok': '成功', 'failed': '失敗', 'missing': '未執行', 'running': '進行中',
-                          'late': '早班未搶到（後續已補）'}
+                          'late': '早班未搶到（後續已補）', 'skipped': '本週已成功，備援免跑'}
           ROW_COLOR    = {'ok': '#f0fdf4', 'failed': '#fef2f2', 'missing': '#fffbeb',
-                          'running': '#eff6ff', 'late': '#f8fafc'}
+                          'running': '#eff6ff', 'late': '#f8fafc', 'skipped': '#f8fafc'}
 
           # ── Fetch per-workflow summaries (deduplicated by run_id) ────────────
           print('撈取各 workflow 詳細摘要...')

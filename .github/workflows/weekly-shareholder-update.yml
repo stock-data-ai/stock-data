@@ -8,6 +8,11 @@ on:
         required: false
         default: true
         type: boolean
+      final:
+        description: '本週最後一班：仍失敗就立刻寄信（由 cron worker 帶入，手動跑不用勾）'
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: data-pipeline-shareholder
@@ -52,23 +57,24 @@ jobs:
       - name: Fetch TDCC shareholding data
         run: |
           set -o pipefail
-          MAX=3
+          # 間隔逐次拉長（30／45／60 秒）：TDCC 逾時常常一兩分鐘才恢復，固定 30 秒容易三次都撞上。
+          # 更久的等待交給 cron worker 的下一班（週六 12:00／16:00、週日 08:30），不在 Actions 裡空等。
+          DELAYS=(30 45 60)
+          MAX=$(( ${#DELAYS[@]} + 1 ))
           for attempt in $(seq 1 $MAX); do
             if uv run finance_tools/cli.py fetch-shareholder-data --force 2>&1 | tee /tmp/run.log; then
               break
             fi
             grep -q "STALE:" /tmp/run.log && { echo "TDCC 尚未發布新一期，重試無意義，直接失敗。"; exit 1; }
-            [ $attempt -lt $MAX ] && { echo "Attempt $attempt 失敗，30 秒後重試..."; sleep 30; } || exit 1
+            [ $attempt -lt $MAX ] || exit 1
+            wait=${DELAYS[$((attempt - 1))]}
+            echo "Attempt $attempt 失敗，${wait} 秒後重試..."
+            sleep $wait
           done
 
-      # 內部人持股（董監、經理人、大股東）：資料是**月頻**，但掛在這班週跑的排程裡。
-      # 端點只回最新一期，換月與否用「檔案內容有沒有 diff」判斷即可，不必自己算月初；
-      # 而它與股權分散同型（一次拿全市場、逐家併進 company-financials），
-      # 沒有理由為了每月一次的資料再開一個 workflow。
-      - name: Update insider holdings｜內部人持股
-        run: |
-          set -o pipefail
-          uv run finance_tools/cli.py update-insider-holdings --force 2>&1 | tee /tmp/insider.log
+      # 內部人持股已拆到 weekly-insider-holdings.yml：2026-10-03 09:30 那班 TDCC 已抓到 10/02
+      # 新一期，卻因 TPEx 內部人端點 connection reset 讓這個 job 整個失敗——TDCC 資料沒 commit、
+      # compute-big-holders 被跳過，大戶加碼榜停在上一期。月頻資料不可再掛回這條週頻主線。
 
       - name: 執行摘要
         if: always()
@@ -202,3 +208,39 @@ jobs:
             git status --short
             exit 1
           fi
+
+  # 本週最後一班（cron worker 帶 final=true）仍沒成功就立刻寄信，不等 23:00 健康檢查。
+  # 前面幾班失敗不寄：還有下一班會補，寄了只是噪音。
+  alert-final-failure:
+    needs: [fetch-tdcc, compute-big-holders]
+    if: always() && inputs.final && needs.compute-big-holders.result != 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: etf_Crawler
+
+      - name: Send alert email｜寄信
+        env:
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TDCC_RESULT: ${{ needs.fetch-tdcc.result }}
+          BIG_RESULT: ${{ needs.compute-big-holders.result }}
+        run: |
+          python3 - <<'PY'
+          import os, sys
+          sys.path.insert(0, 'etf_Crawler')
+          from notify_mail import send_mail
+          url = os.environ['RUN_URL']
+          body = (
+              '<p>本週股權分散／大戶加碼排行的<strong>最後一班備援</strong>仍未成功，網站停在上一期。</p>'
+              f'<p>fetch-tdcc：{os.environ["TDCC_RESULT"]}<br>compute-big-holders：{os.environ["BIG_RESULT"]}</p>'
+              f'<p><a href="{url}">查看這次執行</a>，排除後手動重跑 weekly-shareholder-update.yml。</p>')
+          if not send_mail('🚨 大戶加碼排行本週未更新（最後一班仍失敗）', body):
+              sys.exit(1)
+          PY

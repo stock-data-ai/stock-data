@@ -32,8 +32,10 @@ from finance_tools.utils.http_fetch import get_json as http_get_json
 logger = logging.getLogger(__name__)
 
 TIMEOUT_SEC = 120  # 上市那份約 10 MB
-RETRIES = 3
-RETRY_DELAY_SEC = 10
+# 等待間隔逐次拉長：2026-10-03 TPEx 連續 connection reset，舊設定每次只等 10 秒、
+# 20 秒內三次全滅。端點斷線常以分鐘計，間隔拉長才有機會撐過去。
+RETRY_DELAYS_SEC = (30, 45, 60)
+RETRIES = len(RETRY_DELAYS_SEC) + 1
 
 # > [!WARNING]
 # > **一定要帶瀏覽器 User-Agent。** 2026-09-06 首次上 CI 就失敗：TPEx 對 GitHub runner
@@ -147,7 +149,7 @@ def _fetch(url: str) -> Optional[List[Dict[str, Any]]]:
         except Exception as e:
             logger.warning(f"  {url} 第 {attempt + 1}/{RETRIES} 次失敗：{e}")
             if attempt < RETRIES - 1:
-                time.sleep(RETRY_DELAY_SEC)
+                time.sleep(RETRY_DELAYS_SEC[attempt])
     return None
 
 

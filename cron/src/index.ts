@@ -13,12 +13,25 @@ const REPO = 'stock-data-ai/stock-data';
 interface CronJob {
   workflow: string;
   inputs?: Record<string, string>;
+  /**
+   * 週更任務的備援班：本週（台灣週六 00:00 起）這支 workflow 已有成功或仍在跑的 run 就不 dispatch。
+   * 判斷只打一次 GitHub API，不啟動 Actions、不花分鐘數——重試的等待交給這裡，不在 Actions 裡空等。
+   */
+  skipIfWeekSucceeded?: boolean;
 }
 
 const CRON_MAP: Record<string, CronJob> = {
   '0 0 * * 7':            { workflow: 'etf-holdings-update.yml' },                                  // 台灣 08:00 週六
-  '0 1 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:00 週六（第一次）
-  '30 1 * * 7':          { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:30 週六（第二次備援）
+  // 股權分散／大戶加碼排行：主班＋三班備援。備援班本週已成功就跳過（不花 Actions 分鐘數），
+  // 最後一班帶 final=true，仍失敗由 workflow 立刻寄信。
+  // 2026-10-03 前只有 09:00／09:30 兩班、相隔 30 分鐘，兩班都失敗後整個週末沒有補救機會。
+  '0 1 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:00 週六（主班）
+  '0 4 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' }, skipIfWeekSucceeded: true }, // 台灣 12:00 週六（備援）
+  '0 8 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' }, skipIfWeekSucceeded: true }, // 台灣 16:00 週六（備援）
+  '30 0 * * 1':           { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true', final: 'true' }, skipIfWeekSucceeded: true }, // 台灣 08:30 週日（最後一班，避開 09:01 財報）
+  // 內部人持股（月頻資料、每週看一次有沒有換月），2026-10-03 從上面那支拆出來
+  '0 2 * * 7':            { workflow: 'weekly-insider-holdings.yml' },                              // 台灣 10:00 週六（主班）
+  '20 2 * * 1':           { workflow: 'weekly-insider-holdings.yml', inputs: { final: 'true' }, skipIfWeekSucceeded: true }, // 台灣 10:20 週日（備援；10:00 已被美股財報占用）
   '1 1 * * 1':            { workflow: 'weekly-financials-update.yml' },                             // 台灣 09:01 週日
   '0 2 * * 1':            { workflow: 'update-us-financials.yml' },                                 // 台灣 10:00 週日
   '0 3 * * 7':            { workflow: 'weekly-dividend-update.yml' },                               // 台灣 11:00 週六
@@ -94,6 +107,41 @@ async function dispatch(job: CronJob, token: string) {
 }
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+const TAIWAN_OFFSET_MS = 8 * 3600 * 1000;
+
+/** 本週起點：最近一個台灣週六 00:00（週更任務都從週六開跑）。回傳 UTC。 */
+function taiwanWeekStartUtc(now: Date): Date {
+  const tw = new Date(now.getTime() + TAIWAN_OFFSET_MS);
+  const daysSinceSat = (tw.getUTCDay() + 1) % 7;          // Sat=0, Sun=1, … Fri=6
+  const midnight = Date.UTC(tw.getUTCFullYear(), tw.getUTCMonth(), tw.getUTCDate());
+  return new Date(midnight - daysSinceSat * 86400 * 1000 - TAIWAN_OFFSET_MS);
+}
+
+/**
+ * 本週是否已有成功（或仍在跑）的 run。在跑的也算：同一 concurrency group 再 dispatch 只會排隊，
+ * 等它成功後又多跑一次。查詢失敗時回 false——寧可多跑一次，也不要因為 API 抖動漏掉備援。
+ */
+async function weekAlreadyCovered(workflow: string, token: string, now = new Date()): Promise<boolean> {
+  const since = taiwanWeekStartUtc(now).toISOString().replace(/\.\d+Z$/, 'Z');
+  const url = `https://api.github.com/repos/${REPO}/actions/workflows/${workflow}/runs?created=%3E%3D${since}&per_page=50`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'stock-data-cron',
+      },
+    });
+    if (!res.ok) return false;
+    const data = await res.json() as { workflow_runs: { status: string; conclusion: string | null }[] };
+    return data.workflow_runs.some(r =>
+      (r.status === 'completed' && r.conclusion === 'success') || r.status !== 'completed');
+  } catch {
+    return false;
+  }
+}
 
 async function dispatchWithRetry(job: CronJob, token: string, maxRetries = 3) {
   const delays = [0, 5000, 10000];
@@ -183,6 +231,10 @@ export default {
       throw new Error(`Unknown cron: ${event.cron}`);
     }
     try {
+      if (job.skipIfWeekSucceeded && await weekAlreadyCovered(job.workflow, env.GH_TOKEN)) {
+        console.log(`skip ${job.workflow}: 本週已成功或仍在執行`);
+        return;
+      }
       await dispatchWithRetry(job, env.GH_TOKEN);
     } catch (err) {
       await alertError(String(err), env);
