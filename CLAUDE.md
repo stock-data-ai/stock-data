@@ -43,6 +43,7 @@ uv run finance_tools/cli.py update-marketcap-inst --force
 uv run finance_tools/cli.py update-revenue --limit 10
 
 # 內部人持股（月頻全量，一次拿全市場再逐家併進 company-financials）
+# CI 走獨立的 weekly-insider-holdings.yml，不可再併回 weekly-shareholder-update.yml（2026-10-03 曾拖垮大戶榜）
 uv run finance_tools/cli.py update-insider-holdings --force
 
 # 日期型歷史封存：主檔只留當年＋前一年，更舊的整年搬進 company-financials-archive/（gzip）
