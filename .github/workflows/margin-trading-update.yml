@@ -1,0 +1,211 @@
+name: Margin Trading Update｜融資融券與借券更新
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Target date (YYYYMMDD, default: auto)'
+        required: false
+        default: ''
+      backfill_from:
+        description: '融資融券補齊起日 (YYYYMMDD)。注意：走逐日路徑，補一季要跑數小時'
+        required: false
+        default: ''
+      lending_backfill_from:
+        description: '借券補齊起日 (YYYYMMDD)。走批次路徑，補半年約 7 分鐘'
+        required: false
+        default: ''
+
+concurrency:
+  group: margin-trading-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # 融資融券已於 2026-08-26 改走 FinMind（證交所來函後移除 www.twse.com.tw 的
+      # MI_MARGN 與櫃買的 margin_bal_result.php）。**沒帶 token 會整批 400**：
+      # 全市場查詢需要付費層，register 等級只能逐檔查，不是「拿到少一點資料」。
+      - name: Update margin trading data
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          BACKFILL="${{ inputs.backfill_from }}"
+          DATE="${{ inputs.date }}"
+          set -o pipefail
+          if [ -n "$BACKFILL" ]; then
+            uv run finance_tools/cli.py update-margin --backfill-from "$BACKFILL" 2>&1 | tee /tmp/run.log
+          elif [ -n "$DATE" ]; then
+            uv run finance_tools/cli.py update-margin --date "$DATE" 2>&1 | tee /tmp/run.log
+          else
+            uv run finance_tools/cli.py update-margin 2>&1 | tee /tmp/run.log
+          fi
+
+      # 借券賣出餘額跟在同一班：兩者是同一個盤後發布時點的同一批資料
+      # （2026-09-04 實測兩支 FinMind 資料集當日可取得的時間完全一致），
+      # 而且都寫進 company-financials/。拆成兩個 workflow 只會多一個
+      # concurrency group 去防兩班同時 commit 打架，還要多動一次 cron。
+      #
+      # continue-on-error：借券是後加的資料集，**不可以讓它的失敗吃掉融資融券的成果**。
+      # 失敗不擋 commit，改由最後的閘門步驟把整個 run 標紅。
+      - name: Update securities lending data
+        id: lending
+        continue-on-error: true
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          BACKFILL="${{ inputs.lending_backfill_from }}"
+          DATE="${{ inputs.date }}"
+          set -o pipefail
+          if [ -n "$BACKFILL" ]; then
+            uv run finance_tools/cli.py update-lending --backfill-from "$BACKFILL" 2>&1 | tee /tmp/lending.log
+          elif [ -n "$DATE" ]; then
+            uv run finance_tools/cli.py update-lending --date "$DATE" 2>&1 | tee /tmp/lending.log
+          else
+            uv run finance_tools/cli.py update-lending 2>&1 | tee /tmp/lending.log
+          fi
+
+      # 兩邊的補齊起日刻意分開：融資融券在 repo 裡已有完整歷史、不需要補，
+      # 而它的補齊還是逐日路徑（每個日期都把全部 company-financials 讀寫一次，
+      # 補一季要跑數小時）。借券是後加的資料集，補齊走的是批次路徑。
+      # 用同一個輸入等於每次補借券都順便叫融資融券做一整段沒必要的重工。
+      # 全市場籌碼橫斷面，給 stock_map 的籌碼選股讀（逐檔 1.5 GB 不可能放在請求路徑上）。
+      # **必須排在這裡**：這一班是籌碼資料最後到齊的一班（19:30 法人、21:30 融資券借券），
+      # 排前面擠出來的是昨天的籌碼，而且完全不會報錯。
+      # 這支不抓任何資料、只讀磁碟，實測 8 秒。
+      - name: 建立全市場籌碼歷史
+        if: always()
+        run: |
+          set -o pipefail
+          uv run finance_tools/scripts/build_chip_history.py 2>&1 | tee /tmp/chip.log
+
+      # 全市場基本面快照（月營收＋季報），給 stock_map 的基本面選股讀。
+      # 月營收與季報是週日的 weekly-financials-update 寫的，這支只讀磁碟（實測 4 秒），
+      # 放在平日這一班跑，一週內任何一次財報更新都會在當晚被收進快照。
+      # continue-on-error：它壞了不該連累融資融券與籌碼的發布，快照維持上一版。
+      - name: 建立全市場基本面快照
+        if: always()
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          uv run finance_tools/scripts/build_fundamentals_snapshot.py 2>&1 | tee /tmp/fund.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          # Single-date mode: "Target Date: YYYYMMDD" + "[YYYYMMDD] 完成 X 家公司"
+          # Backfill mode: "補齊融資融券：YYYYMMDD ~ YYYYMMDD，共 N 個交易日" + "補齊完成，總計 X 筆"
+          BACKFILL="${{ inputs.backfill_from }}"
+          if [ -n "$BACKFILL" ]; then
+            DATE_RANGE=$(grep -oP '補齊融資融券：\K[^\n]+(?=，)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+            TOTAL=$(grep -oP '補齊完成，總計 \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+            MODE="補齊模式"
+            DETAIL="| 日期範圍 | $DATE_RANGE |"$'\n'"| 總計更新筆數 | $TOTAL |"
+          else
+            TARGET=$(grep -oP 'Target Date: \K\d{8}' "$LOG" 2>/dev/null | tail -1 || echo "")
+            [ -n "$TARGET" ] && TARGET="${TARGET:0:4}-${TARGET:4:2}-${TARGET:6:2}"
+            COUNT=$(grep -oP '完成 \K\d+(?= 家公司)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+            MODE="單日模式"
+            DETAIL="| 目標日期 | ${TARGET:-—} |"$'\n'"| 更新公司數 | $COUNT |"
+          fi
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 融資融券更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **交易日但未取得當日資料，本次未更新。** $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 模式 | $MODE |"
+            echo "$DETAIL"
+            echo "| 狀態 | $STATUS |"
+            echo ""
+            CHIPD=$(grep -oP '個交易日（[0-9-]+ ~ \K[0-9-]+' /tmp/chip.log 2>/dev/null | tail -1 || echo "—")
+            CHIPN=$(grep -oP '個交易日（[0-9-]+ ~ [0-9-]+）、\K\d+' /tmp/chip.log 2>/dev/null | tail -1 || echo "—")
+            echo "### 全市場籌碼歷史"
+            echo ""
+            echo "| 資料日 | 檔數 |"
+            echo "|---|---|"
+            echo "| $CHIPD | $CHIPN |"
+            echo ""
+            echo "### 借券賣出餘額"
+            echo ""
+            LLOG=/tmp/lending.log
+            if [ ! -f "$LLOG" ]; then
+              echo "> 未執行。"
+            else
+              if grep -q "STALE:" "$LLOG"; then
+                echo "> [!CAUTION]"
+                echo "> **交易日但未取得當日借券資料，本次未更新。** $(grep 'STALE:' "$LLOG" | tail -1 | sed 's/.*STALE: //')"
+                echo ""
+              fi
+              LCOUNT=$(grep -oP '完成 \K\d+(?= 家公司)' "$LLOG" 2>/dev/null | tail -1 || echo "—")
+              LSTATUS=$( [ "${{ steps.lending.outcome }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗（不影響融資融券）" )
+              echo "| 指標 | 值 |"
+              echo "|------|---|"
+              echo "| 更新公司數 | $LCOUNT |"
+              echo "| 狀態 | $LSTATUS |"
+            fi
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit margin trading data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/layer3/company-financials/ src/data/market/chip-history.json src/data/market/fundamentals-snapshot.json
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "更新融資融券與借券數據 $(date -u +%Y-%m-%d)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，融資融券與借券資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
+
+      # 借券失敗時資料已經 commit（融資融券的部分），但整個 run 仍要標紅，
+      # 否則 continue-on-error 會把失敗藏起來，變成「靜默沒資料」。
+      - name: 借券失敗閘門
+        if: steps.lending.outcome == 'failure'
+        run: |
+          echo "::error::借券賣出餘額更新失敗，融資融券已照常提交。詳見執行摘要。"
+          exit 1

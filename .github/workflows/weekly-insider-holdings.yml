@@ -1,0 +1,116 @@
+name: Weekly Insider Holdings｜內部人持股（週六）
+
+# 內部人持股（董監、經理人、大股東）：資料是**月頻**（端點只回最新一期，例：10 月初仍是 08 月），
+# 每週來看一次有沒有換月；換月與否用「檔案內容有沒有 diff」判斷，不必自己算月初。
+#
+# 2026-10-03 前它是 weekly-shareholder-update.yml 裡的一個 step。那天 09:30 TDCC 已抓到新一期，
+# 卻因 TPEx 這支端點 connection reset 讓整個 job 失敗，大戶加碼榜因此停在上一期。
+# 所以獨立成這支 workflow，各自排程、各自備援，誰壞都不拖累對方。
+#
+# 排程（cron worker）：週六 10:00 主班；週日 10:20 備援（週六已成功就跳過，帶 final=true）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      final:
+        description: '本週最後一班：仍失敗就立刻寄信（由 cron worker 帶入，手動跑不用勾）'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: data-pipeline-insider
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-insider:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Fetch roster｜名單
+        uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # 端點重試（30／45／60 秒）在 finance_tools/domains/insider/fetcher.py 裡，這裡不再包一層。
+      - name: Update insider holdings｜內部人持股
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-insider-holdings --force 2>&1 | tee /tmp/insider.log
+
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "更新內部人持股 $(date -u +%Y-%m-%d)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，內部人持股資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
+
+  # 本週最後一班（final=true）仍失敗就立刻寄信，不等 23:00 健康檢查。
+  alert-final-failure:
+    needs: update-insider
+    if: always() && inputs.final && needs.update-insider.result != 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: etf_Crawler
+
+      - name: Send alert email｜寄信
+        env:
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import os, sys
+          sys.path.insert(0, 'etf_Crawler')
+          from notify_mail import send_mail
+          url = os.environ['RUN_URL']
+          body = (
+              '<p>本週內部人持股的<strong>最後一班備援</strong>仍未成功。</p>'
+              f'<p><a href="{url}">查看這次執行</a>，排除後手動重跑 weekly-insider-holdings.yml。</p>')
+          if not send_mail('🚨 內部人持股本週未更新（最後一班仍失敗）', body):
+              sys.exit(1)
+          PY

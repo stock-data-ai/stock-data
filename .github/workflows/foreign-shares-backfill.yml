@@ -1,0 +1,85 @@
+name: Foreign Shares Backfill｜外資持股張數回補（一次性）
+
+# 只給手動觸發，沒有排程——`foreign_shares` 的日常維護由 daily-update 負責，
+# 這支是補 2026-09-04 之前的空窗。因為沒有 cron，Cloudflare Worker 那邊不用動。
+on:
+  workflow_dispatch:
+    inputs:
+      backfill_from:
+        description: '回補起日 (YYYYMMDD)，例如 20260312'
+        required: true
+        default: '20260312'
+
+# 與融資融券／借券共用同一個 group：都 commit company-financials/，同時跑會互相 rebase 打架
+concurrency:
+  group: margin-trading-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/fetch-roster
+        with:
+          pat: ${{ secrets.STOCK_MAP_PAT }}
+      - uses: astral-sh/setup-uv@v8.0.0
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+      - run: uv sync --all-extras --dev
+
+      # TaiwanStockShareholding 帶 start≠end 會回空，只能逐日查；全市場查詢需要付費層
+      - name: Backfill foreign shares
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py backfill-foreign-shares \
+            --backfill-from "${{ inputs.backfill_from }}" 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          DAYS=$(grep -oP '取數完成：\K[0-9]+/[0-9]+' /tmp/run.log 2>/dev/null | tail -1 || echo "—")
+          COUNT=$(grep -oP '回補完成，總計 \K\d+' /tmp/run.log 2>/dev/null | tail -1 || echo "—")
+          {
+            echo "## 外資持股張數回補 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 起日 | ${{ inputs.backfill_from }} |"
+            echo "| 有資料的交易日 | $DAYS |"
+            echo "| 更新公司數 | $COUNT |"
+            echo "| 狀態 | $( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" ) |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 財報檔改用 JSON 結構合併（.gitattributes → merge=company-json）：兩個排程同時改同一檔時，
+          # 逐行合併可能拼出壞 JSON，或讓 -X ours 把這次寫的資料整段丟掉。見 json_merge_driver.py。
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/layer3/company-financials/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "data: 回補外資持股張數 $(date -u +%Y-%m-%d)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，外資持股張數回補沒有發布出去"
+            git status --short
+            exit 1
+          fi

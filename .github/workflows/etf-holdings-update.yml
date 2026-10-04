@@ -1,0 +1,156 @@
+name: ETF Holdings Update (Weekly)｜ETF持股（週更）
+
+on:
+  workflow_dispatch:
+    inputs:
+      codes:
+        description: '指定 ETF 代碼（空白分隔，留空=全部）'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: etf-holdings
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Fetch stock_map index.json (master)
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
+          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
+
+      - name: Run ETF holdings crawler (CMoney)
+        run: |
+          set -o pipefail
+          if [ -n "${{ inputs.codes }}" ]; then
+            uv run python etf_Crawler/fetch_etf_holdings_cmoney.py ${{ inputs.codes }} 2>&1 | tee /tmp/run.log
+          else
+            uv run python etf_Crawler/fetch_etf_holdings_cmoney.py 2>&1 | tee /tmp/run.log
+          fi
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          TOTAL=$(grep -oP '準備更新 \K\d+(?= 支)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          SUCCESS=$(grep -oP '成功: \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          FAILED=$(grep "失敗:" "$LOG" 2>/dev/null | sed 's/.*失敗: //' | tail -1 || echo "")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## ETF 持股週更 — $(date -u +%Y-%m-%d)"
+            echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **CMoney 資料源疑似停更。** $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 總 ETF 數 | $TOTAL |"
+            echo "| 成功更新 | $SUCCESS |"
+            if [ -n "$FAILED" ]; then
+              echo "| ❌ 失敗 | $FAILED |"
+            fi
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit & push updated ETF holdings
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/etf/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "ETF 持股更新 $(date +%Y-%m-%d)"
+            git pull --rebase -X ours origin main
+            git push
+          fi
+
+      - name: Regenerate index.json from updated holdings
+        run: uv run python etf_Crawler/generate_etf_index.py
+
+      - name: Regenerate stock-to-ETF reverse index
+        run: uv run python etf_Crawler/generate_stock_etf_index.py
+
+      - name: Commit & push reverse index
+        run: |
+          git add src/data/etf-by-stock/
+          if git diff --cached --quiet; then
+            echo "No changes to reverse index"
+          else
+            git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
+            git pull --rebase -X ours origin main
+            git push
+          fi
+
+      - name: Push updated index.json to stock_map
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          # base64 內容超過 128KB 會撞 Linux 單一參數上限，payload 一律走檔案傳給 curl
+          base64 -w 0 src/data/etf/index.json > /tmp/content.b64
+          SHA=$(curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            | jq -r '.sha')
+          jq -n \
+            --rawfile content /tmp/content.b64 \
+            --arg message "sync: ETF index 更新 $(date +%Y-%m-%d)" \
+            --arg sha "$SHA" \
+            '{message: $message, content: $content, sha: $sha, branch: "publish_cloudflare"}' \
+            > /tmp/payload.json
+          curl -fsSL \
+            -X PUT \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json" \
+            -d @/tmp/payload.json
+          echo "✅ index.json 已推送至 stock_map"
+
+      - name: 開 Issue 提醒本地跑 sync_etf_metadata
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo stock-data-ai/stock-data \
+            --title "🔔 [$(date +%Y-%m-%d)] 請本地跑 ETF metadata 同步" \
+            --body "ETF 持股已自動更新完成。請在本地執行 metadata 同步（玩股網費率/規模）：
+
+          \`\`\`bash
+          uv run python etf_Crawler/sync_etf_metadata.py
+          git add src/data/etf/
+          git commit -m \"ETF metadata 同步 \$(date +%Y-%m-%d)\"
+          git push
+          \`\`\`
+
+          推送後週六 CI 會在下次執行時自動帶入最新 metadata 並更新 stock_map 的 index.json。"

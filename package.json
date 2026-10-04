@@ -1,0 +1,11 @@
+{
+  "name": "stock-data-guards",
+  "private": true,
+  "version": "0.0.0",
+  "description": "本 repo 的資料管線是 Python/uv。這份 package.json 只為了跑 scripts/guards/ 底下的離線檢查與其測試，刻意不含任何相依（node --test 是 Node 內建）。不要在這裡加 dependencies，也不要用它取代 uv。",
+  "type": "module",
+  "scripts": {
+    "check:cron": "node scripts/guards/check-cron-consistency.mjs",
+    "test": "node --test 'test_methods/cron-monitoring/*.test.mjs'"
+  }
+}

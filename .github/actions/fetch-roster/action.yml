@@ -1,0 +1,37 @@
+name: Fetch roster
+description: >
+  從 stock_map 抓最新的 companies-all.json 當名單。所有讀 FileManager.load_companies()
+  的 job 都要先跑這步——名單缺席時 loader 會直接拋出，不會退回掃目錄。
+  抓完順手驗台股檔數下界，殘缺檔在這裡就擋掉，不要等到 prune 刪錯才發現。
+
+inputs:
+  pat:
+    description: 能讀 CHIJUI0128/stock_map 的 token（secrets.STOCK_MAP_PAT）
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch companies-all.json from stock_map
+      shell: bash
+      env:
+        PAT: ${{ inputs.pat }}
+      run: |
+        set -euo pipefail
+        DEST=src/data/layer3/companies/companies-all.json
+        mkdir -p "$(dirname "$DEST")"
+        curl -fsSL \
+          -H "Authorization: token $PAT" \
+          -H "Accept: application/vnd.github.v3.raw" \
+          "https://api.github.com/repos/CHIJUI0128/stock_map/contents/$DEST?ref=publish_cloudflare" \
+          -o "$DEST"
+        # 下界與 FileManager.ROSTER_MIN_TW 一致（2026-09 實測 2341）
+        python3 - "$DEST" <<'PY'
+        import json, sys
+        d = json.load(open(sys.argv[1], encoding="utf-8"))
+        tw = sum(1 for c, v in d.items() if c.isdigit() and len(c) == 4 and not v.get("isETF"))
+        print(f"✅ companies-all.json 已取得：{len(d)} 筆，台股非 ETF {tw} 檔")
+        if tw < 2000:
+            print(f"::error::台股只有 {tw} 檔，疑似殘缺檔，中止。")
+            sys.exit(1)
+        PY
