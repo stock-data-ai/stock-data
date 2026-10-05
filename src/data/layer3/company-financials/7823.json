@@ -13,9 +13,9 @@
     "eps": -0.65,
     "dividendFrequency": "年",
     "dividendYield": 0.0,
-    "marginBalance": 10,
+    "marginBalance": 14,
     "shortBalance": 0,
-    "sblBalance": 0
+    "sblBalance": 1
   },
   "lastUpdated": "2026-10-05",
   "historical": {
@@ -3839,6 +3839,14 @@
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 0
+      },
+      "2026-10-05": {
+        "marginBuy": 4,
+        "marginSell": 0,
+        "marginBalance": 14,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     },
     "securitiesLending": {
@@ -4090,6 +4098,13 @@
       "2026-10-02": {
         "sblBalance": 0,
         "sblShortSales": 0,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 11
+      },
+      "2026-10-05": {
+        "sblBalance": 1,
+        "sblShortSales": 1,
         "sblReturns": 0,
         "sblAdjustments": 0,
         "sblAvailable": 11
