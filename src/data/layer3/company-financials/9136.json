@@ -4,10 +4,10 @@
   "latest": {
     "dividendFrequency": "年",
     "marketCap": 11220078960.75,
-    "marginBalance": 11477,
-    "shortBalance": 30,
+    "marginBalance": 11478,
+    "shortBalance": 0,
     "pb": 0.7715317,
-    "sblBalance": 1148
+    "sblBalance": 1138
   },
   "historical": {
     "annual": [],
@@ -8714,6 +8714,14 @@
         "shortBuy": 66,
         "shortSell": 0,
         "shortBalance": 30
+      },
+      "2026-10-06": {
+        "marginBuy": 1,
+        "marginSell": 0,
+        "marginBalance": 11478,
+        "shortBuy": 30,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     },
     "securitiesLending": {
@@ -9701,6 +9709,13 @@
         "sblBalance": 1148,
         "sblShortSales": 1,
         "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 80
+      },
+      "2026-10-06": {
+        "sblBalance": 1138,
+        "sblShortSales": 0,
+        "sblReturns": 10,
         "sblAdjustments": 0,
         "sblAvailable": 80
       }
