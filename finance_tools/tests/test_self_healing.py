@@ -291,6 +291,57 @@ def test_us_merge_same_period_takes_the_new_value():
     assert merged["historical"]["annual"] == [{"year": 2025, "revenue": 999}]
 
 
+# ── 期別改用會計年度（2026-10-12）────────────────────────────────────
+
+def _ts(s):
+    import pandas as pd
+    return pd.Timestamp(s)
+
+
+@pytest.mark.parametrize("period_end, fye_month, want", [
+    ("2026-07-31", 1, (2027, 2)),   # NVDA：FY 在 1 月結束，2026/7 那季是 FY27 Q2
+    ("2026-01-31", 1, (2026, 4)),   # NVDA 年度最後一季
+    ("2026-06-30", 9, (2026, 3)),   # AAPL：FY 在 9 月結束
+    ("2025-09-30", 9, (2025, 4)),
+    ("2026-03-31", 12, (2026, 1)),  # 曆年制不受影響
+    ("2026-12-31", 12, (2026, 4)),
+    ("2026-06-30", 6, (2026, 4)),   # MSFT
+    ("2026-08-02", 10, (2026, 3)),  # AVGO：52／53 週制落在月初，算前一個月
+])
+def test_us_fiscal_period(period_end, fye_month, want):
+    assert _us().fiscal_period(_ts(period_end), fye_month) == want
+
+
+def test_us_fiscal_year_end_month_handles_53_week_years():
+    import datetime as dt
+    # AVGO 的 FY2025 在 2025-11-02 結束，實際是 10 月底那一年
+    ts = int(dt.datetime(2025, 11, 2, tzinfo=dt.timezone.utc).timestamp())
+    assert _us().fiscal_year_end_month({"lastFiscalYearEnd": ts}) == 10
+    assert _us().fiscal_year_end_month({}) == 12
+
+
+def test_us_quarterly_yoy_compares_same_fiscal_quarter():
+    rows = [{"year": 2027, "quarter": 2, "native": {"revenue": 150}},
+            {"year": 2027, "quarter": 1, "native": {"revenue": 140}},
+            {"year": 2026, "quarter": 2, "native": {"revenue": 100}}]
+    _us().fill_quarterly_yoy(rows)
+    assert rows[0]["revenueYoY"] == 50.0
+    assert "revenueYoY" not in rows[1], "缺去年同季就不算，不填 0"
+
+
+def test_us_merge_rebuilds_history_from_calendar_labelled_file():
+    """舊檔是西元季（沒有 periodBasis）：不能跟會計季度併在一起，否則同一季會出現兩筆。"""
+    existing = {"historical": {"annual": [{"year": 2025, "revenue": 1}],
+                               "quarterly": [{"year": 2026, "quarter": 3, "revenue": 9}]}}
+    fresh = {"periodBasis": "fiscal", "historical": {
+        "annual": [{"year": 2026, "revenue": 2}],
+        "quarterly": [{"year": 2027, "quarter": 2, "revenue": 9}]}}
+    merged = _us().merge_us_output(existing, fresh)
+    assert [(q["year"], q["quarter"]) for q in merged["historical"]["quarterly"]] == [(2027, 2)]
+    assert [a["year"] for a in merged["historical"]["annual"]] == [2026]
+    assert merged["periodBasis"] == "fiscal"
+
+
 def test_us_merge_on_a_brand_new_ticker_is_just_the_fresh_data():
     fresh = {"companyCode": "NEW", "historical": {"annual": [], "quarterly": []}}
     assert _us().merge_us_output({}, fresh) == fresh

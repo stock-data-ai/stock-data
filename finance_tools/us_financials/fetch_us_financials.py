@@ -101,13 +101,6 @@ def _v(col, row: str):
     return float(val)
 
 
-def _pct(val):
-    """Fraction → percentage (0.66 → 66.0), 2 dp."""
-    if val is None:
-        return None
-    return round(val * 100, 2)
-
-
 def _r2(val):
     if val is None:
         return None
@@ -179,7 +172,50 @@ def apply_fx(rows, fx: float):
     return rows
 
 
-def build_annual(ticker_obj):
+#: 期別標示的基準。`fiscal`＝公司自己的會計年度／季度（NVDA 2026/7 那季是 FY2027 Q2）。
+#: 2026-10-12 以前用期末日的**西元年與西元季**（同一季標成 2026 Q3），跟財報、法說會對不上，
+#: 而且會計年度不在 12 月結束的公司，「年度」與「該年的四季」湊不起來。舊檔沒有這個標記，
+#: 合併時舊的季度紀錄直接丟掉重建（見 `merge_us_output`）。
+PERIOD_BASIS = "fiscal"
+
+
+def _month_end_of(date):
+    """期末日 → 所屬月份 (year, month)。52／53 週制的期末會落在下個月初
+    （AVGO 2025-11-02、NVDA 有幾年是 2 月初），月初 7 日內算前一個月。"""
+    year, month = date.year, date.month
+    if date.day <= 7:
+        month -= 1
+        if month == 0:
+            year, month = year - 1, 12
+    return year, month
+
+
+def fiscal_year_end_month(info, annual_df=None) -> int:
+    """會計年度結束月份。優先用 info 的 lastFiscalYearEnd，其次用年報欄位的期末日，都沒有就當 12 月。"""
+    ts = (info or {}).get("lastFiscalYearEnd")
+    if ts:
+        try:
+            return _month_end_of(datetime.fromtimestamp(int(ts), tz=timezone.utc))[1]
+        except (TypeError, ValueError, OverflowError, OSError):
+            pass
+    if annual_df is not None and not annual_df.empty:
+        return _month_end_of(annual_df.columns[0])[1]
+    return 12
+
+
+def fiscal_period(date, fye_month: int):
+    """期末日 → (會計年度, 會計季度)。會計年度以「結束那年」命名（NVDA 2026/1 結束的是 FY2026）。"""
+    year, month = _month_end_of(date)
+    fiscal_year = year if month <= fye_month else year + 1
+    months_to_fye = (fye_month - month) % 12
+    return fiscal_year, 4 - months_to_fye // 3
+
+
+def _period_end(date) -> str:
+    return date.strftime("%Y-%m-%d")
+
+
+def build_annual(ticker_obj, fye_month: int = 12):
     df = ticker_obj.income_stmt
     if df is None or df.empty:
         return []
@@ -188,7 +224,7 @@ def build_annual(ticker_obj):
     for col in df.columns:
         row = _income_row(df[col])
         if row is not None:
-            rows.append({"year": col.year, **row})
+            rows.append({"year": fiscal_period(col, fye_month)[0], "periodEnd": _period_end(col), **row})
 
     rows.sort(key=lambda x: x["year"], reverse=True)
     return fill_revenue_yoy(rows)
@@ -210,7 +246,7 @@ def fill_revenue_yoy(annual):
     return annual
 
 
-def build_quarterly(ticker_obj):
+def build_quarterly(ticker_obj, fye_month: int = 12):
     df = ticker_obj.quarterly_income_stmt
     if df is None or df.empty:
         return []
@@ -219,10 +255,23 @@ def build_quarterly(ticker_obj):
     for col in df.columns:
         row = _income_row(df[col])
         if row is not None:
-            rows.append({"year": col.year, "quarter": (col.month - 1) // 3 + 1, **row})
+            fiscal_year, fiscal_quarter = fiscal_period(col, fye_month)
+            rows.append({"year": fiscal_year, "quarter": fiscal_quarter, "periodEnd": _period_end(col), **row})
 
     rows.sort(key=lambda x: (x["year"], x["quarter"]), reverse=True)
-    return rows
+    return fill_quarterly_yoy(rows)
+
+
+def fill_quarterly_yoy(quarterly):
+    """單季營收年增率：跟**去年同一個會計季度**比、用原幣（匯率變動不算成長）。"""
+    by_key = {(q["year"], q["quarter"]): q for q in quarterly or []}
+    for row in quarterly or []:
+        prev = by_key.get((row["year"] - 1, row["quarter"]))
+        cur_rev = (row.get("native") or {}).get("revenue")
+        prev_rev = ((prev or {}).get("native") or {}).get("revenue")
+        if cur_rev and prev_rev:
+            row["revenueYoY"] = round((cur_rev / prev_rev - 1) * 100, 1)
+    return quarterly
 
 
 def build_output(code: str, ticker_obj):
@@ -235,38 +284,30 @@ def build_output(code: str, ticker_obj):
     fx = get_fx_rate(fin_currency)
     fx_note = f" [fx {fin_currency}→USD={fx:.4f}]" if fin_currency != "USD" else ""
 
-    annual = apply_fx(build_annual(ticker_obj), fx)
-    quarterly = apply_fx(build_quarterly(ticker_obj), fx)
+    fye_month = fiscal_year_end_month(info, ticker_obj.income_stmt)
+    annual = apply_fx(build_annual(ticker_obj, fye_month), fx)
+    quarterly = apply_fx(build_quarterly(ticker_obj, fye_month), fx)
 
     if not annual and not quarterly:
         return None, "no financial data"
 
-    latest_q = quarterly[0] if quarterly else {}
-    latest_a = annual[0] if annual else {}
-
-    yoy = None
-    if len(annual) >= 2 and annual[0].get("revenue") and annual[1].get("revenue"):
-        yoy = round((annual[0]["revenue"] / annual[1]["revenue"] - 1) * 100, 1)
-
-    # Margins from info are fractions; fall back to computed values from statements.
-    # 用 `is not None` 而不是 `or`：毛利率真的是 0 的時候，`or` 會把它當成缺值
-    # 往下一個來源掉，畫面上就變成別的期別的數字。
-    gross_margin = _first_present(_pct(info.get("grossMargins")), latest_q.get("grossMargin"), latest_a.get("grossMargin"))
-    op_margin = _first_present(_pct(info.get("operatingMargins")), latest_q.get("operatingMargin"), latest_a.get("operatingMargin"))
-    net_margin = _first_present(_pct(info.get("profitMargins")), latest_q.get("netMargin"), latest_a.get("netMargin"))
+    # 「最新財務概況」的每個數字都取**同一個期別**：有季報就是最新一季，沒有才退回最新年度。
+    # 2026-10-12 以前混用三種期別——單季營收、年度年增率、info 的近四季（TTM）毛利率——
+    # 畫面標題寫「單季」，讀者會以為全部是同一季。
+    period = quarterly[0] if quarterly else annual[0]
 
     # marketCap from info is always in the trading currency (USD for US-listed)
     market_cap = _to_usd(info.get("marketCap"))  # no fx — already USD
 
     latest = {
-        "year": _first_present(latest_q.get("year"), latest_a.get("year")),
-        "quarter": latest_q.get("quarter"),
-        "revenue": _first_present(latest_q.get("revenue"), latest_a.get("revenue")),
-        "yoy": yoy,
-        "grossMargin": gross_margin,
-        "operatingMargin": op_margin,
-        "netMargin": net_margin,
-        "eps": _first_present(latest_q.get("eps"), latest_a.get("eps")),
+        "year": period.get("year"),
+        "quarter": period.get("quarter"),
+        "revenue": period.get("revenue"),
+        "yoy": period.get("revenueYoY"),
+        "grossMargin": period.get("grossMargin"),
+        "operatingMargin": period.get("operatingMargin"),
+        "netMargin": period.get("netMargin"),
+        "eps": period.get("eps"),
         "pe": _r2(info.get("trailingPE")),
         "pb": _r2(info.get("priceToBook")),
         "marketCap": market_cap,
@@ -283,6 +324,8 @@ def build_output(code: str, ticker_obj):
         "lastUpdated": datetime.now(tz=timezone.utc).strftime("%Y-%m-%d"),
         "dataQuality": "medium",
         "dataSource": "yahoo-finance",
+        "periodBasis": PERIOD_BASIS,
+        "fiscalYearEndMonth": fye_month,
         # 報表幣別要存下來。累積合併之後，若某公司改了報表幣別（例如 EUR→USD），
         # 舊年度是用舊匯率換算的，跟新年度併在一起就是兩種幣別混在同一個檔裡，
         # 而且看不出來。存了才擋得掉——見 `merge_us_output`。
@@ -319,6 +362,12 @@ def merge_us_output(existing, fresh):
     merged.update({k: v for k, v in fresh.items() if k != "historical"})
 
     old_hist = existing.get("historical") or {}
+    if existing.get("periodBasis") != fresh.get("periodBasis"):
+        # 舊檔的季度是西元季（NVDA FY27 Q2 存成 2026 Q3），跟新標示合併會變成同一季兩筆。
+        # 舊紀錄沒存期末日，無從換算，季度整段丟掉以這次抓到的為準（yfinance 本來就給 5 季，
+        # 舊檔多半也只有 5～6 季）。年報的年度兩種標示只在 52／53 週制的邊界才不同，一併重建。
+        print(" [期別改為會計年度，季度與年度重建]", end="")
+        old_hist = {}
     new_hist = fresh.get("historical") or {}
     merged["historical"] = {
         "annual": merge_policy.merge_by_key(
@@ -332,6 +381,7 @@ def merge_us_output(existing, fresh):
         apply_fx(merged["historical"]["annual"], fx)
         apply_fx(merged["historical"]["quarterly"], fx)
     fill_revenue_yoy(merged["historical"]["annual"])
+    fill_quarterly_yoy(merged["historical"]["quarterly"])
     return merged
 
 

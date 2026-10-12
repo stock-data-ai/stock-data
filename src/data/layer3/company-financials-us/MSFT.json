@@ -3,14 +3,14 @@
   "companyName": "Microsoft Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 90007000000,
-    "yoy": 17.8,
-    "grossMargin": 67.94,
+    "yoy": 17.7,
+    "grossMargin": 67.2,
     "operatingMargin": 45.11,
-    "netMargin": 40.3,
+    "netMargin": 39.74,
     "eps": 4.81,
-    "pe": 29.11,
+    "pe": 29.81,
     "pb": 8.98,
     "marketCap": 3973186846720
   },
@@ -18,6 +18,7 @@
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 331839000000,
         "grossProfit": 225465000000,
         "operatingIncome": 155237000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 281724000000,
         "grossProfit": 193893000000,
         "operatingIncome": 128528000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 245122000000,
         "grossProfit": 171008000000,
         "operatingIncome": 109433000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 211915000000,
         "grossProfit": 146052000000,
         "operatingIncome": 88523000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 90007000000,
         "grossProfit": 60482000000,
         "operatingIncome": 40603000000,
@@ -105,11 +110,13 @@
           "grossProfit": 60482000000,
           "operatingIncome": 40603000000,
           "netIncome": 35766000000
-        }
+        },
+        "revenueYoY": 17.7
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 82886000000,
         "grossProfit": 56058000000,
         "operatingIncome": 38398000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 81273000000,
         "grossProfit": 55295000000,
         "operatingIncome": 38275000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 77673000000,
         "grossProfit": 53630000000,
         "operatingIncome": 37961000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 76441000000,
         "grossProfit": 52427000000,
         "operatingIncome": 34323000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-12",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }
