@@ -11,6 +11,9 @@
 - institutional.date 必須是今天（台北）。非交易日、或當輪 BFI82U 尚未公布時
   tasks.py 會保留前一日資料，此時推出去就是錯的數字。
 - 缺 CRON_SECRET 時只印不推，讓本機與未設 secret 的環境不會讓 workflow 紅掉。
+- 發送前輪詢 GitHub Pages，確認對外那份已是當日資料才推。git push 後 Pages 要再部署
+  一兩分鐘，App 直接讀 Pages；不等就會出現「收到通知、點進去還是昨天的數字」。
+  等不到就不推並回非 0（key 未佔位，下一輪 workflow 會再試）。
 
 用法：
     uv run finance_tools/scripts/notify_market_inst.py [--dry-run]
@@ -19,6 +22,7 @@
 import json
 import os
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -29,6 +33,10 @@ PUSH_ENDPOINT = os.environ.get(
     "PUSH_ENDPOINT", "https://aistockmap.com/api/cron/push-broadcast"
 )
 PUSH_TOPIC = "market-inst"
+# App（DailyFocusTabs／MarketSentimentWidget）讀的就是這份。
+PAGES_URL = "https://stock-data-ai.github.io/stock-data/src/data/market/sentiment.json"
+PAGES_WAIT_SECONDS = 10 * 60
+PAGES_POLL_SECONDS = 20
 TAIPEI = timezone(timedelta(hours=8))
 
 # 與前端 MarketSentimentWidget 的 instNet 對齊：五個分項全加（foreignDealer 目前恆為 0，
@@ -44,6 +52,21 @@ def _format_yi(net: int) -> str:
     """元 → 「買超/賣超 N 億元」。0 視為買超（與大盤慣例一致，實務上不會出現）。"""
     label = "賣超" if net < 0 else "買超"
     return f"{label} {abs(net) / 1e8:.1f} 億元"
+
+
+def _wait_for_pages(date_str: str) -> bool:
+    """輪詢 Pages 直到 institutional.date 等於 date_str。帶 cache-buster 繞過 CDN 的 max-age=600。"""
+    deadline = time.monotonic() + PAGES_WAIT_SECONDS
+    while True:
+        try:
+            resp = requests.get(PAGES_URL, params={"cb": int(time.time())}, timeout=30)
+            if resp.ok and (resp.json().get("institutional") or {}).get("date") == date_str:
+                return True
+        except (requests.RequestException, ValueError):
+            pass
+        if time.monotonic() >= deadline:
+            return False
+        time.sleep(PAGES_POLL_SECONDS)
 
 
 def main() -> int:
@@ -84,7 +107,8 @@ def main() -> int:
         "topic": PUSH_TOPIC,
         "title": title,
         "body": body,
-        "url": "/?activeTab=daily",
+        # focus：DailyFocusTabs 切到法人分頁並捲到該卡（舊 App 不認得參數，照舊落在每日焦點）
+        "url": "/?activeTab=daily&focus=institutional",
     }
 
     print(f"[notify_market_inst] {title}\n{body}")
@@ -93,6 +117,10 @@ def main() -> int:
     if dry_run or not secret:
         print(f"[notify_market_inst] {'dry-run' if dry_run else '缺 CRON_SECRET'} → 不發送")
         return 0
+
+    if not _wait_for_pages(date_str):
+        print(f"[notify_market_inst] ❌ {PAGES_WAIT_SECONDS // 60} 分鐘內 Pages 仍不是 {date_str} 的資料，不推（下一輪再試）")
+        return 1
 
     resp = requests.post(
         PUSH_ENDPOINT,
