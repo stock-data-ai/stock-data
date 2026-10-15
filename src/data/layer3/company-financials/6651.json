@@ -14,10 +14,10 @@
     "marketCap": 4878817281.0,
     "pe": 15.79,
     "pb": 3.72,
-    "marginBalance": 1489,
-    "shortBalance": 1,
+    "marginBalance": 1477,
+    "shortBalance": 0,
     "dividendYield": 2.84,
-    "sblBalance": 469
+    "sblBalance": 467
   },
   "historical": {
     "annual": [
@@ -10265,6 +10265,14 @@
         "shortBuy": 0,
         "shortSell": 0,
         "shortBalance": 1
+      },
+      "2026-10-15": {
+        "marginBuy": 7,
+        "marginSell": 19,
+        "marginBalance": 1477,
+        "shortBuy": 1,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     },
     "securitiesLending": {
@@ -11287,6 +11295,13 @@
         "sblBalance": 469,
         "sblShortSales": 0,
         "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 62
+      },
+      "2026-10-15": {
+        "sblBalance": 467,
+        "sblShortSales": 0,
+        "sblReturns": 2,
         "sblAdjustments": 0,
         "sblAvailable": 62
       }
