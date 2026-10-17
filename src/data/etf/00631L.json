@@ -15,43 +15,46 @@
   "topHoldings": [
     {
       "name": "臺股期貨",
-      "weight": 155.5,
-      "shares": 43600,
+      "weight": 135.13,
+      "shares": 40025,
       "foreignCode": "202610TX",
-      "previousWeight": 154.81,
-      "weightChange": 0.69,
-      "previousShares": 43200,
-      "sharesChange": 400
+      "previousWeight": 155.5,
+      "weightChange": -20.37,
+      "previousShares": 43600,
+      "sharesChange": -3575
     },
     {
       "name": "台積電",
-      "weight": 42.0,
+      "weight": 39.38,
       "shares": 45587000,
       "code": "2330",
-      "previousWeight": 41.96,
-      "weightChange": 0.04,
+      "previousWeight": 42.0,
+      "weightChange": -2.62,
       "previousShares": 45587000,
       "sharesChange": 0
     },
     {
+      "name": "臺股期貨",
+      "weight": 22.89,
+      "shares": 6750,
+      "foreignCode": "202611TX",
+      "previousWeight": 155.5,
+      "weightChange": -132.61,
+      "previousShares": 43600,
+      "sharesChange": -36850
+    },
+    {
       "name": "台灣50ETF股票期貨",
-      "weight": 3.24,
+      "weight": 3.04,
       "shares": 7800,
       "foreignCode": "202610NYF",
-      "previousWeight": 3.25,
-      "weightChange": -0.01,
+      "previousWeight": 3.24,
+      "weightChange": -0.2,
       "previousShares": 7800,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-04-17": [
-      {
-        "name": "臺股期貨",
-        "weight": 200.58,
-        "shares": 26755
-      }
-    ],
     "2026-04-24": [
       {
         "name": "臺股期貨",
@@ -485,7 +488,30 @@
         "weight": 3.24,
         "shares": 7800
       }
+    ],
+    "2026-10-16": [
+      {
+        "name": "臺股期貨",
+        "weight": 135.13,
+        "shares": 40025
+      },
+      {
+        "name": "台積電",
+        "weight": 39.38,
+        "shares": 45587000,
+        "code": "2330"
+      },
+      {
+        "name": "臺股期貨",
+        "weight": 22.89,
+        "shares": 6750
+      },
+      {
+        "name": "台灣50ETF股票期貨",
+        "weight": 3.04,
+        "shares": 7800
+      }
     ]
   },
-  "lastUpdated": "2026-10-08"
+  "lastUpdated": "2026-10-16"
 }
