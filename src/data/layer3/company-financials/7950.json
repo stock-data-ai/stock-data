@@ -1,8 +1,16 @@
 {
   "latest": {
-    "marketCap": 645000000.0
+    "marketCap": 645000000.0,
+    "year": 2026,
+    "quarter": 2,
+    "revenue": 368009000.0,
+    "yoy": null,
+    "grossMargin": 18.36,
+    "operatingMargin": 4.84,
+    "netMargin": 3.42,
+    "eps": 1.03
   },
-  "lastUpdated": "2026-10-17",
+  "lastUpdated": "2026-10-18",
   "historical": {
     "institutionalInvestors": {
       "2026-10-12": {
@@ -89,7 +97,70 @@
         "dealer_net_buy": 0.0,
         "code": "7950"
       }
-    }
+    },
+    "annual": [
+      {
+        "year": 2026,
+        "revenue": 368009000.0,
+        "grossProfit": 67555000.0,
+        "operatingIncome": 17806000.0,
+        "netIncome": 12575000.0,
+        "eps": 1.03,
+        "grossMargin": 18.36,
+        "operatingMargin": 4.84,
+        "netMargin": 3.42,
+        "note": "累季",
+        "revenueYoY": null
+      },
+      {
+        "year": 2025,
+        "revenue": 601601000.0,
+        "grossProfit": 122208000.0,
+        "operatingIncome": 35696000.0,
+        "netIncome": 26329000.0,
+        "eps": 2.19,
+        "grossMargin": 20.31,
+        "operatingMargin": 5.93,
+        "netMargin": 4.38,
+        "note": "累季",
+        "revenueYoY": null
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 2,
+        "revenue": 368009000.0,
+        "grossProfit": 67555000.0,
+        "operatingIncome": 17806000.0,
+        "netIncome": 12575000.0,
+        "eps": 1.03,
+        "grossMargin": 18.36,
+        "operatingMargin": 4.84,
+        "netMargin": 3.42
+      },
+      {
+        "year": 2025,
+        "quarter": 4,
+        "revenue": 601601000.0,
+        "grossProfit": 122208000.0,
+        "operatingIncome": 35696000.0,
+        "netIncome": 26329000.0,
+        "eps": 2.19,
+        "grossMargin": 20.31,
+        "operatingMargin": 5.93,
+        "netMargin": 4.38
+      }
+    ],
+    "monthlyRevenue": [
+      {
+        "year": 2026,
+        "month": 9,
+        "revenue": 54764000.0,
+        "yoy": null
+      }
+    ],
+    "dividends": null
   },
   "shareholderDataHistory": {
     "20261016": [
@@ -450,5 +521,8 @@
         "pledgePct": 0.0
       }
     }
-  }
+  },
+  "companyCode": "7950",
+  "companyName": "盛大資訊股份有限公司",
+  "dataQuality": "high"
 }
