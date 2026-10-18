@@ -2,22 +2,23 @@
   "companyCode": "KR",
   "companyName": "The Kroger Co.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 34621000000,
-    "yoy": 0.4,
-    "grossMargin": 23.9,
-    "operatingMargin": 2.98,
-    "netMargin": 0.73,
+    "yoy": 2.0,
+    "grossMargin": 22.7,
+    "operatingMargin": 2.8,
+    "netMargin": 1.85,
     "eps": 1.05,
-    "pe": 34.24,
-    "pb": 6.29,
-    "marketCap": 36403884032
+    "pe": 35.35,
+    "pb": 6.49,
+    "marketCap": 37579157504
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 147642000000,
         "grossProfit": 34402000000,
         "operatingIncome": 1890000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 147123000000,
         "grossProfit": 33403000000,
         "operatingIncome": 3849000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 150039000000,
         "grossProfit": 33364000000,
         "operatingIncome": 3096000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 148258000000,
         "grossProfit": 31778000000,
         "operatingIncome": 4126000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 34621000000,
         "grossProfit": 7858000000,
         "operatingIncome": 971000000,
@@ -105,11 +110,13 @@
           "grossProfit": 7858000000,
           "operatingIncome": 971000000,
           "netIncome": 641000000
-        }
+        },
+        "revenueYoY": 2.0
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 46121000000,
         "grossProfit": 10628000000,
         "operatingIncome": 1407000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 34725000000,
         "grossProfit": 8123000000,
         "operatingIncome": 1246000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 33859000000,
         "grossProfit": 7902000000,
         "operatingIncome": -1541000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 33940000000,
         "grossProfit": 7810000000,
         "operatingIncome": 863000000,
@@ -178,30 +188,14 @@
           "operatingIncome": 863000000,
           "netIncome": 609000000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 45118000000,
-        "grossProfit": 10567000000,
-        "operatingIncome": 1322000000,
-        "netIncome": 866000000,
-        "eps": null,
-        "grossMargin": 23.42,
-        "operatingMargin": 2.93,
-        "netMargin": 1.92,
-        "native": {
-          "revenue": 45118000000,
-          "grossProfit": 10567000000,
-          "operatingIncome": 1322000000,
-          "netIncome": 866000000
-        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

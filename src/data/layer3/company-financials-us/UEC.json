@@ -3,21 +3,22 @@
   "companyName": "Uranium Energy Corp.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 0,
-    "yoy": 29737.9,
-    "grossMargin": -183.96,
-    "operatingMargin": -228.6,
-    "netMargin": 0.0,
+    "yoy": null,
+    "grossMargin": null,
+    "operatingMargin": null,
+    "netMargin": null,
     "eps": -0.11,
     "pe": null,
-    "pb": 3.31,
-    "marketCap": 4554422784
+    "pb": 2.85,
+    "marketCap": 3920074752
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-07-31",
         "revenue": 66837000,
         "grossProfit": 24477000,
         "operatingIncome": -73421000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-07-31",
         "revenue": 224000,
         "grossProfit": 37000,
         "operatingIncome": -56553000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-07-31",
         "revenue": 164389000,
         "grossProfit": 49670000,
         "operatingIncome": 9050000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-07-31",
         "revenue": 23161000,
         "grossProfit": 7293000,
         "operatingIncome": -18949000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-04-30",
         "revenue": 0,
         "grossProfit": 0,
         "operatingIncome": -40748000,
@@ -109,7 +114,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-01-31",
         "revenue": 20200000,
         "grossProfit": 10028000,
         "operatingIncome": -23449000,
@@ -126,8 +132,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-10-31",
         "revenue": 0,
         "grossProfit": 0,
         "operatingIncome": -30071000,
@@ -145,7 +152,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-07-31",
         "revenue": 0,
         "grossProfit": 0,
         "operatingIncome": -32954000,
@@ -163,7 +171,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-04-30",
         "revenue": 0,
         "grossProfit": 0,
         "operatingIncome": -23211000,
@@ -181,9 +190,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 7
 }

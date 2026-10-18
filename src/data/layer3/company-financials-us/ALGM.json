@@ -2,22 +2,23 @@
   "companyCode": "ALGM",
   "companyName": "Allegro MicroSystems, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 259243000,
-    "yoy": 22.8,
-    "grossMargin": 47.38,
+    "yoy": 27.5,
+    "grossMargin": 48.45,
     "operatingMargin": 9.82,
-    "netMargin": 1.5,
+    "netMargin": 6.12,
     "eps": 0.08,
-    "pe": 592.83,
-    "pb": 6.87,
-    "marketCap": 6630320640
+    "pe": 527.0,
+    "pb": 6.11,
+    "marketCap": 5894032896
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 890096000,
         "grossProfit": 411970000,
         "operatingIncome": 25077000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 725006000,
         "grossProfit": 321527000,
         "operatingIncome": -19802000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 1049367000,
         "grossProfit": 574529000,
         "operatingIncome": 209462000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 973653000,
         "grossProfit": 546079000,
         "operatingIncome": 203307000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 259243000,
         "grossProfit": 125610000,
         "operatingIncome": 25467000,
@@ -105,11 +110,13 @@
           "grossProfit": 125610000,
           "operatingIncome": 25467000,
           "netIncome": 15871000
-        }
+        },
+        "revenueYoY": 27.5
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 243187000,
         "grossProfit": 114275000,
         "operatingIncome": 12000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 229210000,
         "grossProfit": 107101000,
         "operatingIncome": 9574000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 214294000,
         "grossProfit": 99292000,
         "operatingIncome": 6243000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 203405000,
         "grossProfit": 91302000,
         "operatingIncome": -2740000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

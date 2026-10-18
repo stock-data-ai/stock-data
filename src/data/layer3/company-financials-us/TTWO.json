@@ -2,22 +2,23 @@
   "companyCode": "TTWO",
   "companyName": "Take-Two Interactive Software, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 1533900000,
-    "yoy": 18.2,
-    "grossMargin": 57.13,
-    "operatingMargin": 0.51,
-    "netMargin": -4.79,
+    "yoy": 2.0,
+    "grossMargin": 57.53,
+    "operatingMargin": -2.31,
+    "netMargin": -2.22,
     "eps": -0.18,
     "pe": null,
-    "pb": 11.06,
-    "marketCap": 39909105664
+    "pb": 10.64,
+    "marketCap": 38383345664
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 6656400000,
         "grossProfit": 3809700000,
         "operatingIncome": -108600000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 5633600000,
         "grossProfit": 3062200000,
         "operatingIncome": -739400000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 5349600000,
         "grossProfit": 2241800000,
         "operatingIncome": -1143900000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 5349900000,
         "grossProfit": 2285300000,
         "operatingIncome": -1150600000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 1533900000,
         "grossProfit": 882500000,
         "operatingIncome": -35500000,
@@ -105,11 +110,13 @@
           "grossProfit": 882500000,
           "operatingIncome": -35500000,
           "netIncome": -34100000
-        }
+        },
+        "revenueYoY": 2.0
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 1679800000,
         "grossProfit": 938700000,
         "operatingIncome": 10000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 1699000000,
         "grossProfit": 945500000,
         "operatingIncome": -38100000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 1773800000,
         "grossProfit": 980500000,
         "operatingIncome": -97900000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 1503800000,
         "grossProfit": 945000000,
         "operatingIncome": 21600000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

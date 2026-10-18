@@ -3,21 +3,22 @@
   "companyName": "ScanSource, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 953109000,
-    "yoy": 6.1,
-    "grossMargin": 13.56,
-    "operatingMargin": 3.55,
-    "netMargin": 2.44,
+    "yoy": 17.3,
+    "grossMargin": 12.57,
+    "operatingMargin": 3.42,
+    "netMargin": 2.69,
     "eps": 1.24,
-    "pe": 16.74,
-    "pb": 1.35,
-    "marketCap": 1227301504
+    "pe": 16.49,
+    "pb": 1.33,
+    "marketCap": 1208971648
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 3226062000,
         "grossProfit": 437355000,
         "operatingIncome": 101466000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 3040810000,
         "grossProfit": 408646000,
         "operatingIncome": 92481000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 3259809000,
         "grossProfit": 399052000,
         "operatingIncome": 94682000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 3787721000,
         "grossProfit": 449239000,
         "operatingIncome": 135886000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 953109000,
         "grossProfit": 119848000,
         "operatingIncome": 32612000,
@@ -105,11 +110,13 @@
           "grossProfit": 119848000,
           "operatingIncome": 32612000,
           "netIncome": 25618000
-        }
+        },
+        "revenueYoY": 17.3
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 766790000,
         "grossProfit": 107124000,
         "operatingIncome": 23560000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 766512000,
         "grossProfit": 102910000,
         "operatingIncome": 19077000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 739650000,
         "grossProfit": 107473000,
         "operatingIncome": 26217000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 812886000,
         "grossProfit": 105102000,
         "operatingIncome": 26640000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

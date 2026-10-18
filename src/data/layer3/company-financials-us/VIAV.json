@@ -3,21 +3,22 @@
   "companyName": "Viavi Solutions Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 443100000,
-    "yoy": 40.0,
-    "grossMargin": 60.89,
-    "operatingMargin": 14.31,
-    "netMargin": -2.0,
+    "yoy": 52.5,
+    "grossMargin": 59.06,
+    "operatingMargin": 13.61,
+    "netMargin": 7.38,
     "eps": 0.13,
     "pe": null,
-    "pb": 7.75,
-    "marketCap": 11179619328
+    "pb": 5.69,
+    "marketCap": 8208880640
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 1518300000,
         "grossProfit": 875400000,
         "operatingIncome": 121000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 1084300000,
         "grossProfit": 621100000,
         "operatingIncome": 58200000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 1000400000,
         "grossProfit": 575900000,
         "operatingIncome": 34400000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 1106100000,
         "grossProfit": 638800000,
         "operatingIncome": 94500000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 443100000,
         "grossProfit": 261700000,
         "operatingIncome": 60300000,
@@ -105,11 +110,13 @@
           "grossProfit": 261700000,
           "operatingIncome": 60300000,
           "netIncome": 32700000
-        }
+        },
+        "revenueYoY": 52.5
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 406800000,
         "grossProfit": 234100000,
         "operatingIncome": 42100000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 369300000,
         "grossProfit": 210600000,
         "operatingIncome": 11300000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 299100000,
         "grossProfit": 169000000,
         "operatingIncome": 7300000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 290500000,
         "grossProfit": 163500000,
         "operatingIncome": 15100000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

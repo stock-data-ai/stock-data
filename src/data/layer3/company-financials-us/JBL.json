@@ -3,21 +3,22 @@
   "companyName": "Jabil Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 8751000000,
-    "yoy": 3.2,
-    "grossMargin": 9.23,
-    "operatingMargin": 5.85,
-    "netMargin": 2.9,
+    "yoy": 11.8,
+    "grossMargin": 9.46,
+    "operatingMargin": 5.21,
+    "netMargin": 3.14,
     "eps": 2.59,
-    "pe": 31.41,
-    "pb": 19.9,
-    "marketCap": 32094189568
+    "pe": 28.54,
+    "pb": 18.08,
+    "marketCap": 29157007360
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-08-31",
         "revenue": 29802000000,
         "grossProfit": 2646000000,
         "operatingIncome": 1436000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-08-31",
         "revenue": 28883000000,
         "grossProfit": 2676000000,
         "operatingIncome": 1437000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-08-31",
         "revenue": 34702000000,
         "grossProfit": 2867000000,
         "operatingIncome": 1594000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-08-31",
         "revenue": 33478000000,
         "grossProfit": 2632000000,
         "operatingIncome": 1411000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-05-31",
         "revenue": 8751000000,
         "grossProfit": 828000000,
         "operatingIncome": 456000000,
@@ -105,11 +110,13 @@
           "grossProfit": 828000000,
           "operatingIncome": 456000000,
           "netIncome": 275000000
-        }
+        },
+        "revenueYoY": 11.8
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-02-28",
         "revenue": 8282000000,
         "grossProfit": 746000000,
         "operatingIncome": 387000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-11-30",
         "revenue": 8305000000,
         "grossProfit": 742000000,
         "operatingIncome": 372000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-08-31",
         "revenue": 8252000000,
         "grossProfit": 783000000,
         "operatingIncome": 475000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-05-31",
         "revenue": 7828000000,
         "grossProfit": 681000000,
         "operatingIncome": 383000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 8
 }

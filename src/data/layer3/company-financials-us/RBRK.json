@@ -2,22 +2,23 @@
   "companyCode": "RBRK",
   "companyName": "Rubrik, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 427260000,
-    "yoy": 48.5,
-    "grossMargin": 80.21,
+    "yoy": 37.9,
+    "grossMargin": 78.44,
     "operatingMargin": -16.83,
-    "netMargin": -16.5,
+    "netMargin": -14.46,
     "eps": -0.3,
     "pe": null,
-    "pb": -51.93,
-    "marketCap": 25757386752
+    "pb": -46.64,
+    "marketCap": 23137189888
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 1316191000,
         "grossProfit": 1054314000,
         "operatingIncome": -345416000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 886544000,
         "grossProfit": 620796000,
         "operatingIncome": -1134032000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 627892000,
         "grossProfit": 482930000,
         "operatingIncome": -306506000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 599819000,
         "grossProfit": 417805000,
         "operatingIncome": -261548000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 427260000,
         "grossProfit": 335123000,
         "operatingIncome": -71902000,
@@ -105,11 +110,13 @@
           "grossProfit": 335123000,
           "operatingIncome": -71902000,
           "netIncome": -61777000
-        }
+        },
+        "revenueYoY": 37.9
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 387068000,
         "grossProfit": 311783000,
         "operatingIncome": -52634000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 377684000,
         "grossProfit": 307986000,
         "operatingIncome": -82379000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 350166000,
         "grossProfit": 282029000,
         "operatingIncome": -75483000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 309860000,
         "grossProfit": 246301000,
         "operatingIncome": -94463000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

@@ -2,22 +2,23 @@
   "companyCode": "KD",
   "companyName": "Kyndryl Holdings, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 3618000000,
-    "yoy": 0.2,
-    "grossMargin": 21.84,
-    "operatingMargin": 2.9,
-    "netMargin": 0.58,
+    "yoy": -3.3,
+    "grossMargin": 21.45,
+    "operatingMargin": 2.99,
+    "netMargin": -1.52,
     "eps": -0.25,
-    "pe": 31.76,
-    "pb": 2.41,
-    "marketCap": 2559364608
+    "pe": 35.7,
+    "pb": 2.71,
+    "marketCap": 2877379072
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 15092000000,
         "grossProfit": 3289000000,
         "operatingIncome": 635000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 15057000000,
         "grossProfit": 3143000000,
         "operatingIncome": 552000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 16052000000,
         "grossProfit": 2863000000,
         "operatingIncome": 90000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 17026000000,
         "grossProfit": 2528000000,
         "operatingIncome": -386000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 3618000000,
         "grossProfit": 776000000,
         "operatingIncome": 108000000,
@@ -105,11 +110,13 @@
           "grossProfit": 776000000,
           "operatingIncome": 108000000,
           "netIncome": -55000000
-        }
+        },
+        "revenueYoY": -3.3
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 3769000000,
         "grossProfit": 849000000,
         "operatingIncome": 171000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 3859000000,
         "grossProfit": 843000000,
         "operatingIncome": 171000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 3721000000,
         "grossProfit": 801000000,
         "operatingIncome": 142000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 3743000000,
         "grossProfit": 796000000,
         "operatingIncome": 150000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

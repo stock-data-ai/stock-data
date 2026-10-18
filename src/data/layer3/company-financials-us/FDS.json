@@ -3,21 +3,22 @@
   "companyName": "FactSet Research Systems Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 622918000,
-    "yoy": 5.4,
-    "grossMargin": 50.6,
-    "operatingMargin": 24.68,
-    "netMargin": 21.54,
+    "yoy": 6.4,
+    "grossMargin": 49.88,
+    "operatingMargin": 26.7,
+    "netMargin": 20.34,
     "eps": 3.5,
-    "pe": 19.71,
-    "pb": 5.08,
-    "marketCap": 10213712896
+    "pe": 20.7,
+    "pb": 5.34,
+    "marketCap": 10729058304
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-08-31",
         "revenue": 2321748000,
         "grossProfit": 1223966000,
         "operatingIncome": 748303000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-08-31",
         "revenue": 2203056000,
         "grossProfit": 1191111000,
         "operatingIncome": 701299000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-08-31",
         "revenue": 2085508000,
         "grossProfit": 1112283000,
         "operatingIncome": 629207000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-08-31",
         "revenue": 1843892000,
         "grossProfit": 972786000,
         "operatingIncome": 539754000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-05-31",
         "revenue": 622918000,
         "grossProfit": 310728000,
         "operatingIncome": 166301000,
@@ -105,11 +110,13 @@
           "grossProfit": 310728000,
           "operatingIncome": 166301000,
           "netIncome": 126718000
-        }
+        },
+        "revenueYoY": 6.4
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-02-28",
         "revenue": 611019000,
         "grossProfit": 314277000,
         "operatingIncome": 184961000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-11-30",
         "revenue": 607621000,
         "grossProfit": 319705000,
         "operatingIncome": 192071000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-08-31",
         "revenue": 596901000,
         "grossProfit": 308231000,
         "operatingIncome": 177321000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-05-31",
         "revenue": 585520000,
         "grossProfit": 304791000,
         "operatingIncome": 194155000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 8
 }

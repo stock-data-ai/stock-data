@@ -3,21 +3,22 @@
   "companyName": "Costco Wholesale Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 70527000000,
-    "yoy": 8.2,
+    "yoy": 11.6,
     "grossMargin": 12.77,
-    "operatingMargin": 3.79,
-    "netMargin": 3.04,
+    "operatingMargin": 3.99,
+    "netMargin": 3.11,
     "eps": 4.93,
-    "pe": 45.61,
-    "pb": 11.72,
-    "marketCap": 419608035328
+    "pe": 47.64,
+    "pb": 12.25,
+    "marketCap": 438303653888
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-08-31",
         "revenue": 275235000000,
         "grossProfit": 35349000000,
         "operatingIncome": 10383000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-08-31",
         "revenue": 254453000000,
         "grossProfit": 32095000000,
         "operatingIncome": 9285000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-08-31",
         "revenue": 242290000000,
         "grossProfit": 29704000000,
         "operatingIncome": 8114000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-08-31",
         "revenue": 226954000000,
         "grossProfit": 27572000000,
         "operatingIncome": 7793000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-05-31",
         "revenue": 70527000000,
         "grossProfit": 9008000000,
         "operatingIncome": 2815000000,
@@ -105,11 +110,13 @@
           "grossProfit": 9008000000,
           "operatingIncome": 2815000000,
           "netIncome": 2192000000
-        }
+        },
+        "revenueYoY": 11.6
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-02-28",
         "revenue": 69597000000,
         "grossProfit": 8878000000,
         "operatingIncome": 2606000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-11-30",
         "revenue": 67307000000,
         "grossProfit": 8797000000,
         "operatingIncome": 2463000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-08-31",
         "revenue": 86156000000,
         "grossProfit": 11119000000,
         "operatingIncome": 3341000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-05-31",
         "revenue": 63205000000,
         "grossProfit": 8209000000,
         "operatingIncome": 2530000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 8
 }

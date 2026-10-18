@@ -3,21 +3,22 @@
   "companyName": "D.R. Horton, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 9227100000,
-    "yoy": -6.9,
-    "grossMargin": 21.3,
-    "operatingMargin": 12.99,
-    "netMargin": 9.15,
+    "yoy": 0.0,
+    "grossMargin": 23.26,
+    "operatingMargin": 12.52,
+    "netMargin": 9.81,
     "eps": 3.2,
-    "pe": 12.94,
-    "pb": 1.59,
-    "marketCap": 37726109696
+    "pe": 13.29,
+    "pb": 1.64,
+    "marketCap": 38987563008
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 34250400000,
         "grossProfit": 8116200000,
         "operatingIncome": 4424200000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 36801400000,
         "grossProfit": 9535400000,
         "operatingIncome": 5935900000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 35460400000,
         "grossProfit": 9350400000,
         "operatingIncome": 6101600000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 33480000000,
         "grossProfit": 10504100000,
         "operatingIncome": 7570400000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 9227100000,
         "grossProfit": 2146200000,
         "operatingIncome": 1155000000,
@@ -105,11 +110,13 @@
           "grossProfit": 2146200000,
           "operatingIncome": 1155000000,
           "netIncome": 904900000
-        }
+        },
+        "revenueYoY": 0.0
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 7558100000,
         "grossProfit": 1703300000,
         "operatingIncome": 800000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 6886900000,
         "grossProfit": 1594700000,
         "operatingIncome": 729600000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 9677800000,
         "grossProfit": 2096700000,
         "operatingIncome": 1125800000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 9225700000,
         "grossProfit": 2209200000,
         "operatingIncome": 1264900000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

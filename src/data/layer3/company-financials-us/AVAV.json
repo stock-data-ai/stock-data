@@ -2,22 +2,23 @@
   "companyCode": "AVAV",
   "companyName": "AeroVironment, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 480490000,
-    "yoy": 140.9,
-    "grossMargin": 26.47,
-    "operatingMargin": -2.27,
-    "netMargin": -10.13,
+    "yoy": 5.7,
+    "grossMargin": 25.93,
+    "operatingMargin": -2.26,
+    "netMargin": -1.05,
     "eps": -0.1,
     "pe": null,
-    "pb": 1.58,
-    "marketCap": 6968026624
+    "pb": 1.4,
+    "marketCap": 6189453824
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-04-30",
         "revenue": 1976845000,
         "grossProfit": 500642000,
         "operatingIncome": -70287000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-04-30",
         "revenue": 820627000,
         "grossProfit": 318636000,
         "operatingIncome": 59154000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-04-30",
         "revenue": 716720000,
         "grossProfit": 283931000,
         "operatingIncome": 71824000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-04-30",
         "revenue": 540536000,
         "grossProfit": 173514000,
         "operatingIncome": -22646000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-07-31",
         "revenue": 480490000,
         "grossProfit": 124599000,
         "operatingIncome": -10871000,
@@ -105,11 +110,13 @@
           "grossProfit": 124599000,
           "operatingIncome": -10871000,
           "netIncome": -5066000
-        }
+        },
+        "revenueYoY": 5.7
       },
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-04-30",
         "revenue": 641616000,
         "grossProfit": 202625000,
         "operatingIncome": 56941000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-01-31",
         "revenue": 408045000,
         "grossProfit": 98794000,
         "operatingIncome": -27732000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-10-31",
         "revenue": 472508000,
         "grossProfit": 104105000,
         "operatingIncome": -30224000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-07-31",
         "revenue": 454676000,
         "grossProfit": 95118000,
         "operatingIncome": -69272000,
@@ -178,30 +188,14 @@
           "operatingIncome": -69272000,
           "netIncome": -67370000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 275050000,
-        "grossProfit": 100332000,
-        "operatingIncome": 32176000,
-        "netIncome": 16664000,
-        "eps": 0.59,
-        "grossMargin": 36.48,
-        "operatingMargin": 11.7,
-        "netMargin": 6.06,
-        "native": {
-          "revenue": 275050000,
-          "grossProfit": 100332000,
-          "operatingIncome": 32176000,
-          "netIncome": 16664000
-        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 4
 }

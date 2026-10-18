@@ -2,22 +2,23 @@
   "companyCode": "VEEV",
   "companyName": "Veeva Systems Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 927963000,
-    "yoy": 16.3,
-    "grossMargin": 74.96,
+    "yoy": 17.6,
+    "grossMargin": 75.0,
     "operatingMargin": 29.64,
-    "netMargin": 29.34,
+    "netMargin": 29.47,
     "eps": 1.66,
-    "pe": 48.55,
-    "pb": 6.61,
-    "marketCap": 47946067968
+    "pe": 50.88,
+    "pb": 6.76,
+    "marketCap": 50250027008
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 3195311000,
         "grossProfit": 2413292000,
         "operatingIncome": 916369000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 2746619000,
         "grossProfit": 2046983000,
         "operatingIncome": 691435000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 2363673000,
         "grossProfit": 1686382000,
         "operatingIncome": 429334000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 2155060000,
         "grossProfit": 1545655000,
         "operatingIncome": 459091000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 927963000,
         "grossProfit": 695951000,
         "operatingIncome": 275018000,
@@ -105,11 +110,13 @@
           "grossProfit": 695951000,
           "operatingIncome": 275018000,
           "netIncome": 273429000
-        }
+        },
+        "revenueYoY": 17.6
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 882948000,
         "grossProfit": 662024000,
         "operatingIncome": 273112000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 835951000,
         "grossProfit": 622474000,
         "operatingIncome": 245876000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 811236000,
         "grossProfit": 611771000,
         "operatingIncome": 240853000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 789081000,
         "grossProfit": 593828000,
         "operatingIncome": 195908000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

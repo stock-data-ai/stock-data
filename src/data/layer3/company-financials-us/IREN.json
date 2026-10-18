@@ -3,21 +3,22 @@
   "companyName": "IREN Limited",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 137225000,
-    "yoy": 41.1,
-    "grossMargin": 68.92,
+    "yoy": -26.7,
+    "grossMargin": 62.26,
     "operatingMargin": -102.47,
-    "netMargin": -99.38,
-    "eps": -2.22,
+    "netMargin": -498.45,
+    "eps": null,
     "pe": null,
-    "pb": 3.2,
-    "marketCap": 13866924032
+    "pb": 2.45,
+    "marketCap": 10635642880
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 707007000,
         "grossProfit": 440635000,
         "operatingIncome": -378751000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 501023000,
         "grossProfit": 318394000,
         "operatingIncome": 22122000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 187192000,
         "grossProfit": 83513000,
         "operatingIncome": -27277000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 75509000,
         "grossProfit": 21121000,
         "operatingIncome": -48558000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 137225000,
         "grossProfit": 85431000,
         "operatingIncome": -140615000,
@@ -105,11 +110,13 @@
           "grossProfit": 85431000,
           "operatingIncome": -140615000,
           "netIncome": -683999000
-        }
+        },
+        "revenueYoY": -26.7
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 144795000,
         "grossProfit": 93570000,
         "operatingIncome": -93346000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 184692000,
         "grossProfit": 110376000,
         "operatingIncome": -84655000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 240295000,
         "grossProfit": 151258000,
         "operatingIncome": -60135000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 187292000,
         "grossProfit": 50470000,
         "operatingIncome": 16805000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

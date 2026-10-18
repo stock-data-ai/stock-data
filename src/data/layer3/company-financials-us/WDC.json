@@ -3,21 +3,22 @@
   "companyName": "Western Digital Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 3747000000,
-    "yoy": 35.7,
-    "grossMargin": 48.85,
-    "operatingMargin": 43.61,
-    "netMargin": 72.95,
+    "yoy": 43.8,
+    "grossMargin": 54.12,
+    "operatingMargin": 42.86,
+    "netMargin": 81.91,
     "eps": 8.21,
-    "pe": 14.76,
-    "pb": null,
-    "marketCap": 148711145472
+    "pe": 12.33,
+    "pb": 13.52,
+    "marketCap": 124275326976
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 12919000000,
         "grossProfit": 6311000000,
         "operatingIncome": 4599000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 9520000000,
         "grossProfit": 3692000000,
         "operatingIncome": 2130000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 6317000000,
         "grossProfit": 1773000000,
         "operatingIncome": 97000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 6255000000,
         "grossProfit": 1391000000,
         "operatingIncome": -402000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 3747000000,
         "grossProfit": 2028000000,
         "operatingIncome": 1606000000,
@@ -105,11 +110,13 @@
           "grossProfit": 2028000000,
           "operatingIncome": 1606000000,
           "netIncome": 3069000000
-        }
+        },
+        "revenueYoY": 43.8
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 3337000000,
         "grossProfit": 1676000000,
         "operatingIncome": 1235000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 3017000000,
         "grossProfit": 1380000000,
         "operatingIncome": 963000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 2818000000,
         "grossProfit": 1227000000,
         "operatingIncome": 795000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 2605000000,
         "grossProfit": 1067000000,
         "operatingIncome": 681000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

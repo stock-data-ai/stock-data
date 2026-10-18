@@ -3,21 +3,22 @@
   "companyName": "Flex Ltd.",
   "latest": {
     "year": 2026,
-    "quarter": 1,
+    "quarter": 4,
     "revenue": 7477000000,
-    "yoy": 8.1,
-    "grossMargin": 9.53,
-    "operatingMargin": 4.97,
-    "netMargin": 3.33,
+    "yoy": 16.9,
+    "grossMargin": 9.39,
+    "operatingMargin": 5.31,
+    "netMargin": 3.34,
     "eps": 0.67,
-    "pe": 46.27,
-    "pb": 8.05,
-    "marketCap": 44272447488
+    "pe": 34.93,
+    "pb": 6.08,
+    "marketCap": 33421391872
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 27914000000,
         "grossProfit": 2567000000,
         "operatingIncome": 1447000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 25813000000,
         "grossProfit": 2159000000,
         "operatingIncome": 1185000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 26415000000,
         "grossProfit": 1865000000,
         "operatingIncome": 873000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 28502000000,
         "grossProfit": 1976000000,
         "operatingIncome": 1021000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 7477000000,
         "grossProfit": 702000000,
         "operatingIncome": 397000000,
@@ -105,11 +110,13 @@
           "grossProfit": 702000000,
           "operatingIncome": 397000000,
           "netIncome": 250000000
-        }
+        },
+        "revenueYoY": 16.9
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 7058000000,
         "grossProfit": 679000000,
         "operatingIncome": 394000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 6804000000,
         "grossProfit": 614000000,
         "operatingIncome": 338000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 6575000000,
         "grossProfit": 572000000,
         "operatingIncome": 318000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2025-03-31",
         "revenue": 6398000000,
         "grossProfit": 563000000,
         "operatingIncome": 308000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

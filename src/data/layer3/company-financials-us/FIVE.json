@@ -2,22 +2,23 @@
   "companyCode": "FIVE",
   "companyName": "Five Below, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 1261493000,
     "yoy": 22.9,
-    "grossMargin": 37.58,
-    "operatingMargin": 8.86,
-    "netMargin": 11.65,
+    "grossMargin": 48.55,
+    "operatingMargin": 21.83,
+    "netMargin": 17.55,
     "eps": 3.99,
-    "pe": 19.24,
-    "pb": 4.77,
-    "marketCap": 11821753344
+    "pe": 19.96,
+    "pb": 4.95,
+    "marketCap": 12261635072
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 4764147000,
         "grossProfit": 1714686000,
         "operatingIncome": 457399000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 3876527000,
         "grossProfit": 1352662000,
         "operatingIncome": 323817000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 3559369000,
         "grossProfit": 1273825000,
         "operatingIncome": 385571000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 3076308000,
         "grossProfit": 1095491000,
         "operatingIncome": 345043000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 1261493000,
         "grossProfit": 612423000,
         "operatingIncome": 275350000,
@@ -105,11 +110,13 @@
           "grossProfit": 612423000,
           "operatingIncome": 275350000,
           "netIncome": 221395000
-        }
+        },
+        "revenueYoY": 22.9
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 1285602000,
         "grossProfit": 478642000,
         "operatingIncome": 154243000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 1728480000,
         "grossProfit": 696984000,
         "operatingIncome": 310882000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 1038293000,
         "grossProfit": 351420000,
         "operatingIncome": 43305000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 1026847000,
         "grossProfit": 342369000,
         "operatingIncome": 52365000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

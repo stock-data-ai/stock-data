@@ -3,21 +3,22 @@
   "companyName": "The Estée Lauder Companies Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 3627000000,
-    "yoy": 5.0,
-    "grossMargin": 75.49,
+    "yoy": 6.3,
+    "grossMargin": 75.46,
     "operatingMargin": 7.0,
-    "netMargin": 1.21,
+    "netMargin": -3.2,
     "eps": -0.32,
-    "pe": 196.1,
-    "pb": 9.32,
-    "marketCap": 35525750784
+    "pe": 209.08,
+    "pb": 9.94,
+    "marketCap": 37877223424
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 15049000000,
         "grossProfit": 11362000000,
         "operatingIncome": 1677000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 14326000000,
         "grossProfit": 10597000000,
         "operatingIncome": 1141000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 15608000000,
         "grossProfit": 11184000000,
         "operatingIncome": 1563000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 15910000000,
         "grossProfit": 11346000000,
         "operatingIncome": 1771000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 3627000000,
         "grossProfit": 2737000000,
         "operatingIncome": 254000000,
@@ -105,11 +110,13 @@
           "grossProfit": 2737000000,
           "operatingIncome": 254000000,
           "netIncome": -116000000
-        }
+        },
+        "revenueYoY": 6.3
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 3712000000,
         "grossProfit": 2836000000,
         "operatingIncome": 557000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 4229000000,
         "grossProfit": 3235000000,
         "operatingIncome": 608000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 3481000000,
         "grossProfit": 2554000000,
         "operatingIncome": 258000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 3411000000,
         "grossProfit": 2456000000,
         "operatingIncome": 141000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

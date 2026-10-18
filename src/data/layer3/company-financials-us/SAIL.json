@@ -2,22 +2,23 @@
   "companyCode": "SAIL",
   "companyName": "SailPoint, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 308813000,
-    "yoy": 24.4,
-    "grossMargin": 66.27,
-    "operatingMargin": -18.85,
-    "netMargin": -16.92,
+    "yoy": 16.8,
+    "grossMargin": 66.51,
+    "operatingMargin": -19.09,
+    "netMargin": -16.31,
     "eps": -0.09,
     "pe": null,
-    "pb": 1.72,
-    "marketCap": 11857835008
+    "pb": 1.56,
+    "marketCap": 10704592896
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 1071416000,
         "grossProfit": 690791000,
         "operatingIncome": -307486000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 861611000,
         "grossProfit": 555878000,
         "operatingIncome": -188734000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 699572000,
         "grossProfit": 422937000,
         "operatingIncome": -332729000,
@@ -71,6 +74,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-01-31",
         "revenue": 450035000,
         "grossProfit": 334587000,
         "operatingIncome": -60291000,
@@ -89,8 +93,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 308813000,
         "grossProfit": 205385000,
         "operatingIncome": -58958000,
@@ -104,11 +109,13 @@
           "grossProfit": 205385000,
           "operatingIncome": -58958000,
           "netIncome": -50360000
-        }
+        },
+        "revenueYoY": 16.8
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 280142000,
         "grossProfit": 181112000,
         "operatingIncome": -79826000,
@@ -126,7 +133,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 294647000,
         "grossProfit": 198282000,
         "operatingIncome": -40101000,
@@ -143,8 +151,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 281942000,
         "grossProfit": 187048000,
         "operatingIncome": -41622000,
@@ -161,8 +170,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 264359000,
         "grossProfit": 177806000,
         "operatingIncome": -40798000,
@@ -177,30 +187,14 @@
           "operatingIncome": -40798000,
           "netIncome": -10552000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 230468000,
-        "grossProfit": 127655000,
-        "operatingIncome": -184965000,
-        "netIncome": -187312000,
-        "eps": null,
-        "grossMargin": 55.39,
-        "operatingMargin": -80.26,
-        "netMargin": -81.27,
-        "native": {
-          "revenue": 230468000,
-          "grossProfit": 127655000,
-          "operatingIncome": -184965000,
-          "netIncome": -187312000
-        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

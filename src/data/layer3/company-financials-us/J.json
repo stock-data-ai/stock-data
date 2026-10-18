@@ -3,21 +3,22 @@
   "companyName": "Jacobs Solutions Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 4076410000,
-    "yoy": 4.6,
-    "grossMargin": 22.07,
-    "operatingMargin": 7.39,
-    "netMargin": 2.38,
+    "yoy": 34.5,
+    "grossMargin": 19.89,
+    "operatingMargin": 7.03,
+    "netMargin": 3.35,
     "eps": 1.15,
-    "pe": 46.23,
-    "pb": 4.99,
-    "marketCap": 16285921280
+    "pe": 46.87,
+    "pb": 5.06,
+    "marketCap": 16658850816
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 12029783000,
         "grossProfit": 2984934000,
         "operatingIncome": 863634000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 11500941000,
         "grossProfit": 2832756000,
         "operatingIncome": 692436000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 10851420000,
         "grossProfit": 2710860000,
         "operatingIncome": 676484000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 9783074000,
         "grossProfit": 2579959000,
         "operatingIncome": 539884000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 4076410000,
         "grossProfit": 810703000,
         "operatingIncome": 286703000,
@@ -105,11 +110,13 @@
           "grossProfit": 810703000,
           "operatingIncome": 286703000,
           "netIncome": 136553000
-        }
+        },
+        "revenueYoY": 34.5
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 3694881000,
         "grossProfit": 794893000,
         "operatingIncome": -81176000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 3293281000,
         "grossProfit": 765250000,
         "operatingIncome": 232561000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 3154644000,
         "grossProfit": 766913000,
         "operatingIncome": 211555000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 3031768000,
         "grossProfit": 758410000,
         "operatingIncome": 235014000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

@@ -3,21 +3,22 @@
   "companyName": "Johnson Controls International plc",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 6614000000,
-    "yoy": 2.8,
-    "grossMargin": 36.65,
-    "operatingMargin": 15.88,
-    "netMargin": 14.32,
+    "yoy": 9.3,
+    "grossMargin": 37.41,
+    "operatingMargin": 16.13,
+    "netMargin": 11.32,
     "eps": 1.23,
-    "pe": 44.47,
-    "pb": 7.07,
-    "marketCap": 95367929856
+    "pe": 41.09,
+    "pb": 6.54,
+    "marketCap": 88117207040
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 23596000000,
         "grossProfit": 8592000000,
         "operatingIncome": 2828000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 22952000000,
         "grossProfit": 8077000000,
         "operatingIncome": 2416000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 22331000000,
         "grossProfit": 7804000000,
         "operatingIncome": 2417000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 20637000000,
         "grossProfit": 7090000000,
         "operatingIncome": 2012000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 6614000000,
         "grossProfit": 2474000000,
         "operatingIncome": 1067000000,
@@ -105,11 +110,13 @@
           "grossProfit": 2474000000,
           "operatingIncome": 1067000000,
           "netIncome": 749000000
-        }
+        },
+        "revenueYoY": 9.3
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 6142000000,
         "grossProfit": 2262000000,
         "operatingIncome": 861000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 5797000000,
         "grossProfit": 2074000000,
         "operatingIncome": 853000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 6442000000,
         "grossProfit": 2351000000,
         "operatingIncome": 830000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 6052000000,
         "grossProfit": 2246000000,
         "operatingIncome": 829000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

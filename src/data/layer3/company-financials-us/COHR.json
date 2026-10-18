@@ -3,21 +3,22 @@
   "companyName": "Coherent Corp.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 2045533000,
-    "yoy": 22.5,
-    "grossMargin": 37.5,
-    "operatingMargin": 11.83,
-    "netMargin": 11.31,
+    "yoy": 33.7,
+    "grossMargin": 38.48,
+    "operatingMargin": 14.88,
+    "netMargin": 11.76,
     "eps": 1.19,
-    "pe": 75.88,
-    "pb": 5.61,
-    "marketCap": 61564620800
+    "pe": 56.53,
+    "pb": 4.18,
+    "marketCap": 45865267200
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 7118181000,
         "grossProfit": 2669040000,
         "operatingIncome": 901522000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 5810115000,
         "grossProfit": 2043322000,
         "operatingIncome": 534947000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 4707688000,
         "grossProfit": 1455964000,
         "operatingIncome": 123175000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 5160100000,
         "grossProfit": 1618283000,
         "operatingIncome": 81981000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 2045533000,
         "grossProfit": 787075000,
         "operatingIncome": 304338000,
@@ -105,11 +110,13 @@
           "grossProfit": 787075000,
           "operatingIncome": 304338000,
           "netIncome": 240530000
-        }
+        },
+        "revenueYoY": 33.7
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 1805641000,
         "grossProfit": 679945000,
         "operatingIncome": 226321000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 1685629000,
         "grossProfit": 622820000,
         "operatingIncome": 198624000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 1581378000,
         "grossProfit": 579200000,
         "operatingIncome": 172239000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 1529436000,
         "grossProfit": 546149000,
         "operatingIncome": 144978000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

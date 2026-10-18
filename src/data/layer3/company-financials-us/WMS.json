@@ -2,22 +2,23 @@
   "companyCode": "WMS",
   "companyName": "Advanced Drainage Systems, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 1001112000,
-    "yoy": 5.0,
-    "grossMargin": 38.65,
-    "operatingMargin": 26.32,
-    "netMargin": 14.0,
+    "yoy": 20.6,
+    "grossMargin": 40.76,
+    "operatingMargin": 25.69,
+    "netMargin": 16.83,
     "eps": 2.19,
-    "pe": 21.43,
-    "pb": 5.01,
-    "marketCap": 9485238272
+    "pe": 21.84,
+    "pb": 5.1,
+    "marketCap": 9666964480
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 3050376000,
         "grossProfit": 1167386000,
         "operatingIncome": 638413000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 2904245000,
         "grossProfit": 1094241000,
         "operatingIncome": 661294000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 2874473000,
         "grossProfit": 1145949000,
         "operatingIncome": 723766000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 3071121000,
         "grossProfit": 1118408000,
         "operatingIncome": 723707000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 1001112000,
         "grossProfit": 408047000,
         "operatingIncome": 257169000,
@@ -105,11 +110,13 @@
           "grossProfit": 408047000,
           "operatingIncome": 257169000,
           "netIncome": 168521000
-        }
+        },
+        "revenueYoY": 20.6
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 676761000,
         "grossProfit": 237664000,
         "operatingIncome": 81364000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 693354000,
         "grossProfit": 259152000,
         "operatingIncome": 136910000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 850381000,
         "grossProfit": 340132000,
         "operatingIncome": 207369000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 829880000,
         "grossProfit": 330438000,
         "operatingIncome": 212770000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

@@ -2,22 +2,23 @@
   "companyCode": "MCK",
   "companyName": "McKesson Corporation",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 105380000000,
-    "yoy": 12.4,
-    "grossMargin": 3.63,
+    "yoy": 7.7,
+    "grossMargin": 3.5,
     "operatingMargin": 1.35,
-    "netMargin": 1.12,
+    "netMargin": 0.58,
     "eps": 5.15,
-    "pe": 25.16,
-    "pb": -25.69,
-    "marketCap": 109459693568
+    "pe": 26.93,
+    "pb": -27.49,
+    "marketCap": 117154660352
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 403430000000,
         "grossProfit": 14550000000,
         "operatingIncome": 6454000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 359051000000,
         "grossProfit": 13323000000,
         "operatingIncome": 4816000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 308951000000,
         "grossProfit": 12828000000,
         "operatingIncome": 4171000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 276711000000,
         "grossProfit": 12358000000,
         "operatingIncome": 4582000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 105380000000,
         "grossProfit": 3685000000,
         "operatingIncome": 1421000000,
@@ -105,11 +110,13 @@
           "grossProfit": 3685000000,
           "operatingIncome": 1421000000,
           "netIncome": 614000000
-        }
+        },
+        "revenueYoY": 7.7
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 96295000000,
         "grossProfit": 4044000000,
         "operatingIncome": 2248000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 106158000000,
         "grossProfit": 3685000000,
         "operatingIncome": 1655000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 103150000000,
         "grossProfit": 3542000000,
         "operatingIncome": 1468000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 97827000000,
         "grossProfit": 3279000000,
         "operatingIncome": 1083000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

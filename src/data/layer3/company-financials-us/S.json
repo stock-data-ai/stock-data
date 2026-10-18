@@ -2,22 +2,23 @@
   "companyCode": "S",
   "companyName": "SentinelOne, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 291981000,
-    "yoy": 21.9,
-    "grossMargin": 72.54,
+    "yoy": 20.6,
+    "grossMargin": 72.07,
     "operatingMargin": -22.72,
-    "netMargin": -30.95,
+    "netMargin": -31.99,
     "eps": -0.27,
     "pe": null,
-    "pb": 6.28,
-    "marketCap": 9143250944
+    "pb": 5.16,
+    "marketCap": 7510900224
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 1001278000,
         "grossProfit": 742101000,
         "operatingIncome": -309044000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 821461000,
         "grossProfit": 610355000,
         "operatingIncome": -329359000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 621154000,
         "grossProfit": 441873000,
         "operatingIncome": -371710000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 422179000,
         "grossProfit": 278002000,
         "operatingIncome": -402576000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 291981000,
         "grossProfit": 210418000,
         "operatingIncome": -66336000,
@@ -105,11 +110,13 @@
           "grossProfit": 210418000,
           "operatingIncome": -66336000,
           "netIncome": -93400000
-        }
+        },
+        "revenueYoY": 20.6
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 276657000,
         "grossProfit": 198692000,
         "operatingIncome": -79686000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 271153000,
         "grossProfit": 196833000,
         "operatingIncome": -79853000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 258913000,
         "grossProfit": 191062000,
         "operatingIncome": -70140000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 242183000,
         "grossProfit": 181709000,
         "operatingIncome": -76735000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

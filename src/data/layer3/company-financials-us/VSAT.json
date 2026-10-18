@@ -2,22 +2,23 @@
   "companyCode": "VSAT",
   "companyName": "Viasat, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 1156543000,
-    "yoy": 2.7,
-    "grossMargin": 33.22,
-    "operatingMargin": 4.44,
-    "netMargin": -0.64,
+    "yoy": -1.2,
+    "grossMargin": 35.7,
+    "operatingMargin": 4.09,
+    "netMargin": -4.47,
     "eps": -0.38,
     "pe": null,
-    "pb": 2.14,
-    "marketCap": 9919796224
+    "pb": 1.75,
+    "marketCap": 8104174592
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 4640280000,
         "grossProfit": 1533221000,
         "operatingIncome": 108125000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 4519571000,
         "grossProfit": 1489938000,
         "operatingIncome": -97480000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 4283758000,
         "grossProfit": 1381662000,
         "operatingIncome": -889806000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 2556158000,
         "grossProfit": 721404000,
         "operatingIncome": -155956000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 1156543000,
         "grossProfit": 412841000,
         "operatingIncome": 47308000,
@@ -105,11 +110,13 @@
           "grossProfit": 412841000,
           "operatingIncome": 47308000,
           "netIncome": -51741000
-        }
+        },
+        "revenueYoY": -1.2
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 1171288000,
         "grossProfit": 360114000,
         "operatingIncome": -624000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 1157045000,
         "grossProfit": 378777000,
         "operatingIncome": 26302000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 1140893000,
         "grossProfit": 384892000,
         "operatingIncome": 35775000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 1171054000,
         "grossProfit": 409438000,
         "operatingIncome": 46672000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

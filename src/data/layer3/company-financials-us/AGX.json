@@ -2,22 +2,23 @@
   "companyCode": "AGX",
   "companyName": "Argan, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 383976000,
-    "yoy": 8.1,
-    "grossMargin": 20.71,
+    "yoy": 61.5,
+    "grossMargin": 19.33,
     "operatingMargin": 14.79,
-    "netMargin": 15.09,
+    "netMargin": 13.88,
     "eps": 3.76,
-    "pe": 31.04,
-    "pb": 10.87,
-    "marketCap": 5508256256
+    "pe": 27.32,
+    "pb": 9.57,
+    "marketCap": 4848152064
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 944606000,
         "grossProfit": 193678000,
         "operatingIncome": 134701000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 874179000,
         "grossProfit": 140989000,
         "operatingIncome": 88195000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 573333000,
         "grossProfit": 80834000,
         "operatingIncome": 36458000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 455040000,
         "grossProfit": 86361000,
         "operatingIncome": 41669000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 383976000,
         "grossProfit": 74218000,
         "operatingIncome": 56805000,
@@ -105,11 +110,13 @@
           "grossProfit": 74218000,
           "operatingIncome": 56805000,
           "netIncome": 53302000
-        }
+        },
+        "revenueYoY": 61.5
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 290954000,
         "grossProfit": 61114000,
         "operatingIncome": 45395000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 262050000,
         "grossProfit": 65599000,
         "operatingIncome": 47671000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 251153000,
         "grossProfit": 46949000,
         "operatingIncome": 32633000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 237743000,
         "grossProfit": 44267000,
         "operatingIncome": 30055000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

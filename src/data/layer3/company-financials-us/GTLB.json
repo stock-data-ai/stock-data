@@ -2,22 +2,23 @@
   "companyCode": "GTLB",
   "companyName": "GitLab Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 286254000,
-    "yoy": 25.8,
-    "grossMargin": 85.9,
-    "operatingMargin": -11.54,
-    "netMargin": -4.99,
+    "yoy": 21.3,
+    "grossMargin": 84.06,
+    "operatingMargin": -19.89,
+    "netMargin": -12.87,
     "eps": -0.22,
     "pe": null,
-    "pb": 9.96,
-    "marketCap": 9178820608
+    "pb": 9.54,
+    "marketCap": 8790607872
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 955224000,
         "grossProfit": 834481000,
         "operatingIncome": -70481000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 759249000,
         "grossProfit": 674109000,
         "operatingIncome": -142715000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 579906000,
         "grossProfit": 520198000,
         "operatingIncome": -187440000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 424336000,
         "grossProfit": 372656000,
         "operatingIncome": -211411000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 286254000,
         "grossProfit": 240616000,
         "operatingIncome": -56935000,
@@ -105,11 +110,13 @@
           "grossProfit": 240616000,
           "operatingIncome": -56935000,
           "netIncome": -36844000
-        }
+        },
+        "revenueYoY": 21.3
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 264158000,
         "grossProfit": 226670000,
         "operatingIncome": -15749000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 260402000,
         "grossProfit": 225420000,
         "operatingIncome": -5164000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 244353000,
         "grossProfit": 212132000,
         "operatingIncome": -12356000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 235960000,
         "grossProfit": 207455000,
         "operatingIncome": -18351000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

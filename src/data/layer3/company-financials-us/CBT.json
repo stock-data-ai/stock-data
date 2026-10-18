@@ -3,21 +3,22 @@
   "companyName": "Cabot Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 982000000,
-    "yoy": -7.0,
-    "grossMargin": 24.22,
-    "operatingMargin": 14.26,
-    "netMargin": 5.23,
-    "eps": 0.12,
-    "pe": 20.98,
-    "pb": 2.41,
-    "marketCap": 3867678976
+    "yoy": 6.4,
+    "grossMargin": 18.74,
+    "operatingMargin": 9.98,
+    "netMargin": 0.61,
+    "eps": null,
+    "pe": 20.81,
+    "pb": 2.39,
+    "marketCap": 3834955008
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 3713000000,
         "grossProfit": 940000000,
         "operatingIncome": 621000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 3994000000,
         "grossProfit": 960000000,
         "operatingIncome": 614000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 3931000000,
         "grossProfit": 839000000,
         "operatingIncome": 529000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 4321000000,
         "grossProfit": 885000000,
         "operatingIncome": 572000000,
@@ -91,12 +95,13 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 982000000,
         "grossProfit": 184000000,
         "operatingIncome": 98000000,
         "netIncome": 6000000,
-        "eps": 0.12,
+        "eps": null,
         "grossMargin": 18.74,
         "operatingMargin": 9.98,
         "netMargin": 0.61,
@@ -105,11 +110,13 @@
           "grossProfit": 184000000,
           "operatingIncome": 98000000,
           "netIncome": 6000000
-        }
+        },
+        "revenueYoY": 6.4
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 904000000,
         "grossProfit": 210000000,
         "operatingIncome": 129000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 849000000,
         "grossProfit": 211000000,
         "operatingIncome": 129000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 899000000,
         "grossProfit": 220000000,
         "operatingIncome": 137000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 923000000,
         "grossProfit": 244000000,
         "operatingIncome": 167000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

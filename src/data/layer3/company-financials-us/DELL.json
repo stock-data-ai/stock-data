@@ -2,22 +2,23 @@
   "companyCode": "DELL",
   "companyName": "Dell Technologies Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 46971000000,
-    "yoy": 18.8,
-    "grossMargin": 19.91,
-    "operatingMargin": 12.02,
-    "netMargin": 7.52,
+    "yoy": 57.7,
+    "grossMargin": 20.93,
+    "operatingMargin": 11.65,
+    "netMargin": 8.8,
     "eps": 6.34,
-    "pe": 34.07,
-    "pb": -262.81,
-    "marketCap": 372624424960
+    "pe": 26.26,
+    "pb": -202.56,
+    "marketCap": 287202967552
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 113538000000,
         "grossProfit": 22707000000,
         "operatingIncome": 8446000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 95567000000,
         "grossProfit": 21250000000,
         "operatingIncome": 6656000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 88425000000,
         "grossProfit": 21069000000,
         "operatingIncome": 5933000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 102301000000,
         "grossProfit": 22686000000,
         "operatingIncome": 5771000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 46971000000,
         "grossProfit": 9830000000,
         "operatingIncome": 5472000000,
@@ -105,11 +110,13 @@
           "grossProfit": 9830000000,
           "operatingIncome": 5472000000,
           "netIncome": 4133000000
-        }
+        },
+        "revenueYoY": 57.7
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 43842000000,
         "grossProfit": 7782000000,
         "operatingIncome": 3762000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 33379000000,
         "grossProfit": 6730000000,
         "operatingIncome": 3145000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 27005000000,
         "grossProfit": 5593000000,
         "operatingIncome": 2168000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 29776000000,
         "grossProfit": 5447000000,
         "operatingIncome": 1901000000,
@@ -178,24 +188,14 @@
           "operatingIncome": 1901000000,
           "netIncome": 1164000000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 23378000000,
-        "grossProfit": 4937000000,
-        "operatingIncome": 1232000000,
-        "netIncome": 965000000,
-        "eps": null,
-        "grossMargin": 21.12,
-        "operatingMargin": 5.27,
-        "netMargin": 4.13
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

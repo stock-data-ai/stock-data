@@ -2,22 +2,23 @@
   "companyCode": "PL",
   "companyName": "Planet Labs PBC",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 116052000,
-    "yoy": 25.9,
-    "grossMargin": 55.49,
-    "operatingMargin": -12.0,
-    "netMargin": -95.13,
+    "yoy": 58.1,
+    "grossMargin": 56.55,
+    "operatingMargin": -11.64,
+    "netMargin": -8.06,
     "eps": -0.03,
     "pe": null,
-    "pb": 13.8,
-    "marketCap": 6250908672
+    "pb": 8.74,
+    "marketCap": 4933778944
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 307727000,
         "grossProfit": 172485000,
         "operatingIncome": -95073000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 244352000,
         "grossProfit": 139725000,
         "operatingIncome": -111123000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 220696000,
         "grossProfit": 112950000,
         "operatingIncome": -167310000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 191256000,
         "grossProfit": 94008000,
         "operatingIncome": -175675000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 116052000,
         "grossProfit": 65632000,
         "operatingIncome": -13509000,
@@ -105,11 +110,13 @@
           "grossProfit": 65632000,
           "operatingIncome": -13509000,
           "netIncome": -9353000
-        }
+        },
+        "revenueYoY": 58.1
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 94150000,
         "grossProfit": 50401000,
         "operatingIncome": -34888000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 86822000,
         "grossProfit": 47030000,
         "operatingIncome": -36002000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 81254000,
         "grossProfit": 46584000,
         "operatingIncome": -18340000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 73386000,
         "grossProfit": 42268000,
         "operatingIncome": -17960000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

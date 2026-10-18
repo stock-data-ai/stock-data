@@ -3,21 +3,22 @@
   "companyName": "Skyworks Solutions, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 934800000,
-    "yoy": -2.2,
-    "grossMargin": 40.73,
-    "operatingMargin": 8.82,
-    "netMargin": 7.23,
+    "yoy": -3.1,
+    "grossMargin": 40.12,
+    "operatingMargin": 7.31,
+    "netMargin": 3.63,
     "eps": 0.22,
-    "pe": 41.95,
-    "pb": 2.0,
-    "marketCap": 17954889728
+    "pe": 41.3,
+    "pb": 2.09,
+    "marketCap": 18742693888
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 4086900000,
         "grossProfit": 1682100000,
         "operatingIncome": 524200000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 4178000000,
         "grossProfit": 1720800000,
         "operatingIncome": 787400000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 4772400000,
         "grossProfit": 2107300000,
         "operatingIncome": 1153300000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 5485500000,
         "grossProfit": 2604300000,
         "operatingIncome": 1557700000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 934800000,
         "grossProfit": 375000000,
         "operatingIncome": 68300000,
@@ -105,11 +110,13 @@
           "grossProfit": 375000000,
           "operatingIncome": 68300000,
           "netIncome": 33900000
-        }
+        },
+        "revenueYoY": -3.1
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 943700000,
         "grossProfit": 385300000,
         "operatingIncome": 53000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 1035400000,
         "grossProfit": 427200000,
         "operatingIncome": 115200000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 1100200000,
         "grossProfit": 447500000,
         "operatingIncome": 112600000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 965000000,
         "grossProfit": 401000000,
         "operatingIncome": 112100000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

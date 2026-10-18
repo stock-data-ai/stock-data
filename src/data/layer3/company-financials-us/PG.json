@@ -3,21 +3,22 @@
   "companyName": "The Procter & Gamble Company",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 21204000000,
-    "yoy": 3.3,
-    "grossMargin": 50.87,
-    "operatingMargin": 22.08,
-    "netMargin": 18.44,
+    "yoy": 1.5,
+    "grossMargin": 48.5,
+    "operatingMargin": 18.63,
+    "netMargin": 14.36,
     "eps": 1.26,
-    "pe": 22.84,
-    "pb": 6.59,
-    "marketCap": 351257722880
+    "pe": 24.07,
+    "pb": 6.94,
+    "marketCap": 370398429184
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 87032000000,
         "grossProfit": 43670000000,
         "operatingIncome": 19748000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 84284000000,
         "grossProfit": 43120000000,
         "operatingIncome": 20451000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 84039000000,
         "grossProfit": 43191000000,
         "operatingIncome": 19886000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 82006000000,
         "grossProfit": 39246000000,
         "operatingIncome": 18134000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 21204000000,
         "grossProfit": 10284000000,
         "operatingIncome": 3950000000,
@@ -105,11 +110,13 @@
           "grossProfit": 10284000000,
           "operatingIncome": 3950000000,
           "netIncome": 3044000000
-        }
+        },
+        "revenueYoY": 1.5
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 21235000000,
         "grossProfit": 10513000000,
         "operatingIncome": 4577000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 22208000000,
         "grossProfit": 11374000000,
         "operatingIncome": 5366000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 22386000000,
         "grossProfit": 11499000000,
         "operatingIncome": 5856000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 20889000000,
         "grossProfit": 10258000000,
         "operatingIncome": 4354000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

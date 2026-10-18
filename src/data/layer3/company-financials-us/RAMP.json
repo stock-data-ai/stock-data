@@ -2,22 +2,23 @@
   "companyCode": "RAMP",
   "companyName": "LiveRamp Holdings, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 213986000,
-    "yoy": 9.0,
-    "grossMargin": 70.82,
+    "yoy": 9.8,
+    "grossMargin": 70.54,
     "operatingMargin": 12.49,
-    "netMargin": 18.71,
+    "netMargin": 8.19,
     "eps": 0.28,
-    "pe": 15.52,
-    "pb": 2.34,
-    "marketCap": 2283459584
+    "pe": 15.47,
+    "pb": 2.33,
+    "marketCap": 2276164096
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 812940000,
         "grossProfit": 574823000,
         "operatingIncome": 88456000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 745580000,
         "grossProfit": 529670000,
         "operatingIncome": 13397000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 659661000,
         "grossProfit": 480172000,
         "operatingIncome": 23112000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 596583000,
         "grossProfit": 426499000,
         "operatingIncome": -90484000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 213986000,
         "grossProfit": 150943000,
         "operatingIncome": 26726000,
@@ -105,11 +110,13 @@
           "grossProfit": 150943000,
           "operatingIncome": 26726000,
           "netIncome": 17515000
-        }
+        },
+        "revenueYoY": 9.8
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 206092000,
         "grossProfit": 145544000,
         "operatingIncome": 18608000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 212197000,
         "grossProfit": 152541000,
         "operatingIncome": 40776000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 199829000,
         "grossProfit": 140235000,
         "operatingIncome": 21428000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 194822000,
         "grossProfit": 136503000,
         "operatingIncome": 7644000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

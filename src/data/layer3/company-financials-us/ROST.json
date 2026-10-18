@@ -2,22 +2,23 @@
   "companyCode": "ROST",
   "companyName": "Ross Stores, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 6264886000,
-    "yoy": 7.7,
-    "grossMargin": 33.38,
-    "operatingMargin": 13.58,
-    "netMargin": 10.85,
+    "yoy": 13.3,
+    "grossMargin": 33.83,
+    "operatingMargin": 17.62,
+    "netMargin": 13.59,
     "eps": 2.66,
-    "pe": 26.89,
-    "pb": 10.54,
-    "marketCap": 71344922624
+    "pe": 28.64,
+    "pb": 11.23,
+    "marketCap": 75675246592
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 22750559000,
         "grossProfit": 6303303000,
         "operatingIncome": 2707357000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 21129219000,
         "grossProfit": 5868713000,
         "operatingIncome": 2585586000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 20376941000,
         "grossProfit": 5575340000,
         "operatingIncome": 2307663000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 18695829000,
         "grossProfit": 4749599000,
         "operatingIncome": 1990331000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 6264886000,
         "grossProfit": 2119671000,
         "operatingIncome": 1103618000,
@@ -105,11 +110,13 @@
           "grossProfit": 2119671000,
           "operatingIncome": 1103618000,
           "netIncome": 851299000
-        }
+        },
+        "revenueYoY": 13.3
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 6010476000,
         "grossProfit": 1779887000,
         "operatingIncome": 804026000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 6635490000,
         "grossProfit": 1804213000,
         "operatingIncome": 814115000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 5600946000,
         "grossProfit": 1568500000,
         "operatingIncome": 648498000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 5529152000,
         "grossProfit": 1526985000,
         "operatingIncome": 638274000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

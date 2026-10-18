@@ -3,21 +3,22 @@
   "companyName": "Visa Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 11633000000,
-    "yoy": 11.3,
-    "grossMargin": 97.72,
-    "operatingMargin": 66.13,
-    "netMargin": 50.78,
+    "yoy": 14.4,
+    "grossMargin": 76.46,
+    "operatingMargin": 61.29,
+    "netMargin": 48.38,
     "eps": 2.97,
-    "pe": 32.8,
-    "pb": 20.43,
-    "marketCap": 723626622976
+    "pe": 34.26,
+    "pb": 21.34,
+    "marketCap": 755841957888
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 40000000000,
         "grossProfit": 32145000000,
         "operatingIncome": 26556000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 35926000000,
         "grossProfit": 28884000000,
         "operatingIncome": 24057000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 32653000000,
         "grossProfit": 26086000000,
         "operatingIncome": 21927000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 29310000000,
         "grossProfit": 23577000000,
         "operatingIncome": 19681000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 11633000000,
         "grossProfit": 8895000000,
         "operatingIncome": 7130000000,
@@ -105,11 +110,13 @@
           "grossProfit": 8895000000,
           "operatingIncome": 7130000000,
           "netIncome": 5628000000
-        }
+        },
+        "revenueYoY": 14.4
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 11230000000,
         "grossProfit": 9129000000,
         "operatingIncome": 7563000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 10901000000,
         "grossProfit": 8904000000,
         "operatingIncome": 7445000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 10724000000,
         "grossProfit": 8743000000,
         "operatingIncome": 7051000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 10172000000,
         "grossProfit": 8199000000,
         "operatingIncome": 6792000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

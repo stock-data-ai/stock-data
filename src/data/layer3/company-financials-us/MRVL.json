@@ -2,22 +2,23 @@
   "companyCode": "MRVL",
   "companyName": "Marvell Technology, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 2739300000,
-    "yoy": 42.1,
-    "grossMargin": 52.22,
+    "yoy": 36.5,
+    "grossMargin": 53.14,
     "operatingMargin": 16.68,
-    "netMargin": 27.93,
+    "netMargin": 11.24,
     "eps": 0.33,
-    "pe": 90.26,
-    "pb": 13.23,
-    "marketCap": 247395418112
+    "pe": 72.33,
+    "pb": 10.78,
+    "marketCap": 204751880192
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 8194600000,
         "grossProfit": 4180700000,
         "operatingIncome": 1338400000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 5767300000,
         "grossProfit": 2382200000,
         "operatingIncome": -366400000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 5507700000,
         "grossProfit": 2293600000,
         "operatingIncome": -436600000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 5919600000,
         "grossProfit": 2987500000,
         "operatingIncome": 359600000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 2739300000,
         "grossProfit": 1455600000,
         "operatingIncome": 456900000,
@@ -105,11 +110,13 @@
           "grossProfit": 1455600000,
           "operatingIncome": 456900000,
           "netIncome": 308000000
-        }
+        },
+        "revenueYoY": 36.5
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 2417800000,
         "grossProfit": 1260800000,
         "operatingIncome": 350100000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 2218700000,
         "grossProfit": 1147900000,
         "operatingIncome": 413900000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 2074500000,
         "grossProfit": 1069800000,
         "operatingIncome": 367400000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 2006100000,
         "grossProfit": 1010600000,
         "operatingIncome": 298800000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

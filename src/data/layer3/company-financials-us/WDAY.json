@@ -2,22 +2,23 @@
   "companyCode": "WDAY",
   "companyName": "Workday, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 2649000000,
-    "yoy": 13.1,
-    "grossMargin": 75.8,
+    "yoy": 12.8,
+    "grossMargin": 75.39,
     "operatingMargin": 11.82,
-    "netMargin": 12.32,
+    "netMargin": 23.86,
     "eps": 2.57,
-    "pe": 38.0,
-    "pb": 6.96,
-    "marketCap": 44968189952
+    "pe": 38.86,
+    "pb": 7.12,
+    "marketCap": 45985210368
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 9552000000,
         "grossProfit": 7231000000,
         "operatingIncome": 1024000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 8446000000,
         "grossProfit": 6377000000,
         "operatingIncome": 499000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 7259000000,
         "grossProfit": 5488000000,
         "operatingIncome": 183000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 6216000000,
         "grossProfit": 4506000000,
         "operatingIncome": -182000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 2649000000,
         "grossProfit": 1997000000,
         "operatingIncome": 313000000,
@@ -105,11 +110,13 @@
           "grossProfit": 1997000000,
           "operatingIncome": 313000000,
           "netIncome": 632000000
-        }
+        },
+        "revenueYoY": 12.8
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 2542000000,
         "grossProfit": 1938000000,
         "operatingIncome": 338000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 2532000000,
         "grossProfit": 1921000000,
         "operatingIncome": 305000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 2432000000,
         "grossProfit": 1841000000,
         "operatingIncome": 264000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 2348000000,
         "grossProfit": 1766000000,
         "operatingIncome": 249000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

@@ -2,22 +2,23 @@
   "companyCode": "SMTC",
   "companyName": "Semtech Corporation",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 341871000,
-    "yoy": 15.5,
-    "grossMargin": 52.9,
+    "yoy": 32.7,
+    "grossMargin": 53.75,
     "operatingMargin": 16.22,
-    "netMargin": 13.12,
+    "netMargin": 46.84,
     "eps": 1.59,
-    "pe": 124.04,
-    "pb": 23.34,
-    "marketCap": 17479888896
+    "pe": 90.55,
+    "pb": 17.04,
+    "marketCap": 12760412160
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 1049975000,
         "grossProfit": 542144000,
         "operatingIncome": 123313000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 909287000,
         "grossProfit": 456528000,
         "operatingIncome": 62368000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 868758000,
         "grossProfit": 296250000,
         "operatingIncome": -125333000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 756533000,
         "grossProfit": 478558000,
         "operatingIncome": 85977000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 341871000,
         "grossProfit": 183764000,
         "operatingIncome": 55460000,
@@ -105,11 +110,13 @@
           "grossProfit": 183764000,
           "operatingIncome": 55460000,
           "netIncome": 160121000
-        }
+        },
+        "revenueYoY": 32.7
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 291018000,
         "grossProfit": 151464000,
         "operatingIncome": 26968000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 274355000,
         "grossProfit": 138272000,
         "operatingIncome": 27044000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 266971000,
         "grossProfit": 138478000,
         "operatingIncome": 31813000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 257589000,
         "grossProfit": 134105000,
         "operatingIncome": 27290000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

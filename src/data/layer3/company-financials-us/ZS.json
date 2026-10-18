@@ -3,21 +3,22 @@
   "companyName": "Zscaler, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
+    "quarter": 4,
     "revenue": 898185000,
-    "yoy": 25.4,
-    "grossMargin": 76.87,
-    "operatingMargin": -1.01,
-    "netMargin": -1.88,
+    "yoy": 24.9,
+    "grossMargin": 76.73,
+    "operatingMargin": -0.37,
+    "netMargin": -0.38,
     "eps": -0.02,
     "pe": null,
-    "pb": 14.67,
-    "marketCap": 38110773248
+    "pb": 13.01,
+    "marketCap": 33814284288
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-07-31",
         "revenue": 3352523000,
         "grossProfit": 2574894000,
         "operatingIncome": -121139000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-07-31",
         "revenue": 2673115000,
         "grossProfit": 2054937000,
         "operatingIncome": -127144000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-07-31",
         "revenue": 2167771000,
         "grossProfit": 1690642000,
         "operatingIncome": -121477000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-07-31",
         "revenue": 1616952000,
         "grossProfit": 1254120000,
         "operatingIncome": -234623000,
@@ -86,23 +90,13 @@
           "operatingIncome": -234623000,
           "netIncome": -202335000
         }
-      },
-      {
-        "year": 2022,
-        "revenue": 1090946000,
-        "grossProfit": 848664000,
-        "operatingIncome": -327429000,
-        "netIncome": -390278000,
-        "eps": -2.77,
-        "grossMargin": 77.79,
-        "operatingMargin": -30.01,
-        "netMargin": -35.77
       }
     ],
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2026-07-31",
         "revenue": 898185000,
         "grossProfit": 689221000,
         "operatingIncome": -3364000,
@@ -116,11 +110,13 @@
           "grossProfit": 689221000,
           "operatingIncome": -3364000,
           "netIncome": -3369000
-        }
+        },
+        "revenueYoY": 24.9
       },
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-04-30",
         "revenue": 850475000,
         "grossProfit": 657823000,
         "operatingIncome": -29640000,
@@ -138,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-01-31",
         "revenue": 815751000,
         "grossProfit": 624491000,
         "operatingIncome": -51773000,
@@ -155,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-10-31",
         "revenue": 788112000,
         "grossProfit": 603359000,
         "operatingIncome": -36362000,
@@ -174,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-07-31",
         "revenue": 719226000,
         "grossProfit": 546986000,
         "operatingIncome": -30926000,
@@ -189,24 +188,14 @@
           "operatingIncome": -30926000,
           "netIncome": -17578000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 678034000,
-        "grossProfit": 522056000,
-        "operatingIncome": -25411000,
-        "netIncome": -4125000,
-        "eps": -0.03,
-        "grossMargin": 77.0,
-        "operatingMargin": -3.75,
-        "netMargin": -0.61
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 7
 }

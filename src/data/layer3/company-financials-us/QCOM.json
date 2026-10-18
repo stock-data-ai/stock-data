@@ -3,21 +3,22 @@
   "companyName": "QUALCOMM Incorporated",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 9947000000,
-    "yoy": 13.7,
-    "grossMargin": 54.23,
-    "operatingMargin": 18.53,
-    "netMargin": 21.01,
+    "yoy": -4.0,
+    "grossMargin": 53.05,
+    "operatingMargin": 16.35,
+    "netMargin": 20.13,
     "eps": 1.87,
-    "pe": 20.31,
-    "pb": 6.71,
-    "marketCap": 187405828096
+    "pe": 19.92,
+    "pb": 6.58,
+    "marketCap": 183785848832
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 44284000000,
         "grossProfit": 24546000000,
         "operatingIncome": 12394000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 38962000000,
         "grossProfit": 21902000000,
         "operatingIncome": 10253000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 35820000000,
         "grossProfit": 19951000000,
         "operatingIncome": 8650000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 44200000000,
         "grossProfit": 25565000000,
         "operatingIncome": 15860000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 9947000000,
         "grossProfit": 5277000000,
         "operatingIncome": 1626000000,
@@ -105,11 +110,13 @@
           "grossProfit": 5277000000,
           "operatingIncome": 1626000000,
           "netIncome": 2002000000
-        }
+        },
+        "revenueYoY": -4.0
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 10599000000,
         "grossProfit": 5699000000,
         "operatingIncome": 2309000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 12252000000,
         "grossProfit": 6684000000,
         "operatingIncome": 3366000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 11271000000,
         "grossProfit": 6237000000,
         "operatingIncome": 2957000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 10365000000,
         "grossProfit": 5759000000,
         "operatingIncome": 2762000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

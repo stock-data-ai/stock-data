@@ -3,21 +3,22 @@
   "companyName": "KLA Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 3657556000,
-    "yoy": 11.7,
-    "grossMargin": 61.3,
+    "yoy": 15.2,
+    "grossMargin": 61.36,
     "operatingMargin": 42.49,
-    "netMargin": 35.57,
+    "netMargin": 37.27,
     "eps": 1.04,
-    "pe": 53.43,
-    "pb": 40.26,
-    "marketCap": 255220121600
+    "pe": 45.28,
+    "pb": 34.12,
+    "marketCap": 216291770368
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 13579476000,
         "grossProfit": 8324416000,
         "operatingIncome": 5660780000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 12156162000,
         "grossProfit": 7404295000,
         "operatingIncome": 5014227000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 9812247000,
         "grossProfit": 5884174000,
         "operatingIncome": 3635684000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 10496056000,
         "grossProfit": 6277749000,
         "operatingIncome": 3994696000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 3657556000,
         "grossProfit": 2244448000,
         "operatingIncome": 1553948000,
@@ -105,11 +110,13 @@
           "grossProfit": 2244448000,
           "operatingIncome": 1553948000,
           "netIncome": 1363059000
-        }
+        },
+        "revenueYoY": 15.2
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 3415078000,
         "grossProfit": 2087406000,
         "operatingIncome": 1407509000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 3297146000,
         "grossProfit": 2025936000,
         "operatingIncome": 1362146000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 3209696000,
         "grossProfit": 1966626000,
         "operatingIncome": 1337177000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 3174741000,
         "grossProfit": 1967455000,
         "operatingIncome": 1351760000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

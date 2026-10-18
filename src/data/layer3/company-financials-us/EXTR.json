@@ -3,21 +3,22 @@
   "companyName": "Extreme Networks, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 338549000,
-    "yoy": 12.6,
-    "grossMargin": 61.48,
+    "yoy": 10.3,
+    "grossMargin": 62.17,
     "operatingMargin": 6.44,
-    "netMargin": 3.28,
+    "netMargin": 5.33,
     "eps": 0.13,
-    "pe": 78.03,
-    "pb": 35.84,
-    "marketCap": 3197209088
+    "pe": 70.1,
+    "pb": 32.19,
+    "marketCap": 2872069120
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-06-30",
         "revenue": 1283593000,
         "grossProfit": 789141000,
         "operatingIncome": 63960000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 1140067000,
         "grossProfit": 709127000,
         "operatingIncome": 18441000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 1117203000,
         "grossProfit": 630831000,
         "operatingIncome": -28881000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 1312454000,
         "grossProfit": 754720000,
         "operatingIncome": 111563000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
         "revenue": 338549000,
         "grossProfit": 210488000,
         "operatingIncome": 21795000,
@@ -105,11 +110,13 @@
           "grossProfit": 210488000,
           "operatingIncome": 21795000,
           "netIncome": 18042000
-        }
+        },
+        "revenueYoY": 10.3
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 316874000,
         "grossProfit": 195544000,
         "operatingIncome": 17340000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 317925000,
         "grossProfit": 195080000,
         "operatingIncome": 13159000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 310245000,
         "grossProfit": 188029000,
         "operatingIncome": 11666000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 307003000,
         "grossProfit": 189088000,
         "operatingIncome": -1755000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

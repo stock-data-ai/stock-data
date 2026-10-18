@@ -2,22 +2,23 @@
   "companyCode": "ULTA",
   "companyName": "Ulta Beauty, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 3035676000,
-    "yoy": 9.7,
-    "grossMargin": 43.1,
-    "operatingMargin": 12.51,
-    "netMargin": 9.34,
+    "yoy": 8.9,
+    "grossMargin": 39.1,
+    "operatingMargin": 12.66,
+    "netMargin": 9.29,
     "eps": 6.55,
-    "pe": 20.79,
-    "pb": 8.99,
-    "marketCap": 24387579904
+    "pe": 21.61,
+    "pb": 9.6,
+    "marketCap": 25352615936
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 12392820000,
         "grossProfit": null,
         "operatingIncome": 1548813000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 11295654000,
         "grossProfit": null,
         "operatingIncome": 1578661000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 11207303000,
         "grossProfit": null,
         "operatingIncome": 1686539000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 10208580000,
         "grossProfit": null,
         "operatingIncome": 1649211000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 3035676000,
         "grossProfit": 1186952000,
         "operatingIncome": 384168000,
@@ -105,11 +110,13 @@
           "grossProfit": 1186952000,
           "operatingIncome": 384168000,
           "netIncome": 282006000
-        }
+        },
+        "revenueYoY": 8.9
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 3163857000,
         "grossProfit": 1267620000,
         "operatingIncome": 452921000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 3898361000,
         "grossProfit": 1483644000,
         "operatingIncome": 480503000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 2857623000,
         "grossProfit": 1155665000,
         "operatingIncome": 314745000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 2788469000,
         "grossProfit": 1091696000,
         "operatingIncome": 349959000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

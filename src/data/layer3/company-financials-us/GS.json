@@ -3,21 +3,22 @@
   "companyName": "The Goldman Sachs Group, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 20338000000,
-    "yoy": 8.9,
-    "grossMargin": 82.08,
-    "operatingMargin": 42.18,
-    "netMargin": 31.04,
-    "eps": 20.98,
-    "pe": 13.83,
-    "pb": 2.47,
-    "marketCap": 260691574784
+    "quarter": 1,
+    "revenue": 17227000000,
+    "yoy": 14.4,
+    "grossMargin": null,
+    "operatingMargin": null,
+    "netMargin": 32.68,
+    "eps": 17.55,
+    "pe": 12.67,
+    "pb": 2.37,
+    "marketCap": 256597704704
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-12-31",
         "revenue": 58283000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-12-31",
         "revenue": 53512000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-12-31",
         "revenue": 46254000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-12-31",
         "revenue": 47365000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -91,25 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
-        "revenue": 20338000000,
-        "grossProfit": null,
-        "operatingIncome": null,
-        "netIncome": 6628000000,
-        "eps": 20.98,
-        "grossMargin": null,
-        "operatingMargin": null,
-        "netMargin": 32.59,
-        "native": {
-          "revenue": 20338000000,
-          "grossProfit": null,
-          "operatingIncome": null,
-          "netIncome": 6628000000
-        }
-      },
-      {
-        "year": 2026,
         "quarter": 1,
+        "periodEnd": "2026-03-31",
         "revenue": 17227000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -123,11 +110,13 @@
           "grossProfit": null,
           "operatingIncome": null,
           "netIncome": 5630000000
-        }
+        },
+        "revenueYoY": 14.4
       },
       {
         "year": 2025,
         "quarter": 4,
+        "periodEnd": "2025-12-31",
         "revenue": 13454000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -146,6 +135,7 @@
       {
         "year": 2025,
         "quarter": 3,
+        "periodEnd": "2025-09-30",
         "revenue": 15184000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -164,6 +154,7 @@
       {
         "year": 2025,
         "quarter": 2,
+        "periodEnd": "2025-06-30",
         "revenue": 14583000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -178,12 +169,33 @@
           "operatingIncome": null,
           "netIncome": 3723000000
         }
+      },
+      {
+        "year": 2025,
+        "quarter": 1,
+        "periodEnd": "2025-03-31",
+        "revenue": 15062000000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 4738000000,
+        "eps": null,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": 31.46,
+        "native": {
+          "revenue": 15062000000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": 4738000000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 12
 }

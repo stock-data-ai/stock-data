@@ -3,21 +3,22 @@
   "companyName": "FormFactor, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 258242000,
-    "yoy": 2.8,
-    "grossMargin": 46.18,
-    "operatingMargin": 24.12,
-    "netMargin": 12.8,
-    "eps": 0.71,
-    "pe": 96.32,
-    "pb": 9.82,
-    "marketCap": 10911122432
+    "quarter": 1,
+    "revenue": 226144000,
+    "yoy": 32.0,
+    "grossMargin": 38.38,
+    "operatingMargin": 10.49,
+    "netMargin": 9.01,
+    "eps": 0.26,
+    "pe": 72.42,
+    "pb": 7.38,
+    "marketCap": 8186030592
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-12-31",
         "revenue": 784993000,
         "grossProfit": 308851000,
         "operatingIncome": 60095000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-12-31",
         "revenue": 763599000,
         "grossProfit": 307923000,
         "operatingIncome": 44199000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-12-31",
         "revenue": 663102000,
         "grossProfit": 258580000,
         "operatingIncome": 9803000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-12-31",
         "revenue": 747937000,
         "grossProfit": 296009000,
         "operatingIncome": 54912000,
@@ -91,25 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
-        "revenue": 258242000,
-        "grossProfit": 130922000,
-        "operatingIncome": 62658000,
-        "netIncome": 56207000,
-        "eps": 0.71,
-        "grossMargin": 50.7,
-        "operatingMargin": 24.26,
-        "netMargin": 21.77,
-        "native": {
-          "revenue": 258242000,
-          "grossProfit": 130922000,
-          "operatingIncome": 62658000,
-          "netIncome": 56207000
-        }
-      },
-      {
-        "year": 2026,
         "quarter": 1,
+        "periodEnd": "2026-03-31",
         "revenue": 226144000,
         "grossProfit": 86794000,
         "operatingIncome": 23722000,
@@ -123,11 +110,13 @@
           "grossProfit": 86794000,
           "operatingIncome": 23722000,
           "netIncome": 20384000
-        }
+        },
+        "revenueYoY": 32.0
       },
       {
         "year": 2025,
         "quarter": 4,
+        "periodEnd": "2025-12-31",
         "revenue": 215163000,
         "grossProfit": 90764000,
         "operatingIncome": 25194000,
@@ -146,6 +135,7 @@
       {
         "year": 2025,
         "quarter": 3,
+        "periodEnd": "2025-09-30",
         "revenue": 202676000,
         "grossProfit": 80626000,
         "operatingIncome": 18969000,
@@ -164,6 +154,7 @@
       {
         "year": 2025,
         "quarter": 2,
+        "periodEnd": "2025-06-30",
         "revenue": 195798000,
         "grossProfit": 72938000,
         "operatingIncome": 12663000,
@@ -178,12 +169,33 @@
           "operatingIncome": 12663000,
           "netIncome": 9086000
         }
+      },
+      {
+        "year": 2025,
+        "quarter": 1,
+        "periodEnd": "2025-03-31",
+        "revenue": 171356000,
+        "grossProfit": 64523000,
+        "operatingIncome": 3269000,
+        "netIncome": 6401000,
+        "eps": null,
+        "grossMargin": 37.65,
+        "operatingMargin": 1.91,
+        "netMargin": 3.74,
+        "native": {
+          "revenue": 171356000,
+          "grossProfit": 64523000,
+          "operatingIncome": 3269000,
+          "netIncome": 6401000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 12
 }

@@ -3,21 +3,22 @@
   "companyName": "NioCorp Developments Ltd.",
   "latest": {
     "year": 2026,
-    "quarter": 1,
+    "quarter": 3,
     "revenue": 0,
     "yoy": null,
-    "grossMargin": 0.0,
-    "operatingMargin": 0.0,
-    "netMargin": 0.0,
+    "grossMargin": null,
+    "operatingMargin": null,
+    "netMargin": null,
     "eps": 0.01,
     "pe": null,
-    "pb": 1.14,
-    "marketCap": 491513248
+    "pb": 1.06,
+    "marketCap": 455780096
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-06-30",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -11958000,
@@ -35,6 +36,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-06-30",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -13757000,
@@ -52,6 +54,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-06-30",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -37410000,
@@ -69,6 +72,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-06-30",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -7796000,
@@ -88,7 +92,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-03-31",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -7330000,
@@ -105,8 +110,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-12-31",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -9502000,
@@ -123,8 +129,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-09-30",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -12018000,
@@ -142,7 +149,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-06-30",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -5063000,
@@ -160,7 +168,8 @@
       },
       {
         "year": 2025,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2025-03-31",
         "revenue": 0,
         "grossProfit": null,
         "operatingIncome": -2599000,
@@ -178,9 +187,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 6
 }

@@ -2,22 +2,23 @@
   "companyCode": "WMT",
   "companyName": "Walmart Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 187937000000,
-    "yoy": 4.7,
-    "grossMargin": 24.84,
-    "operatingMargin": 3.45,
-    "netMargin": 3.0,
+    "yoy": 5.9,
+    "grossMargin": 26.14,
+    "operatingMargin": 4.99,
+    "netMargin": 3.39,
     "eps": 0.8,
-    "pe": 40.05,
-    "pb": 9.0,
-    "marketCap": 886132113408
+    "pe": 43.05,
+    "pb": 9.61,
+    "marketCap": 942608351232
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 713163000000,
         "grossProfit": 177768000000,
         "operatingIncome": 29825000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 680985000000,
         "grossProfit": 169232000000,
         "operatingIncome": 29348000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 648125000000,
         "grossProfit": 157983000000,
         "operatingIncome": 27012000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 611289000000,
         "grossProfit": 147568000000,
         "operatingIncome": 20428000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 187937000000,
         "grossProfit": 49133000000,
         "operatingIncome": 9383000000,
@@ -105,11 +110,13 @@
           "grossProfit": 49133000000,
           "operatingIncome": 9383000000,
           "netIncome": 6366000000
-        }
+        },
+        "revenueYoY": 5.9
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 177751000000,
         "grossProfit": 44693000000,
         "operatingIncome": 7493000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 190656000000,
         "grossProfit": 47041000000,
         "operatingIncome": 8708000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 179496000000,
         "grossProfit": 44790000000,
         "operatingIncome": 6696000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 177402000000,
         "grossProfit": 44631000000,
         "operatingIncome": 7286000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

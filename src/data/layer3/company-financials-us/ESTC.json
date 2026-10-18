@@ -2,22 +2,23 @@
   "companyCode": "ESTC",
   "companyName": "Elastic N.V.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 478113000,
-    "yoy": 17.3,
-    "grossMargin": 75.59,
-    "operatingMargin": -0.61,
-    "netMargin": 20.84,
+    "yoy": 15.1,
+    "grossMargin": 74.5,
+    "operatingMargin": -0.76,
+    "netMargin": -3.5,
     "eps": -0.16,
-    "pe": 28.07,
-    "pb": 7.96,
-    "marketCap": 10313293824
+    "pe": 26.21,
+    "pb": 7.44,
+    "marketCap": 9631899648
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-04-30",
         "revenue": 1739331000,
         "grossProfit": 1323059000,
         "operatingIncome": -33476000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-04-30",
         "revenue": 1483296000,
         "grossProfit": 1103423000,
         "operatingIncome": -54697000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-04-30",
         "revenue": 1267321000,
         "grossProfit": 937242000,
         "operatingIncome": -124985000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-04-30",
         "revenue": 1068989000,
         "grossProfit": 772363000,
         "operatingIncome": -187875000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-07-31",
         "revenue": 478113000,
         "grossProfit": 356188000,
         "operatingIncome": -3654000,
@@ -105,11 +110,13 @@
           "grossProfit": 356188000,
           "operatingIncome": -3654000,
           "netIncome": -16729000
-        }
+        },
+        "revenueYoY": 15.1
       },
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-04-30",
         "revenue": 450681000,
         "grossProfit": 339621000,
         "operatingIncome": -16411000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-01-31",
         "revenue": 449881000,
         "grossProfit": 343442000,
         "operatingIncome": 611000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-10-31",
         "revenue": 423481000,
         "grossProfit": 321454000,
         "operatingIncome": -8236000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-07-31",
         "revenue": 415288000,
         "grossProfit": 318542000,
         "operatingIncome": -9440000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 4
 }

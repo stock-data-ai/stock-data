@@ -3,21 +3,22 @@
   "companyName": "The Walt Disney Company",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 25248000000,
-    "yoy": 3.4,
-    "grossMargin": 37.59,
-    "operatingMargin": 19.3,
-    "netMargin": 8.7,
+    "yoy": 6.8,
+    "grossMargin": 40.17,
+    "operatingMargin": 18.85,
+    "netMargin": 10.45,
     "eps": 1.51,
-    "pe": 22.28,
-    "pb": 1.7,
-    "marketCap": 186568523776
+    "pe": 22.8,
+    "pb": 1.74,
+    "marketCap": 190954291200
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-09-30",
         "revenue": 94425000000,
         "grossProfit": 35659000000,
         "operatingIncome": 13832000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-09-30",
         "revenue": 91361000000,
         "grossProfit": 32663000000,
         "operatingIncome": 11914000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-09-30",
         "revenue": 88898000000,
         "grossProfit": 29697000000,
         "operatingIncome": 8992000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-09-30",
         "revenue": 82722000000,
         "grossProfit": 28321000000,
         "operatingIncome": 6770000000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2026-06-30",
         "revenue": 25248000000,
         "grossProfit": 10142000000,
         "operatingIncome": 4760000000,
@@ -105,11 +110,13 @@
           "grossProfit": 10142000000,
           "operatingIncome": 4760000000,
           "netIncome": 2638000000
-        }
+        },
+        "revenueYoY": 6.8
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 2,
+        "periodEnd": "2026-03-31",
         "revenue": 25168000000,
         "grossProfit": 9267000000,
         "operatingIncome": 3789000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-12-31",
         "revenue": 25981000000,
         "grossProfit": 9312000000,
         "operatingIncome": 3875000000,
@@ -145,7 +153,8 @@
       },
       {
         "year": 2025,
-        "quarter": 3,
+        "quarter": 4,
+        "periodEnd": "2025-09-30",
         "revenue": 22464000000,
         "grossProfit": 8446000000,
         "operatingIncome": 2603000000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 3,
+        "periodEnd": "2025-06-30",
         "revenue": 23650000000,
         "grossProfit": 9118000000,
         "operatingIncome": 3645000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 9
 }

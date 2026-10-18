@@ -3,21 +3,22 @@
   "companyName": "Aehr Test Systems, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 18835000,
-    "yoy": -15.2,
-    "grossMargin": 35.3,
+    "yoy": 33.7,
+    "grossMargin": 42.57,
     "operatingMargin": -6.4,
-    "netMargin": -14.25,
+    "netMargin": 7.39,
     "eps": 0.04,
     "pe": null,
-    "pb": 12.52,
-    "marketCap": 2764303872
+    "pb": 8.97,
+    "marketCap": 1979168384
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-05-31",
         "revenue": 50001000,
         "grossProfit": 17651000,
         "operatingIncome": -14143000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-05-31",
         "revenue": 58968000,
         "grossProfit": 23933000,
         "operatingIncome": -4813000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-05-31",
         "revenue": 66218000,
         "grossProfit": 32543000,
         "operatingIncome": 10078000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-05-31",
         "revenue": 64961000,
         "grossProfit": 32746000,
         "operatingIncome": 13375000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-05-31",
         "revenue": 18835000,
         "grossProfit": 8019000,
         "operatingIncome": -1206000,
@@ -105,11 +110,13 @@
           "grossProfit": 8019000,
           "operatingIncome": -1206000,
           "netIncome": 1391000
-        }
+        },
+        "revenueYoY": 33.7
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-02-28",
         "revenue": 10313000,
         "grossProfit": 3368000,
         "operatingIncome": -4229000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-11-30",
         "revenue": 9884000,
         "grossProfit": 2545000,
         "operatingIncome": -4861000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-08-31",
         "revenue": 10969000,
         "grossProfit": 3719000,
         "operatingIncome": -3847000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-05-31",
         "revenue": 14089000,
         "grossProfit": 4272000,
         "operatingIncome": -2340000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 5
 }

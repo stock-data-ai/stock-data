@@ -3,21 +3,22 @@
   "companyName": "General Mills, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 4,
     "revenue": 4609600000,
-    "yoy": -5.4,
-    "grossMargin": 33.73,
-    "operatingMargin": 15.24,
-    "netMargin": -4.89,
+    "yoy": 1.2,
+    "grossMargin": 34.79,
+    "operatingMargin": 15.52,
+    "netMargin": -43.56,
     "eps": -3.74,
     "pe": null,
-    "pb": 2.32,
-    "marketCap": 17265047552
+    "pb": 2.38,
+    "marketCap": 17714186240
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-05-31",
         "revenue": 18424600000,
         "grossProfit": 6195700000,
         "operatingIncome": 2807200000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-05-31",
         "revenue": 19486600000,
         "grossProfit": 6733000000,
         "operatingIncome": 3287200000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-05-31",
         "revenue": 19857200000,
         "grossProfit": 6932100000,
         "operatingIncome": 3673100000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-05-31",
         "revenue": 20094200000,
         "grossProfit": 6545800000,
         "operatingIncome": 3045400000,
@@ -91,7 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-05-31",
         "revenue": 4609600000,
         "grossProfit": 1603500000,
         "operatingIncome": 715400000,
@@ -105,11 +110,13 @@
           "grossProfit": 1603500000,
           "operatingIncome": 715400000,
           "netIncome": -2007900000
-        }
+        },
+        "revenueYoY": 1.2
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-02-28",
         "revenue": 4436700000,
         "grossProfit": 1366900000,
         "operatingIncome": 554000000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-11-30",
         "revenue": 4860800000,
         "grossProfit": 1692500000,
         "operatingIncome": 850100000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-08-31",
         "revenue": 4517500000,
         "grossProfit": 1532800000,
         "operatingIncome": 687700000,
@@ -163,7 +172,8 @@
       },
       {
         "year": 2025,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2025-05-31",
         "revenue": 4556200000,
         "grossProfit": 1474000000,
         "operatingIncome": 579700000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 5
 }

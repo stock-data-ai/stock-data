@@ -2,22 +2,23 @@
   "companyCode": "BBY",
   "companyName": "Best Buy Co., Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 9779000000,
-    "yoy": 0.4,
-    "grossMargin": 22.6,
-    "operatingMargin": 3.9,
-    "netMargin": 3.01,
+    "yoy": 3.6,
+    "grossMargin": 23.91,
+    "operatingMargin": 4.24,
+    "netMargin": 3.22,
     "eps": 1.48,
-    "pe": 14.48,
-    "pb": 5.75,
-    "marketCap": 18248407040
+    "pe": 15.41,
+    "pb": 6.12,
+    "marketCap": 19427076096
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 41691000000,
         "grossProfit": 9373000000,
         "operatingIncome": 1750000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 41528000000,
         "grossProfit": 9385000000,
         "operatingIncome": 1734000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 43452000000,
         "grossProfit": 9603000000,
         "operatingIncome": 1727000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 46298000000,
         "grossProfit": 9912000000,
         "operatingIncome": 1942000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 9779000000,
         "grossProfit": 2338000000,
         "operatingIncome": 415000000,
@@ -105,11 +110,13 @@
           "grossProfit": 2338000000,
           "operatingIncome": 415000000,
           "netIncome": 315000000
-        }
+        },
+        "revenueYoY": 3.6
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 8936000000,
         "grossProfit": 2102000000,
         "operatingIncome": 361000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 13814000000,
         "grossProfit": 2882000000,
         "operatingIncome": 693000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 9672000000,
         "grossProfit": 2248000000,
         "operatingIncome": 364000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 9438000000,
         "grossProfit": 2194000000,
         "operatingIncome": 365000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

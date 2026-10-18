@@ -2,22 +2,23 @@
   "companyCode": "HD",
   "companyName": "The Home Depot, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 47861000000,
-    "yoy": 3.2,
-    "grossMargin": 32.8,
-    "operatingMargin": 12.86,
-    "netMargin": 8.41,
+    "yoy": 5.7,
+    "grossMargin": 33.67,
+    "operatingMargin": 14.29,
+    "netMargin": 9.96,
     "eps": 4.79,
-    "pe": 20.35,
-    "pb": 17.46,
-    "marketCap": 290068267008
+    "pe": 21.67,
+    "pb": 18.6,
+    "marketCap": 308914651136
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 164683000000,
         "grossProfit": 54865000000,
         "operatingIncome": 20890000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 159514000000,
         "grossProfit": 53308000000,
         "operatingIncome": 21526000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 152669000000,
         "grossProfit": 50960000000,
         "operatingIncome": 21689000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 157403000000,
         "grossProfit": 52778000000,
         "operatingIncome": 24039000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 47861000000,
         "grossProfit": 16115000000,
         "operatingIncome": 6839000000,
@@ -105,11 +110,13 @@
           "grossProfit": 16115000000,
           "operatingIncome": 6839000000,
           "netIncome": 4766000000
-        }
+        },
+        "revenueYoY": 5.7
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 41765000000,
         "grossProfit": 13781000000,
         "operatingIncome": 4981000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 38198000000,
         "grossProfit": 12466000000,
         "operatingIncome": 3849000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 41352000000,
         "grossProfit": 13815000000,
         "operatingIncome": 5353000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 45277000000,
         "grossProfit": 15125000000,
         "operatingIncome": 6555000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

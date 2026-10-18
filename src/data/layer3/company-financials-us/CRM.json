@@ -2,22 +2,23 @@
   "companyCode": "CRM",
   "companyName": "Salesforce, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 11345000000,
-    "yoy": 9.6,
-    "grossMargin": 77.28,
+    "yoy": 10.8,
+    "grossMargin": 76.65,
     "operatingMargin": 21.38,
-    "netMargin": 21.99,
+    "netMargin": 31.08,
     "eps": 4.29,
-    "pe": 20.96,
-    "pb": 4.91,
-    "marketCap": 188573990912
+    "pe": 22.02,
+    "pb": 5.16,
+    "marketCap": 198096093184
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 41525000000,
         "grossProfit": 32255000000,
         "operatingIncome": 8917000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 37895000000,
         "grossProfit": 29252000000,
         "operatingIncome": 7666000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 34857000000,
         "grossProfit": 26316000000,
         "operatingIncome": 5999000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 31352000000,
         "grossProfit": 22992000000,
         "operatingIncome": 1858000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 11345000000,
         "grossProfit": 8696000000,
         "operatingIncome": 2425000000,
@@ -105,11 +110,13 @@
           "grossProfit": 8696000000,
           "operatingIncome": 2425000000,
           "netIncome": 3526000000
-        }
+        },
+        "revenueYoY": 10.8
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 11133000000,
         "grossProfit": 8563000000,
         "operatingIncome": 2427000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 11201000000,
         "grossProfit": 8693000000,
         "operatingIncome": 2155000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 10259000000,
         "grossProfit": 8004000000,
         "operatingIncome": 2448000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 10236000000,
         "grossProfit": 7994000000,
         "operatingIncome": 2336000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

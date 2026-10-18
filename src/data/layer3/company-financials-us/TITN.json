@@ -2,22 +2,23 @@
   "companyCode": "TITN",
   "companyName": "Titan Machinery Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 496384000,
-    "yoy": -10.2,
-    "grossMargin": 16.47,
+    "yoy": -9.2,
+    "grossMargin": 18.61,
     "operatingMargin": -0.34,
-    "netMargin": -2.46,
+    "netMargin": -1.84,
     "eps": -0.4,
     "pe": null,
-    "pb": 0.93,
-    "marketCap": 532549408
+    "pb": 0.91,
+    "marketCap": 521959648
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 2427107000,
         "grossProfit": 382556000,
         "operatingIncome": -2681000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 2702122000,
         "grossProfit": 395630000,
         "operatingIncome": 5850000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 2758445000,
         "grossProfit": 531354000,
         "operatingIncome": 168845000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 2209306000,
         "grossProfit": 439839000,
         "operatingIncome": 138323000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 496384000,
         "grossProfit": 92397000,
         "operatingIncome": -1679000,
@@ -105,11 +110,13 @@
           "grossProfit": 92397000,
           "operatingIncome": -1679000,
           "netIncome": -9150000
-        }
+        },
+        "revenueYoY": -9.2
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 522381000,
         "grossProfit": 89283000,
         "operatingIncome": -5099000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 641834000,
         "grossProfit": 86959000,
         "operatingIncome": -8739000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 644510000,
         "grossProfit": 111016000,
         "operatingIncome": 10542000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 546426000,
         "grossProfit": 93646000,
         "operatingIncome": 985000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

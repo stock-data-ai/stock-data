@@ -2,22 +2,23 @@
   "companyCode": "DLTR",
   "companyName": "Dollar Tree, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 4891200000,
-    "yoy": 10.4,
-    "grossMargin": 37.18,
-    "operatingMargin": 6.21,
-    "netMargin": 8.04,
+    "yoy": 7.0,
+    "grossMargin": 42.91,
+    "operatingMargin": 14.11,
+    "netMargin": 10.52,
     "eps": 2.7,
-    "pe": 14.45,
-    "pb": 6.5,
-    "marketCap": 22260459520
+    "pe": 15.13,
+    "pb": 6.8,
+    "marketCap": 23299932160
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 19411800000,
         "grossProfit": 7066800000,
         "operatingIncome": 1653100000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 17578500000,
         "grossProfit": 6294400000,
         "operatingIncome": 1462000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 16781100000,
         "grossProfit": 6019700000,
         "operatingIncome": 1774500000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 15411500000,
         "grossProfit": 5781300000,
         "operatingIncome": 2099300000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 4891200000,
         "grossProfit": 2099000000,
         "operatingIncome": 690100000,
@@ -105,11 +110,13 @@
           "grossProfit": 2099000000,
           "operatingIncome": 690100000,
           "netIncome": 514500000
-        }
+        },
+        "revenueYoY": 7.0
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 4975800000,
         "grossProfit": 1834800000,
         "operatingIncome": 473300000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 5450700000,
         "grossProfit": 2135200000,
         "operatingIncome": 694700000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 4751000000,
         "grossProfit": 1705200000,
         "operatingIncome": 343300000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 4570400000,
         "grossProfit": 1573700000,
         "operatingIncome": 231000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

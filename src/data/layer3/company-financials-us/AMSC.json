@@ -2,22 +2,23 @@
   "companyCode": "AMSC",
   "companyName": "American Superconductor Corporation",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 94073000,
-    "yoy": 34.3,
-    "grossMargin": 29.02,
-    "operatingMargin": 2.57,
-    "netMargin": 42.56,
+    "yoy": 30.0,
+    "grossMargin": 26.28,
+    "operatingMargin": 1.83,
+    "netMargin": 10.09,
     "eps": 0.2,
-    "pe": 10.28,
-    "pb": 2.58,
-    "marketCap": 1478454272
+    "pe": 8.64,
+    "pb": 2.17,
+    "marketCap": 1243509888
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 299155000,
         "grossProfit": 91379000,
         "operatingIncome": 15617000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 222818000,
         "grossProfit": 61854000,
         "operatingIncome": 5605000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 145639000,
         "grossProfit": 35283000,
         "operatingIncome": -6460000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 105984000,
         "grossProfit": 8521000,
         "operatingIncome": -31891000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 94073000,
         "grossProfit": 24726000,
         "operatingIncome": 1717000,
@@ -105,11 +110,13 @@
           "grossProfit": 24726000,
           "operatingIncome": 1717000,
           "netIncome": 9490000
-        }
+        },
+        "revenueYoY": 30.0
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 86406000,
         "grossProfit": 23600000,
         "operatingIncome": 3650000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 74529000,
         "grossProfit": 22852000,
         "operatingIncome": 3359000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 65862000,
         "grossProfit": 20439000,
         "operatingIncome": 2965000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 72358000,
         "grossProfit": 24489000,
         "operatingIncome": 5644000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

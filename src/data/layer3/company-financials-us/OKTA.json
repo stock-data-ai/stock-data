@@ -2,22 +2,23 @@
   "companyCode": "OKTA",
   "companyName": "Okta, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 805000000,
-    "yoy": 11.8,
-    "grossMargin": 78.13,
+    "yoy": 10.6,
+    "grossMargin": 79.63,
     "operatingMargin": 13.29,
-    "netMargin": 9.63,
+    "netMargin": 14.41,
     "eps": 0.65,
-    "pe": 139.84,
-    "pb": 5.82,
-    "marketCap": 40581181440
+    "pe": 112.81,
+    "pb": 4.69,
+    "marketCap": 32736966656
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 2919000000,
         "grossProfit": 2258000000,
         "operatingIncome": 153000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 2610000000,
         "grossProfit": 1992000000,
         "operatingIncome": -63000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 2263000000,
         "grossProfit": 1682000000,
         "operatingIncome": -460000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 1858000000,
         "grossProfit": 1312000000,
         "operatingIncome": -783000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 805000000,
         "grossProfit": 641000000,
         "operatingIncome": 107000000,
@@ -105,11 +110,13 @@
           "grossProfit": 641000000,
           "operatingIncome": 107000000,
           "netIncome": 116000000
-        }
+        },
+        "revenueYoY": 10.6
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 765000000,
         "grossProfit": 595000000,
         "operatingIncome": 56000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 761000000,
         "grossProfit": 593000000,
         "operatingIncome": 50000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 742000000,
         "grossProfit": 572000000,
         "operatingIncome": 23000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 728000000,
         "grossProfit": 560000000,
         "operatingIncome": 41000000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

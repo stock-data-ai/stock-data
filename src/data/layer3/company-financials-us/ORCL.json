@@ -2,22 +2,23 @@
   "companyCode": "ORCL",
   "companyName": "Oracle Corporation",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 19345000000,
-    "yoy": 17.3,
-    "grossMargin": 63.96,
-    "operatingMargin": 35.63,
-    "netMargin": 26.36,
+    "yoy": 29.6,
+    "grossMargin": 60.03,
+    "operatingMargin": 35.26,
+    "netMargin": 24.61,
     "eps": 1.56,
-    "pe": 22.16,
-    "pb": 6.92,
-    "marketCap": 428654231552
+    "pe": 20.1,
+    "pb": 6.27,
+    "marketCap": 388729372672
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-05-31",
         "revenue": 67357000000,
         "grossProfit": 44336000000,
         "operatingIncome": 22444000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-05-31",
         "revenue": 57399000000,
         "grossProfit": 40472000000,
         "operatingIncome": 18052000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-05-31",
         "revenue": 52961000000,
         "grossProfit": 37818000000,
         "operatingIncome": 16071000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-05-31",
         "revenue": 49954000000,
         "grossProfit": 36390000000,
         "operatingIncome": 13773000000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-08-31",
         "revenue": 19345000000,
         "grossProfit": 11612000000,
         "operatingIncome": 6822000000,
@@ -105,11 +110,13 @@
           "grossProfit": 11612000000,
           "operatingIncome": 6822000000,
           "netIncome": 4760000000
-        }
+        },
+        "revenueYoY": 29.6
       },
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-05-31",
         "revenue": 19184000000,
         "grossProfit": 12513000000,
         "operatingIncome": 6955000000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-02-28",
         "revenue": 17190000000,
         "grossProfit": 11098000000,
         "operatingIncome": 5637000000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-11-30",
         "revenue": 16058000000,
         "grossProfit": 10684000000,
         "operatingIncome": 5158000000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-08-31",
         "revenue": 14926000000,
         "grossProfit": 10042000000,
         "operatingIncome": 4692000000,
@@ -178,30 +188,14 @@
           "operatingIncome": 4692000000,
           "netIncome": 2927000000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 15903000000,
-        "grossProfit": 11162000000,
-        "operatingIncome": 5191000000,
-        "netIncome": 3427000000,
-        "eps": null,
-        "grossMargin": 70.19,
-        "operatingMargin": 32.64,
-        "netMargin": 21.55,
-        "native": {
-          "revenue": 15903000000,
-          "grossProfit": 11162000000,
-          "operatingIncome": 5191000000,
-          "netIncome": 3427000000
-        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 5
 }

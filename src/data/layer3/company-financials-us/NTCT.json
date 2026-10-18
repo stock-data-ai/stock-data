@@ -2,22 +2,23 @@
   "companyCode": "NTCT",
   "companyName": "NetScout Systems, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 210423000,
-    "yoy": 4.5,
-    "grossMargin": 79.84,
+    "yoy": 12.7,
+    "grossMargin": 78.86,
     "operatingMargin": 6.89,
-    "netMargin": 13.71,
+    "netMargin": 10.38,
     "eps": 0.29,
-    "pe": 24.96,
-    "pb": 1.78,
-    "marketCap": 2958460416
+    "pe": 23.36,
+    "pb": 1.66,
+    "marketCap": 2767967232
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 859482000,
         "grossProfit": 682494000,
         "operatingIncome": 110708000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 822679000,
         "grossProfit": 643944000,
         "operatingIncome": 79865000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 829455000,
         "grossProfit": 642043000,
         "operatingIncome": 63628000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 914530000,
         "grossProfit": 691432000,
         "operatingIncome": 79446000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 210423000,
         "grossProfit": 165933000,
         "operatingIncome": 14502000,
@@ -105,11 +110,13 @@
           "grossProfit": 165933000,
           "operatingIncome": 14502000,
           "netIncome": 21835000
-        }
+        },
+        "revenueYoY": 12.7
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 203035000,
         "grossProfit": 159108000,
         "operatingIncome": 19613000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 250683000,
         "grossProfit": 204654000,
         "operatingIncome": 64340000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 219017000,
         "grossProfit": 175407000,
         "operatingIncome": 32790000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 186747000,
         "grossProfit": 143325000,
         "operatingIncome": -6035000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }

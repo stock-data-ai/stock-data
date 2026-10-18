@@ -3,21 +3,22 @@
   "companyName": "EOG Resources, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 8494000000,
-    "yoy": -3.4,
-    "grossMargin": 62.64,
-    "operatingMargin": 40.72,
-    "netMargin": 25.73,
-    "eps": 5.15,
-    "pe": 11.53,
-    "pb": 2.44,
-    "marketCap": 77714243584
+    "quarter": 1,
+    "revenue": 6758000000,
+    "yoy": 15.7,
+    "grossMargin": 65.83,
+    "operatingMargin": 36.89,
+    "netMargin": 29.3,
+    "eps": 3.7,
+    "pe": 12.3,
+    "pb": 2.61,
+    "marketCap": 84160634880
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-12-31",
         "revenue": 22582000000,
         "grossProfit": 14312000000,
         "operatingIncome": 7250000000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-12-31",
         "revenue": 23378000000,
         "grossProfit": 15976000000,
         "operatingIncome": 8253000000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-12-31",
         "revenue": 23182000000,
         "grossProfit": 16616000000,
         "operatingIncome": 8892000000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-12-31",
         "revenue": 29492000000,
         "grossProfit": 23032000000,
         "operatingIncome": 14256000000,
@@ -91,25 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
-        "revenue": 8494000000,
-        "grossProfit": 6092000000,
-        "operatingIncome": 3449000000,
-        "netIncome": 2724000000,
-        "eps": 5.15,
-        "grossMargin": 71.72,
-        "operatingMargin": 40.61,
-        "netMargin": 32.07,
-        "native": {
-          "revenue": 8494000000,
-          "grossProfit": 6092000000,
-          "operatingIncome": 3449000000,
-          "netIncome": 2724000000
-        }
-      },
-      {
-        "year": 2026,
         "quarter": 1,
+        "periodEnd": "2026-03-31",
         "revenue": 6758000000,
         "grossProfit": 4449000000,
         "operatingIncome": 2493000000,
@@ -123,11 +110,13 @@
           "grossProfit": 4449000000,
           "operatingIncome": 2493000000,
           "netIncome": 1980000000
-        }
+        },
+        "revenueYoY": 15.7
       },
       {
         "year": 2025,
         "quarter": 4,
+        "periodEnd": "2025-12-31",
         "revenue": 5653000000,
         "grossProfit": 3328000000,
         "operatingIncome": 1667000000,
@@ -146,6 +135,7 @@
       {
         "year": 2025,
         "quarter": 3,
+        "periodEnd": "2025-09-30",
         "revenue": 5732000000,
         "grossProfit": 3545000000,
         "operatingIncome": 1809000000,
@@ -164,6 +154,7 @@
       {
         "year": 2025,
         "quarter": 2,
+        "periodEnd": "2025-06-30",
         "revenue": 5355000000,
         "grossProfit": 3451000000,
         "operatingIncome": 1679000000,
@@ -178,12 +169,33 @@
           "operatingIncome": 1679000000,
           "netIncome": 1345000000
         }
+      },
+      {
+        "year": 2025,
+        "quarter": 1,
+        "periodEnd": "2025-03-31",
+        "revenue": 5842000000,
+        "grossProfit": 3988000000,
+        "operatingIncome": 2095000000,
+        "netIncome": 1463000000,
+        "eps": null,
+        "grossMargin": 68.26,
+        "operatingMargin": 35.86,
+        "netMargin": 25.04,
+        "native": {
+          "revenue": 5842000000,
+          "grossProfit": 3988000000,
+          "operatingIncome": 2095000000,
+          "netIncome": 1463000000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 12
 }

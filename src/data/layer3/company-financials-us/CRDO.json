@@ -2,22 +2,23 @@
   "companyCode": "CRDO",
   "companyName": "Credo Technology Group Holding Ltd",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 479003000,
-    "yoy": 205.7,
-    "grossMargin": 67.07,
+    "yoy": 114.7,
+    "grossMargin": 64.53,
     "operatingMargin": 25.2,
-    "netMargin": 33.83,
+    "netMargin": 27.02,
     "eps": 0.67,
-    "pe": 76.79,
-    "pb": 14.9,
-    "marketCap": 40700989440
+    "pe": 60.18,
+    "pb": 11.68,
+    "marketCap": 31895439360
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-04-30",
         "revenue": 1335116000,
         "grossProfit": 908349000,
         "operatingIncome": 445005000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-04-30",
         "revenue": 436775000,
         "grossProfit": 282909000,
         "operatingIncome": 37124000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-04-30",
         "revenue": 192970000,
         "grossProfit": 119431000,
         "operatingIncome": -37058000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-04-30",
         "revenue": 184194000,
         "grossProfit": 106194000,
         "operatingIncome": -18828000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-07-31",
         "revenue": 479003000,
         "grossProfit": 309080000,
         "operatingIncome": 120700000,
@@ -105,11 +110,13 @@
           "grossProfit": 309080000,
           "operatingIncome": 120700000,
           "netIncome": 129425000
-        }
+        },
+        "revenueYoY": 114.7
       },
       {
         "year": 2026,
-        "quarter": 2,
+        "quarter": 4,
+        "periodEnd": "2026-04-30",
         "revenue": 437003000,
         "grossProfit": 298067000,
         "operatingIncome": 155845000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 3,
+        "periodEnd": "2026-01-31",
         "revenue": 407012000,
         "grossProfit": 278868000,
         "operatingIncome": 149622000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-10-31",
         "revenue": 268027000,
         "grossProfit": 181046000,
         "operatingIncome": 78796000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-07-31",
         "revenue": 223074000,
         "grossProfit": 150368000,
         "operatingIncome": 60742000,
@@ -178,24 +188,14 @@
           "operatingIncome": 60742000,
           "netIncome": 63399000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 170025000,
-        "grossProfit": 114188000,
-        "operatingIncome": 34661000,
-        "netIncome": 36588000,
-        "eps": 0.2,
-        "grossMargin": 67.16,
-        "operatingMargin": 20.39,
-        "netMargin": 21.52
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 4
 }

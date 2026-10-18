@@ -2,22 +2,23 @@
   "companyCode": "CHPT",
   "companyName": "ChargePoint Holdings, Inc.",
   "latest": {
-    "year": 2026,
-    "quarter": 3,
+    "year": 2027,
+    "quarter": 2,
     "revenue": 116075000,
-    "yoy": -1.4,
-    "grossMargin": 30.97,
-    "operatingMargin": -29.08,
-    "netMargin": -40.59,
+    "yoy": 17.7,
+    "grossMargin": 36.44,
+    "operatingMargin": -29.34,
+    "netMargin": -30.69,
     "eps": -1.35,
     "pe": null,
-    "pb": -5.89,
-    "marketCap": 212654576
+    "pb": -5.14,
+    "marketCap": 185535728
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-01-31",
         "revenue": 411224000,
         "grossProfit": 125602000,
         "operatingIncome": -210138000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-01-31",
         "revenue": 417083000,
         "grossProfit": 100681000,
         "operatingIncome": -252999000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-01-31",
         "revenue": 506639000,
         "grossProfit": 30118000,
         "operatingIncome": -449951000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-01-31",
         "revenue": 468094000,
         "grossProfit": 85933000,
         "operatingIncome": -341782000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 3,
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-07-31",
         "revenue": 116075000,
         "grossProfit": 42302000,
         "operatingIncome": -34059000,
@@ -105,11 +110,13 @@
           "grossProfit": 42302000,
           "operatingIncome": -34059000,
           "netIncome": -35624000
-        }
+        },
+        "revenueYoY": 17.7
       },
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-04-30",
         "revenue": 101819000,
         "grossProfit": 29622000,
         "operatingIncome": -47154000,
@@ -127,7 +134,8 @@
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-01-31",
         "revenue": 109320000,
         "grossProfit": 34402000,
         "operatingIncome": -52986000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-10-31",
         "revenue": 105674000,
         "grossProfit": 32486000,
         "operatingIncome": -44335000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-07-31",
         "revenue": 98590000,
         "grossProfit": 30728000,
         "operatingIncome": -58977000,
@@ -178,24 +188,14 @@
           "operatingIncome": -58977000,
           "netIncome": -66179000
         }
-      },
-      {
-        "year": 2025,
-        "quarter": 2,
-        "revenue": 97640000,
-        "grossProfit": 27986000,
-        "operatingIncome": -53840000,
-        "netIncome": -57121000,
-        "eps": null,
-        "grossMargin": 28.66,
-        "operatingMargin": -55.14,
-        "netMargin": -58.5
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 1
 }

@@ -3,21 +3,22 @@
   "companyName": "Everest Group, Ltd.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 3910000000,
-    "yoy": 0.8,
-    "grossMargin": 15.28,
-    "operatingMargin": 19.13,
-    "netMargin": 11.38,
-    "eps": 14.22,
-    "pe": 7.79,
-    "pb": 0.92,
-    "marketCap": 14124313600
+    "quarter": 1,
+    "revenue": 3950000000,
+    "yoy": -6.8,
+    "grossMargin": null,
+    "operatingMargin": null,
+    "netMargin": 16.53,
+    "eps": 16.21,
+    "pe": 8.23,
+    "pb": 0.98,
+    "marketCap": 14919158784
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-12-31",
         "revenue": 17218000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-12-31",
         "revenue": 17076000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-12-31",
         "revenue": 14464000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-12-31",
         "revenue": 11985000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -91,25 +95,8 @@
     "quarterly": [
       {
         "year": 2026,
-        "quarter": 2,
-        "revenue": 3910000000,
-        "grossProfit": null,
-        "operatingIncome": null,
-        "netIncome": 559000000,
-        "eps": 14.22,
-        "grossMargin": null,
-        "operatingMargin": null,
-        "netMargin": 14.3,
-        "native": {
-          "revenue": 3910000000,
-          "grossProfit": null,
-          "operatingIncome": null,
-          "netIncome": 559000000
-        }
-      },
-      {
-        "year": 2026,
         "quarter": 1,
+        "periodEnd": "2026-03-31",
         "revenue": 3950000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -123,11 +110,13 @@
           "grossProfit": null,
           "operatingIncome": null,
           "netIncome": 653000000
-        }
+        },
+        "revenueYoY": -6.8
       },
       {
         "year": 2025,
         "quarter": 4,
+        "periodEnd": "2025-12-31",
         "revenue": 4321000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -146,6 +135,7 @@
       {
         "year": 2025,
         "quarter": 3,
+        "periodEnd": "2025-09-30",
         "revenue": 4254000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -164,6 +154,7 @@
       {
         "year": 2025,
         "quarter": 2,
+        "periodEnd": "2025-06-30",
         "revenue": 4404000000,
         "grossProfit": null,
         "operatingIncome": null,
@@ -178,12 +169,33 @@
           "operatingIncome": null,
           "netIncome": 680000000
         }
+      },
+      {
+        "year": 2025,
+        "quarter": 1,
+        "periodEnd": "2025-03-31",
+        "revenue": 4238000000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 210000000,
+        "eps": null,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": 4.96,
+        "native": {
+          "revenue": 4238000000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": 210000000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 12
 }

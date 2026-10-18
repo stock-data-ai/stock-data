@@ -5,19 +5,20 @@
     "year": 2026,
     "quarter": 2,
     "revenue": 144780000,
-    "yoy": 5.2,
-    "grossMargin": 39.71,
-    "operatingMargin": 17.45,
-    "netMargin": 12.37,
+    "yoy": 7.0,
+    "grossMargin": 41.48,
+    "operatingMargin": 18.58,
+    "netMargin": 13.24,
     "eps": 0.66,
-    "pe": 23.95,
-    "pb": 2.86,
-    "marketCap": 1634842240
+    "pe": 22.99,
+    "pb": 2.74,
+    "marketCap": 1569163008
   },
   "historical": {
     "annual": [
       {
         "year": 2025,
+        "periodEnd": "2025-12-31",
         "revenue": 541318000,
         "grossProfit": 208026000,
         "operatingIncome": 84038000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-12-31",
         "revenue": 514756000,
         "grossProfit": 187555000,
         "operatingIncome": 75882000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-12-31",
         "revenue": 550422000,
         "grossProfit": 190859000,
         "operatingIncome": 82125000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2022,
+        "periodEnd": "2022-12-31",
         "revenue": 586869000,
         "grossProfit": 210538000,
         "operatingIncome": 94918000,
@@ -92,6 +96,7 @@
       {
         "year": 2026,
         "quarter": 2,
+        "periodEnd": "2026-06-30",
         "revenue": 144780000,
         "grossProfit": 60048000,
         "operatingIncome": 26895000,
@@ -105,11 +110,13 @@
           "grossProfit": 60048000,
           "operatingIncome": 26895000,
           "netIncome": 19164000
-        }
+        },
+        "revenueYoY": 7.0
       },
       {
         "year": 2026,
         "quarter": 1,
+        "periodEnd": "2026-03-31",
         "revenue": 139230000,
         "grossProfit": 54986000,
         "operatingIncome": 22368000,
@@ -128,6 +135,7 @@
       {
         "year": 2025,
         "quarter": 4,
+        "periodEnd": "2025-12-31",
         "revenue": 137271000,
         "grossProfit": 53706000,
         "operatingIncome": 23056000,
@@ -146,6 +154,7 @@
       {
         "year": 2025,
         "quarter": 3,
+        "periodEnd": "2025-09-30",
         "revenue": 142970000,
         "grossProfit": 55341000,
         "operatingIncome": 21218000,
@@ -164,6 +173,7 @@
       {
         "year": 2025,
         "quarter": 2,
+        "periodEnd": "2025-06-30",
         "revenue": 135309000,
         "grossProfit": 52431000,
         "operatingIncome": 23028000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 12
 }

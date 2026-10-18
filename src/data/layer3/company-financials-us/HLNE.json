@@ -2,22 +2,23 @@
   "companyCode": "HLNE",
   "companyName": "Hamilton Lane Incorporated",
   "latest": {
-    "year": 2026,
-    "quarter": 2,
+    "year": 2027,
+    "quarter": 1,
     "revenue": 275331000,
-    "yoy": 6.5,
-    "grossMargin": 60.66,
+    "yoy": 56.5,
+    "grossMargin": 69.74,
     "operatingMargin": 45.93,
-    "netMargin": 32.14,
+    "netMargin": 29.22,
     "eps": 1.93,
-    "pe": 13.06,
-    "pb": 3.91,
-    "marketCap": 5741780480
+    "pe": 12.48,
+    "pb": 3.73,
+    "marketCap": 5485085696
   },
   "historical": {
     "annual": [
       {
         "year": 2026,
+        "periodEnd": "2026-03-31",
         "revenue": 758993000,
         "grossProfit": 530363000,
         "operatingIncome": 324943000,
@@ -36,6 +37,7 @@
       },
       {
         "year": 2025,
+        "periodEnd": "2025-03-31",
         "revenue": 712963000,
         "grossProfit": 504741000,
         "operatingIncome": 316552000,
@@ -54,6 +56,7 @@
       },
       {
         "year": 2024,
+        "periodEnd": "2024-03-31",
         "revenue": 553842000,
         "grossProfit": 387448000,
         "operatingIncome": 245818000,
@@ -72,6 +75,7 @@
       },
       {
         "year": 2023,
+        "periodEnd": "2023-03-31",
         "revenue": 528753000,
         "grossProfit": 379435000,
         "operatingIncome": 240040000,
@@ -90,8 +94,9 @@
     ],
     "quarterly": [
       {
-        "year": 2026,
-        "quarter": 2,
+        "year": 2027,
+        "quarter": 1,
+        "periodEnd": "2026-06-30",
         "revenue": 275331000,
         "grossProfit": 192004000,
         "operatingIncome": 126471000,
@@ -105,11 +110,13 @@
           "grossProfit": 192004000,
           "operatingIncome": 126471000,
           "netIncome": 80461000
-        }
+        },
+        "revenueYoY": 56.5
       },
       {
         "year": 2026,
-        "quarter": 1,
+        "quarter": 4,
+        "periodEnd": "2026-03-31",
         "revenue": 193566000,
         "grossProfit": 135069000,
         "operatingIncome": 82247000,
@@ -126,8 +133,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 4,
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2025-12-31",
         "revenue": 198589000,
         "grossProfit": 137703000,
         "operatingIncome": 86006000,
@@ -144,8 +152,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 3,
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
         "revenue": 190880000,
         "grossProfit": 135146000,
         "operatingIncome": 79715000,
@@ -162,8 +171,9 @@
         }
       },
       {
-        "year": 2025,
-        "quarter": 2,
+        "year": 2026,
+        "quarter": 1,
+        "periodEnd": "2025-06-30",
         "revenue": 175958000,
         "grossProfit": 122443000,
         "operatingIncome": 76975000,
@@ -181,9 +191,11 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-11",
+  "lastUpdated": "2026-10-18",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
-  "fxRateToUSD": 1.0
+  "fxRateToUSD": 1.0,
+  "periodBasis": "fiscal",
+  "fiscalYearEndMonth": 3
 }
