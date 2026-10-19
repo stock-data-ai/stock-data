@@ -15,9 +15,9 @@
     "pe": 13.23,
     "pb": 1.78,
     "dividendYield": 6.13,
-    "marginBalance": 6299,
-    "shortBalance": 8,
-    "sblBalance": 8209
+    "marginBalance": 6369,
+    "shortBalance": 1,
+    "sblBalance": 7606
   },
   "historical": {
     "annual": [
@@ -10314,6 +10314,14 @@
         "shortBuy": 0,
         "shortSell": 1,
         "shortBalance": 8
+      },
+      "2026-10-19": {
+        "marginBuy": 105,
+        "marginSell": 32,
+        "marginBalance": 6369,
+        "shortBuy": 7,
+        "shortSell": 0,
+        "shortBalance": 1
       }
     },
     "securitiesLending": {
@@ -11359,6 +11367,13 @@
         "sblReturns": 206,
         "sblAdjustments": 0,
         "sblAvailable": 518
+      },
+      "2026-10-19": {
+        "sblBalance": 7606,
+        "sblShortSales": 1,
+        "sblReturns": 604,
+        "sblAdjustments": 0,
+        "sblAvailable": 520
       }
     }
   },
