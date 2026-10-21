@@ -111,7 +111,9 @@ def _processor(file_mgr, quarters, months, details=None):
 def _q(year, quarter):
     return {"year": year, "quarter": quarter, "revenue": 100.0, "grossProfit": 50.0,
             "operatingIncome": 30.0, "netIncome": 20.0, "eps": 1.0,
-            "grossMargin": 50.0, "operatingMargin": 30.0, "netMargin": 20.0}
+            "grossMargin": 50.0, "operatingMargin": 30.0, "netMargin": 20.0,
+            # 與 process_financials 現行產出一致：稅前／所得稅欄位一定存在（來源缺時為 None）
+            "preTaxIncome": 25.0, "incomeTax": 5.0}
 
 
 def test_corrupt_file_triggers_full_window_rebuild(isolated_file_manager):
@@ -489,3 +491,20 @@ def test_oldest_fresh_year_gets_its_yoy_once_the_previous_year_is_on_file():
 def test_yoy_is_not_computed_across_a_missing_year():
     rows = [_eur_year(2025, 200, 1.0), _eur_year(2023, 100, 1.0)]
     assert [r.get("revenueYoY") for r in _us().fill_revenue_yoy(rows)] == [None, None]
+
+
+def test_missing_tax_fields_widen_window_once():
+    """稅前淨利／所得稅欄位還沒寫過的公司要放寬視窗補齊；寫過（即使是 None）就不再放寬。"""
+    from finance_tools.orchestration.company_processor import history_is_short
+
+    def file_with(extra):
+        return {"historical": {
+            "quarterly": [{"year": 2026 - i // 4, "quarter": 4 - i % 4, "revenue": 1.0, **extra}
+                          for i in range(8)],
+            "monthlyRevenue": [{"year": 2026, "month": m} for m in range(1, 13)] * 2,
+        }}
+
+    assert history_is_short(file_with({})) is True, "新欄位不存在 → 放寬"
+    assert history_is_short(file_with({"preTaxIncome": 5.0, "incomeTax": 1.0})) is False
+    assert history_is_short(file_with({"preTaxIncome": None, "incomeTax": None})) is False, \
+        "來源本來就沒有的公司寫過 None，不可每天都走完整視窗"

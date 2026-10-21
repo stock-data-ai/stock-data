@@ -22,7 +22,22 @@ def history_is_short(data: Dict[str, Any]) -> bool:
     quarters = sum(1 for q in hist.get("quarterly") or [] if q.get("revenue") is not None)
     months = len(hist.get("monthlyRevenue") or [])
     return (quarters < config.MIN_QUARTERS_FOR_NORMAL_WINDOW
-            or months < config.MIN_MONTHS_FOR_NORMAL_WINDOW)
+            or months < config.MIN_MONTHS_FOR_NORMAL_WINDOW
+            or tax_fields_missing(hist))
+
+
+def tax_fields_missing(hist: Dict[str, Any]) -> bool:
+    """最近 8 季有損益的季度裡，有沒有一季還沒寫過 `preTaxIncome`。
+
+    稅前淨利／所得稅是 2026-10 才加的欄位；日更只抓一年，去年同期的這兩欄
+    要等一年才會自然長出來，稅率年比就一直算不出來。缺欄位就放寬視窗一次補齊
+    （FinMind 依請求次數計額度，視窗變長不多耗額度）。
+    看的是「key 在不在」而不是「值是不是 None」：來源本來就沒有的公司會寫 None，
+    寫過一次就不再重抓，不會每天都走完整視窗。
+    """
+    recent = [q for q in hist.get("quarterly") or [] if q.get("revenue") is not None]
+    recent.sort(key=lambda q: (q.get("year", 0), q.get("quarter", 0)), reverse=True)
+    return any("preTaxIncome" not in q for q in recent[:config.MIN_QUARTERS_FOR_NORMAL_WINDOW])
 
 
 class CompanyProcessor:
