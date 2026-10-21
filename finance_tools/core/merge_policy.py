@@ -36,6 +36,15 @@ MONTHLY_REVENUE_LIMIT = 72
 #: 內部人歷史每月只有一筆合計（約 100 bytes）。
 UNBOUNDED = ("quarterly", "annual", "dividends", "insiderHoldingsHistory")
 
+#: quarterly[] 裡由 `update-balance-sheet` 寫入的欄位。損益重抓（`build_final_data`）整筆換掉
+#: 同季時必須保留它們，否則每次日更都會把資產負債表／現金流的季度數字沖掉。
+#: ocf／capex／fcf 是**單季**數字（由累計制現金流量表相減而來），不是年初至今累計。
+QUARTERLY_BS_CF_FIELDS = (
+    "currentRatio", "debtRatio",
+    "accountsReceivable", "inventory",
+    "ocf", "capex", "fcf",
+)
+
 #: **所有以日期為 key 的歷史**（三大法人、融資融券、借券、大戶）都不在這裡收斂——
 #: 一律由 `scripts/archive_historical_data.py` 按整年**搬進** archive（不是刪除），
 #: 主檔只留當年＋前一年。

@@ -510,3 +510,91 @@ def test_income_statement_half_width_does_not_silently_become_zero():
     _, quarterly = DataProcessor.process_financials("9999", df)
     q = quarterly[0]
     assert (q["grossProfit"], q["operatingIncome"], q["netIncome"], q["eps"]) == (400.0, 200.0, 150.0, 1.5)
+
+
+# ── 8. 季度現金流／應收／存貨／稅率（成長品質檢查用）─────────────────────
+
+def _cum_cf(year, ocf_by_q, capex_by_q):
+    """累計制現金流量表：每季回報年初至季末合計。"""
+    rows = []
+    for q, v in ocf_by_q.items():
+        month = {1: 3, 2: 6, 3: 9, 4: 12}[q]
+        rows.append({"date": f"{year}-{month:02d}-30", "origin_name": "營業活動之淨現金流入（流出）", "value": v})
+    for q, v in capex_by_q.items():
+        month = {1: 3, 2: 6, 3: 9, 4: 12}[q]
+        rows.append({"date": f"{year}-{month:02d}-30", "origin_name": "取得不動產、廠房及設備", "value": v})
+    return pd.DataFrame(rows)
+
+
+def test_quarterly_cash_flow_is_split_from_cumulative():
+    """單季＝本季累計－上一季累計；數字取自 8103 2026H1 實際申報。"""
+    df = _cum_cf(2026, {1: 138132000.0, 2: 199484000.0}, {1: -36765000.0, 2: -136804000.0})
+    got = DataProcessor.process_quarterly_cash_flows("8103", df)
+    assert got[(2026, 1)] == {"ocf": 138132000.0, "capex": -36765000.0}
+    assert got[(2026, 2)] == {"ocf": 61352000.0, "capex": -100039000.0}
+
+
+def test_quarterly_cash_flow_missing_previous_quarter_is_none_not_cumulative():
+    """缺上一季累計時拆不出單季，回 None——不可拿累計值冒充單季。"""
+    df = _cum_cf(2026, {2: 199484000.0}, {2: -136804000.0})
+    got = DataProcessor.process_quarterly_cash_flows("8103", df)
+    assert got[(2026, 2)] == {"ocf": None, "capex": None}
+
+
+def test_balance_sheet_task_writes_quarterly_quality_fields(seeded):
+    """應收＝票據＋帳款＋關係人帳款；存貨與單季 ocf/capex/fcf 都落在 quarterly[]。"""
+    bs = _bs_rows(2025, 4) + [
+        {"date": "2025-12-30", "origin_name": "應收票據淨額", "value": 10.0},
+        {"date": "2025-12-30", "origin_name": "應收帳款淨額", "value": 200.0},
+        {"date": "2025-12-30", "origin_name": "應收帳款－關係人淨額", "value": 5.0},
+        {"date": "2025-12-30", "origin_name": "存貨", "value": 80.0},
+    ]
+    cf = _cum_cf(2025, {3: 200.0, 4: 300.0}, {3: -60.0, 4: -100.0})
+    _update_one(ReplayClient((pd.DataFrame(bs), True), (cf, True)), DataProcessor(),
+                seeded, "9999", "測試公司", "2019-01-01")
+    data = seeded.load_financial_data("9999")
+    q4 = next(q for q in data["historical"]["quarterly"] if (q["year"], q["quarter"]) == (2025, 4))
+    assert q4["accountsReceivable"] == 215.0
+    assert q4["inventory"] == 80.0
+    assert (q4["ocf"], q4["capex"], q4["fcf"]) == (100.0, -40.0, 60.0)
+    assert annual_metrics(seeded)[2025]["ocf"] == 300.0, "年度仍是全年累計"
+
+
+def test_receivable_without_main_item_is_none(seeded):
+    """只有票據、沒有「應收帳款淨額」時整欄 None，不拿票據冒充應收帳款。"""
+    bs = _bs_rows(2025, 4) + [{"date": "2025-12-30", "origin_name": "應收票據淨額", "value": 10.0}]
+    _update_one(ReplayClient((pd.DataFrame(bs), True), NO_DATA), DataProcessor(),
+                seeded, "9999", "測試公司", "2019-01-01")
+    data = seeded.load_financial_data("9999")
+    q4 = next(q for q in data["historical"]["quarterly"] if (q["year"], q["quarter"]) == (2025, 4))
+    assert q4["accountsReceivable"] is None
+
+
+def test_quarterly_quality_fields_survive_income_statement_refetch():
+    """損益日更整筆換掉同季時，資產負債表任務寫的季度欄位必須保留。"""
+    existing = {"historical": {
+        "quarterly": [quarter(2026, 2, accountsReceivable=1331644000.0, inventory=591970000.0,
+                              ocf=61352000.0, capex=-100039000.0, fcf=-38687000.0)],
+        "annual": [],
+    }}
+    got = build(existing, quarterly=[quarter(2026, 2, revenue=777.0)])["quarterly"][0]
+    assert got["revenue"] == 777.0
+    assert (got["accountsReceivable"], got["inventory"]) == (1331644000.0, 591970000.0)
+    assert (got["ocf"], got["capex"], got["fcf"]) == (61352000.0, -100039000.0, -38687000.0)
+
+
+def test_income_statement_tax_fields_none_when_source_lacks_them():
+    """稅前淨利／所得稅來源沒有就是 None，不可補 0（0 會被讀成稅率 0%）。"""
+    df = pd.DataFrame([
+        {"date": "2026-06-30", "origin_name": "營業收入合計", "value": 1000.0},
+        {"date": "2026-06-30", "origin_name": "本期淨利（淨損）", "value": 100.0},
+    ])
+    _, qs = DataProcessor.process_financials("9999", df)
+    assert qs[0]["preTaxIncome"] is None and qs[0]["incomeTax"] is None
+
+    df2 = pd.concat([df, pd.DataFrame([
+        {"date": "2026-06-30", "origin_name": "稅前淨利（淨損）", "value": 168365000.0},
+        {"date": "2026-06-30", "origin_name": "所得稅費用（利益）", "value": 45341000.0},
+    ])])
+    _, qs2 = DataProcessor.process_financials("9999", df2)
+    assert (qs2[0]["preTaxIncome"], qs2[0]["incomeTax"]) == (168365000.0, 45341000.0)

@@ -102,6 +102,16 @@ def _save_stats(task_name: str, batch, success: int, total: int) -> None:
         f.write(f"fin=0\nrev=0\nsuccess={success}\ntotal={total}\n")
 
 
+def _upsert_quarter(qmap: dict, quarterly_list: list, year: int, quarter: int, fields: dict) -> None:
+    """把欄位寫進 quarterly[] 的 (year, quarter)；沒有這季（例如只有年度資料）就新增一筆。"""
+    if (year, quarter) in qmap:
+        qmap[(year, quarter)].update(fields)
+    else:
+        new_q = {"year": year, "quarter": quarter, **fields}
+        qmap[(year, quarter)] = new_q
+        quarterly_list.append(new_q)
+
+
 def _update_one(
     client: FinMindClient,
     processor: DataProcessor,
@@ -134,9 +144,11 @@ def _update_one(
 
     # ── 抓現金流量表（年度，Q4 累計）────────────────────────────────
     cf_by_year: dict = {}
+    cf_by_yq: dict = {}  # {(year, quarter): {ocf, capex}}，單季
     cf_df, cf_ok = client.fetch_cash_flows_statement(code, start_date)
     if cf_ok and not cf_df.empty:
         cf_by_year = processor.process_cash_flows(code, cf_df)
+        cf_by_yq = processor.process_quarterly_cash_flows(code, cf_df)
 
     if not bs_by_yq and not cf_by_year:
         logger.debug(f"  [{code}] BS + CF 均無資料，跳過")
@@ -155,14 +167,25 @@ def _update_one(
         cr = round(current_assets / current_liab * 100, 2) if current_assets and current_liab and current_liab > 0 else None
         dr = round(total_liab / total_assets * 100, 2)     if total_liab and total_assets and total_assets > 0    else None
 
-        if (year, quarter) in qmap:
-            qmap[(year, quarter)]["currentRatio"] = cr
-            qmap[(year, quarter)]["debtRatio"]    = dr
-        else:
-            # quarterly[] 可能沒有這季（例如只有年度資料），新增一筆
-            new_q = {"year": year, "quarter": quarter, "currentRatio": cr, "debtRatio": dr}
-            qmap[(year, quarter)] = new_q
-            quarterly_list.append(new_q)
+        # 應收帳款＝票據＋帳款＋關係人帳款；主科目「應收帳款淨額」缺就整欄 None，
+        # 不拿只剩票據的數字冒充。
+        trade = bs.get("tradeReceivable")
+        ar = (
+            round(trade + (bs.get("notesReceivable") or 0) + (bs.get("tradeReceivableRelated") or 0), 0)
+            if trade is not None else None
+        )
+        inv = bs.get("inventory")
+        inv = round(inv, 0) if inv is not None else None
+
+        fields = {"currentRatio": cr, "debtRatio": dr, "accountsReceivable": ar, "inventory": inv}
+        _upsert_quarter(qmap, quarterly_list, year, quarter, fields)
+
+    # ── 合併單季 OCF / capex / FCF → quarterly[] ───────────────────────
+    # 只寫來源這次有回的季度，沒回的季度保留舊值（與年度欄位同一原則）。
+    for (year, quarter), cf in cf_by_yq.items():
+        ocf, capex = cf.get("ocf"), cf.get("capex")
+        fcf = round(ocf + capex, 0) if ocf is not None and capex is not None else None
+        _upsert_quarter(qmap, quarterly_list, year, quarter, {"ocf": ocf, "capex": capex, "fcf": fcf})
 
     # ── 合併 ROE / ROA / OCF / FCF → annual[]（Q4 年度數字）────────
     # 只在「來源這次真的回了這個年度」時才寫。抓取視窗是 7 年、單次呼叫也可能失敗，

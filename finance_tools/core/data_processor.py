@@ -178,6 +178,15 @@ class DataProcessor:
                 "NetIncome",
             ],
             "EPS": ["基本每股盈餘", "基本每股盈餘（元）", "EPS"],
+            # 稅前淨利與所得稅：算有效稅率用（判斷淨利成長是否被稅率放大）。
+            # 只認「所得稅費用（利益）」：另一種寫法「所得稅（費用）利益」正負號相反，不能混用。
+            "PreTaxIncome": ["稅前淨利（淨損）", "繼續營業單位稅前淨利（淨損）"],
+            "IncomeTax": ["所得稅費用（利益）"],
+        }
+        # 這兩欄來源沒有就寫 None，不像舊欄位補 0：0 會被讀成「稅率 0%」。
+        OPTIONAL_KEY_MAP = {
+            "PreTaxIncome": "preTaxIncome",
+            "IncomeTax": "incomeTax",
         }
 
         financials_df = financials_df.copy()
@@ -236,6 +245,9 @@ class DataProcessor:
             q = {"year": int(row["year"]), "quarter": int(row["quarter"])}
             for src_key, out_key in KEY_MAP.items():
                 q[out_key] = float(row.get(src_key, 0) or 0)
+            for src_key, out_key in OPTIONAL_KEY_MAP.items():
+                v = row.get(src_key)
+                q[out_key] = None if v is None or pd.isna(v) else round(float(v), 0)
             quarterly_data.append(q)
 
         quarterly_data.sort(key=lambda x: (x["year"], x["quarter"]))
@@ -399,6 +411,12 @@ class DataProcessor:
             "equity":             ["歸屬於母公司業主之權益合計", "權益總額", "權益合計"],
             "currentAssets":      ["流動資產合計", "流動資產"],
             "currentLiabilities": ["流動負債合計", "流動負債"],
+            # 應收帳款三項分開抓，由呼叫端加總成 accountsReceivable（票據＋帳款＋關係人帳款）。
+            # 只算「應收帳款淨額」會漏掉票據：8103 2026Q2 年增 45.8%，加總後 48.5% 才與市場分析一致。
+            "notesReceivable":        ["應收票據淨額"],
+            "tradeReceivable":        ["應收帳款淨額"],
+            "tradeReceivableRelated": ["應收帳款－關係人淨額"],
+            "inventory":              ["存貨", "存貨合計"],
         }
         all_names = {name: key for key, names in TARGET.items() for name in names}
         name_priority = {
@@ -486,4 +504,65 @@ class DataProcessor:
             result[int(year)] = {"ocf": ocf, "capex": capex}
 
         logger.debug(f"  Processed cash flows for {stock_id}: {sorted(result.keys())} years")
+        return result
+
+    @classmethod
+    def process_quarterly_cash_flows(
+        cls, stock_id: str, cf_df: pd.DataFrame
+    ) -> Dict[tuple, Dict]:
+        """
+        把累計制現金流量表拆成「單季」數字。
+
+        FinMind 每季回報的是年初至季末的累計值（Q2 = 上半年合計），所以
+        單季 = 本季累計 − 同年上一季累計；Q1 直接用累計值。
+        上一季累計缺資料時無法拆，該季回 None，不拿累計值冒充單季。
+
+        Returns: {(year, quarter): {"ocf": float|None, "capex": float|None}}
+        capex 維持來源正負號（支出為負），與年度 fcf = ocf + capex 的算法一致。
+        """
+        if cf_df.empty:
+            return {}
+
+        FIELDS = {
+            "ocf":   ["營業活動之淨現金流入（流出）", "營業活動之淨現金流入"],
+            "capex": ["取得不動產、廠房及設備", "購置不動產、廠房及設備"],
+        }
+
+        cf_df = cf_df.copy()
+        cf_df["origin_name"] = cf_df["origin_name"].map(normalize_item_name)
+        cf_df["date"] = pd.to_datetime(cf_df["date"])
+
+        # 先取各季末的累計值：{(year, quarter): {field: value}}
+        cumulative: Dict[tuple, Dict] = {}
+        for date, group in cf_df.groupby("date"):
+            quarter = cls._MONTH_TO_QUARTER.get(date.month)
+            if quarter is None:
+                continue
+            values = {}
+            for field, names in FIELDS.items():
+                for name in names:  # 依優先順序取第一個有值的科目
+                    rows = group[group["origin_name"] == name]
+                    if not rows.empty:
+                        values[field] = float(rows["value"].iloc[0])
+                        break
+            if values:
+                cumulative[(date.year, quarter)] = values
+
+        result: Dict[tuple, Dict] = {}
+        for (year, quarter), cum in cumulative.items():
+            prev = cumulative.get((year, quarter - 1)) if quarter > 1 else None
+            single = {}
+            for field in FIELDS:
+                cur = cum.get(field)
+                if cur is None:
+                    single[field] = None
+                elif quarter == 1:
+                    single[field] = round(cur, 0)
+                elif prev is not None and prev.get(field) is not None:
+                    single[field] = round(cur - prev[field], 0)
+                else:
+                    single[field] = None
+            result[(year, quarter)] = single
+
+        logger.debug(f"  Processed quarterly cash flows for {stock_id}: {len(result)} quarters")
         return result

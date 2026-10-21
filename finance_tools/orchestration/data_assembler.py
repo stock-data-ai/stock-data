@@ -116,7 +116,7 @@ class DataAssembler:
         merged_quarterly = merge_policy.merge_by_key(
             existing_historical.get('quarterly'), quarterly,
             key=lambda q: (q['year'], q['quarter']),
-            preserve=("currentRatio", "debtRatio"),
+            preserve=merge_policy.QUARTERLY_BS_CF_FIELDS,
         )
 
         # Rebuild annual from the *full* merged quarterly history. Fetching only uses a
