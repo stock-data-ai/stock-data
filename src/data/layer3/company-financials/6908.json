@@ -10,11 +10,11 @@
     "operatingMargin": 0.5,
     "netMargin": 0.17,
     "eps": 0.05,
-    "marketCap": 931359000.0,
+    "marketCap": 922064000.0,
     "dividendFrequency": "年",
-    "pe": 22.57,
-    "pb": 0.72,
-    "dividendYield": 4.95
+    "pe": 22.34,
+    "pb": 0.71,
+    "dividendYield": 5.0
   },
   "historical": {
     "annual": [
@@ -3744,10 +3744,33 @@
         "dealer_sell": 1.0,
         "dealer_net_buy": -1.0,
         "code": "6908"
+      },
+      "2026-10-21": {
+        "dealer_hedging_buy": 0.0,
+        "dealer_self_buy": 0.0,
+        "foreign_buy": 0.0,
+        "foreign_dealer_buy": 0.0,
+        "trust_buy": 0.0,
+        "dealer_hedging_net_buy": -3.096,
+        "dealer_self_net_buy": 0.0,
+        "foreign_net_buy": -1.0,
+        "foreign_dealer_net_buy": 0.0,
+        "trust_net_buy": 0.0,
+        "dealer_hedging_sell": 3.096,
+        "dealer_self_sell": 0.0,
+        "foreign_sell": 1.0,
+        "foreign_dealer_sell": 0.0,
+        "trust_sell": 0.0,
+        "dealer_buy": 0.0,
+        "dealer_sell": 3.096,
+        "dealer_net_buy": -3.096,
+        "code": "6908",
+        "foreign_ratio": 0.75,
+        "foreign_shares": 279
       }
     }
   },
-  "lastUpdated": "2026-10-20",
+  "lastUpdated": "2026-10-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
