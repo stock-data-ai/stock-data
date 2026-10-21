@@ -96,16 +96,13 @@
         "operatingIncome": -67288000.0,
         "netIncome": -65368000.0,
         "eps": -2.2,
+        "preTaxIncome": -65368000.0,
+        "incomeTax": 0.0,
         "grossMargin": 60.67,
         "operatingMargin": -37.94,
         "netMargin": -36.86,
         "currentRatio": 122.82,
-        "debtRatio": 67.64,
-        "accountsReceivable": 31942000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 67.64
       },
       {
         "year": 2025,
@@ -115,16 +112,13 @@
         "operatingIncome": -89974000.0,
         "netIncome": -83863000.0,
         "eps": -2.85,
+        "preTaxIncome": -83785000.0,
+        "incomeTax": 78000.0,
         "grossMargin": 57.85,
         "operatingMargin": -53.93,
         "netMargin": -50.26,
         "currentRatio": 163.28,
-        "debtRatio": 52.72,
-        "accountsReceivable": 31432000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 52.72
       },
       {
         "year": 2025,
@@ -134,16 +128,13 @@
         "operatingIncome": -75793000.0,
         "netIncome": -79234000.0,
         "eps": -2.7,
+        "preTaxIncome": -79228000.0,
+        "incomeTax": 6000.0,
         "grossMargin": 58.55,
         "operatingMargin": -38.47,
         "netMargin": -40.22,
         "currentRatio": 208.63,
-        "debtRatio": 41.31,
-        "accountsReceivable": 31082000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 41.31
       },
       {
         "year": 2024,
@@ -153,16 +144,13 @@
         "operatingIncome": -63647000.0,
         "netIncome": -61426000.0,
         "eps": -2.06,
+        "preTaxIncome": -61346000.0,
+        "incomeTax": 80000.0,
         "grossMargin": 53.35,
         "operatingMargin": -28.62,
         "netMargin": -27.62,
         "currentRatio": 228.4,
-        "debtRatio": 38.68,
-        "accountsReceivable": 38425000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 38.68
       },
       {
         "year": 2024,
@@ -172,16 +160,13 @@
         "operatingIncome": -72737000.0,
         "netIncome": -63367000.0,
         "eps": -3.34,
+        "preTaxIncome": -63367000.0,
+        "incomeTax": 0.0,
         "grossMargin": 55.76,
         "operatingMargin": -36.16,
         "netMargin": -31.51,
         "currentRatio": 226.65,
-        "debtRatio": 38.69,
-        "accountsReceivable": 36670000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 38.69
       },
       {
         "year": 2023,
@@ -191,38 +176,25 @@
         "operatingIncome": -156211000.0,
         "netIncome": -194546000.0,
         "eps": -19.77,
+        "preTaxIncome": -194373000.0,
+        "incomeTax": 173000.0,
         "grossMargin": 49.59,
         "operatingMargin": -38.66,
         "netMargin": -48.14,
         "currentRatio": 268.78,
-        "debtRatio": 34.83,
-        "accountsReceivable": 40275000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 34.83
       },
       {
         "year": 2023,
         "quarter": 2,
         "currentRatio": 265.59,
-        "debtRatio": 66.65,
-        "accountsReceivable": 38528000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 66.65
       },
       {
         "year": 2022,
         "quarter": 4,
         "currentRatio": 334.44,
-        "debtRatio": 58.62,
-        "accountsReceivable": 27873000.0,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 58.62
       }
     ],
     "monthlyRevenue": [
@@ -894,7 +866,7 @@
       }
     }
   },
-  "lastUpdated": "2026-10-21",
+  "lastUpdated": "2026-10-22",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [

@@ -57,7 +57,7 @@
         "grossProfit": 127760000.0,
         "operatingIncome": -65782000.0,
         "netIncome": -39639000.0,
-        "eps": -2.13,
+        "eps": -1.07,
         "grossMargin": 35.51,
         "operatingMargin": -18.28,
         "netMargin": -11.02,
@@ -75,7 +75,7 @@
         "grossProfit": -20369000.0,
         "operatingIncome": -224658000.0,
         "netIncome": -229055000.0,
-        "eps": -9.45,
+        "eps": -6.64,
         "grossMargin": -7.31,
         "operatingMargin": -80.67,
         "netMargin": -82.25,
@@ -93,7 +93,7 @@
         "grossProfit": 192819000.0,
         "operatingIncome": -12291000.0,
         "netIncome": 5387000.0,
-        "eps": 0.94,
+        "eps": 0.16,
         "grossMargin": 28.43,
         "operatingMargin": -1.81,
         "netMargin": 0.79,
@@ -111,7 +111,7 @@
         "grossProfit": 197472000.0,
         "operatingIncome": 13600000.0,
         "netIncome": 30653000.0,
-        "eps": -0.5,
+        "eps": 0.94,
         "grossMargin": 24.78,
         "operatingMargin": 1.71,
         "netMargin": 3.85,
@@ -134,12 +134,25 @@
         "operatingMargin": -29.17,
         "netMargin": -19.45,
         "note": "累季",
-        "revenueYoY": null,
+        "revenueYoY": -8.1,
         "roe": -26.11,
         "roa": -15.61,
         "ocf": 13041000.0,
         "fcf": 10239000.0,
         "debtRatio": 40.23
+      },
+      {
+        "year": 2019,
+        "revenue": 341809000.0,
+        "grossProfit": 64158000.0,
+        "operatingIncome": -93171000.0,
+        "netIncome": -94507000.0,
+        "eps": -3.43,
+        "grossMargin": 18.77,
+        "operatingMargin": -27.26,
+        "netMargin": -27.65,
+        "note": "累季",
+        "revenueYoY": null
       }
     ],
     "quarterly": [
@@ -151,16 +164,13 @@
         "operatingIncome": 77971000.0,
         "netIncome": 82464000.0,
         "eps": 2.17,
+        "preTaxIncome": 83422000.0,
+        "incomeTax": 958000.0,
         "grossMargin": 54.61,
         "operatingMargin": 24.62,
         "netMargin": 26.04,
         "currentRatio": 191.79,
-        "debtRatio": 50.84,
-        "accountsReceivable": 88931000.0,
-        "inventory": 144524000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 50.84
       },
       {
         "year": 2025,
@@ -170,16 +180,13 @@
         "operatingIncome": -12771000.0,
         "netIncome": -9932000.0,
         "eps": -0.26,
+        "preTaxIncome": -9816000.0,
+        "incomeTax": 116000.0,
         "grossMargin": 37.19,
         "operatingMargin": -5.98,
         "netMargin": -4.65,
         "currentRatio": 146.36,
-        "debtRatio": 60.65,
-        "accountsReceivable": 66258000.0,
-        "inventory": 114200000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 60.65
       },
       {
         "year": 2025,
@@ -189,16 +196,13 @@
         "operatingIncome": -34753000.0,
         "netIncome": -39529000.0,
         "eps": -1.05,
+        "preTaxIncome": -39298000.0,
+        "incomeTax": 231000.0,
         "grossMargin": 33.99,
         "operatingMargin": -22.9,
         "netMargin": -26.05,
         "currentRatio": 179.81,
-        "debtRatio": 53.12,
-        "accountsReceivable": 37409000.0,
-        "inventory": 87166000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 53.12
       },
       {
         "year": 2024,
@@ -207,17 +211,14 @@
         "grossProfit": 82030000.0,
         "operatingIncome": -10844000.0,
         "netIncome": 223000.0,
-        "eps": -1.07,
+        "eps": -0.01,
+        "preTaxIncome": -307000.0,
+        "incomeTax": -530000.0,
         "grossMargin": 40.69,
         "operatingMargin": -5.38,
         "netMargin": 0.11,
         "currentRatio": 244.93,
-        "debtRatio": 41.42,
-        "accountsReceivable": 79025000.0,
-        "inventory": 66058000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 41.42
       },
       {
         "year": 2024,
@@ -227,16 +228,13 @@
         "operatingIncome": -54938000.0,
         "netIncome": -39862000.0,
         "eps": -1.06,
+        "preTaxIncome": -39862000.0,
+        "incomeTax": 0.0,
         "grossMargin": 28.9,
         "operatingMargin": -34.72,
         "netMargin": -25.19,
         "currentRatio": 224.62,
-        "debtRatio": 37.88,
-        "accountsReceivable": 51815000.0,
-        "inventory": 79028000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 37.88
       },
       {
         "year": 2023,
@@ -245,17 +243,14 @@
         "grossProfit": -24738000.0,
         "operatingIncome": -127435000.0,
         "netIncome": -132295000.0,
-        "eps": -6.64,
+        "eps": -3.83,
+        "preTaxIncome": -132276000.0,
+        "incomeTax": 19000.0,
         "grossMargin": -15.24,
         "operatingMargin": -78.5,
         "netMargin": -81.5,
         "currentRatio": 163.73,
-        "debtRatio": 52.83,
-        "accountsReceivable": 82224000.0,
-        "inventory": 86067000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 52.83
       },
       {
         "year": 2023,
@@ -265,16 +260,13 @@
         "operatingIncome": -97223000.0,
         "netIncome": -96760000.0,
         "eps": -2.81,
+        "preTaxIncome": -97024000.0,
+        "incomeTax": -264000.0,
         "grossMargin": 3.76,
         "operatingMargin": -83.69,
         "netMargin": -83.29,
         "currentRatio": 280.25,
-        "debtRatio": 32.53,
-        "accountsReceivable": 42100000.0,
-        "inventory": 148121000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 32.53
       },
       {
         "year": 2022,
@@ -283,17 +275,14 @@
         "grossProfit": 74487000.0,
         "operatingIncome": -27479000.0,
         "netIncome": -21678000.0,
-        "eps": 0.16,
+        "eps": -0.62,
+        "preTaxIncome": -23297000.0,
+        "incomeTax": -1619000.0,
         "grossMargin": 28.34,
         "operatingMargin": -10.45,
         "netMargin": -8.25,
         "currentRatio": 273.22,
-        "debtRatio": 34.35,
-        "accountsReceivable": 55281000.0,
-        "inventory": 180309000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 34.35
       },
       {
         "year": 2022,
@@ -303,16 +292,13 @@
         "operatingIncome": 15188000.0,
         "netIncome": 27065000.0,
         "eps": 0.78,
+        "preTaxIncome": 26785000.0,
+        "incomeTax": -280000.0,
         "grossMargin": 28.49,
         "operatingMargin": 3.66,
         "netMargin": 6.52,
         "currentRatio": 197.39,
-        "debtRatio": 47.51,
-        "accountsReceivable": 246178000.0,
-        "inventory": 274189000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 47.51
       },
       {
         "year": 2021,
@@ -321,17 +307,14 @@
         "grossProfit": 129435000.0,
         "operatingIncome": 31525000.0,
         "netIncome": 44305000.0,
-        "eps": -0.06,
+        "eps": 1.38,
+        "preTaxIncome": 40580000.0,
+        "incomeTax": -3725000.0,
         "grossMargin": 25.44,
         "operatingMargin": 6.2,
         "netMargin": 8.71,
         "currentRatio": 199.26,
-        "debtRatio": 46.89,
-        "accountsReceivable": 267638000.0,
-        "inventory": 219632000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 46.89
       },
       {
         "year": 2021,
@@ -341,16 +324,13 @@
         "operatingIncome": -17925000.0,
         "netIncome": -13652000.0,
         "eps": -0.44,
+        "preTaxIncome": -13652000.0,
+        "incomeTax": 0.0,
         "grossMargin": 23.62,
         "operatingMargin": -6.22,
         "netMargin": -4.74,
         "currentRatio": 226.6,
-        "debtRatio": 41.13,
-        "accountsReceivable": 102272000.0,
-        "inventory": 162976000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 41.13
       },
       {
         "year": 2020,
@@ -360,38 +340,35 @@
         "operatingIncome": -91612000.0,
         "netIncome": -61088000.0,
         "eps": -2.1,
+        "preTaxIncome": -61088000.0,
+        "incomeTax": 0.0,
         "grossMargin": 15.75,
         "operatingMargin": -29.17,
         "netMargin": -19.45,
         "currentRatio": 229.13,
-        "debtRatio": 40.23,
-        "accountsReceivable": 135046000.0,
-        "inventory": 71561000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 40.23
       },
       {
         "year": 2020,
         "quarter": 2,
         "currentRatio": 353.22,
-        "debtRatio": 26.24,
-        "accountsReceivable": 58855000.0,
-        "inventory": 51114000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 26.24
       },
       {
         "year": 2019,
         "quarter": 4,
+        "revenue": 341809000.0,
+        "grossProfit": 64158000.0,
+        "operatingIncome": -93171000.0,
+        "netIncome": -94507000.0,
+        "eps": -3.43,
+        "preTaxIncome": -92713000.0,
+        "incomeTax": 1794000.0,
+        "grossMargin": 18.77,
+        "operatingMargin": -27.26,
+        "netMargin": -27.65,
         "currentRatio": 804.21,
-        "debtRatio": 11.6,
-        "accountsReceivable": 95964000.0,
-        "inventory": 69448000.0,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 11.6
       }
     ],
     "monthlyRevenue": [
@@ -4894,7 +4871,7 @@
       }
     }
   },
-  "lastUpdated": "2026-10-21",
+  "lastUpdated": "2026-10-22",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [

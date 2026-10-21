@@ -97,16 +97,13 @@
         "operatingIncome": -59928000.0,
         "netIncome": -54389000.0,
         "eps": -0.78,
+        "preTaxIncome": -54389000.0,
+        "incomeTax": null,
         "grossMargin": 0,
         "operatingMargin": 0,
         "netMargin": 0,
         "currentRatio": 1356.88,
-        "debtRatio": 6.14,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 6.14
       },
       {
         "year": 2025,
@@ -116,16 +113,13 @@
         "operatingIncome": -90223000.0,
         "netIncome": -77428000.0,
         "eps": -1.11,
+        "preTaxIncome": -77428000.0,
+        "incomeTax": 0.0,
         "grossMargin": 0,
         "operatingMargin": 0,
         "netMargin": 0,
         "currentRatio": 1648.19,
-        "debtRatio": 5.41,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 5.41
       },
       {
         "year": 2025,
@@ -135,16 +129,13 @@
         "operatingIncome": -85144000.0,
         "netIncome": -94958000.0,
         "eps": -1.36,
+        "preTaxIncome": -94958000.0,
+        "incomeTax": 0.0,
         "grossMargin": 0,
         "operatingMargin": 0,
         "netMargin": 0,
         "currentRatio": 2330.61,
-        "debtRatio": 4.34,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 4.34
       },
       {
         "year": 2024,
@@ -154,16 +145,13 @@
         "operatingIncome": -75140000.0,
         "netIncome": -67547000.0,
         "eps": -1.08,
+        "preTaxIncome": -67439000.0,
+        "incomeTax": 108000.0,
         "grossMargin": 0,
         "operatingMargin": 0,
         "netMargin": 0,
         "currentRatio": 3262.18,
-        "debtRatio": 4.08,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 4.08
       },
       {
         "year": 2024,
@@ -173,16 +161,13 @@
         "operatingIncome": -26010000.0,
         "netIncome": -20307000.0,
         "eps": -0.32,
+        "preTaxIncome": -19686000.0,
+        "incomeTax": -17000.0,
         "grossMargin": 0,
         "operatingMargin": 0,
         "netMargin": 0,
         "currentRatio": 4137.35,
-        "debtRatio": 4.23,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 4.23
       },
       {
         "year": 2023,
@@ -192,38 +177,25 @@
         "operatingIncome": -26326000.0,
         "netIncome": -25096000.0,
         "eps": -1.19,
+        "preTaxIncome": -25121000.0,
+        "incomeTax": -25000.0,
         "grossMargin": 0,
         "operatingMargin": 0,
         "netMargin": 0,
         "currentRatio": 2868.0,
-        "debtRatio": 3.52,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 3.52
       },
       {
         "year": 2023,
         "quarter": 2,
         "currentRatio": 849.83,
-        "debtRatio": 9.08,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 9.08
       },
       {
         "year": 2022,
         "quarter": 4,
         "currentRatio": 43612.05,
-        "debtRatio": 0.12,
-        "accountsReceivable": null,
-        "inventory": null,
-        "ocf": null,
-        "capex": null,
-        "fcf": null
+        "debtRatio": 0.12
       }
     ],
     "monthlyRevenue": [
@@ -1327,7 +1299,7 @@
       }
     }
   },
-  "lastUpdated": "2026-10-21",
+  "lastUpdated": "2026-10-22",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
