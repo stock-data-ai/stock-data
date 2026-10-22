@@ -14,7 +14,10 @@
     "dividendFrequency": "年",
     "pe": 11.54,
     "pb": 1.69,
-    "dividendYield": 5.68
+    "dividendYield": 5.68,
+    "marginBalance": 0,
+    "shortBalance": 0,
+    "sblBalance": 0
   },
   "historical": {
     "annual": [
@@ -2541,6 +2544,25 @@
         "code": "7794",
         "foreign_ratio": 1.44,
         "foreign_shares": 405
+      }
+    },
+    "marginTrading": {
+      "2026-10-22": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 0,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
+      }
+    },
+    "securitiesLending": {
+      "2026-10-22": {
+        "sblBalance": 0,
+        "sblShortSales": 0,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 0
       }
     }
   },
