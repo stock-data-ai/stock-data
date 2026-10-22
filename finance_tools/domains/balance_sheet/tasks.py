@@ -157,7 +157,10 @@ def _update_one(
     cf_by_yq: dict = {}  # {(year, quarter): {ocf, capex}}，單季
     if not cf_df.empty:
         cf_by_year = processor.process_cash_flows(code, cf_df)
-        cf_by_yq = processor.process_quarterly_cash_flows(code, cf_df)
+        # 單期現金流要對齊損益表實際申報的期別（半年報公司只有 Q2／Q4，見 process_quarterly_cash_flows）
+        reported = {(q["year"], q["quarter"]) for q in quarterly_list
+                    if "quarter" in q and q.get("revenue") is not None}
+        cf_by_yq = processor.process_quarterly_cash_flows(code, cf_df, reported or None)
 
     if not bs_by_yq and not cf_by_year and not cf_by_yq:
         logger.debug(f"  [{code}] BS + CF 均無資料，跳過")

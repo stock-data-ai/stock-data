@@ -582,3 +582,25 @@ def test_income_statement_tax_fields_none_when_source_lacks_them():
     ])])
     _, qs2 = DataProcessor.process_financials("9999", df2)
     assert (qs2[0]["preTaxIncome"], qs2[0]["incomeTax"]) == (168365000.0, 45341000.0)
+
+
+def test_semi_annual_filer_cash_flow_splits_into_halves():
+    """只申報半年報（沒有 Q1／Q3）：Q2 那列是上半年、Q4 那列是下半年，現金流跟著拆成兩個半年。
+    數字取自 1260 富味鄉 2026H1 實際申報（營業現金流 16,860,000）。"""
+    df = _cum_cf(2026, {2: 16860000.0, 4: 50000000.0}, {2: -1000000.0, 4: -3000000.0})
+    got = DataProcessor.process_quarterly_cash_flows("1260", df, reported={(2026, 2), (2026, 4)})
+    assert got[(2026, 2)] == {"ocf": 16860000.0, "capex": -1000000.0}, "上半年＝Q2 累計本身"
+    assert got[(2026, 4)] == {"ocf": 33140000.0, "capex": -2000000.0}, "下半年＝全年－上半年"
+
+
+def test_quarterly_filer_split_is_unchanged_by_reported_periods():
+    df = _cum_cf(2026, {1: 138132000.0, 2: 199484000.0}, {1: -36765000.0, 2: -136804000.0})
+    got = DataProcessor.process_quarterly_cash_flows("8103", df, reported={(2026, 1), (2026, 2)})
+    assert got[(2026, 2)] == {"ocf": 61352000.0, "capex": -100039000.0}
+
+
+def test_cash_flow_q1_counts_as_filed_even_if_income_statement_row_is_missing():
+    """損益表少了 Q1 那列，但現金流量表有 Q1：Q2 仍要減 Q1，不能把上半年累計當成單季。"""
+    df = _cum_cf(2026, {1: 138132000.0, 2: 199484000.0}, {1: -36765000.0, 2: -136804000.0})
+    got = DataProcessor.process_quarterly_cash_flows("8103", df, reported={(2026, 2)})
+    assert got[(2026, 2)]["ocf"] == 61352000.0

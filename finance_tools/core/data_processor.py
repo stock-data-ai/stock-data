@@ -6,7 +6,7 @@ Data Processor - 統一的數據處理邏輯
 import logging
 import pandas as pd
 import math
-from typing import List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -519,14 +519,20 @@ class DataProcessor:
 
     @classmethod
     def process_quarterly_cash_flows(
-        cls, stock_id: str, cf_df: pd.DataFrame
+        cls, stock_id: str, cf_df: pd.DataFrame, reported: Optional[set] = None
     ) -> Dict[tuple, Dict]:
         """
-        把累計制現金流量表拆成「單季」數字。
+        把累計制現金流量表拆成「單期」數字，期別與損益表 quarterly[] 的那一列對齊。
 
         FinMind 每季回報的是年初至季末的累計值（Q2 = 上半年合計），所以
-        單季 = 本季累計 − 同年上一季累計；Q1 直接用累計值。
-        上一季累計缺資料時無法拆，該季回 None，不拿累計值冒充單季。
+        單期 = 本期累計 − 同年「前一個申報期」的累計；該年第一個申報期直接用累計值。
+        `reported` 是這家公司損益表實際有的期別 {(year, quarter)}：
+          - 按季申報：前一個申報期就是上一季，結果與「本季－上一季」相同。
+          - 只申報半年報（沒有 Q1／Q3，約 300 家，多為生技與小型股）：quarterly[] 的
+            Q2 那列是上半年、Q4 那列是下半年，現金流也要拆成上半年／下半年才對得上。
+            舊規則固定減上一季，這些公司 Q1 不存在，於是全部算不出來。
+        前一個申報期的累計缺資料時無法拆，該期回 None，不拿累計值冒充單期。
+        `reported` 為 None 時視為每一季都有申報。
 
         Returns: {(year, quarter): {"ocf": float|None, "capex": float|None}}
         capex 維持來源正負號（支出為負），與年度 fcf = ocf + capex 的算法一致。
@@ -557,14 +563,22 @@ class DataProcessor:
                 cumulative[(date.year, quarter)] = values
 
         result: Dict[tuple, Dict] = {}
+        def previous_period(year: int, quarter: int) -> Optional[int]:
+            """同一年、在 quarter 之前最近的申報期；沒有就回 None（本期是當年第一期）。"""
+            # 現金流量表本身有那一期，也算有申報：損益表少一列時不會把上半年累計當成單季
+            earlier = [q for q in range(quarter - 1, 0, -1)
+                       if reported is None or (year, q) in reported or (year, q) in cumulative]
+            return earlier[0] if earlier else None
+
         for (year, quarter), cum in cumulative.items():
-            prev = cumulative.get((year, quarter - 1)) if quarter > 1 else None
+            prev_q = previous_period(year, quarter)
+            prev = cumulative.get((year, prev_q)) if prev_q is not None else None
             single = {}
             for field in FIELDS:
                 cur = cum.get(field)
                 if cur is None:
                     single[field] = None
-                elif quarter == 1:
+                elif prev_q is None:
                     single[field] = round(cur, 0)
                 elif prev is not None and prev.get(field) is not None:
                     single[field] = round(cur - prev[field], 0)
