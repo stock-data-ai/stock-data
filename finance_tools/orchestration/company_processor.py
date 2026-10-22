@@ -1,65 +1,29 @@
 import logging
-import time
-import random
-from typing import Dict, Any, Callable
+from typing import Dict, Any
 
 import pandas as pd
-from datetime import timedelta
-from finance_tools.core import DataProcessor, FileManager, FinMindClient
-from finance_tools.core.timezone import now_tw
+from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.api_client import ApiExhaustedError
-import finance_tools.config as config
-from finance_tools.orchestration.fetch_orchestrator import FetchOrchestrator
 from finance_tools.domains.financials.calculator import FinancialCalculator
 from finance_tools.orchestration.data_assembler import DataAssembler
 from finance_tools.domains.institutional_investors.calculator import InstRatioCalculator
 logger = logging.getLogger(__name__)
 
 
-def history_is_short(data: Dict[str, Any]) -> bool:
-    """檔裡的季報或月營收少於門檻（見 `config.MIN_*_FOR_NORMAL_WINDOW`）。"""
-    hist = (data or {}).get("historical") or {}
-    quarters = sum(1 for q in hist.get("quarterly") or [] if q.get("revenue") is not None)
-    months = len(hist.get("monthlyRevenue") or [])
-    return (quarters < config.MIN_QUARTERS_FOR_NORMAL_WINDOW
-            or months < config.MIN_MONTHS_FOR_NORMAL_WINDOW
-            or tax_fields_missing(hist))
-
-
-def tax_fields_missing(hist: Dict[str, Any]) -> bool:
-    """最近 8 季有損益的季度裡，有沒有一季還沒寫過 `preTaxIncome`。
-
-    稅前淨利／所得稅是 2026-10 才加的欄位；日更只抓一年，去年同期的這兩欄
-    要等一年才會自然長出來，稅率年比就一直算不出來。缺欄位就放寬視窗一次補齊
-    （FinMind 依請求次數計額度，視窗變長不多耗額度）。
-    看的是「key 在不在」而不是「值是不是 None」：來源本來就沒有的公司會寫 None，
-    寫過一次就不再重抓，不會每天都走完整視窗。
-    """
-    recent = [q for q in hist.get("quarterly") or [] if q.get("revenue") is not None]
-    recent.sort(key=lambda q: (q.get("year", 0), q.get("quarter", 0)), reverse=True)
-    return any("preTaxIncome" not in q for q in recent[:config.MIN_QUARTERS_FOR_NORMAL_WINDOW])
-
-
 class CompanyProcessor:
     """
-    Encapsulates the logic for processing all financial data for a single company
-    by orchestrating fetching, calculation, and data assembly.
+    逐家組裝 company-financials/{code}.json。
+
+    不自己打 API：財報（`process_company`）收的是全市場抓取後分到這家的資料
+    （見 `core/market_fetch.py`），日更（`process_daily_only`）收的是 TWSE／TPEx 批次資料。
     """
-    def __init__(self, processor: DataProcessor, file_mgr: FileManager, finmind_client: FinMindClient,
-                 financials_fetcher: Callable, revenue_fetcher: Callable,
+    def __init__(self, processor: DataProcessor, file_mgr: FileManager,
                  all_companies_details: Dict[str, Any],
-                 institutional_investors_shares_fetcher: Callable,
-                 shareholding_fetcher: Callable = None,
                  inst_ratio_calculator: InstRatioCalculator = None):
         self.file_mgr = file_mgr
         self.processor = processor
         self.all_companies_details = all_companies_details
 
-        self.fetch_orchestrator = FetchOrchestrator(
-            finmind_client, financials_fetcher, revenue_fetcher,
-            institutional_investors_shares_fetcher,
-            shareholding_fetcher=shareholding_fetcher,
-        )
         self.calculator = FinancialCalculator()
         self.assembler = DataAssembler()
         self.inst_ratio_calculator = inst_ratio_calculator
@@ -131,78 +95,60 @@ class CompanyProcessor:
         inst_success = bool(foreign_holdings or shares_success)
         return ratios, inst_success
 
-    def process_company(self, code: str, name: str, start_date: str, force_update: bool = False) -> tuple[bool, dict]:
+    def process_company(self, code: str, name: str,
+                        statements_df: pd.DataFrame, revenue_df: pd.DataFrame) -> tuple[bool, dict]:
         """
-        Processes a single company by orchestrating fetching, calculation, and assembly.
+        把這家公司的損益表與月營收（全市場抓取後分到這家的列）處理後併進財報檔。
+
+        每次都是完整視窗的資料（見 `config.INCOME_STATEMENT_YEARS`），所以新公司、壞檔、
+        新加的欄位都在這一輪補齊；來源沒有這家的資料時傳空 DataFrame，合併時保留既有歷史。
         Returns (save_success, status_details).
         """
         status = {
             "fin": False,
             "rev": False,
-            "inst": False,
-            "div": False,
             "quality": "low",
-            "skipped": False,
-            "full_window": False,
         }
-
-        if not force_update and self.file_mgr.is_updated_today(code):
-            logger.info(f"  ✓ Skipping {code} (already updated today)")
-            status["skipped"] = True
-            return True, status
 
         logger.debug(f"正在處理 {code} {name}...")
         try:
-            # 0. 檔裡的歷史不夠就把視窗放寬，讓這一次直接把歷史長回來。
-            #    判準看「檔裡有多少」，不看「檔案在不在／壞不壞」：新公司（日更會先建
-            #    只有市值的空殼）、壞檔、上次放寬卻抓失敗而寫出的空殼，全都落在「不夠」，
-            #    而且沒補齊之前每一輪都會再試——訊號不會因為寫過一次檔就消失。
+            # 壞檔：三態讀取回 None。這裡拿到的是完整視窗，所以直接當成沒有歷史重建
+            #（壞檔本身留在原處的規則見 FileManager.load_financial_data）。
             existing_data = self.file_mgr.load_financial_data(code)
             if existing_data is None:
-                logger.warning(f"  ⚠️  {code} 財報檔損壞，視同沒有歷史")
+                logger.warning(f"  ⚠️  {code} 財報檔損壞，以本次完整視窗重建")
                 existing_data = {}
-            if history_is_short(existing_data):
-                logger.info(f"  ↺ {code} 歷史不足，改用完整視窗（{config.FULL_HISTORY_DAYS} 天）")
-                start_date = (now_tw() - timedelta(days=config.FULL_HISTORY_DAYS)).strftime("%Y-%m-%d")
-                status["full_window"] = True
 
-            # 1. 擷取所有需要的資料
-            annual_data, quarterly_data, fin_success = self.fetch_orchestrator.fetch_financials(code, start_date)
-            status["fin"] = fin_success
-            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
-            
-            monthly_revenue_df, revenue_success = self.fetch_orchestrator.fetch_revenue(code, start_date)
-            status["rev"] = revenue_success
-            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
-            
-            ratios, inst_success = self._build_ratios(code, start_date)
-            status["inst"] = inst_success
-            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
+            annual_data, quarterly_data = ([], [])
+            if not statements_df.empty:
+                annual_data, quarterly_data = self.processor.process_financials(code, statements_df)
+            status["fin"] = bool(quarterly_data)
+
+            monthly_revenue = self.processor.process_monthly_revenue(code, revenue_df) if not revenue_df.empty else []
+            status["rev"] = bool(monthly_revenue)
 
             latest_block = {}
             latest_quarter = quarterly_data[0] if quarterly_data else {}
             if latest_quarter:
                 self.calculator.calculate_yoy_and_update_block(latest_block, latest_quarter, quarterly_data)
 
-            # 3. 組合資料
-            data_quality = "high" if (fin_success and revenue_success) else "medium"
-            if not fin_success:
+            data_quality = "high" if (status["fin"] and status["rev"]) else "medium"
+            if not status["fin"]:
                 data_quality = "low"
             status["quality"] = data_quality
 
+            # 三大法人由 daily-update 的 TWSE T86 批次每日維護，財報更新不碰（傳空）。
             final_data = self.assembler.build_final_data(
                 existing_data, code, name, latest_block,
-                annual_data, quarterly_data, monthly_revenue_df,
-                [], data_quality, ratios
+                annual_data, quarterly_data, monthly_revenue,
+                [], data_quality, {}
             )
 
-            # 4. 完成並儲存
             if self._save_cleaned(code, final_data):
                 logger.debug(f"  ✔️  處理完畢 {code} {name}。品質: {data_quality}")
                 return True, status
-            else:
-                logger.error(f"  ❌ 儲存 {code} 的資料失敗。")
-                return False, status
+            logger.error(f"  ❌ 儲存 {code} 的資料失敗。")
+            return False, status
 
         except ApiExhaustedError:
             raise

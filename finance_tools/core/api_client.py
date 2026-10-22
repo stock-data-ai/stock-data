@@ -118,40 +118,44 @@ class FinMindClient:
             logger.exception(f"  擷取 {label} (代碼: {stock_id}) 時發生未預期錯誤:")
             return pd.DataFrame(), False
 
-    def fetch_financial_statements(
-        self, stock_id: str, start_date: str
-    ) -> Tuple[pd.DataFrame, bool]:
-        return self._fetch(
-            self.loader.taiwan_stock_financial_statement, stock_id, start_date, "財務報表"
-        )
+    # ── 全市場抓取 ─────────────────────────────────────────────────────
+    # 財報類資料（損益表、資產負債表、現金流量表、月營收）一律走這裡：不帶 data_id，
+    # 一次請求拿回「某一天」全市場所有公司的資料（2026-10-22 實測 Sponsor Pro：
+    # 資產負債表一季 2,368 家、約 186k 列、10 秒）。不帶 data_id 時 FinMind 只認
+    # start_date 那一天，帶區間會回空，所以每一季／每一個月各發一次。
+    # 舊做法是每家公司各打一次、每家之間 sleep 1～3 秒，2,300 家要跑 30～90 分鐘，
+    # 還因此讓兩支週日排程時間重疊、互相覆蓋寫好的欄位。
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        retry=retry_if_exception_type((requests.exceptions.ConnectionError, requests.exceptions.Timeout)),
+        reraise=True,
+    )
+    def fetch_market_day(self, dataset: str, date: str) -> pd.DataFrame:
+        """抓 `dataset` 在 `date` 這一天的全市場資料。
 
-    def fetch_balance_sheet(
-        self, stock_id: str, start_date: str
-    ) -> Tuple[pd.DataFrame, bool]:
-        return self._fetch(
-            self.loader.taiwan_stock_balance_sheet, stock_id, start_date, "資產負債表"
+        - 來源沒有這天的資料（例如季報還沒公布）→ 空 DataFrame，這是正常情況。
+        - 額度用盡 → `ApiExhaustedError`；其他非成功回應 → `ApiResponseError`。
+          兩者都要讓整個任務停下來：抓不完整就不寫檔，不拿半套資料去合併。
+        """
+        resp = requests.get(
+            config.FINMIND_DATA_URL,
+            params={"dataset": dataset, "start_date": date},
+            headers={"Authorization": f"Bearer {self.token}"},
+            timeout=config.MARKET_FETCH_TIMEOUT_SECONDS,
         )
-
-    def fetch_income_statement(
-        self, stock_id: str, start_date: str
-    ) -> Tuple[pd.DataFrame, bool]:
-        return self._fetch(
-            self.loader.taiwan_stock_income_statement, stock_id, start_date, "損益表"
-        )
-
-    def fetch_cash_flows_statement(
-        self, stock_id: str, start_date: str
-    ) -> Tuple[pd.DataFrame, bool]:
-        return self._fetch(
-            self.loader.taiwan_stock_cash_flows_statement, stock_id, start_date, "現金流量表"
-        )
-
-    def fetch_monthly_revenue(
-        self, stock_id: str, start_date: str
-    ) -> Tuple[pd.DataFrame, bool]:
-        return self._fetch(
-            self.loader.taiwan_stock_month_revenue, stock_id, start_date, "月營收"
-        )
+        if resp.status_code == 402:
+            raise ApiExhaustedError(f"{dataset} {date}：FinMind 額度已用盡（HTTP 402）")
+        try:
+            body = resp.json()
+        except ValueError:
+            raise ApiResponseError(f"{dataset} {date}：回應不是 JSON（HTTP {resp.status_code}）")
+        msg = str(body.get("msg", ""))
+        if resp.status_code != 200 or body.get("status") != 200:
+            if "limit" in msg.lower() or "token" in msg.lower():
+                raise ApiExhaustedError(f"{dataset} {date}：{msg}")
+            raise ApiResponseError(f"{dataset} {date}：HTTP {resp.status_code} {msg}")
+        return pd.DataFrame(body.get("data") or [])
 
     def fetch_taiwan_stock_price(
         self, stock_id: str, start_date: str

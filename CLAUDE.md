@@ -30,11 +30,11 @@ uv run finance_tools/cli.py financials-update --code 2330
 # Topic-based update
 uv run finance_tools/cli.py update-marketcap-inst --topic bbu
 
-# Batch processing (used in CI — batch N of 4)
-uv run finance_tools/cli.py financials-update --batch 2/4
+# Batch processing (per-company jobs in CI — batch N of 4)
+uv run finance_tools/cli.py update-marketcap-inst --batch 2/4
 
 # Rerun companies that failed in previous run
-uv run finance_tools/cli.py financials-update --rerun --batch 1/4
+uv run finance_tools/cli.py financials-update --rerun
 
 # Force update (bypass "already updated today" guard)
 uv run finance_tools/cli.py update-marketcap-inst --force
@@ -86,13 +86,15 @@ GitHub Pages (public static JSON API)
     欄位歸誰管見 stock_map `docs/features/platform/財報檔欄位歸屬.md`。
   - `file_manager.load_financial_data()` 有**三種回傳值**：`{}`＝檔案不存在、`None`＝**檔案壞掉**、
     dict＝正常。看到 `None` 的寫入者一律跳過（不得拿片段覆寫）。壞檔**留在原地**。
-  - `financials-update` 抓多長**看「檔裡的歷史夠不夠」，不看檔案在不在／壞不壞**
-    （`company_processor.history_is_short`：有營收的季度 < 8 或月營收 < 24 → `FULL_HISTORY_DAYS`）。
-    新公司（日更會先建只有市值的空殼）、壞檔、放寬後抓失敗寫出的空殼，全都落在「不夠」，
-    沒補齊前每週都會再試。門檻必須高於一年視窗帶回的 5 季／13 個月，否則空殼會被當成夠了。
+  - `market_fetch.py` — **財報類資料（損益表、月營收、資產負債表、現金流量表）一律全市場抓取**：
+    不帶 data_id，每一季／每一個月各一次請求拿回全部公司，再依代號分組逐家合併，不打逐家 API、不 sleep。
+    FinMind 不帶 data_id 時只認單一日期（帶區間回空）。每次都抓完整視窗（`config.*_YEARS`），
+    新公司、壞檔、新欄位都在下一輪補齊；任何一期抓失敗整輪停下、不寫任何檔。
+    `financials-update` 約 20 秒、`update-balance-sheet` 約 40 秒（2026-10-22 實測）。
   - `data_processor.normalize_item_name()` — FinMind 科目名稱的括號有半形／全形兩種寫法且依年度而異，
     比對前一律正規化。漏掉會讓整年的營業現金流對不上（2021 年曾因此缺 823 家）。
 - **domains/** — 一個資料領域一個資料夾，內含 `fetcher.py`（抓＋正規化）與 `tasks.py`（CLI 任務）。
+  財報類（financials／revenue／balance_sheet）沒有 fetcher.py，抓取統一走 `core/market_fetch.py`。
   現有：`balance_sheet`、`company_info`、`dividends`、`financials`、`insider`、
   `institutional_investors`、`margin_trading`、`market_sentiment`、`revenue`、
   `securities_lending`、`shareholder`、`valuation`
@@ -109,8 +111,8 @@ GitHub Pages (public static JSON API)
 ### CI/CD Pipeline (GitHub Actions)
 
 Three-stage reusable workflow (`.github/workflows/_reusable-data-job.yml`):
-1. **Setup** — Determine batch matrix
-2. **Run** — 4 parallel batches, each with a dedicated FinMind API token
+1. **Setup** — Determine batch matrix（`batch_count`，預設 4；全市場抓取的財報兩支設 1）
+2. **Run** — parallel batches, each with a dedicated FinMind API token
 3. **Merge** — Combine artifacts, validate JSON, commit, trigger rerun if failures remain
 
 **財報檔的合併**：六個 workflow 都推 `company-financials/`，推送前是 `git pull --rebase -X ours`。

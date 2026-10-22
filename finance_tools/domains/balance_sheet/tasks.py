@@ -8,25 +8,37 @@ Balance Sheet & Cash Flow Update Task
 
 import logging
 import os
-import time
-import random
-from datetime import timedelta
+import sys
+
+import pandas as pd
 
 from finance_tools.core import FinMindClient, DataProcessor, FileManager
-from finance_tools.core.exceptions import ApiExhaustedError
+from finance_tools.core import market_fetch
+from finance_tools.core.exceptions import ApiError, ApiExhaustedError
 from finance_tools.core.timezone import now_tw
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.rerun_manager import RerunManager
-from finance_tools.utils.task_helpers import handle_api_exhausted
 import finance_tools.config as config
 
 logger = logging.getLogger(__name__)
 
-_START_YEARS_BACK = 2557  # ~7 years
+
+def fetch_market_balance_sheet_and_cash_flows(client: FinMindClient):
+    """全市場抓資產負債表與現金流量表（完整視窗），回傳依代號分組的兩個 dict。"""
+    dates = market_fetch.quarter_end_dates(config.BALANCE_SHEET_YEARS, now_tw().date())
+    bs = market_fetch.fetch_market(
+        client, "TaiwanStockBalanceSheet", dates,
+        keep=market_fetch.item_filter(DataProcessor.BALANCE_SHEET_ITEMS),
+    )
+    cf = market_fetch.fetch_market(
+        client, "TaiwanStockCashFlowsStatement", dates,
+        keep=market_fetch.item_filter(DataProcessor.CASH_FLOW_ITEMS),
+    )
+    return market_fetch.split_by_stock(bs), market_fetch.split_by_stock(cf)
 
 
 def run_update_balance_sheet(args):
-    """【定期】抓取資產負債表 + 現金流量表，計算並合併 ROE/ROA/比率/OCF/FCF。"""
+    """【定期】全市場抓資產負債表 + 現金流量表，計算並合併 ROE/ROA/比率/OCF/FCF。"""
     logger.info("開始更新資產負債表 & 現金流量表...")
 
     batch = args.batch.split("/")[0] if getattr(args, "batch", None) else None
@@ -46,37 +58,35 @@ def run_update_balance_sheet(args):
         logger.info("沒有公司需要更新，結束。")
         return
 
-    logger.info(f"準備處理 {len(companies)} 家公司。")
+    # 1. 全市場抓取。任何一期失敗就整個停下來，一個檔都不寫。
+    try:
+        bs_by_code, cf_by_code = fetch_market_balance_sheet_and_cash_flows(client)
+    except ApiExhaustedError as e:
+        logger.warning(f"⚠️  FinMind 額度用盡：{e}；全部 {len(companies)} 家留待下一輪重跑。")
+        write_mgr.save([c["code"] for c in companies])
+        sys.exit(2)  # exit 2 = API exhausted (rerun needed), not a real error
+    except (ApiError, Exception) as e:
+        logger.error(f"❌ 全市場抓取失敗，本輪不寫任何檔：{e}")
+        sys.exit(1)
 
-    start_date = (now_tw() - timedelta(days=_START_YEARS_BACK)).strftime("%Y-%m-%d")
+    # 2. 逐家合併寫檔（純本地運算，不再打 API）
+    empty = pd.DataFrame()
     success_count = 0
     failed_companies = []
-
     for idx, company in enumerate(companies, 1):
         code = company["code"]
         name = company.get("name", code)
-
         try:
-            ok = _update_one(client, processor, file_mgr, code, name, start_date)
-            if ok:
-                success_count += 1
-                logger.info(f"[{idx}/{len(companies)}] ✔️  {code} {name}")
-            else:
-                logger.warning(f"[{idx}/{len(companies)}] ❌  {code} {name}")
-                failed_companies.append(code)
-        except ApiExhaustedError:
-            handle_api_exhausted(
-                "balance_sheet", batch, write_mgr,
-                failed_companies, code, [c for c in companies[idx:]],
-                success_count, len(companies), [],
-            )
-            return
+            ok = _update_one(processor, file_mgr, code, name,
+                             bs_by_code.get(code, empty), cf_by_code.get(code, empty))
         except Exception:
             logger.exception(f"  X 處理 {code} 時發生錯誤")
+            ok = False
+        if ok:
+            success_count += 1
+        else:
+            logger.warning(f"[{idx}/{len(companies)}] ❌  {code} {name}")
             failed_companies.append(code)
-
-        if idx < len(companies):
-            time.sleep(random.uniform(*config.DEFAULT_SLEEP_RANGE))
 
     logger.info(f"\n{'='*60}")
     logger.info(f"更新完成: {success_count}/{len(companies)} 家公司")
@@ -113,17 +123,18 @@ def _upsert_quarter(qmap: dict, quarterly_list: list, year: int, quarter: int, f
 
 
 def _update_one(
-    client: FinMindClient,
     processor: DataProcessor,
     file_mgr: FileManager,
     code: str,
     name: str,
-    start_date: str,
+    bs_df: pd.DataFrame,
+    cf_df: pd.DataFrame,
 ) -> bool:
-    """讀取現有 JSON → 抓 BS+CF → 計算指標 → 合併 → 存回。
+    """讀取現有 JSON → 用分到這家的 BS+CF 計算指標 → 合併 → 存回。
 
     - currentRatio / debtRatio → quarterly[]（季度快照，每季末更新）
     - ROE / ROA / OCF / FCF   → annual[]（全年累計，僅 Q4）
+    bs_df／cf_df 為空（來源沒有這家）時什麼都不動。
     """
     financial_data = file_mgr.load_financial_data(code)
     if not financial_data:
@@ -136,21 +147,19 @@ def _update_one(
         logger.debug(f"  [{code}] annual 為空，跳過")
         return True
 
-    # ── 抓資產負債表（所有季度）──────────────────────────────────────
+    # ── 資產負債表（所有季度）──────────────────────────────────────
     bs_by_yq: dict = {}  # {(year, quarter): {totalAssets, ...}}
-    bs_df, bs_ok = client.fetch_balance_sheet(code, start_date)
-    if bs_ok and not bs_df.empty:
+    if not bs_df.empty:
         bs_by_yq = processor.process_balance_sheet(code, bs_df)
 
-    # ── 抓現金流量表（年度，Q4 累計）────────────────────────────────
+    # ── 現金流量表（年度取 Q4 累計；季度拆成單季）────────────────────────────────
     cf_by_year: dict = {}
     cf_by_yq: dict = {}  # {(year, quarter): {ocf, capex}}，單季
-    cf_df, cf_ok = client.fetch_cash_flows_statement(code, start_date)
-    if cf_ok and not cf_df.empty:
+    if not cf_df.empty:
         cf_by_year = processor.process_cash_flows(code, cf_df)
         cf_by_yq = processor.process_quarterly_cash_flows(code, cf_df)
 
-    if not bs_by_yq and not cf_by_year:
+    if not bs_by_yq and not cf_by_year and not cf_by_yq:
         logger.debug(f"  [{code}] BS + CF 均無資料，跳過")
         return True
 

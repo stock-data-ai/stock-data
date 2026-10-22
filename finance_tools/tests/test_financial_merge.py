@@ -63,23 +63,11 @@ def _cf_rows(year):
     ]
 
 
-class ReplayClient:
-    """只替換兩支 FinMind 網路呼叫；`(df, ok)` 語意照 `FinMindClient._fetch`。"""
-
-    def __init__(self, balance_sheet, cash_flows):
-        self._bs, self._cf = balance_sheet, cash_flows
-
-    def fetch_balance_sheet(self, code, start_date):
-        return self._bs
-
-    def fetch_cash_flows_statement(self, code, start_date):
-        return self._cf
-
-
-OK_BS = (pd.DataFrame(_bs_rows(2025, 4)), True)
-OK_CF = (pd.DataFrame(_cf_rows(2025)), True)
-FAILED = (pd.DataFrame(), False)          # 網路／API 錯誤
-NO_DATA = (pd.DataFrame(), True)          # FinMind 回 {"data": []}
+# 全市場抓取後分到這家的列。抓取失敗會讓整個任務停下來、不會走到這裡，
+# 所以單家公司只有兩種情況：有資料，或來源沒有這家（空 DataFrame）。
+OK_BS = pd.DataFrame(_bs_rows(2025, 4))
+OK_CF = pd.DataFrame(_cf_rows(2025))
+EMPTY = pd.DataFrame()
 
 
 SEED = {
@@ -241,7 +229,7 @@ def test_quarterly_balance_sheet_snapshot_survives_income_statement_refetch():
 
 def test_balance_sheet_partial_source_failure_keeps_other_domain(seeded):
     """資產負債表抓失敗、現金流量成功：roe/roa/debtRatio 是既有值，不得被寫成 null。"""
-    _update_one(ReplayClient(FAILED, OK_CF), DataProcessor(), seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", EMPTY, OK_CF)
     got = annual_metrics(seeded)[2025]
     assert got["ocf"] == 300.0 and got["fcf"] == 200.0, "現金流量成功，應更新"
     assert got["roe"] == 10.0 and got["roa"] == 6.0 and got["debtRatio"] == 40.0
@@ -249,7 +237,7 @@ def test_balance_sheet_partial_source_failure_keeps_other_domain(seeded):
 
 def test_balance_sheet_partial_source_failure_keeps_cash_flow(seeded):
     """反向：現金流量抓失敗、資產負債表成功，ocf/fcf 不得被寫成 null。"""
-    _update_one(ReplayClient(OK_BS, FAILED), DataProcessor(), seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", OK_BS, EMPTY)
     got = annual_metrics(seeded)[2025]
     assert got["roe"] == 10.0 and got["roa"] == 6.0
     assert got["ocf"] == 300 and got["fcf"] == 200
@@ -260,7 +248,7 @@ def test_balance_sheet_year_outside_source_window_keeps_stored_values(seeded):
 
     正式資料上的痕跡：2022–2025 年幾乎每檔都有 ocf，2021 年卻有 800 檔只剩 roe、
     ocf 已成 null——就是這條路徑逐年往前吃歷史。"""
-    _update_one(ReplayClient(OK_BS, OK_CF), DataProcessor(), seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", OK_BS, OK_CF)
     got = annual_metrics(seeded)[2016]
     assert got == {"roe": 9.9, "roa": 5.5, "ocf": 250, "fcf": 150, "debtRatio": 41.0}
 
@@ -268,13 +256,13 @@ def test_balance_sheet_year_outside_source_window_keeps_stored_values(seeded):
 def test_balance_sheet_both_sources_empty_touches_nothing(seeded):
     """既有守門：兩邊都沒資料就整筆跳過。"""
     before = seeded.load_financial_data("9999")
-    _update_one(ReplayClient(FAILED, FAILED), DataProcessor(), seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", EMPTY, EMPTY)
     assert seeded.load_financial_data("9999") == before
 
 
 def test_balance_sheet_no_data_response_is_not_a_wipe(seeded):
     """FinMind 回 `{"data": []}` 是 ok=True 但空 df——與抓失敗一樣不得清空既有值。"""
-    _update_one(ReplayClient(NO_DATA, OK_CF), DataProcessor(), seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", EMPTY, OK_CF)
     got = annual_metrics(seeded)[2025]
     assert got["roe"] == 10.0 and got["roa"] == 6.0
 
@@ -283,8 +271,7 @@ def test_balance_sheet_writes_real_null_when_source_says_zero_equity(seeded):
     """來源有回這一季、但權益為 0 → roe 算不出來，寫 null 是正確的（與「沒回資料」不同）。"""
     rows = [r for r in _bs_rows(2025, 4) if r["origin_name"] != "權益總額"]
     rows.append({"date": "2025-12-30", "origin_name": "權益總額", "value": 0.0})
-    _update_one(ReplayClient((pd.DataFrame(rows), True), OK_CF), DataProcessor(),
-                seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", pd.DataFrame(rows), OK_CF)
     assert annual_metrics(seeded)[2025]["roe"] is None
 
 
@@ -344,14 +331,13 @@ def test_cash_flow_is_cumulative_only_q4_counted(seeded):
         {"date": "2025-09-30", "origin_name": "營業活動之淨現金流入（流出）", "value": 200.0},
         {"date": "2025-06-30", "origin_name": "營業活動之淨現金流入（流出）", "value": 100.0},
     ]
-    _update_one(ReplayClient(OK_BS, (pd.DataFrame(rows), True)), DataProcessor(),
-                seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", OK_BS, pd.DataFrame(rows))
     assert annual_metrics(seeded)[2025]["ocf"] == 300.0
 
 
 def test_balance_sheet_snapshot_lands_on_quarterly_not_annual(seeded):
     """currentRatio 是季度快照；年度只放 roe/roa/ocf/fcf/debtRatio。"""
-    _update_one(ReplayClient(OK_BS, OK_CF), DataProcessor(), seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", OK_BS, OK_CF)
     data = seeded.load_financial_data("9999")
     q4 = next(q for q in data["historical"]["quarterly"] if (q["year"], q["quarter"]) == (2025, 4))
     assert q4["currentRatio"] == 250.0
@@ -550,8 +536,7 @@ def test_balance_sheet_task_writes_quarterly_quality_fields(seeded):
         {"date": "2025-12-30", "origin_name": "存貨", "value": 80.0},
     ]
     cf = _cum_cf(2025, {3: 200.0, 4: 300.0}, {3: -60.0, 4: -100.0})
-    _update_one(ReplayClient((pd.DataFrame(bs), True), (cf, True)), DataProcessor(),
-                seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", pd.DataFrame(bs), cf)
     data = seeded.load_financial_data("9999")
     q4 = next(q for q in data["historical"]["quarterly"] if (q["year"], q["quarter"]) == (2025, 4))
     assert q4["accountsReceivable"] == 215.0
@@ -563,8 +548,7 @@ def test_balance_sheet_task_writes_quarterly_quality_fields(seeded):
 def test_receivable_without_main_item_is_none(seeded):
     """只有票據、沒有「應收帳款淨額」時整欄 None，不拿票據冒充應收帳款。"""
     bs = _bs_rows(2025, 4) + [{"date": "2025-12-30", "origin_name": "應收票據淨額", "value": 10.0}]
-    _update_one(ReplayClient((pd.DataFrame(bs), True), NO_DATA), DataProcessor(),
-                seeded, "9999", "測試公司", "2019-01-01")
+    _update_one(DataProcessor(), seeded, "9999", "測試公司", pd.DataFrame(bs), EMPTY)
     data = seeded.load_financial_data("9999")
     q4 = next(q for q in data["historical"]["quarterly"] if (q["year"], q["quarter"]) == (2025, 4))
     assert q4["accountsReceivable"] is None

@@ -7,25 +7,6 @@ import finance_tools.config as config
 logger = logging.getLogger(__name__)
 
 
-def filter_already_updated(
-    companies: List[Dict[str, str]],
-    file_mgr: FileManager,
-    force_update: bool = False,
-) -> List[Dict[str, str]]:
-    """
-    過濾掉今日已更新的公司，避免在 loop 內對 skip 的公司做無意義的 sleep。
-    force_update=True 時直接回傳原清單（--force / --code / --rerun 模式）。
-    """
-    if force_update:
-        return companies
-    before = len(companies)
-    remaining = [c for c in companies if not file_mgr.is_updated_today(c["code"])]
-    skipped = before - len(remaining)
-    if skipped > 0:
-        logger.info(f"跳過 {skipped} 家已於今日更新的公司，剩餘 {len(remaining)} 家需要更新。")
-    return remaining
-
-
 def load_companies_for_processing(args: object, file_mgr: FileManager, rerun_manager=None) -> List[Dict[str, str]]:
     """
     Loads a list of companies to process based on command-line arguments.

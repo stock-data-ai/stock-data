@@ -98,12 +98,7 @@ def run_update_marketcap_inst(args):
     company_processor = CompanyProcessor(
         processor=processor_data,
         file_mgr=file_mgr,
-        finmind_client=None,
-        financials_fetcher=None,
-        revenue_fetcher=None,
         all_companies_details=companies_data,
-        institutional_investors_shares_fetcher=None,
-        shareholding_fetcher=None,
         inst_ratio_calculator=inst_ratio_calc,
     )
 

@@ -19,7 +19,7 @@ on:
         default: '0'
         type: string
       batch:
-        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        description: 'Batch number (0=all batches, 1=the single batch)'
         required: false
         default: '0'
         type: string
@@ -50,5 +50,6 @@ jobs:
       rerun_round: ${{ inputs.rerun_round || '0' }}
       delay_minutes: ${{ inputs.delay_minutes || '0' }}
       batch: ${{ inputs.batch || '0' }}
+      batch_count: '1'  # 全市場抓取，一批就是全部公司
       force: ${{ inputs.force || false }}
     secrets: inherit

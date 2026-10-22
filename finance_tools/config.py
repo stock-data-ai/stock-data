@@ -21,6 +21,7 @@ COMPANY_TOPICS_INDEX_FILE = COMPANY_TOPICS_DIR / "index.json"
 
 # --- API Settings ---
 FINMIND_API_URL = "https://api.web.finmindtrade.com/v2/user_info"
+FINMIND_DATA_URL = "https://api.finmindtrade.com/api/v4/data"
 API_EXHAUSTION_THRESHOLD = 0.9
 TOKEN_RESET_INTERVAL_SECONDS = 3600
 # Connection retry settings (ADR-007 preparation)
@@ -28,18 +29,19 @@ MAX_RETRIES = 3
 RETRY_BACKOFF_FACTOR = 1
 
 # --- Data Fetching ---
-DEFAULT_SLEEP_RANGE = (1, 3)
-FULL_UPDATE_DAYS = 365  # 抓近1年；歷史資料已存 JSON，MERGE 邏輯保留舊記錄
-# 檔裡的歷史「不夠」時改用這個視窗，讓歷史一次長回來（見下方兩個門檻）。
-# FinMind 配額按**請求次數**計（`user_count`／`api_request_limit`），抓十年跟抓一年
-# 都是一次請求；平常只抓一年，是因為舊的已經存在檔裡，不必每週重抓。
-FULL_HISTORY_DAYS = 3650
-# 「歷史不夠」的判準：有營收的季度少於 8 季，或月營收少於 24 個月。
-# 一年視窗最多只帶回 5 季／13 個月，所以門檻必須高於這個數字——
-# 否則「只抓過一年」的檔永遠被當成夠了（日更先建的空殼、壞檔重建失敗後的空殼都是這樣）。
-MIN_QUARTERS_FOR_NORMAL_WINDOW = 8
-MIN_MONTHS_FOR_NORMAL_WINDOW = 24
-REVENUE_DAYS = 365
+# 財報類資料一律「每一期抓一次全市場」（見 FinMindClient.fetch_market_day），每次都抓完整視窗，
+# 不再分「平常一年／歷史不夠時十年」兩套。FinMind 配額按**請求次數**計
+# （`user_count`／`api_request_limit`，Sponsor Pro 每小時 20,000 次），完整視窗一次約兩百多次請求。
+# 舊版 `history_is_short` 那套放寬視窗的判準（季度 < 8、月營收 < 24、缺稅率欄位）一併移除：
+# 每次都抓完整視窗，新公司、壞檔、新加的欄位都在下一輪自然補齊，不需要另外判斷。
+#
+# 年數都從「起始年的 1 月」算起，視窗前緣一定是 Q1／1 月：現金流量表是累計制，
+# 單季要靠「本季累計－上一季累計」，前緣若落在 Q2 就拆不出來，會寫出 None 蓋掉已存好的值。
+INCOME_STATEMENT_YEARS = 10   # 損益表：今年＋前 10 年
+BALANCE_SHEET_YEARS = 7       # 資產負債表＋現金流量表：今年＋前 7 年（ROE／ROA／OCF 年度表格）
+MONTHLY_REVENUE_YEARS = 7     # 月營收：今年＋前 7 年；保留 72 筆（MONTHLY_REVENUE_LIMIT），多一年給年增率
+MARKET_FETCH_WORKERS = 4      # 同時發出的全市場請求數
+MARKET_FETCH_TIMEOUT_SECONDS = 120  # 資產負債表一季約 28 MB
 DEFAULT_FETCH_DAYS = 90
 
 # --- Rerun / Batch Settings ---

@@ -31,6 +31,44 @@ class DataProcessor:
     輸出時保持「元」單位，不做任何單位轉換
     """
 
+    # 損益表目標科目（也是全市場抓取時要留下的科目，見 `market_fetch`）
+    INCOME_STATEMENT_ITEMS = {
+        "Revenue": ["營業收入", "營業收入合計", "淨收益", "Revenue"],
+        "GrossProfit": ["營業毛利（毛損）", "GrossProfit"],
+        "OperatingIncome": ["營業利益（損失）", "OperatingIncome"],
+        "NetIncome": [
+            "淨利（淨損）歸屬於母公司業主",
+            "本期淨利（淨損）",
+            "NetIncome",
+        ],
+        "EPS": ["基本每股盈餘", "基本每股盈餘（元）", "EPS"],
+        # 稅前淨利與所得稅：算有效稅率用（判斷淨利成長是否被稅率放大）。
+        # 只認「所得稅費用（利益）」：另一種寫法「所得稅（費用）利益」正負號相反，不能混用。
+        "PreTaxIncome": ["稅前淨利（淨損）", "繼續營業單位稅前淨利（淨損）"],
+        "IncomeTax": ["所得稅費用（利益）"],
+    }
+
+    # 資產負債表目標科目（全市場抓取時據此過濾）
+    BALANCE_SHEET_ITEMS = {
+        "totalAssets":        ["資產總額", "資產合計"],
+        "totalLiabilities":   ["負債總額", "負債合計"],
+        "equity":             ["歸屬於母公司業主之權益合計", "權益總額", "權益合計"],
+        "currentAssets":      ["流動資產合計", "流動資產"],
+        "currentLiabilities": ["流動負債合計", "流動負債"],
+        # 應收帳款三項分開抓，由呼叫端加總成 accountsReceivable（票據＋帳款＋關係人帳款）。
+        # 只算「應收帳款淨額」會漏掉票據：8103 2026Q2 年增 45.8%，加總後 48.5% 才與市場分析一致。
+        "notesReceivable":        ["應收票據淨額"],
+        "tradeReceivable":        ["應收帳款淨額"],
+        "tradeReceivableRelated": ["應收帳款－關係人淨額"],
+        "inventory":              ["存貨", "存貨合計"],
+    }
+
+    # 現金流量表目標科目（全市場抓取時據此過濾）
+    CASH_FLOW_ITEMS = {
+        "ocf":   ["營業活動之淨現金流入（流出）", "營業活動之淨現金流入"],
+        "capex": ["取得不動產、廠房及設備", "購置不動產、廠房及設備"],
+    }
+
     @staticmethod
     def clean_nan(obj: Any) -> Any:
         """遞迴清除 NaN 值"""
@@ -167,22 +205,7 @@ class DataProcessor:
         if financials_df.empty:
             return [], []
 
-        # 目標財務指標 mapping
-        TARGET_ITEMS = {
-            "Revenue": ["營業收入", "營業收入合計", "淨收益", "Revenue"],
-            "GrossProfit": ["營業毛利（毛損）", "GrossProfit"],
-            "OperatingIncome": ["營業利益（損失）", "OperatingIncome"],
-            "NetIncome": [
-                "淨利（淨損）歸屬於母公司業主",
-                "本期淨利（淨損）",
-                "NetIncome",
-            ],
-            "EPS": ["基本每股盈餘", "基本每股盈餘（元）", "EPS"],
-            # 稅前淨利與所得稅：算有效稅率用（判斷淨利成長是否被稅率放大）。
-            # 只認「所得稅費用（利益）」：另一種寫法「所得稅（費用）利益」正負號相反，不能混用。
-            "PreTaxIncome": ["稅前淨利（淨損）", "繼續營業單位稅前淨利（淨損）"],
-            "IncomeTax": ["所得稅費用（利益）"],
-        }
+        TARGET_ITEMS = cls.INCOME_STATEMENT_ITEMS
         # 這兩欄來源沒有就寫 None，不像舊欄位補 0：0 會被讀成「稅率 0%」。
         OPTIONAL_KEY_MAP = {
             "PreTaxIncome": "preTaxIncome",
@@ -405,19 +428,7 @@ class DataProcessor:
         if bs_df.empty:
             return {}
 
-        TARGET = {
-            "totalAssets":        ["資產總額", "資產合計"],
-            "totalLiabilities":   ["負債總額", "負債合計"],
-            "equity":             ["歸屬於母公司業主之權益合計", "權益總額", "權益合計"],
-            "currentAssets":      ["流動資產合計", "流動資產"],
-            "currentLiabilities": ["流動負債合計", "流動負債"],
-            # 應收帳款三項分開抓，由呼叫端加總成 accountsReceivable（票據＋帳款＋關係人帳款）。
-            # 只算「應收帳款淨額」會漏掉票據：8103 2026Q2 年增 45.8%，加總後 48.5% 才與市場分析一致。
-            "notesReceivable":        ["應收票據淨額"],
-            "tradeReceivable":        ["應收帳款淨額"],
-            "tradeReceivableRelated": ["應收帳款－關係人淨額"],
-            "inventory":              ["存貨", "存貨合計"],
-        }
+        TARGET = cls.BALANCE_SHEET_ITEMS
         all_names = {name: key for key, names in TARGET.items() for name in names}
         name_priority = {
             name: i
@@ -478,8 +489,8 @@ class DataProcessor:
         if cf_df.empty:
             return {}
 
-        OCF_NAMES  = ["營業活動之淨現金流入（流出）", "營業活動之淨現金流入"]
-        CAPEX_NAMES = ["取得不動產、廠房及設備", "購置不動產、廠房及設備"]
+        OCF_NAMES = cls.CASH_FLOW_ITEMS["ocf"]
+        CAPEX_NAMES = cls.CASH_FLOW_ITEMS["capex"]
 
         cf_df = cf_df.copy()
         cf_df["origin_name"] = cf_df["origin_name"].map(normalize_item_name)
@@ -523,10 +534,7 @@ class DataProcessor:
         if cf_df.empty:
             return {}
 
-        FIELDS = {
-            "ocf":   ["營業活動之淨現金流入（流出）", "營業活動之淨現金流入"],
-            "capex": ["取得不動產、廠房及設備", "購置不動產、廠房及設備"],
-        }
+        FIELDS = cls.CASH_FLOW_ITEMS
 
         cf_df = cf_df.copy()
         cf_df["origin_name"] = cf_df["origin_name"].map(normalize_item_name)

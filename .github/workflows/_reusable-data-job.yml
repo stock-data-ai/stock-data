@@ -38,10 +38,17 @@ on:
         type: string
         default: '0'
       batch:
-        description: 'Batch number (0=all batches, 1-4=specific batch)'
+        description: 'Batch number (0=all batches, 1-N=specific batch)'
         required: false
         type: string
         default: '0'
+      batch_count:
+        # 全市場抓取的任務（financials-update、update-balance-sheet）一次就拿到所有公司，
+        # 拆批只會讓每批重抓同一份全市場資料，所以設 1。逐家打 API 的舊任務維持 4。
+        description: 'How many parallel batches to split the roster into'
+        required: false
+        type: string
+        default: '4'
       force:
         description: 'Force update even if already updated today'
         required: false
@@ -66,8 +73,9 @@ jobs:
       - id: set-matrix
         run: |
           BATCH="${{ inputs.batch }}"
+          N="${{ inputs.batch_count }}"
           if [ "$BATCH" = "0" ]; then
-            echo 'matrix={"batch":[1,2,3,4]}' >> $GITHUB_OUTPUT
+            echo "matrix={\"batch\":[$(seq -s, 1 "$N")]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"batch\":[$BATCH]}" >> $GITHUB_OUTPUT
           fi
@@ -138,6 +146,7 @@ jobs:
           COMMANDS='${{ inputs.commands_json }}'
           ROUND="${{ inputs.rerun_round }}"
           BATCH="${{ matrix.batch }}"
+          N="${{ inputs.batch_count }}"
           FORCE="${{ inputs.force }}"
 
           FORCE_FLAG=""
@@ -151,11 +160,11 @@ jobs:
             LABEL=$(echo "$row" | jq -r '.label')
 
             if [ -n "$ROUND" ] && [ "$ROUND" != "0" ]; then
-              echo "--- Batch ${BATCH}/4 — RERUN Round ${ROUND} for ${LABEL} ---"
-              uv run finance_tools/cli.py $CLI --rerun $FORCE_FLAG --batch ${BATCH}/4 || { code=$?; [ $code -eq 2 ] || exit $code; }
+              echo "--- Batch ${BATCH}/${N} — RERUN Round ${ROUND} for ${LABEL} ---"
+              uv run finance_tools/cli.py $CLI --rerun $FORCE_FLAG --batch ${BATCH}/${N} || { code=$?; [ $code -eq 2 ] || exit $code; }
             else
-              echo "--- Batch ${BATCH}/4 — Initial Run for ${LABEL} ---"
-              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/4 || { code=$?; [ $code -eq 2 ] || exit $code; }
+              echo "--- Batch ${BATCH}/${N} — Initial Run for ${LABEL} ---"
+              uv run finance_tools/cli.py $CLI $FORCE_FLAG --batch ${BATCH}/${N} || { code=$?; [ $code -eq 2 ] || exit $code; }
             fi
           done
 

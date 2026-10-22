@@ -119,8 +119,8 @@ class DataAssembler:
             preserve=merge_policy.QUARTERLY_BS_CF_FIELDS,
         )
 
-        # Rebuild annual from the *full* merged quarterly history. Fetching only uses a
-        # ~1yr window (FULL_UPDATE_DAYS), so the freshly-fetched `annual` re-derives recent
+        # Rebuild annual from the *full* merged quarterly history. The fetch window is finite
+        # (config.INCOME_STATEMENT_YEARS), so the freshly-fetched `annual` can re-derive edge
         # years from partial quarters; merging that by year would let a partial (累季) entry
         # overwrite a complete stored year and desync annual vs quarterly. Recomputing from
         # merged_quarterly keeps them consistent and self-heals already-corrupted files.

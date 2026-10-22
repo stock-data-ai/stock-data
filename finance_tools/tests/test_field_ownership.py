@@ -115,13 +115,9 @@ def test_ownership_balance_sheet_task(seeded):
         {"date": "2025-12-31", "origin_name": "取得不動產、廠房及設備", "value": -100.0},
     ])
 
-    class Client:
-        def fetch_balance_sheet(self, code, start): return (bs, True)
-        def fetch_cash_flows_statement(self, code, start): return (cf, True)
-
     fm = seeded
     changed, after = run_and_diff(
-        fm, lambda m: _update_one(Client(), DataProcessor(), m, "9999", "測試公司", "2019-01-01"))
+        fm, lambda m: _update_one(DataProcessor(), m, "9999", "測試公司", bs, cf))
 
     assert changed <= {"historical", "historical.annual", "historical.quarterly"}, \
         f"資產負債表任務碰到不歸它管的欄位: {sorted(changed)}"
@@ -263,27 +259,21 @@ def test_monthly_revenue_policy_is_shared_by_both_writers(isolated_file_manager,
     isolated_file_manager.save_financial_data(
         "9999", {"companyCode": "9999", "historical": {"monthlyRevenue": old}})
 
-    fetched = [{"year": 2027, "month": m, "revenue": 1.0, "yoy": None} for m in range(1, 14)]
+    # 全市場抓回 13 個月（2027-01 ～ 2028-01 的公布資料）
+    fetched = pd.DataFrame([{"date": f"2027-{m:02d}-10", "stock_id": "9999", "revenue": 1.0,
+                             "revenue_year": 2027 if m <= 12 else 2028, "revenue_month": (m - 1) % 12 + 1}
+                            for m in range(1, 14)])
 
-    class FakeClient:
-        def check_api_usage(self): return (0, 10000)
-
-    class FakeFetcher:
-        def __init__(self, *a, **k): pass
-        def fetch_and_process(self, code, start_date): return fetched, True
-
-    monkeypatch.setattr(rev, "FinMindClient", lambda *a, **k: FakeClient())
-    monkeypatch.setattr(rev, "RevenueFetcher", FakeFetcher)
+    monkeypatch.setattr(rev, "FinMindClient", lambda *a, **k: object())
+    monkeypatch.setattr(rev.market_fetch, "fetch_market", lambda *a, **k: fetched)
     monkeypatch.setattr(rev, "load_companies_for_processing", lambda *a, **k: [{"code": "9999", "name": "測試公司"}])
-    monkeypatch.setattr(rev, "filter_already_updated", lambda companies, *a, **k: companies)
-    monkeypatch.setattr(rev.time, "sleep", lambda *a: None)
 
     rev.run_update_revenue(type("Args", (), {"force": True, "batch": None})())
 
     kept = isolated_file_manager.load_financial_data("9999")["historical"]["monthlyRevenue"]
     from finance_tools.core import merge_policy
     assert len(kept) == merge_policy.MONTHLY_REVENUE_LIMIT, "合併後受同一個上限約束"
-    assert kept[0] == {"year": 2027, "month": 13 - 1 + 1, "revenue": 1.0, "yoy": None} or kept[0]["year"] == 2027
+    assert (kept[0]["year"], kept[0]["month"], kept[0]["revenue"]) == (2028, 1, 1.0), "最新一個月是這次抓到的"
     assert any(m["year"] < 2027 for m in kept), "視窗外的舊月份必須保留下來"
 
 
