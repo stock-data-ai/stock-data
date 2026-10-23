@@ -33,6 +33,11 @@ def today_tw() -> str:
     return (datetime.now(timezone.utc) + timedelta(hours=8)).date().isoformat()
 
 
+# 證交所休市表不列颱風等臨時停市，要手動補。同一份清單另見 etf_Crawler/etf_utils.py、
+# finance_tools/core/trading_day.py、.github/workflows/health-check.yml 與 stock_map 的 scripts/finance/short_cover_events.py。
+UNSCHEDULED_CLOSED = frozenset({"2026-10-23"})  # 颱風全日停市
+
+
 @lru_cache(maxsize=1)
 def _tw_holidays() -> frozenset:
     """證交所 OpenAPI 休市表（當年）。名稱含「交易日」的是開始／最後交易日，那天有開盤，要排除。
@@ -45,10 +50,10 @@ def _tw_holidays() -> frozenset:
             if len(roc) != 7 or "交易日" in r.get("Name", ""):
                 continue
             out.add(f"{int(roc[:3]) + 1911}-{roc[3:5]}-{roc[5:]}")
-        return frozenset(out)
+        return frozenset(out) | UNSCHEDULED_CLOSED
     except Exception as e:                                     # noqa: BLE001
         print(f"  [WARN] 休市表取得失敗（{e}），只跳週末")
-        return frozenset()
+        return UNSCHEDULED_CLOSED
 
 
 def prev_trading_day(iso: str) -> str:

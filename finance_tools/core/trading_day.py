@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 HOLIDAY_API = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
 
+# 證交所休市表不列颱風等臨時停市，要手動補。同一份清單另見 etf_Crawler/etf_utils.py、
+# finance_tools/core/trading_day.py、.github/workflows/health-check.yml 與 stock_map 的 scripts/finance/short_cover_events.py。
+UNSCHEDULED_CLOSED = {"2026-10-23"}  # 颱風全日停市
+
 _closed_dates_cache: Optional[Set[str]] = None
 
 
@@ -33,7 +37,7 @@ def _fetch_closed_dates() -> Optional[Set[str]]:
         desc = entry.get("Description", "")
         if "市場無交易" in name or "放假" in desc or "補假" in desc:
             closed.add(_roc_to_iso(entry["Date"]))
-    return closed
+    return closed | UNSCHEDULED_CLOSED
 
 
 def is_tw_trading_day(d: date) -> bool:

@@ -563,15 +563,17 @@ jobs:
           # 「已是最新」略過、燈是綠的；10-01 CMoney 回 Auth Failed 的那封又混在大表裡。
           # 所以直接看檔案的 lastUpdated，落後 2 個交易日以上就單獨寄一封。
           # 海外型（00988A、00983A、00998A）官網本來就晚一天，落後 1 天不算。
+          # 休市表不列颱風等臨時停市，手動補（同一份清單另見 etf_Crawler/etf_utils.py 的 UNSCHEDULED_CLOSED）
+          _UNSCHEDULED = {'2026-10-23'}
           def _tw_holidays():
               try:
                   with urllib.request.urlopen('https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule', timeout=15) as r:
                       rows = json.loads(r.read())
                   return {f"{int(x['Date'][:3]) + 1911}-{x['Date'][3:5]}-{x['Date'][5:]}"
-                          for x in rows if len(str(x.get('Date', ''))) == 7 and '交易日' not in x.get('Name', '')}
+                          for x in rows if len(str(x.get('Date', ''))) == 7 and '交易日' not in x.get('Name', '')} | _UNSCHEDULED
               except Exception as e:
                   print(f'[ETF freshness] 休市表取得失敗（{e}），只跳週末')
-                  return set()
+                  return set(_UNSCHEDULED)
 
           _hol = _tw_holidays()
           def _is_td(d):
