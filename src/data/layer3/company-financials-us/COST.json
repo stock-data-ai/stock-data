@@ -3,19 +3,38 @@
   "companyName": "Costco Wholesale Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 70527000000,
-    "yoy": 11.6,
-    "grossMargin": 12.77,
-    "operatingMargin": 3.99,
-    "netMargin": 3.11,
-    "eps": 4.93,
-    "pe": 47.64,
-    "pb": 12.25,
-    "marketCap": 438303653888
+    "quarter": 4,
+    "revenue": 95723000000,
+    "yoy": 11.1,
+    "grossMargin": 12.74,
+    "operatingMargin": 3.97,
+    "netMargin": 3.13,
+    "eps": 6.75,
+    "pe": 48.33,
+    "pb": 12.42,
+    "marketCap": 444600549376
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-08-31",
+        "revenue": 303154000000,
+        "grossProfit": 38875000000,
+        "operatingIncome": 11685000000,
+        "netIncome": 9226000000,
+        "eps": null,
+        "grossMargin": 12.82,
+        "operatingMargin": 3.85,
+        "netMargin": 3.04,
+        "native": {
+          "revenue": 303154000000,
+          "grossProfit": 38875000000,
+          "operatingIncome": 11685000000,
+          "netIncome": 9226000000
+        },
+        "revenueYoY": 10.1
+      },
       {
         "year": 2025,
         "periodEnd": "2025-08-31",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-08-31",
+        "revenue": 95723000000,
+        "grossProfit": 12192000000,
+        "operatingIncome": 3801000000,
+        "netIncome": 2998000000,
+        "eps": 6.75,
+        "grossMargin": 12.74,
+        "operatingMargin": 3.97,
+        "netMargin": 3.13,
+        "native": {
+          "revenue": 95723000000,
+          "grossProfit": 12192000000,
+          "operatingIncome": 3801000000,
+          "netIncome": 2998000000
+        },
+        "revenueYoY": 11.1
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-18",
+  "lastUpdated": "2026-10-25",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

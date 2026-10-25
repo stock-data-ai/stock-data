@@ -3,19 +3,37 @@
   "companyName": "NioCorp Developments Ltd.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
+    "quarter": 4,
     "revenue": 0,
     "yoy": null,
     "grossMargin": null,
     "operatingMargin": null,
     "netMargin": null,
-    "eps": 0.01,
+    "eps": null,
     "pe": null,
-    "pb": 1.06,
-    "marketCap": 455780096
+    "pb": 1.0,
+    "marketCap": 430256416
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-06-30",
+        "revenue": 0,
+        "grossProfit": null,
+        "operatingIncome": -38309000,
+        "netIncome": -48555000,
+        "eps": null,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "native": {
+          "revenue": 0,
+          "grossProfit": null,
+          "operatingIncome": -38309000,
+          "netIncome": -48555000
+        }
+      },
       {
         "year": 2025,
         "periodEnd": "2025-06-30",
@@ -90,6 +108,25 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-06-30",
+        "revenue": 0,
+        "grossProfit": null,
+        "operatingIncome": -9459000,
+        "netIncome": -5942000,
+        "eps": null,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": null,
+        "native": {
+          "revenue": 0,
+          "grossProfit": null,
+          "operatingIncome": -9459000,
+          "netIncome": -5942000
+        }
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -187,7 +224,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-18",
+  "lastUpdated": "2026-10-25",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

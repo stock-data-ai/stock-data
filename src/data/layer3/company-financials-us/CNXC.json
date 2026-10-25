@@ -3,16 +3,16 @@
   "companyName": "Concentrix Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 2462473000,
-    "yoy": 1.9,
-    "grossMargin": 33.44,
-    "operatingMargin": 3.88,
-    "netMargin": 2.24,
-    "eps": 0.86,
+    "quarter": 3,
+    "revenue": 2453679000,
+    "yoy": -1.2,
+    "grossMargin": 34.6,
+    "operatingMargin": 5.69,
+    "netMargin": -40.27,
+    "eps": -16.24,
     "pe": null,
-    "pb": 0.96,
-    "marketCap": 1703008640
+    "pb": 1.14,
+    "marketCap": 2016479488
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-08-31",
+        "revenue": 2453679000,
+        "grossProfit": 848879000,
+        "operatingIncome": 139695000,
+        "netIncome": -988113000,
+        "eps": -16.24,
+        "grossMargin": 34.6,
+        "operatingMargin": 5.69,
+        "netMargin": -40.27,
+        "native": {
+          "revenue": 2453679000,
+          "grossProfit": 848879000,
+          "operatingIncome": 139695000,
+          "netIncome": -988113000
+        },
+        "revenueYoY": -1.2
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-18",
+  "lastUpdated": "2026-10-25",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

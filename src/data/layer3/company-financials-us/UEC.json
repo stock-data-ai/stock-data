@@ -3,19 +3,38 @@
   "companyName": "Uranium Energy Corp.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 0,
+    "quarter": 4,
+    "revenue": 17050000,
     "yoy": null,
-    "grossMargin": null,
-    "operatingMargin": null,
-    "netMargin": null,
-    "eps": -0.11,
+    "grossMargin": 40.28,
+    "operatingMargin": -228.49,
+    "netMargin": -355.95,
+    "eps": null,
     "pe": null,
-    "pb": 2.85,
-    "marketCap": 3920074752
+    "pb": 2.65,
+    "marketCap": 3642547200
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-07-31",
+        "revenue": 37250000,
+        "grossProfit": 16895000,
+        "operatingIncome": -133225000,
+        "netIncome": -137311000,
+        "eps": -0.28,
+        "grossMargin": 45.36,
+        "operatingMargin": -357.65,
+        "netMargin": -368.62,
+        "native": {
+          "revenue": 37250000,
+          "grossProfit": 16895000,
+          "operatingIncome": -133225000,
+          "netIncome": -137311000
+        },
+        "revenueYoY": -44.3
+      },
       {
         "year": 2025,
         "periodEnd": "2025-07-31",
@@ -93,6 +112,25 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-07-31",
+        "revenue": 17050000,
+        "grossProfit": 6867000,
+        "operatingIncome": -38957000,
+        "netIncome": -60689000,
+        "eps": null,
+        "grossMargin": 40.28,
+        "operatingMargin": -228.49,
+        "netMargin": -355.95,
+        "native": {
+          "revenue": 17050000,
+          "grossProfit": 6867000,
+          "operatingIncome": -38957000,
+          "netIncome": -60689000
+        }
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -190,7 +228,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-10-18",
+  "lastUpdated": "2026-10-25",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
