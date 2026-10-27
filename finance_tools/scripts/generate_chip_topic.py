@@ -78,8 +78,8 @@ def _load_stock_map_file(path: str, pat: Union[str, None]) -> Union[dict, list]:
     # 本地開發 fallback
     try:
         return _fetch_stock_map_json_local(path)
-    except FileNotFoundError:
-        raise RuntimeError(f"找不到 stock_map 檔案（PAT 未設定，且本地路徑不存在）: {path}")
+    except FileNotFoundError as err:
+        raise RuntimeError(f"找不到 stock_map 檔案（PAT 未設定，且本地路徑不存在）: {path}") from err
 
 
 def _large_holder_ratio(snapshot: list) -> float:

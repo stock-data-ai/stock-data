@@ -288,7 +288,7 @@ def scrape_mops_material_info(
 
             # 清除 90 天前的舊資料
             cutoff = (datetime.datetime.now() - datetime.timedelta(days=90)).strftime('%Y%m%d')
-            deleted = client.execute_query(
+            client.execute_query(
                 f"DELETE FROM mops_announcements WHERE pub_date < '{cutoff}';"
             )
             print(f"已清除 {cutoff} 以前的舊資料")

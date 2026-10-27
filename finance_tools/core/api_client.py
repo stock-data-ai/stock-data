@@ -102,7 +102,7 @@ class FinMindClient:
             if str(e) == "'data'": # Specific KeyError often indicates API exhaustion for FinMind
                 raise ApiExhaustedError(
                     f"擷取 {label} (代碼: {stock_id}) 時 API token 已耗盡 (KeyError: 'data')。"
-                )
+                ) from e
             logger.error(f"  處理 FinMind 資料時發生 KeyError for {label} {stock_id}: {e}")
             return pd.DataFrame(), False
         except ApiExhaustedError:
@@ -114,7 +114,7 @@ class FinMindClient:
             # This block will only be hit if _retryable_api_call failed all retries (due to reraise=True)
             logger.error(f"  重試後網路/超時錯誤 for {label} {stock_id}: {e}")
             return pd.DataFrame(), False
-        except Exception as e:
+        except Exception:
             logger.exception(f"  擷取 {label} (代碼: {stock_id}) 時發生未預期錯誤:")
             return pd.DataFrame(), False
 
@@ -148,8 +148,8 @@ class FinMindClient:
             raise ApiExhaustedError(f"{dataset} {date}：FinMind 額度已用盡（HTTP 402）")
         try:
             body = resp.json()
-        except ValueError:
-            raise ApiResponseError(f"{dataset} {date}：回應不是 JSON（HTTP {resp.status_code}）")
+        except ValueError as err:
+            raise ApiResponseError(f"{dataset} {date}：回應不是 JSON（HTTP {resp.status_code}）") from err
         msg = str(body.get("msg", ""))
         if resp.status_code != 200 or body.get("status") != 200:
             if "limit" in msg.lower() or "token" in msg.lower():

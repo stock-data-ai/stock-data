@@ -1,6 +1,7 @@
 import logging
 from finance_tools.core.file_manager import FileManager
 from finance_tools.core.timezone import today_str
+from finance_tools.utils.rerun_manager import RerunManager
 from finance_tools.domains.dividends.csv_fetcher import load_all as load_csv
 from finance_tools.domains.dividends.mops_fetcher import fetch_all as fetch_mops
 
@@ -87,7 +88,8 @@ def run_import_historical_dividends(args):
             logger.error(f"  X Failed to save {code}")
             failed.append(code)
 
-    rerun_manager.save(failed)
+    # 原本這裡呼叫未定義的 rerun_manager，資料寫完後會以 NameError 結束（2026-10-27 修正）
+    RerunManager("historical_dividends").save(failed)
     logger.info(f"OK CSV import: {success_count}/{total}")
     if failed:
         logger.error(f"X Failed ({len(failed)}): {failed[:20]}")

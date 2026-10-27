@@ -24,8 +24,3 @@ dependencies = [
     "openpyxl>=3.1.5",
 ]
 
-[tool.uv.workspace]
-members = [
-    "pdf_analysis",
-    "notebook_llm_analysis",
-]

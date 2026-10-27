@@ -28,7 +28,6 @@ fetch_active_etf_ctbc.py
 import json
 import sys
 import time
-import urllib.parse
 from datetime import date
 from etf_utils import create_session, write_github_output, write_holdings_update
 from pathlib import Path
@@ -71,7 +70,6 @@ session = create_session()
 def _get_auth_token() -> Optional[str]:
     """呼叫 home/AuthToken 取得 session token。"""
     url = f"{API_BASE}/home/AuthToken"
-    encoded = urllib.parse.quote(INITIAL_TOKEN)
     try:
         resp = session.post(
             url,
