@@ -79,6 +79,7 @@ jobs:
 
       - name: cron Worker 型別
         working-directory: cron
+        # cron/package-lock.json 刻意不進 git（.gitignore），所以用 npm install 而不是 npm ci
         run: |
-          npm ci
+          npm install --no-audit --no-fund
           npx -y -p typescript@5 tsc --noEmit -p tsconfig.json
