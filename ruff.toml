@@ -1,0 +1,15 @@
+# Python lint（code-quality CI 必過）。與 stock_map 的 ruff.toml 同一套規則。
+#
+# 只開「多半代表 bug」的規則：未定義名稱、重複定義、算了沒用的變數、迴圈閉包、
+# 例外鏈結等。沒用到的 import、空白、f-string 這類格式問題不擋——
+# 爬蟲與資料管線為了格式大量改動的風險大於好處。
+extend-exclude = ["src", ".venv", "node_modules", "cron/node_modules"]
+
+[lint]
+select = ["F", "B", "E9"]
+ignore = [
+  "F401",  # 沒用到的 import：格式類
+  "F541",  # 沒有佔位符的 f-string：格式類
+  "B007",  # 迴圈變數沒用到：常見寫法（for _key, v in ...）
+  "B905",  # zip() 沒給 strict=：3.9 不支援，且長度本來就一致
+]

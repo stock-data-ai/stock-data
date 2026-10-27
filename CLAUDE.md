@@ -55,7 +55,13 @@ uv run finance_tools/cli.py prune-financials --dry-run
 
 # Run tests
 uv run pytest finance_tools/tests/
+
+# Python lint（只擋未定義名稱、重複定義等多半是 bug 的規則，見 ruff.toml）
+uvx ruff@0.14.0 check
 ```
+
+程式有改時 `.github/workflows/code-quality.yml` 會跑 ruff、pytest、Node 守門測試（`npm test`、
+`npm run check:cron`）與 cron Worker 型別檢查，全部必過；只推資料（`src/data`、rerun 佇列）不觸發。
 
 These examples use current parser commands in `finance_tools/cli.py`; older `full-update`, `update-marketcap` and `update-institutional-investors` examples in legacy guides are not executable instructions. `financials-update` does not mean “all domains”.
 

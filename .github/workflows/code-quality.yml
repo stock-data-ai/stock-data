@@ -1,0 +1,84 @@
+name: Code quality
+
+# 程式有改才跑（資料排程每天推很多次 src/data 與 rerun 佇列，那些不必驗程式）。
+# 檢查：ruff（只擋多半是 bug 的規則）、pytest（財報管線，全離線）、Node 守門測試、cron Worker 型別。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'finance_tools/**/*.py'
+      - 'etf_Crawler/**/*.py'
+      - 'Web_Crawler/**/*.py'
+      - 'scripts/**'
+      - 'test_methods/**'
+      - 'cron/src/**'
+      - 'cron/tsconfig.json'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'ruff.toml'
+      - 'package.json'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'finance_tools/**/*.py'
+      - 'etf_Crawler/**/*.py'
+      - 'Web_Crawler/**/*.py'
+      - 'scripts/**'
+      - 'test_methods/**'
+      - 'cron/src/**'
+      - 'cron/tsconfig.json'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'ruff.toml'
+      - 'package.json'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+concurrency:
+  group: code-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Python lint（ruff，規則見 ruff.toml）
+        run: uvx ruff@0.14.0 check
+
+      - name: pytest（財報管線，conftest 會擋網路／subprocess／正式資料目錄）
+        run: uv run pytest finance_tools/tests/ -q
+
+      # node --test 的萬用字元路徑需要 Node 21 以上
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Node 守門測試
+        run: npm test
+
+      - name: cron 與監控清單一致
+        run: npm run check:cron
+
+      - name: cron Worker 型別
+        working-directory: cron
+        run: |
+          npm ci
+          npx -y -p typescript@5 tsc --noEmit -p tsconfig.json
