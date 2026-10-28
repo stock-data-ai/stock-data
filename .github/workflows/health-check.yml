@@ -51,7 +51,6 @@ jobs:
               # 只有這一筆假紅，每天寄一封「異常」信。現由 scripts/guards/check-cron-consistency.mjs
               # 擋住同類漂移：清單裡的 workflow_name 必須真的存在於 .github/workflows/。
               # 熱力圖現在由 stock_map 自己的 health-check.yml 監控三班，這裡不再列。
-              {'label': '15:30 Update Stock Tags',                    'workflow_name': 'Update Stock Tags｜更新選股標籤（stock_map）',                  'hour': 15, 'minute': 30},
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},

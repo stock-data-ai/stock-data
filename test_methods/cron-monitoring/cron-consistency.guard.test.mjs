@@ -76,7 +76,7 @@ test('the phantom heatmap entry really is gone from CHECK_JOBS', () => {
 test('T1 reverse: re-adding the deleted heatmap entry is caught', () => {
     const dir = fixture('t1');
     edit(dir, '.github/workflows/health-check.yml', (s) => s.replace(
-        /(\s+)(\{'label': '15:30 Update Stock Tags')/,
+        /(\s+)(\{'label': '16:00 Active ETF Holdings Update')/,
         `$1{'label': '15:00 Update Heatmap Data', 'workflow_name': 'Update Heatmap Data｜更新熱力圖（stock_map）', 'hour': 15, 'minute': 0},$1$2`,
     ));
     const r = runGuard(dir);
