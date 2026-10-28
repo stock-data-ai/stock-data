@@ -35,7 +35,11 @@ class DataAssembler:
             existing_data = {}
         if 'latest' not in existing_data:
             existing_data['latest'] = {}
-        
+        # 新上市公司的檔案常由這裡第一次建立；只寫 latest 會讓已上架 App 讀
+        # `historical.xxx` 時整頁崩潰（2026-10-27 的 7859、7946），骨架一律補齊。
+        if not isinstance(existing_data.get('historical'), dict):
+            existing_data['historical'] = {}
+
         # Mapping Yahoo stats to our JSON structure
         if valuation_stats.get('marketCap') is not None:
             existing_data['latest']['marketCap'] = valuation_stats['marketCap']

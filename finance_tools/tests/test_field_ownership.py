@@ -203,6 +203,13 @@ def test_ownership_valuation_merge():
     assert after["latest"]["marginBalance"] == 5, "不歸它管的 latest 欄位保留"
 
 
+def test_valuation_new_file_has_historical_skeleton():
+    """新上市公司第一次由市值排程建檔：前端與已上架 App 直接讀 historical.xxx，缺了會整頁崩潰。"""
+    after = DataAssembler.merge_valuation({}, {"marketCap": 1})
+    assert after["historical"] == {}
+    assert after["latest"]["marketCap"] == 1
+
+
 def test_ownership_financials_update(seeded):
     """週日財報更新碰的範圍最大：latest 的損益欄位 + historical 五個集合 + 品質戳記。
 
