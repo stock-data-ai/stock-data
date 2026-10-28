@@ -6,6 +6,7 @@
 
   rev  最近 REV_MONTHS 個月的月營收 `[yyyymm, 千元]`（算年增、連 N 月年增、近 12 月新高）
   q    歷季 `[yyyyq, EPS, 毛利率, 營益率, 淨利率]`（算 EPS 年增、創新高、轉虧為盈、三率三升）
+  val  最新估值 `[殖利率%, 本益比, 股價淨值比]`（算殖利率、本益比門檻），取自財報檔的 `latest`
 
 **只收原始數字，不在這裡判斷條件**——條件的定義（門檻、幾個月）全在 stock_map 的
 `scripts/fundamentals/strategies.py`，一個地方改就好，不會兩個 repo 各寫一份。
@@ -57,6 +58,7 @@ def collect():
     codes = {}
     latest_month, latest_quarter = Counter(), Counter()
     skipped = {"parse": 0, "empty": 0}
+    valued = 0
     t0 = time.time()
 
     for i, fp in enumerate(files, 1):
@@ -98,6 +100,13 @@ def collect():
             entry["q"] = [[k, *quarters[k]] for k in keys]
             latest_quarter[keys[-1]] += 1
 
+        # 估值是「目前」的單一值，沒有歷史序列；三個都缺就不放，免得判成 0。
+        latest = doc.get("latest") or {}
+        val = [num(latest.get("dividendYield")), num(latest.get("pe")), num(latest.get("pb"))]
+        if any(v is not None for v in val):
+            entry["val"] = val
+            valued += 1
+
         if entry:
             codes[code] = entry
         else:
@@ -112,11 +121,11 @@ def collect():
     eps_quarter = latest_quarter.most_common(1)[0][0] if latest_quarter else None
 
     print(f"\n讀檔耗時 {time.time() - t0:.0f}s")
-    print(f"略過：解析失敗 {skipped['parse']}、無營收也無季報 {skipped['empty']}")
+    print(f"略過：解析失敗 {skipped['parse']}、無營收也無季報 {skipped['empty']}；有估值 {valued} 檔")
     return {
         "updated": datetime.now(timezone.utc).isoformat(),
         "source": "company-financials（月營收、季報）",
-        "units": {"rev": "千元", "eps": "元", "margins": "%"},
+        "units": {"rev": "千元", "eps": "元", "margins": "%", "val": "[殖利率%, 本益比(倍), 股價淨值比(倍)]"},
         "revenueMonth": rev_month,        # yyyymm
         "epsQuarter": eps_quarter,        # yyyyq
         "revenueMonthCoverage": latest_month.get(rev_month, 0),
