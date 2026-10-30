@@ -55,6 +55,7 @@ const STEPS = [
     { workflow: 'weekly-shareholder-update.yml', step: 'Commit result', job: 'fetch-tdcc' },
     { workflow: 'weekly-shareholder-update.yml', step: 'Commit result', job: 'compute-big-holders' },
     { workflow: 'weekly-insider-holdings.yml', step: 'Commit result' },
+    { workflow: 'weekly-financials-update.yml', step: 'Commit fundamentals snapshot', job: 'fundamentals-snapshot' },
     {
         workflow: '_reusable-data-job.yml',
         step: 'Commit and push all results',
@@ -209,8 +210,9 @@ test('every fixed push loop is exercised by this table', async () => {
     const uncovered = loops.filter((l) => !covered.has(l));
     assert.deepEqual(uncovered, [],
         `these push loops have no behavioural test: ${uncovered.join(', ')}`);
-    assert.equal(loops.length, 13, 'thirteen push loops in total — twelve fixed, one already correct');
-    assert.equal(STEPS.length, 12, 'STEPS must list all twelve fixed loops');
+    // 14＝原本 13 個＋2026-10-30 財報更新後建基本面快照那一個
+    assert.equal(loops.length, 14, 'fourteen push loops in total — thirteen in STEPS, one already-correct reference');
+    assert.equal(STEPS.length, 13, 'STEPS must list all thirteen loops');
 });
 
 test('an ambiguous step name without a job is rejected rather than silently resolved', () => {

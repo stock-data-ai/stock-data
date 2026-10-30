@@ -1,5 +1,7 @@
 interface Env {
   GH_TOKEN: string;
+  /** 平日晚上「資料到齊沒」的探測用（wrangler secret put FINMIND_API_TOKEN）。沒設就退回固定時間。 */
+  FINMIND_API_TOKEN?: string;
   AWS_SES_ACCESS_KEY_ID: string;
   AWS_SES_SECRET_ACCESS_KEY: string;
   AWS_SES_REGION: string;
@@ -41,16 +43,10 @@ const CRON_MAP: Record<string, CronJob> = {
   '55 7 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 15:55 週一到週五（第一次）
   '55 8 * * 2,3,4,5,6':   { workflow: 'market-sentiment.yml' },                                    // 台灣 16:55 週一到週五（第二次）
   '55 9 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 17:55 每天（第二次）
-  // 2026-08-31 起改走 FinMind 後往後移：FinMind 的個股三大法人／本益比比證交所 T86
-  // 晚 2~3 小時（當日 17:05 尚無資料、19:05 已有），原本 16:30／17:05 兩輪必定失敗，
-  // 連帶讓 chip-topic 18:00 因上游資料過舊而中止。證交所 OpenAPI 沒有 T86 的替代品，
-  // 只能把整條鏈往後移。19:30 是依單一觀測點推的，若仍偏早需再往後。
-  // 2026-09-13 拿掉週日那班，理由見 cron/wrangler.toml 同一處註解（週末沒有新的當日資料，
-  // 週六留著是為了撿 FinMind 外資持股的補正）。
-  '30 11 * * 2,3,4,5,6,7': { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 19:30 週一到週六（第一次）
-  '05 13 * * 2,3,4,5,6,7': { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 21:05 週一到週六（備援）
-  '45 11 * * 2,3,4,5,6':  { workflow: 'generate-chip-topic.yml' },                                 // 台灣 19:45 週一到週五（daily-update 19:30 約 6 分鐘跑完；下游每日焦點 routine 20:00 依賴這班的產出）
-  '30 13 * * 2,3,4,5,6':  { workflow: 'margin-trading-update.yml' },                               // 台灣 21:30 週一到週五
+  // 平日的每日更新（三大法人）與融資融券改由下方 WAIT_FOR_DATA_CRON 在資料到齊時才 dispatch；
+  // 籌碼題材接在每日更新成功之後（generate-chip-topic.yml 的 workflow_run）。
+  // 週六只撿 FinMind 外資持股的補正（週五資料晚一天定案），沒有「今天」可等，維持固定一班。
+  '30 11 * * 7':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 19:30 週六
   '0 4 * * *':            { workflow: 'scraper-mops.yml' },                                         // 台灣 12:00 每天
   '0 9 * * *':            { workflow: 'scraper-mops.yml' },                                         // 台灣 17:00 每天
   '0 12 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 20:00 每天（20:30 通知前刷新）
@@ -76,6 +72,94 @@ const CRON_MAP: Record<string, CronJob> = {
 
 const HEALTH_CHECK_CRON = '0 15 * * *';   // 台灣 23:00
 const HEALTH_CHECK_JOB: CronJob = { workflow: 'health-check.yml' };
+
+// ── 平日晚上：資料到齊才開 Actions ────────────────────────────────────────────
+// 以前每日更新排 19:30＋21:05、籌碼題材 19:45、融資 21:30，全是猜上游幾點公布
+// （19:30 是依單一觀測點推的）。現在每 10 分鐘問一次 FinMind「今天的資料有了嗎」：
+// 只查一檔（2330），一個請求不到 1KB，不開 Actions；有了才 dispatch，同一天成功過就不再派。
+// 到了 deadline 不管有沒有到齊都派一班——休市日（workflow 自己會跳過）與 FinMind 故障時，
+// 照舊有一班跑、照舊被 23:00 健康檢查看到。
+interface WaitJob {
+  workflow: string;
+  inputs?: Record<string, string>;
+  /** FinMind 資料集；全部都查得到「今天」才算到齊。要與 workflow 自己的 STALE 判斷同一批資料。 */
+  datasets: string[];
+  /** 台灣時間（當天第幾分鐘）：從這時開始看，到 deadline 為止。 */
+  from: number;
+  deadline: number;
+  /** 沒有 FINMIND_API_TOKEN 時，到這個時間就當作到齊（＝改版前的固定時間）。 */
+  fallback: number;
+}
+
+const WAIT_FOR_DATA_CRON = '0,10,20,30,40,50 9,10,11,12,13,14 * * 2,3,4,5,6';  // 台灣 17:00–22:50 週一到週五，每 10 分
+const WAIT_JOBS: WaitJob[] = [
+  // 三大法人＋估值：FinMind 比證交所 T86 晚 2~3 小時（2026-08-31 觀測 17:05 尚無、19:05 已有）。
+  { workflow: 'daily-update.yml', inputs: { force: 'true' },
+    datasets: ['TaiwanStockInstitutionalInvestorsBuySellWide', 'TaiwanStockPER'],
+    from: 17 * 60, deadline: 21 * 60, fallback: 19 * 60 + 30 },
+  // 融資融券（借券同一個發布時點，跟在同一班）。整體融資券約 21:00 公布。
+  // deadline 22:30：跑完約 5 分鐘，要在 23:00 健康檢查前收工。
+  { workflow: 'margin-trading-update.yml',
+    datasets: ['TaiwanStockMarginPurchaseShortSale'],
+    from: 20 * 60 + 30, deadline: 22 * 60 + 30, fallback: 21 * 60 + 30 },
+];
+/** 同一天最多派幾次（資料到了但 workflow 仍失敗時，下一個 10 分鐘會再派）。 */
+const WAIT_MAX_RUNS_PER_DAY = 3;
+
+function taiwanClock(now: Date) {
+  const tw = new Date(now.getTime() + TAIWAN_OFFSET_MS);
+  const day = tw.toISOString().slice(0, 10);
+  const startUtc = new Date(Date.UTC(tw.getUTCFullYear(), tw.getUTCMonth(), tw.getUTCDate()) - TAIWAN_OFFSET_MS);
+  return { day, minutes: tw.getUTCHours() * 60 + tw.getUTCMinutes(), startUtc };
+}
+
+/** FinMind 有沒有「今天」這一天的資料（只查 2330）。任何錯誤都當作還沒有。 */
+async function finmindHasDay(dataset: string, day: string, token: string): Promise<boolean> {
+  const url = `https://api.finmindtrade.com/api/v4/data?dataset=${dataset}&data_id=2330&start_date=${day}&end_date=${day}`;
+  try {
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) return false;
+    // FinMind 用 HTTP 200 ＋ body.status 表達錯誤（額度、token），只看 res.ok 會誤判
+    const body = await res.json() as { status?: number; data?: { date?: string }[] };
+    return body.status === 200 && (body.data ?? []).some(r => r.date === day);
+  } catch {
+    return false;
+  }
+}
+
+/** 決定這一輪要不要派。純函式，測試用。 */
+export function waitDecision(job: WaitJob, minutes: number, todayRuns: { status: string; conclusion: string | null }[] | null,
+                             ready: boolean | null): 'dispatch' | 'wait' | 'done' {
+  if (minutes < job.from || minutes > job.deadline) return 'wait';
+  if (todayRuns?.some(r => r.status !== 'completed' || r.conclusion === 'success')) return 'done';
+  if (todayRuns && todayRuns.length >= WAIT_MAX_RUNS_PER_DAY) return 'done';
+  const atDeadline = minutes >= job.deadline;
+  // 查不到今天的 runs（GitHub API 抖動）：deadline 前寧可等下一輪，免得重複派；到 deadline 照派
+  if (!todayRuns && !atDeadline) return 'wait';
+  return atDeadline || ready ? 'dispatch' : 'wait';
+}
+
+async function waitForData(env: Env, now = new Date()) {
+  const { day, minutes, startUtc } = taiwanClock(now);
+  const errors: string[] = [];
+  for (const job of WAIT_JOBS) {
+    if (minutes < job.from || minutes > job.deadline) continue;
+    try {
+      const runs = await runsSince(job.workflow, startUtc, env.GH_TOKEN);
+      if (waitDecision(job, minutes, runs, true) !== 'dispatch') continue;   // 先用不打 FinMind 的條件篩
+      const token = env.FINMIND_API_TOKEN;
+      const ready = token
+        ? (await Promise.all(job.datasets.map(d => finmindHasDay(d, day, token)))).every(Boolean)
+        : minutes >= job.fallback;
+      if (waitDecision(job, minutes, runs, ready) !== 'dispatch') continue;
+      console.log(`${job.workflow}: ${ready ? `${day} 資料到齊` : '到 deadline'}，dispatch`);
+      await dispatchWithRetry({ workflow: job.workflow, inputs: job.inputs }, env.GH_TOKEN);
+    } catch (err) {
+      errors.push(String(err));       // 一支失敗不擋另一支
+    }
+  }
+  if (errors.length) throw new Error(errors.join('\n'));
+}
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
@@ -119,8 +203,15 @@ function taiwanWeekStartUtc(now: Date): Date {
  * 等它成功後又多跑一次。查詢失敗時回 false——寧可多跑一次，也不要因為 API 抖動漏掉備援。
  */
 async function weekAlreadyCovered(workflow: string, token: string, now = new Date()): Promise<boolean> {
-  const since = taiwanWeekStartUtc(now).toISOString().replace(/\.\d+Z$/, 'Z');
-  const url = `https://api.github.com/repos/${REPO}/actions/workflows/${workflow}/runs?created=%3E%3D${since}&per_page=50`;
+  const runs = await runsSince(workflow, taiwanWeekStartUtc(now), token);
+  return !!runs?.some(r => (r.status === 'completed' && r.conclusion === 'success') || r.status !== 'completed');
+}
+
+/** 某支 workflow 自 `since` 起建立的 runs。查詢失敗回 null（呼叫端自己決定怎麼保守）。 */
+async function runsSince(workflow: string, since: Date, token: string)
+  : Promise<{ status: string; conclusion: string | null }[] | null> {
+  const iso = since.toISOString().replace(/\.\d+Z$/, 'Z');
+  const url = `https://api.github.com/repos/${REPO}/actions/workflows/${workflow}/runs?created=%3E%3D${iso}&per_page=50`;
   try {
     const res = await fetch(url, {
       headers: {
@@ -130,12 +221,11 @@ async function weekAlreadyCovered(workflow: string, token: string, now = new Dat
         'User-Agent': 'stock-data-cron',
       },
     });
-    if (!res.ok) return false;
+    if (!res.ok) return null;
     const data = await res.json() as { workflow_runs: { status: string; conclusion: string | null }[] };
-    return data.workflow_runs.some(r =>
-      (r.status === 'completed' && r.conclusion === 'success') || r.status !== 'completed');
+    return data.workflow_runs;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -214,6 +304,16 @@ export default {
     if (event.cron === HEALTH_CHECK_CRON) {
       try {
         await dispatchWithRetry(HEALTH_CHECK_JOB, env.GH_TOKEN);
+        return;
+      } catch (err) {
+        await alertError(String(err), env);
+        throw err;
+      }
+    }
+
+    if (event.cron === WAIT_FOR_DATA_CRON) {
+      try {
+        await waitForData(env);
         return;
       } catch (err) {
         await alertError(String(err), env);

@@ -53,3 +53,47 @@ jobs:
       batch_count: '1'  # 全市場抓取，一批就是全部公司
       force: ${{ inputs.force || false }}
     secrets: inherit
+
+  # 財報一寫好就重建基本面快照（給 stock_map 的基本面選股與研究紅點讀，實測 4 秒）。
+  # 以前只在平日 21:30 融資那班建，週日的月營收／季報要等到週一 21:30 才進快照、
+  # 週二 06:10 才進選股；現在週日當天就發布，週一 14:00 的熱力圖班就用得到。
+  # 平日 21:30 那班照舊再建一次（估值 val 每天會變），兩邊產出同一支腳本、不另寫一份。
+  fundamentals-snapshot:
+    needs: pipeline
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: main     # 要拿到上一個 job 剛推上去的財報，不是觸發當下的 commit
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: 建立全市場基本面快照
+        run: |
+          set -o pipefail
+          uv run finance_tools/scripts/build_fundamentals_snapshot.py 2>&1 | tee /tmp/fund.log
+
+      - name: Commit fundamentals snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/market/fundamentals-snapshot.json
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "更新基本面快照（財報更新後） $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            if git pull --rebase -X ours origin main && git push; then exit 0; fi
+            echo "Retry $i failed, sleeping..."; sleep $((i * 5))
+          done
+          echo "::error::推送失敗三次，基本面快照沒有發布出去"
+          exit 1

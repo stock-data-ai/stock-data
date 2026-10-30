@@ -93,7 +93,7 @@ jobs:
       # 補一季要跑數小時）。借券是後加的資料集，補齊走的是批次路徑。
       # 用同一個輸入等於每次補借券都順便叫融資融券做一整段沒必要的重工。
       # 全市場籌碼橫斷面，給 stock_map 的籌碼選股讀（逐檔 1.5 GB 不可能放在請求路徑上）。
-      # **必須排在這裡**：這一班是籌碼資料最後到齊的一班（19:30 法人、21:30 融資券借券），
+      # **必須排在這裡**：這一班是籌碼資料最後到齊的一班（法人約 19:00、融資券借券約 21:00 到齊，各由 worker 在資料到齊時 dispatch），
       # 排前面擠出來的是昨天的籌碼，而且完全不會報錯。
       # 這支不抓任何資料、只讀磁碟，實測 8 秒。
       - name: 建立全市場籌碼歷史
@@ -175,7 +175,10 @@ jobs:
             fi
           } >> $GITHUB_STEP_SUMMARY
 
+      # !cancelled()：融資融券 STALE 失敗時，上面照樣建好的籌碼歷史（法人資料晚上稍早就到了）與基本面快照
+      # 仍要發布。以前這步沒有條件，融資一失敗兩份都留在 runner 上丟掉，當晚沒有任何一班會補。
       - name: Commit margin trading data
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

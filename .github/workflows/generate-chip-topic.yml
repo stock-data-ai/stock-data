@@ -1,6 +1,14 @@
 name: Generate Chip Topic｜生成籌碼題材
 
+# **接在每日更新（三大法人）成功之後跑，不看時鐘**（2026-10-30 起；原本 cron worker 台灣 19:45）。
+# 以前排 19:45 是猜「19:30 那班大約 6 分鐘跑完」：19:30 失敗、21:05 備援補到資料時，
+# 沒有人會再跑這支，當天每日焦點就缺籌碼。現在每日更新何時成功（資料一到齊 worker 就 dispatch），
+# 這支就何時跑。週末不跑：週六的每日更新只是撿外資持股補正，題材籌碼沒有新的一天，
+# 跑了只會把同一份推給 stock_map、觸發一次「題材籌碼」推播。
 on:
+  workflow_run:
+    workflows: ["Daily Update｜每日更新（市值＋三大法人）"]
+    types: [completed]
   workflow_dispatch:
 
 concurrency:
@@ -11,9 +19,28 @@ permissions:
   contents: read
 
 jobs:
+  # 上游成功、而且是平日才往下跑（手動 dispatch 一律跑）
+  gate:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.weekday.outputs.run }}
+    steps:
+      - id: weekday
+        run: |
+          DOW=$(TZ=Asia/Taipei date +%u)   # 1=週一 … 7=週日
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$DOW" -le 5 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "週末，不產出"
+          fi
+
   generate:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v6
 

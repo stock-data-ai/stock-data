@@ -14,7 +14,7 @@
 > [!IMPORTANT]
 > **要排在 daily-update（三大法人）與 margin-trading-update（融資融券／借券）之後跑。**
 > 這支不抓任何資料，只讀磁碟上已經有的檔案——排前面的話擠出來的是昨天的籌碼，
-> 而且完全不會報錯。stock-data 的班表：19:30 法人、21:30 融資券借券。
+> 而且完全不會報錯。stock-data 的班表：法人約 19:00、融資券借券約 21:00，worker 在資料到齊時才 dispatch。
 
 > [!NOTE]
 > **欄位單位是「張」**（`foreign_net_buy` 等於 FinMind 的股數 ÷ 1000，上游已經換算好）。

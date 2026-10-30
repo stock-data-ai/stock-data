@@ -42,8 +42,6 @@ jobs:
           CHECK_JOBS = [
               # lenient：這班刻意排在資料公布之前搶頭香，抓不到是常態不是故障。
               # 只有「後面的班也全滅」才算異常。
-              # 2026-08-31：daily-update 從 16:30／17:05／21:05 改為 19:30／21:05、
-              # chip-topic 從 18:00 改為 20:00——改走 FinMind 後個股資料比證交所晚 2~3 小時。
               {'label': '15:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 15, 'minute': 55, 'days': [1,2,3,4,5], 'lenient': True},
               # 熱力圖（原 15:00）已於 2026-09-03 隨 workflow 一起搬回 stock_map（commit 5804508637
               # 刪了本 repo 的 update-heatmap.yml 與那條 cron），但這份清單當時沒跟著刪，於是
@@ -54,18 +52,19 @@ jobs:
               {'label': '16:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 16, 'minute': 0},
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
-              # 2026-09-13 daily-update 兩班改成週一到週六（週日沒有新資料可撈，見 cron/wrangler.toml）。
               # 注意本清單的 days 是 Python %w（0=Sun），與 Cloudflare cron 的 1=Sun 差一位。
               {'label': '12:00 MOPS Scraper｜午間刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 12, 'minute': 0, 'lenient': True},
               {'label': '17:00 MOPS Scraper｜盤後刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 17, 'minute': 0, 'lenient': True},
               {'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
-              {'label': '19:30 Daily Update（第一次）',               'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30, 'days': [1,2,3,4,5,6]},
+              # 平日每日更新、融資融券：worker 每 10 分鐘問 FinMind，資料到齊才 dispatch（最晚 21:00／22:30
+              # 照派一班），所以視窗從開始等的時間算起。籌碼題材接在每日更新成功之後（workflow_run）。
+              {'label': '17:00–21:00 Daily Update（資料到齊才跑）',  'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 17, 'minute': 0,  'days': [1,2,3,4,5]},
+              {'label': '17:00– Generate Chip Topic（接在每日更新之後）', 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                         'hour': 17, 'minute': 0,  'days': [1,2,3,4,5]},
+              {'label': '週六 19:30 Daily Update（外資持股補正）',    'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 19, 'minute': 30, 'days': [6]},
               {'label': '21:00 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 21, 'minute': 0},
-              {'label': '19:45 Generate Chip Topic',                 'workflow_name': 'Generate Chip Topic｜生成籌碼題材',                            'hour': 19, 'minute': 45, 'days': [1,2,3,4,5]},
               {'label': '20:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 20, 'minute': 55, 'days': [1,2,3,4,5]},
-              {'label': '21:05 Daily Update（備援）',           'workflow_name': 'Daily Update｜每日更新（市值＋三大法人）',                      'hour': 21, 'minute': 5,  'days': [1,2,3,4,5,6]},
-              {'label': '21:30 Margin & Lending Update',             'workflow_name': 'Margin Trading Update｜融資融券與借券更新',                    'hour': 21, 'minute': 30, 'days': [1,2,3,4,5]},
+              {'label': '20:30–22:30 Margin & Lending Update（資料到齊才跑）', 'workflow_name': 'Margin Trading Update｜融資融券與借券更新',              'hour': 20, 'minute': 30, 'days': [1,2,3,4,5]},
               {'label': '21:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 21, 'minute': 55, 'days': [1,2,3,4,5]},
               # 備援班補的是「款7（融資融券）」，實測跑 7~10 分鐘。原排 23:30、比 23:00 健康檢查晚，
               # 所以長期不在清單裡（2026-08-17 那班失敗過一整天沒人發現）；已提前到 22:30 並納入檢查。

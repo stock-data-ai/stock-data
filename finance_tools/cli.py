@@ -149,7 +149,7 @@ def main():
     parser_margin.set_defaults(func=run_update_margin_trading)
 
     # --- 'update-lending' command ---
-    # 獨立成一個指令、但與 update-margin 排在同一個 workflow（21:30 那班）：
+    # 獨立成一個指令、但與 update-margin 排在同一個 workflow（平日融資券資料到齊時那班）：
     # 兩支 FinMind 資料集的發布時點相同、也都寫進 company-financials，沒有理由拆成兩班。
     # 指令分開是為了失敗歸因與各自補歷史——兩者單位不同（融資融券是張、借券餘額是股），
     # 混在同一個任務裡遲早會有人換算錯。
