@@ -1,0 +1,191 @@
+name: Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）
+
+on:
+  workflow_dispatch:
+    inputs:
+      codes:
+        description: '指定 ETF 代碼（空白分隔，留空=全部）'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: etf-active
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # index.json 必須在爬蟲之前取得：fetch_active_etf_cmoney.py 的主動型清單
+      # 是開跑時從這份檔案動態讀的，排在爬蟲之後等於新上市 ETF 要隔一天才被認得。
+      - name: Fetch stock_map ETF index.json (for categoryId/issuer)
+        id: fetch_index
+        continue-on-error: true
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: token $PAT" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json?ref=publish_cloudflare" \
+            -o src/data/etf/index.json
+          echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
+
+      # 元大官網是 NUXT 頁面，爬蟲要用 node 解析
+      - name: Set up Node.js (for 元大投信 NUXT parser)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # ── 分層抓取 ─────────────────────────────────────────────────────────
+      # 每一層只處理還沒拿到應有日期的 ETF，已完成的跳過：官網 → CMoney → FinMind。
+      # 一天三班本身就是重試；最後一班（台北 20 點後）仍有缺才寄信、才讓這一步失敗。
+      # 細節見 etf_Crawler/run_active_etf.py 開頭註解與 stock_map docs/features/market/ETF功能邏輯.md。
+      - name: 分層抓取（官網 → CMoney → FinMind）
+        id: crawl
+        continue-on-error: true
+        env:
+          CODES: ${{ inputs.codes }}
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+          # FinMind 層：repo Variable ETF_FINMIND_FALLBACK=true 啟用（2026-10-01 起開；設 false 可單獨關掉這層）
+          ETF_FINMIND_FALLBACK: ${{ vars.ETF_FINMIND_FALLBACK }}
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
+        run: |
+          # CODES 經 env 傳、腳本內只當代號用，不內插進指令
+          uv run python etf_Crawler/run_active_etf.py $CODES
+
+      - name: Commit & push updated ETF data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/etf/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "主動型 ETF 持股更新 $(date +%Y-%m-%d)"
+            pushed=false
+            for i in 1 2 3; do
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
+              sleep $((i * 5))
+            done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，主動型 ETF 持股沒有發布出去"
+              git status --short
+              exit 1
+            fi
+          fi
+
+      - name: Regenerate stock-to-ETF reverse index
+        id: reverse_index
+        continue-on-error: true
+        run: uv run python etf_Crawler/generate_stock_etf_index.py
+
+      - name: Commit & push reverse index
+        id: push_reverse_index
+        continue-on-error: true
+        run: |
+          git add src/data/etf-by-stock/
+          if git diff --cached --quiet; then
+            echo "No changes to reverse index"
+          else
+            git commit -m "ETF 個股反向索引更新 $(date +%Y-%m-%d)"
+            pushed=false
+            for i in 1 2 3; do
+              if git pull --rebase -X ours origin main && git push; then
+                pushed=true
+                break
+              fi
+              echo "Retry $i failed, sleeping..."
+              sleep $((i * 5))
+            done
+            if [ "$pushed" != true ]; then
+              # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+              # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+              echo "::error::推送失敗三次，ETF 個股反向索引沒有發布出去"
+              git status --short
+              exit 1
+            fi
+          fi
+
+      # commit 之後才推：通知點進去要能看到當日數字。
+      # 彙總算法在 stock_map（與 App 的主動式 ETF 統計面板共用），這裡只負責觸發；
+      # 防重複由 endpoint 的 pushLog（key＝持股資料日期）把關，一天三輪只會推一次。
+      #
+      # **必須重試等 GitHub Pages 部署**：endpoint 讀的是 stock-data-ai.github.io 上的明細，
+      # 而 Pages 在 commit 後要數分鐘才重建。commit 完立刻打，endpoint 讀到的是「上一輪」的
+      # 快照（2026-08-24 實例：20:33 打過去回「僅 11/22 檔」＝17:55 那版，Pages 追上後其實是 16/22，
+      # 但那時已經沒人再打端點，當天整個沒推）。
+      # 這與 stock_map 規則引擎的 `live: { path, probe }`（輪詢 /live 等部署）是同一件事。
+      - name: 推播主動式 ETF 持股異動
+        id: push_active_etf
+        continue-on-error: true
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "缺 CRON_SECRET，跳過推播"
+            exit 0
+          fi
+          # 最多等 12 分鐘（Pages 重建通常 1~5 分鐘）
+          for i in $(seq 1 12); do
+            RESP=$(curl -sS -w '\n%{http_code}' -X POST \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -H "Content-Type: application/json" \
+              -d '{}' \
+              "https://aistockmap.com/api/cron/push-active-etf")
+            CODE=$(echo "$RESP" | tail -n1)
+            BODY=$(echo "$RESP" | sed '$d')
+            echo "[$i/12] HTTP $CODE $BODY"
+            [ "$CODE" = "200" ] || { echo "❌ 推播失敗 HTTP $CODE"; exit 1; }
+            # 「尚未到齊」＝Pages 還沒追上，等一分鐘再試；其餘結果（已推、已推過、無異動）即定案
+            case "$BODY" in
+              *尚未到齊*) sleep 60 ;;
+              *) echo "✅ 定案"; exit 0 ;;
+            esac
+          done
+          echo "⏱ 等滿 12 分鐘資料仍未到齊，本輪放棄（下一輪會再試）"
+
+      # 上面幾步用 continue-on-error 是為了「壞一步不擋住後面」，不是為了放它們過關。
+      # 這裡逐一複查，否則反向索引默默停更、燈還是全綠（etf-by-stock/ 會過期沒人知道）。
+      - name: Fail if any step failed
+        if: always()
+        run: |
+          FAILED=""
+          check () { [ "$2" = "success" ] || FAILED="$FAILED $1"; }
+          check 分層抓取         "${{ steps.crawl.outcome }}"
+          check 取得index.json   "${{ steps.fetch_index.outcome }}"
+          check 重建反向索引     "${{ steps.reverse_index.outcome }}"
+          check 推送反向索引     "${{ steps.push_reverse_index.outcome }}"
+          check 推播主動式ETF    "${{ steps.push_active_etf.outcome }}"
+          if [ -n "$FAILED" ]; then
+            echo "❌ 失敗步驟:$FAILED"
+            exit 1
+          fi
+          echo "✅ 全部步驟成功"

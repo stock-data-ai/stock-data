@@ -1,0 +1,201 @@
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#   "requests",
+#   "beautifulsoup4",
+# ]
+# ///
+"""
+fetch_active_etf_mega.py
+
+從兆豐投信官網 (megafunds.com.tw) 爬取主動型 ETF 每日持股明細，
+更新 src/data/etf/{code}.json 的 topHoldings 與 holdingsHistory 欄位。
+
+支援 ETF：
+  00996A  主動兆豐台灣豐收 (ID: 23)
+"""
+
+import json
+import re
+import sys
+import time
+from datetime import date, datetime
+from etf_utils import create_session, write_github_output, write_holdings_update
+from pathlib import Path
+from typing import Optional, List, Dict, Any
+
+try:
+    import requests
+    from bs4 import BeautifulSoup
+except ImportError:
+    print("缺少依賴，請先執行：uv add requests beautifulsoup4")
+    sys.exit(1)
+
+REPO_ROOT = Path(__file__).parent.parent
+ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
+
+BASE_URL = "https://www.megafunds.com.tw/MEGA/etf/etf_product.aspx?id={fund_id}"
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/122.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.8",
+}
+
+# 兆豐投信主動型 ETF 代號與內部 ID 映射
+MEGA_ACTIVE_ETFS = {
+    "00996A": "23",  # 主動兆豐台灣豐收
+}
+
+session = create_session()
+
+
+def fetch_holdings(etf_code: str) -> tuple:
+    """
+    回傳 (holdings, tran_date_str)
+    holdings: [{"name": ..., "weight": ..., "code": ..., "shares": ...}, ...]
+    tran_date_str: "2026-04-30" 或 None
+    """
+    fund_id = MEGA_ACTIVE_ETFS.get(etf_code)
+    if not fund_id:
+        print(f"  [ERROR] 未知的 ETF 代號: {etf_code}")
+        return [], None
+
+    url = BASE_URL.format(fund_id=fund_id)
+    print(f"  抓取 {etf_code} (URL: {url})...")
+
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = session.get(url, headers=HEADERS, timeout=45)
+            resp.raise_for_status()
+
+            soup = BeautifulSoup(resp.text, "html.parser")
+
+            tran_date = None
+            date_pattern = re.compile(r"(\d{4})/(\d{2})/(\d{2})")
+
+            source_tag = soup.find(string=re.compile("資料來源"))
+            if source_tag:
+                match = date_pattern.search(source_tag)
+                if match:
+                    tran_date = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
+
+            if not tran_date:
+                date_text = soup.find(string=date_pattern)
+                if date_text:
+                    match = date_pattern.search(date_text)
+                    if match:
+                        tran_date = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
+
+            holdings_container = soup.find(id="fund_content_list_1")
+            if not holdings_container:
+                print(f"  [WARN] 找不到持股容器 (fund_content_list_1)（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
+
+            rows = holdings_container.find_all("div", class_="fund-info")
+            if not rows:
+                print(f"  [WARN] 找不到持股項目 (fund-info)（第 {attempt}/{max_attempts} 次）")
+                if attempt < max_attempts:
+                    time.sleep(attempt * 10)
+                    continue
+                return [], None
+
+            holdings = []
+            for row in rows:
+                cols = row.find_all("div", class_="fund-content")
+                if len(cols) < 4:
+                    continue
+
+                code_raw = cols[0].get_text(strip=True)
+                name = cols[1].get_text(strip=True)
+                shares_raw = cols[2].get_text(strip=True).replace(",", "")
+                weight_raw = cols[3].get_text(strip=True).replace("%", "").strip()
+
+                try:
+                    weight = round(float(weight_raw), 2)
+                    shares = int(float(shares_raw))
+                except (ValueError, TypeError):
+                    continue
+
+                if weight <= 0:
+                    continue
+
+                entry = {
+                    "name": name,
+                    "weight": weight,
+                    "shares": shares if shares > 0 else None,
+                }
+
+                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
+                    entry["code"] = code_raw
+                elif code_raw:
+                    entry["foreignCode"] = code_raw
+
+                holdings.append(entry)
+
+            return holdings, tran_date
+
+        except Exception as e:
+            print(f"  [ERROR] 抓取失敗: {e}（第 {attempt}/{max_attempts} 次）")
+            if attempt < max_attempts:
+                time.sleep(attempt * 10)
+
+    return [], None
+
+def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> bool:
+    return write_holdings_update(
+        ETF_DATA_DIR / f"{etf_code}.json",
+        etf_code, holdings, tran_date,
+        has_foreign_code=True,
+    )
+
+
+
+def main():
+    targets = sys.argv[1:] if len(sys.argv) > 1 else list(MEGA_ACTIVE_ETFS.keys())
+    
+    success, failed, unchanged = 0, [], 0
+    results: dict = {}
+
+    for i, etf_code in enumerate(targets):
+        if etf_code not in MEGA_ACTIVE_ETFS:
+            print(f"  [SKIP] 不支援的 ETF：{etf_code}")
+            continue
+
+        print(f"\n[{i+1}/{len(targets)}] {etf_code}")
+
+        holdings, tran_date = fetch_holdings(etf_code)
+        if holdings:
+            result = update_etf_json(etf_code, holdings, tran_date)
+            if result is True:
+                success += 1
+                results[etf_code] = ("updated", tran_date or "")
+            elif result == "unchanged":
+                unchanged += 1
+                results[etf_code] = ("unchanged", tran_date or "")
+            else:
+                failed.append(etf_code)
+                results[etf_code] = ("failed", "")
+        else:
+            failed.append(etf_code)
+            results[etf_code] = ("failed", "")
+
+        if i < len(targets) - 1:
+            time.sleep(1)
+
+    write_github_output(results)
+    print(f"\n兆豐投信主動 ETF 更新完成 — 已更新: {success}，無變化: {unchanged}，失敗: {len(failed)}/{len(targets)}")
+    if failed:
+        print(f"失敗: {', '.join(failed)}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

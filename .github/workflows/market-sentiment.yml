@@ -1,0 +1,105 @@
+name: Market Sentiment Update｜市場情緒更新
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: market-sentiment
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # 上市三大法人與融資融券已於 2026-08-26 改走 FinMind（證交所來函後移除
+      # www.twse.com.tw 的 BFI82U／MI_MARGN）。沒帶 token 會退成匿名額度，
+      # 平常量小看不出來，但一被限流就整輪拿不到當日資料。
+      - name: Update market sentiment
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-market-sentiment 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/run.log
+          DATE_STR=$(grep -oP '目標日期: \K\d{8}' "$LOG" 2>/dev/null | tail -1 || echo "")
+          if [ -n "$DATE_STR" ]; then
+            FMT_DATE="${DATE_STR:0:4}-${DATE_STR:4:2}-${DATE_STR:6:2}"
+          else
+            FMT_DATE="$(date -u +%Y-%m-%d)"
+          fi
+          # Read actual values from the written JSON
+          INST_TWSE="—"
+          MARGIN_BAL="—"
+          if [ -f src/data/market/sentiment.json ]; then
+            INST_TWSE=$(python3 -c "import json; d=json.load(open('src/data/market/sentiment.json')); inst=d.get('institutional',{}).get('twse',{}); net=sum(inst.get(k,{}).get('net',0) for k in ['foreign','trust','dealer','dealerHedge']); print(f'{net:+,.0f} 元' if net else '—')" 2>/dev/null || echo "—")
+            MARGIN_BAL=$(python3 -c "import json; d=json.load(open('src/data/market/sentiment.json')); bal=d.get('margin',{}).get('twse',{}).get('longBalance',{}).get('balance',0); print(f'{bal:,} 張' if bal else '—')" 2>/dev/null || echo "—")
+          fi
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 市場情緒更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            if grep -q "STALE:" "$LOG"; then
+              echo "> [!CAUTION]"
+              echo "> **交易日但未取得當日資料，本次未更新。** $(grep 'STALE:' "$LOG" | tail -1 | sed 's/.*STALE: //')"
+              echo ""
+            fi
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 資料日期 | $FMT_DATE |"
+            echo "| 三大法人買賣超(TWSE) | $INST_TWSE |"
+            echo "| 融資餘額(TWSE) | $MARGIN_BAL |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit sentiment data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/market/sentiment.json src/data/market/margin_history.json src/data/market/institutional_history.json
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "每日更新市場情緒數據 $(date -u +%Y-%m-%d)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase -X theirs origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          if [ "$pushed" != true ]; then
+            # 這一行是重點：先前重試失敗後接的是 sleep，步驟結束碼是 0，
+            # 於是「資料沒發布出去」變成綠燈，沒有任何人會知道。
+            echo "::error::推送失敗三次，市場情緒資料沒有發布出去"
+            git status --short
+            exit 1
+          fi
+
+      # commit 之後才推：通知點進去要能看到當日數字。
+      # 本 workflow 一天跑 4 輪，防重複由 push-broadcast 的 pushLog（key 含日期）把關。
+      - name: 推播三大法人統計
+        if: success()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: uv run finance_tools/scripts/notify_market_inst.py

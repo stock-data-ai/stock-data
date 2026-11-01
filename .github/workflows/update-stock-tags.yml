@@ -1,0 +1,179 @@
+name: Update Stock Tags｜更新選股標籤（stock_map）
+
+# 為什麼這支在 stock-data 跑，產物卻進 stock_map：
+#   stock_map 是**私有** repo，Actions 分鐘要計費（2026-08 用滿 2000 分/月）；
+#   stock-data 是**公開** repo，Actions 免費無上限。
+#   而這支是純資料工作（抓期貨標的清單＋財務數字 → 產 public/stock-tags.json），
+#   跟「程式碼放在哪個 repo」無關，搬過來成本直接歸零。
+#
+# 刻意**不改腳本、也不在此 repo 複製一份**：用 PAT 淺層 clone stock_map，
+# 在它自己的目錄裡原地執行、原地 commit。腳本只有一份（stock_map 內），
+# 不會有兩份各自演化然後漏改的問題。
+#
+# **不看時鐘，接在資料更新之後跑**（2026-10-28 起；原本 cron worker 台灣 15:30）。
+# 每天會變的標籤只有外資／投信買超，資料來自 daily-update（平日資料到齊才跑，約 18:30～21:00）；
+# 15:30 跑等於永遠拿昨天的三大法人。月營收、EPS、董監質押、美股財報各自的更新跑完也觸發一次。
+# 財務資料直接讀本 repo 剛寫好的檔案（STOCK_DATA_DIR），不等 GitHub Pages 部署、也不逐檔下載。
+
+on:
+  workflow_run:
+    workflows:
+      - "Daily Update｜每日更新（市值＋三大法人）"
+      - "Weekly Financials Update (Sunday)｜財務報表更新（週日）"
+      - "Weekly Insider Holdings｜內部人持股（週六）"
+      - "Update US Financials｜美股財務更新"
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '更新模式'
+        required: false
+        default: 'all-with-futures'
+        type: choice
+        options:
+          - all-with-futures
+          - topic-with-futures
+          - futures-only
+          - topic-only
+
+concurrency:
+  group: update-stock-tags
+  cancel-in-progress: false
+
+jobs:
+  update:
+    # 上游被取消（例如並行排隊被取代）就不跑；上游失敗仍跑——daily-update 常是「資料已寫入但整批判紅」
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # 只取財務資料夾（約 3,000 個 JSON）；最新一版，包含剛跑完的資料更新
+      - name: Checkout stock-data（財務資料）
+        uses: actions/checkout@v6
+        with:
+          path: stock-data
+          ref: main
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            src/data/layer3/company-financials
+            src/data/layer3/company-financials-us
+
+
+      # 只取最新一版：這支不需要歷史，淺層 clone 省下大部分時間
+      - name: Clone stock_map（私有，需 PAT）
+        env:
+          PAT: ${{ secrets.STOCK_MAP_PAT }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "❌ 缺 STOCK_MAP_PAT"
+            exit 1
+          fi
+          git clone --depth 1 --branch publish_cloudflare \
+            "https://x-access-token:${PAT}@github.com/CHIJUI0128/stock_map.git" stock_map
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 腳本只用 Python 標準庫（urllib / html.parser），無須 pip install
+      - name: Update stock tags
+        working-directory: stock_map
+        env:
+          STOCK_DATA_DIR: ${{ github.workspace }}/stock-data
+        run: |
+          set -o pipefail
+          MODE="${{ github.event.inputs.mode || 'all-with-futures' }}"
+          # 預設算**全部公司**（2026-09-28 起）：公司頁不再前端另算標籤、一律讀 stock-tags.json，
+          # 只算有題材的（約 1,800 家）會讓其餘約 1,500 家台股的公司頁沒有財務標籤。讀本機約 10 秒。
+          case "$MODE" in
+            futures-only)
+              python scripts/maintenance/generate_stock_tags.py --futures-only 2>&1 | tee /tmp/tags.log
+              ;;
+            topic-only)
+              python scripts/maintenance/generate_stock_tags.py --topic-only 2>&1 | tee /tmp/tags.log
+              ;;
+            topic-with-futures)
+              python scripts/maintenance/generate_stock_tags.py --topic-only --with-futures 2>&1 | tee /tmp/tags.log
+              ;;
+            *)
+              python scripts/maintenance/generate_stock_tags.py --with-futures 2>&1 | tee /tmp/tags.log
+              ;;
+          esac
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          LOG=/tmp/tags.log
+          MODE="${{ github.event.inputs.mode || 'all-with-futures' }}"
+          FUTURES=$(grep -oP 'Found \K\d+(?= stocks with futures)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          PROCESSED=$(grep -oP 'Done: \K\d+(?= processed)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          SKIPPED=$(grep -oP '\d+(?= skipped)' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          CO_TAGS=$(grep -oP 'Companies with tags: \K\d+' "$LOG" 2>/dev/null | tail -1 || echo "—")
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 個股標籤更新 — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 更新模式 | $MODE |"
+            echo "| 期貨標的數 | $FUTURES |"
+            echo "| 處理公司數 | $PROCESSED |"
+            echo "| 跳過公司數 | $SKIPPED |"
+            echo "| 含標籤公司數 | $CO_TAGS |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit and push if changed
+        working-directory: stock_map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/stock-tags.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "每日更新個股標籤 $(date +'%Y-%m-%d')"
+          # 淺層 clone 也能 pull --rebase；bot 同時在推別的檔案，重試三次
+          for i in 1 2 3; do
+            git pull --rebase origin publish_cloudflare && git push && exit 0
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          echo "❌ 推送失敗"
+          exit 1
+
+  # 失敗立刻寄信（不再列入 23:00 健康檢查：這支不是定時班）
+  alert-failure:
+    needs: update
+    if: always() && needs.update.result == 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: etf_Crawler
+
+      - name: Send alert email｜寄信
+        env:
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          UPSTREAM: ${{ github.event.workflow_run.name || '手動執行' }}
+        run: |
+          python3 - <<'PY'
+          import os, sys
+          sys.path.insert(0, 'etf_Crawler')
+          from notify_mail import send_mail
+          url, up = os.environ['RUN_URL'], os.environ['UPSTREAM']
+          body = (f'<p>個股標籤更新失敗（觸發來源：{up}），網站維持上一版標籤。</p>'
+                  f'<p><a href="{url}">查看這次執行</a>，排除後手動重跑 update-stock-tags.yml。</p>')
+          if not send_mail('⚠️ 個股標籤更新失敗', body):
+              sys.exit(1)
+          PY
