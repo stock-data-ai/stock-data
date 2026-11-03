@@ -14,7 +14,9 @@
     "dividendFrequency": "年",
     "pe": 10.92,
     "pb": 1.52,
-    "dividendYield": 5.99
+    "dividendYield": 5.99,
+    "marginBalance": 0,
+    "shortBalance": 0
   },
   "historical": {
     "annual": [
@@ -3884,6 +3886,16 @@
         "code": "7821",
         "foreign_ratio": 0.65,
         "foreign_shares": 798
+      }
+    },
+    "marginTrading": {
+      "2026-11-03": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 0,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
       }
     }
   },
