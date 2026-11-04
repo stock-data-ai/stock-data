@@ -934,11 +934,51 @@ def notice():
         if isinstance(r, dict) and r.get("Code"):
             counter[r["Code"]] = {"name": r.get("Name"),
                                   "criteria_raw": r.get("RecentlyMetAttentionSecuritiesCriteria", "")}
+    tpex_note = _tpex_note_rows()
     rec = {"official_announcement_date": ann, "captured_at": _now(),
            "official_codes": list(codes), "detail": codes,
-           "counter_codes": list(counter), "counter_detail": counter, "raw": raw}
+           "counter_codes": list(counter), "counter_detail": counter,
+           "tpex_counter_detail": tpex_note, "raw": raw}
     json.dump(rec, open(os.path.join(NOTI, f"notice_{ann}.json"), "w"), ensure_ascii=False, indent=2)
-    print(f"[notice] {ann}: 官方注意 {len(codes)} 檔 -> {list(codes)}")
+    print(f"[notice] {ann}: 官方注意 {len(codes)} 檔 -> {list(codes)}；"
+          f"上櫃再1次就處置 {len(tpex_note)} 檔 -> {list(tpex_note)}")
+
+def _tpex_note_rows():
+    """上櫃「注意累計次數異常」名單（櫃買 OpenAPI，開放資料）：官方認定**再被注意 1 次就處置**。
+
+    等於上市 notetrans 的上櫃版，但**當天就有**（2026-11-04 15 時已含當日），上市版要晚一天。
+    回 {code: {"name", "date", "criteria_raw"}}，只留四碼股票；抓不到回 {}（不影響主流程）。"""
+    out = {}
+    try:
+        for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_trading_warning_note"):
+            code = str(r.get("SecuritiesCompanyCode") or "").strip()
+            if _is_stock(code):
+                out[code] = {"name": str(r.get("CompanyName") or "").strip(),
+                             "date": str(r.get("Date") or "").strip(),
+                             "criteria_raw": str(r.get("AccumulationSituation") or "")}
+    except Exception as e:
+        print(f"[notice] 上櫃注意累計名單抓取失敗（不影響主流程）: {e}")
+    return out
+
+def _note_path(text):
+    """官方累計說明 → 差 1 次的那條處置路徑。
+    「連續二次」＝連 3 日款1、「連續四次」＝連 5 日、「已有五次」＝10 日內 6 日、「已有十一次」＝30 日內 12 日。"""
+    if "連續二次" in text:
+        return "連續3日款1"
+    if "連續四次" in text:
+        return "連續5日"
+    m = re.search(r"已有([一二三四五六七八九十]+)次", text)
+    n = _cn2int(m.group(1)) if m else None
+    return {5: "10日內6日", 11: "30日內12日"}.get(n)
+
+def tpex_note_today(as_of):
+    """as_of 當天的上櫃「再 1 次就處置」名單（取 notices/ 裡最新一份快照中 date==as_of 的列）。"""
+    for f in sorted((x for x in os.listdir(NOTI) if x.startswith("notice_")), reverse=True)[:3]:
+        det = json.load(open(os.path.join(NOTI, f))).get("tpex_counter_detail") or {}
+        hit = {c: v for c, v in det.items() if v.get("date") == as_of}
+        if hit:
+            return hit
+    return {}
 
 def list_cached_days():
     """確定有開盤的交易日：舊 mi_ 快取（MI_INDEX 時期，停在 2026-08-28）∪ 有官方注意名單的日子。
@@ -1163,6 +1203,24 @@ def _punish_rows_tpex_openapi():
                     "streak": streak, "clause": clause, "times": times})
     return out
 
+def _punish_rows_esb_openapi():
+    """興櫃處置（櫃買 OpenAPI，開放資料）。主來源 FinMind 已含興櫃，這支只補 FinMind 慢一天的空檔。
+    沒有處置時只回一列欄位全空的佔位資料，以代號為空濾掉。"""
+    out = []
+    for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_esb_disposal_information"):
+        code = str(r.get("證券代號") or "").strip()
+        if not code:
+            continue
+        detail = str(r.get("處置內容") or "")
+        reason = str(r.get("處置原因") or "")
+        st, en = _disp_period(str(r.get("處置起訖時間") or ""))
+        streak, clause, times = _disp_reason(reason + detail, detail)
+        out.append({"code": code, "market": "興", "name": str(r.get("證券名稱") or "").strip(),
+                    "announced": _disp_roc(str(r.get("公布日期") or "")), "start": st, "end": en,
+                    "interval": _disp_interval(detail), "detail": detail.strip(),
+                    "streak": streak, "clause": clause, "times": times})
+    return out
+
 def _punish_rows_twse_openapi():
     """上市處置（證交所 OpenAPI，開放資料）。**只回已生效中**，補 FinMind 延遲用。
 
@@ -1279,7 +1337,7 @@ def refresh_punish(days_back=90, days_fwd=30):
         # FinMind 提供歷史與上市未生效；兩支官方 OpenAPI 補當日（FinMind 延遲約一天）。
         # 官方那兩支失敗不擋——它們只是補充，主來源是 FinMind。
         rows = _punish_rows_finmind(a, b)
-        for fn in (_punish_rows_tpex_openapi, _punish_rows_twse_openapi):
+        for fn in (_punish_rows_tpex_openapi, _punish_rows_twse_openapi, _punish_rows_esb_openapi):
             try:
                 rows = _merge_punish(rows, fn())
             except Exception as e:
@@ -1763,6 +1821,15 @@ def audit():
             verdict = "✅ 對得上"
         print(f"{s['code']:>6} {s['name']:>10} {s['status']:>7} "
               f"{s['count_30d']:>9} {n_off:>9}  {verdict}")
+    # 上櫃官方「再1次就處置」名單 vs 我方（forecast 已把它當底線，這裡看底線之前我們算得準不準）
+    note = tpex_note_today(fc["as_of"])
+    if note:
+        by = {s["code"]: s for s in fc["stocks"]}
+        print(f"\n[audit] 上櫃官方「再1次就處置」{len(note)} 檔：")
+        for c, v in note.items():
+            st = by.get(c, {})
+            print(f"  {c} {v.get('name')}：{v.get('criteria_raw')} → 我方 {st.get('status')}"
+                  + ("（由官方底線提升）" if st.get("official_one_left") and st.get("status") == "danger" else ""))
 
 
 # ── Phase 1：處置狀態機（rules[] → countdown/status/recent_hits）─────────
@@ -1998,7 +2065,8 @@ def forecast(as_of=None, window=30, disposal_date=None):
             continue
         d = detail.get(c, {})
         stocks.append({
-            "code": c, "name": d.get("name"), "market": "TWSE" if d.get("market") == "市" else "TPEx",
+            # 興櫃要標 ESB：原本只分「市」與其他，興櫃處置股會被標成上櫃
+            "code": c, "name": d.get("name"), "market": _PUNISH_MARKET.get(d.get("market"), "TPEx"),
             "close": None, "status": "pending" if c in announced else "disposed",
             "countdown": 0, "path": None,
             "consecutive": 0, "consecutive_k1": 0, "count_10d": 0, "count_30d": 0,
@@ -2007,6 +2075,33 @@ def forecast(as_of=None, window=30, disposal_date=None):
             "disposal": _pub_disposal(d),
             **(_alerted(hist, c, d["start"]) if d.get("start") else {}),
         })
+    # ── 官方底線：上櫃「再被注意 1 次就處置」名單（tpex_trading_warning_note，當天就有）──
+    # 官方已明說只差 1 次，我們若算成留意以下就是漏算（多半是那天沒抓到上櫃注意名單）。
+    # 不往下修：官方沒列不代表我們錯（名單只列「差 1 次」的），也不碰已達標／處置中的。
+    note = tpex_note_today(as_of)
+    by_code = {s["code"]: s for s in stocks}
+    raised = []
+    for c, v in note.items():
+        s0 = by_code.get(c)
+        if s0 is None:
+            s0 = {"code": c, "name": v.get("name"), "market": "TPEx", "close": (triggers.get(c) or {}).get("close"),
+                  "status": "safe", "countdown": 99, "path": None, "consecutive": 0, "consecutive_k1": 0,
+                  "count_10d": 0, "count_30d": 0, "flags": {}, "recent_hits": [], "rules_today": [],
+                  "plain_reason": "官方公布再被注意 1 次就處置", "disposal": None,
+                  "trigger": _pub_trigger(triggers.get(c))}
+            stocks.append(s0)
+            by_code[c] = s0
+        s0["official_one_left"] = True                 # 新增欄位：官方確認只差 1 次
+        if s0["status"] == "disposed":
+            if s0.get("next_countdown") is not None and s0["next_countdown"] > 1:
+                s0["next_countdown"] = 1
+                raised.append(c)
+        elif s0["status"] not in ("pending", "danger"):
+            s0.update(status="danger", countdown=1, path=_note_path(v.get("criteria_raw", "")) or s0.get("path"))
+            raised.append(c)
+    if raised:
+        print(f"[forecast] ⚠️ 上櫃官方「再1次就處置」有 {len(raised)} 檔我們原本沒算到 → 已提升為 danger：{raised}")
+
     rank = {"disposed": 0, "pending": 1, "danger": 2, "near": 3, "watch": 4, "safe": 5}
     stocks.sort(key=lambda s: (rank[s["status"]], s["countdown"], -s["count_30d"]))
     out = {"as_of": as_of, "disposal_as_of": dd, "generated_at": _now(), "window": len(axis),
