@@ -88,7 +88,7 @@ def test_compute_marks_old_non_paying_etf(monkeypatch):
     assert old["trailingYield"] == 0.0
     new = basics.compute("00410A", date(2026, 11, 4), funds={"00410A": {"listed": "2026-08-01", "units": 1e9}},
                          closes={"00410A": {"close": 10.0}}, tdcc={}, current={})
-    assert new["dividendFrequency"] is None and new["trailingYield"] is None, "新上市還沒配過息：不猜"
+    assert new["dividendFrequency"] is None and new["trailingYield"] == basics.CLEAR, "新上市還沒配過息：不猜、不算殖利率"
     policy = basics.compute("0057", date(2026, 11, 4), funds={"0057": {"listed": "2008-02-27", "units": 1e8}},
                             closes={"0057": {"close": 100.0}}, tdcc={}, current={"dividendFrequency": "年配"})
     assert policy["dividendFrequency"] is None, "原本有配息政策（年配）就不改成不配息"
@@ -142,3 +142,10 @@ def test_ensure_skeletons_creates_only_missing(tmp_path, monkeypatch):
     sk = json.loads((tmp_path / "00416A.json").read_text(encoding="utf-8"))
     assert sk["categoryId"] == "etf-active" and sk["topHoldings"] == [] and sk["lastUpdated"] is None
     assert json.loads((tmp_path / "0050.json").read_text(encoding="utf-8"))["topHoldings"] == [1], "已有的不動"
+
+
+def test_no_yield_for_etf_listed_under_one_year(monkeypatch):
+    monkeypatch.setattr(basics, "recent_dividends", lambda code, today, days: [{"date": "2026-10-20", "cashDividend": 0.067}])
+    out = basics.compute("00991B", date(2026, 11, 4), funds={"00991B": {"listed": "2026-08-03", "units": 1e9}},
+                         closes={"00991B": {"close": 15.2}}, tdcc={}, current={})
+    assert out["trailingYield"] == basics.CLEAR, "上市 3 個月只配一次，近一年殖利率不算，而且要清掉舊值"

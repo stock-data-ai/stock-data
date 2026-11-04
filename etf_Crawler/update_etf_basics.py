@@ -7,7 +7,7 @@ ETF 基本資料（雲端版，週六「ETF 週更」）：只用官方開放資
   beneficiaryCount  受益人數        集保開放資料「集保戶股權分散表」合計人數（上市、上櫃都有）
   fundSize          規模（億元）    發行單位數 × 最近收盤價。單位數優先用證交所的發行單位數，沒有（上櫃）用集保合計股數；
                                    收盤價用證交所／櫃買 OpenAPI 盤後收盤。**是市值估算，不是淨值規模**，與投信公布的淨資產略有差距
-  trailingYield     近一年殖利率    最近一年份的配息（依頻率取最近 N 次）÷ 最近收盤 × 100（配息讀 src/data/etf/dividends，FinMind 更新）
+  trailingYield     近一年殖利率    最近一年份的配息 ÷ 最近收盤 × 100；上市未滿一年不算（配息讀 src/data/etf/dividends，FinMind 更新）
   dividendFrequency 配息頻率        由最近幾次除息的間隔推算；上市滿 2 年、近 3 年沒配過標「不配息」；配息不到 3 次的新 ETF 不動
 
 不更新：管理費（沒有公開 API，人工維護：本機排程每月提醒整理 CSV，用 compare_etf_fees.py 對照）、
@@ -46,10 +46,12 @@ TDCC_URLS = ["https://opendata.tdcc.com.tw/getOD.ashx?id=1-5", "https://smart.td
 
 FIELDS = ["inceptionDate", "beneficiaryCount", "fundSize", "trailingYield", "dividendFrequency"]
 PAYMENTS_PER_YEAR = {"月配": 12, "雙月配": 6, "季配": 4, "半年配": 2, "年配": 1}
+# compute() 回這個＝明確清成 null（None 是「這次算不出來，不動原值」）
+CLEAR = "__clear__"
 
 
-def _get(url: str, timeout: int = 60, retries: int = 3):
-    """開放資料偶爾中途斷線（集保那份約 10 MB，實測 Response ended prematurely）：重試幾次。"""
+def _get(url: str, timeout: int = 120, retries: int = 5):
+    """開放資料偶爾中途斷線（11/4 實測證交所／櫃買收盤與集保都出現過 Response ended prematurely）：重試幾次。"""
     last: Optional[Exception] = None
     for attempt in range(retries):
         try:
@@ -60,7 +62,7 @@ def _get(url: str, timeout: int = 60, retries: int = 3):
         except requests.RequestException as err:
             last = err
             time.sleep(5 * (attempt + 1))
-    raise last if last else RuntimeError(url)
+    raise RuntimeError(f"{url} 重試 {retries} 次仍失敗：{last}")
 
 
 def roc_to_iso(roc: str) -> Optional[str]:
@@ -166,7 +168,11 @@ def compute(code: str, today: date, funds: Dict, closes: Dict, tdcc: Dict, curre
     # 最近一次超過 13 個月＝這一年沒配。只算已除息的，不含已公告未除息。
     freq = out["dividendFrequency"] or current.get("dividendFrequency")
     per_year = PAYMENTS_PER_YEAR.get(freq or "")
-    if px and recent and recent[0]["date"] > (today - timedelta(days=400)).isoformat():
+    # 上市未滿一年沒有完整一年的配息，「近一年殖利率」不算（11/4 實測 00991B 上市 3 個月只配一次，算出 0.44% 誤導）
+    one_year = bool(listed) and listed <= (today - timedelta(days=365)).isoformat()
+    if not one_year:
+        out["trailingYield"] = CLEAR
+    elif px and recent and recent[0]["date"] > (today - timedelta(days=400)).isoformat():
         within = [d for d in recent if d["date"] > (today - timedelta(days=365)).isoformat()]
         # 近 365 天的全算（配息變頻，例如 00770 今年配兩次也算到）；比頻率少時往前補到 N 次（年配剛過一年幾天）
         take = within if not per_year or len(within) >= per_year else recent[:per_year]
@@ -230,9 +236,10 @@ def main() -> None:
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
         new = compute(code, today, funds, closes, tdcc, data)
-        if all(v is None for v in (new["beneficiaryCount"], new["fundSize"])):
+        if new.get("beneficiaryCount") is None and new.get("fundSize") is None:
             missing.append(code)
-        diff = {k: (data.get(k), v) for k, v in new.items() if v is not None and data.get(k) != v}
+        new = {k: (None if v == CLEAR else v) for k, v in new.items() if v is not None}
+        diff = {k: (data.get(k), v) for k, v in new.items() if data.get(k) != v}
         if not diff:
             continue
         changed += 1
@@ -248,7 +255,8 @@ def main() -> None:
     # 不列出來很容易漏（11/4 盤點有 50 檔，含新的主動式 00416A、00415A）。只提醒，不自動建
     site_codes = {p.stem for p in ETF_DIR.glob("*.json") if p.stem != "index"}
     # 只列最近一天有收盤的（還在交易）：證交所基金表也含已下市的老代號（0054、0058…）
-    new_etfs = sorted(c for c in funds if c not in site_codes and c in closes)
+    # 加掛外幣的 K 股（00636K 等）是同一檔基金的外幣版本，網站已有新台幣版，不收（2026-11-04 使用者決定）
+    new_etfs = sorted(c for c in funds if c not in site_codes and c in closes and not c.endswith("K"))
     print(f"NEW_ETF 證交所上市、還在交易但網站沒有 {len(new_etfs)} 檔：{', '.join(new_etfs[:40])}{' …' if len(new_etfs) > 40 else ''}")
     if missing:
         print(f"查無：{', '.join(missing)}")
