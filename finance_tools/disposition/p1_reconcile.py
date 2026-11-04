@@ -2,11 +2,17 @@
 """處置股預測引擎 + Official Notice Reconciliation（P1 驗證框架）。
 
 多款規則引擎：每檔命中股票輸出 `rules[]`，逐條列出「命中哪款/哪標準/實際值 vs 門檻/理由」。
-款別實作狀態（見 docs/future/處置股預測.md §3）：
-  款1 ✅  款2 ✅  款3 ✅  款4 ✅  款6 ⚠️(PE/PB;PB為openapi最新日)  款7 ⚠️(margin為最新日,forward準)
+款別實作狀態：
+  款1 ✅  款2 ✅  款3 ✅  款4 ✅
+  款6 ⚠️ 只算得出「同產業 PB×4」那一支，不計入自算累積
+  款7 ⚠️ 只有上市（融資融券來自證交所 MI_MARGN）；當日資料約 21:30 才有，靠 22:30 那班補
   款5 ❌ 分點資料不可得；款8 TDR 不做。
-官方標籤（GT）：上市走 TWSE rwd 端點，吃 startDate/endDate **可回溯數年**且原文含「第X款」；
-上櫃 rwd 端點同樣吃 startDate/endDate 可回溯（`date=` 無效，會回最新日——老坑）。
+
+資料來源（2026-11 現況）：
+  每日行情、本益比／淨值比、處置名單主來源 → FinMind（上市＋上櫃同一支）
+  處置名單當日補充、上櫃注意股、notice/notetrans 快照、產業別、股數、融資融券 → 證交所／櫃買 OpenAPI
+  上市注意股（含款號）→ 證交所網站端點 rwd/announcement/notice（OpenAPI 版回空，見 _official_rows_twse 上方 WARNING）
+「還差幾次」的累積以官方注意名單為準；自算只補官方沒有的日子，並用來算明日觸發價。
 
 用法：
   python3 p1_reconcile.py predict [YYYYMMDD]   # 算某收盤日全款 prediction（省略=今天）
@@ -20,7 +26,7 @@
 注意：注意名單的「日期」欄 = **資料日（觸發日）本身，不是隔日公告日**——實測 763/763 筆
 其「收盤價」欄等於該日收盤、0 筆等於前一交易日 → reconcile 直接同日對帳，勿再 off-by-one。
 """
-import json, os, sys, re, math, time, datetime, statistics, itertools
+import json, os, sys, re, time, datetime, statistics, itertools
 import requests
 
 from finance_tools.utils.finmind import fetch_finmind
@@ -59,7 +65,8 @@ CFG = {
     #   櫃買注意公告會寫出它自己算的數字，例如
     #   「累積之最後成交價漲幅達23.22%且起迄兩個營業日之最後成交價價差達新臺幣41元(第一款)」
     #   高標實測最小 30.01% → 30；低標最小 23.05% → 23；價差最小 40.2 元 → 40。
-    # k1.pre = 款3/4/7 前置漲跌幅（不含價差），與上市同結構＝低標本身。
+    # k1.pre = 款3/4/7 前置漲跌幅（不含價差）。上市＝低標 25；上櫃 27 **不等於**低標 23，
+    # 對應款2 豁免原文的「上櫃 27%」。改這個數會連動款3/4/7 命中率，要先重新校準。
     "TPEx": {"k1": {"std1": 30.0, "std2": 23.0, "gap": 40.0, "pre": 27.0},
              "k2": {30: (100.0, 80.0), 60: (130.0, 80.0), 90: (160.0, 80.0)},
              "k2_low": {30: 120.0, 60: 180.0, 90: 240.0},   # 收盤<5元 上櫃特別門檻
@@ -82,19 +89,8 @@ RULE_2026_08_10 = "20260810"
 # >   款1 低標版  25%/27% 漲跌幅 ＋ 起迄價差 ≥50 元（逆推校準），命中者收盤價中位數 491 元。
 # > 2026-08-10 的修正動的是**款11**。2026-08-09 曾誤把它套到款1，會砍掉約 20% 的款1 命中
 # > （那些官方仍會列），2026-08-10 依官方公告原文更正。要改款1 的門檻必須有款1 自己的證據。
-K11_GAP_LEGACY = 100.0                      # 款11 舊制門檻（官方公告原文，本引擎未實作款11）
-
-def _k11_gap_threshold(close, as_of):
-    """款11 起迄價差門檻；回 None＝不適用。**目前未接進引擎**，待實作款11 時使用。"""
-    if as_of < RULE_2026_08_10:
-        return K11_GAP_LEGACY
-    if close is None or close <= 1000:
-        return None
-    return 300.0 + 150.0 * math.ceil(max(0.0, close - 2000.0) / 1000.0)
-
-def _gap_threshold(close, as_of, legacy):
-    """款1 低標版所需的 6 日起迄價差門檻。不受 2026-08-10 新制影響——那條改的是款11。"""
-    return legacy
+# > 款11 本引擎不實作（只公布、不累積）。新制門檻留作紀錄：收盤價 >1000 元才適用，
+# > 價差 300 元起、>2000 元後每 1000 元級距 +150 元；舊制一律 100 元。
 
 DIFF = 20.0                    # 款1 6日雙差幅門檻
 PRICE_FLOOR = 5.0             # 收盤<5元 除外（款1，連帶其前置款3/4/7）
@@ -154,11 +150,14 @@ def fj(url):
 
 MIN_DAILY_ROWS = 300     # 上市約 1100 檔、上櫃約 870 檔；低於此值必為殘缺回應
 
-def _rows_ok(x):
-    """回應是否「看起來完整」。**殘缺的當日資料不可入快取**——它會被後續每一次執行重用，
-    而 _series 把缺日當成非交易日略過，6 日窗就會偷偷往前多吃一天、累積漲跌幅被灌水。
-    實例：2026-08-06 上櫃整天缺資料 → 8/10、8/11 上櫃款1 誤報從 0 暴增到 9~13 檔。"""
-    return any(len(t.get("data") or []) >= MIN_DAILY_ROWS for t in (x.get("tables") or []))
+def _official_dates():
+    """有官方注意名單的日期＝那天確定有開盤（颱風停市、假日都不會有名單）。
+
+    用來分辨「休市」和「行情缺資料」。原本拿 mi_ 快取當交易日曆，但行情改走 FinMind 後
+    mi_ 檔停在 2026-08-28，之後的缺日全都偵測不到。證交所休市日 API 又不含颱風停市
+    （2026-10-23 即是），拿它當日曆會把停市日誤判成缺資料、整個市場被略過 7 天。
+    實例（缺資料的後果）：2026-08-06 上櫃整天缺資料 → 8/10、8/11 上櫃款1 誤報從 0 暴增到 9~13 檔。"""
+    return {f[9:17] for f in os.listdir(NOTI) if f.startswith("official_") and f.endswith(".json")}
 
 # ── 每日全個股資料（含量價/PE）────────────────────────────────
 # **不再抓 www.twse.com.tw 的 MI_INDEX 與櫃買的 dailyQuotes 網頁端點**：2026-08-26
@@ -168,24 +167,67 @@ def _rows_ok(x):
 #
 # 公司名稱由 `TaiwanStockInfo` 補（行情資料集只有 stock_id）；發行股數改由
 # `ref_data()` 統一提供（上市上櫃都用 MOPS 申報值，見該函式註解）。
+_PX_MEMO = {}   # 同一次執行內的原始列快取：回測每天都要往回讀 90 個交易日，不快取會重讀上千次 JSON
+
+
+def _px_complete(rows):
+    """上市、上櫃的四碼股票都至少 MIN_DAILY_ROWS 筆，才算完整的一天。"""
+    info = stock_info()
+    if not info:
+        # 代號清單抓不到時無從判斷市場別 → 不下結論。若當成殘缺，會把整批正常快取判成壞的。
+        return True, {"市": None, "櫃": None}
+    n = {"市": 0, "櫃": 0}
+    for r in rows or []:
+        c = str(r.get("stock_id", "")).strip()
+        mk = (info.get(c) or {}).get("market")
+        if len(c) == 4 and c[0].isdigit() and mk in n:
+            n[mk] += 1
+    return all(v >= MIN_DAILY_ROWS for v in n.values()), n
+
+
+def _load_px_rows(date):
+    """讀快取或向 FinMind 抓一天的行情原始列；**殘缺的一天不入快取、回 []**。
+
+    殘缺資料一旦入快取就會被之後每次執行重用，_series 會把它當成休市略過，
+    6 日窗偷偷往前多吃一天（見 _series 註解）。所以：
+      - 已快取但殘缺（舊版沒檢查時寫進去的）→ 重抓；新的完整才覆寫，**快取永不刪除**
+      - 抓到但殘缺 → 不寫快取，回 [] 讓 _series 記成缺日
+      - 抓不到：只有「確定不是交易日」才快取空結果（官方當天有注意名單＝有開盤，不可快取成空）
+    """
+    cp = os.path.join(CACHE, f"px_{date}.json")
+    if os.path.exists(cp):
+        rows = json.load(open(cp))
+        if not rows or _px_complete(rows)[0]:
+            return rows
+    d = f"{date[:4]}-{date[4:6]}-{date[6:]}"
+    rows = fetch_finmind(
+        "TaiwanStockPrice", d, d, label="行情", retries=1, retry_delay=0, quiet=True
+    )
+    if rows:
+        ok, n = _px_complete(rows)
+        if not ok:
+            print(f"[行情] {date} 回應殘缺（上市 {n['市']}／上櫃 {n['櫃']} 檔），不入快取、當缺日處理")
+            return []
+        json.dump(rows, open(cp, "w"))
+        return rows
+    stale = date < (datetime.datetime.strptime(_today(), "%Y%m%d")
+                    - datetime.timedelta(days=2)).strftime("%Y%m%d")
+    if stale and not os.path.exists(cp) and date not in _official_dates():
+        json.dump([], open(cp, "w"))
+    return []
+
+
 def _finmind_prices(date):
     """{code: {name, close, open, vol, amount}}；含上市與上櫃，非交易日回 None。"""
     # 回測會逐日往回走三十幾天，其中一半是假日。假日「查無資料」是正常結果不是失敗，
     # 所以 retries=1、不 sleep、不記 ERROR；並且**把空結果也快取起來**——否則每跑一次
     # 回測就要為每個假日各打一次網路，第一次全量回測會慢到以為卡死。
     # 空結果只對「兩天前以上」的日期快取：當天／昨天可能只是還沒公布，之後會有。
-    cp = os.path.join(CACHE, f"px_{date}.json")
-    if os.path.exists(cp):
-        rows = json.load(open(cp))
+    if date in _PX_MEMO:
+        rows = _PX_MEMO[date]
     else:
-        d = f"{date[:4]}-{date[4:6]}-{date[6:]}"
-        rows = fetch_finmind(
-            "TaiwanStockPrice", d, d, label="行情", retries=1, retry_delay=0, quiet=True
-        )
-        stale = date < (datetime.datetime.strptime(_today(), "%Y%m%d")
-                        - datetime.timedelta(days=2)).strftime("%Y%m%d")
-        if rows or stale:
-            json.dump(rows or [], open(cp, "w"))
+        rows = _load_px_rows(date)
+        _PX_MEMO[date] = rows
     if not rows:
         return None
     names = stock_info()
@@ -230,7 +272,7 @@ def tpex_daily(date):
     return _prices_by_market(date, "TPEx")
 
 def pb_pe_daily(date):
-    """上市 **當日** 本益比/股價淨值比（FinMind TaiwanStockPER，可指定日期）。
+    """上市＋上櫃 **當日** 本益比/股價淨值比（FinMind TaiwanStockPER，可指定日期）。
 
     款6 必須用當日值：openapi 的 BWIBBU_ALL 落後一日，實測 3450 聯鈞 08/03 官方 PB 11.42、
     openapi 給 10.39，門檻卡在中間 → 款6 回測 0 命中。FinMind 有當日資料（2026-08-28 17:58
@@ -351,10 +393,10 @@ def _series(loader, market_date, n):
     gaps 為「行事曆上是交易日、但該市場抓不到資料」的日期集合。
 
     **缺日不可與非交易日混為一談**：_ret_cum 取的是最後 n+1 個「有資料」的點，
-    中間少一天，窗就會往前多吃一天、把多出來的漲幅算進去（見 _rows_ok 的實例）。
+    中間少一天，窗就會往前多吃一天、把多出來的漲幅算進去（見 _official_dates 的實例）。
     """
     out, gaps = [], set()
-    cal = set(list_cached_days())        # 交易日行事曆（上市有盤後資料的日子）
+    cal = set(list_cached_days())         # 確定有開盤的日子（見 _official_dates）
     d = datetime.datetime.strptime(market_date, "%Y%m%d").date()
     for _ in range(n * 3):
         ymd = d.strftime("%Y%m%d")
@@ -389,8 +431,22 @@ def _price_break(series, c, p):
     復牌 6.60→21.50 = +226%，我們連喊 10 天「中長期漲太多」，官方一次都沒點名）。"""
     seq = [e[1][c]["close"] for e in series[-p:]
            if c in e[1] and e[1][c].get("close")]
+    return _has_jump(seq)
+
+def _has_jump(seq):
     return any(seq[i - 1] and abs(seq[i] / seq[i - 1] - 1) * 100 > LIMIT_MOVE
                for i in range(1, len(seq)))
+
+def _cum_break(series, c, n=6):
+    """款1 專用的跳空檢查：檢查的必須是 _ret_cum **實際用到的那 n+1 個價格點**。
+
+    _price_break 看的是「市場最近 n 個交易日」，_ret_cum 看的是「這檔最近 n+1 筆有成交的價格」。
+    停牌期間兩者不同：停牌 7 天的股票，前者窗內只剩復牌那一筆、看不到跳空，
+    後者卻一路往回接到停牌前，把減資復牌的跳空算成漲幅。
+    實例（2026-09 回測）：商丞 8277 停牌後 8.08→16.85、東訊 2321 15.1→26.0，
+    被當成 6 日漲 70~110% 連報多日款1——上市櫃款1 誤報幾乎全是這種。"""
+    seq = [e[1][c]["close"] for e in series if c in e[1] and e[1][c].get("close")]
+    return _has_jump(seq[-(n + 1):])
 
 def self_k1_history(series, sector, cfg, lookback=30):
     """自算的「近 lookback 日曾符合款1(25%版)」代號集合 —— 官方名單不可回溯的市場（上櫃）
@@ -407,7 +463,7 @@ def self_k1_history(series, sector, cfg, lookback=30):
             cl = row.get("close")
             if cl is None or cl < PRICE_FLOOR:
                 continue
-            if _price_break(series[:t + 1], c, 6):
+            if _cum_break(series[:t + 1], c, 6):
                 continue
             a = _ret_cum(series[:t + 1], c, 6)     # 同款1：逐日累加
             if a is None:
@@ -485,7 +541,7 @@ def _trigger_route(base5, close, start, base_th, gap_th, mkt6, peer6, peer_ok_fl
         out["margin"] = round(margin, 2)
     return out
 
-def _trigger(series, c, close, cfg_k1, mkt6, peer6, peer_ok_flag, as_of):
+def _trigger(series, c, close, cfg_k1, mkt6, peer6, peer_ok_flag):
     """反推「明天要到什麼價位才會觸發款1」。
 
     款1 度量是**逐日漲跌幅累加**，所以明天的 6 日累積 = 最近 5 個日變動（已知）+ 明天的日變動。
@@ -496,8 +552,8 @@ def _trigger(series, c, close, cfg_k1, mkt6, peer6, peer_ok_flag, as_of):
       base5 已 ≥ 門檻     → 不跌破某價位就觸發（hold）
       否則              → 要漲/跌到某價位才觸發（rise/fall），差太遠則明天到不了（None）
 
-    款1 有兩條路徑（高標版 32%/30%、低標版 25%/27%＋起迄價差），兩條都算再取**最易觸發**者。
-    2026-08-10 起低標版只適用收盤價 >1000 元，一般股票只剩高標版 → 觸發價會自動變遠。
+    款1 有兩條路徑（高標版 32%/30%、低標版 25%/23%＋起迄價差），兩條都算再取**最易觸發**者。
+    （2026-08-10 新制改的是款11 的高價股價差，不影響這裡，見 RULE_2026_08_10 下方 CAUTION。）
 
     門檻用「基準 vs 大盤均值±20%」取較嚴者——即文件 §4.2 說的「有效門檻」，僅供顯示。
     大盤均值盤中會動，故觸發價是**估計值**，不是保證。
@@ -508,12 +564,11 @@ def _trigger(series, c, close, cfg_k1, mkt6, peer6, peer_ok_flag, as_of):
     seq = seq[-6:]                                     # 6 個價格點 = 明天窗內已知的 5 個日變動
     if any(x is None or x <= 0 for x in seq):
         return None
+    if _has_jump(seq):                                 # 窗內有減資／復牌跳空 → 累積值不可信，不報觸發價
+        return None
     base5 = sum((seq[i] / seq[i - 1] - 1) * 100 for i in range(1, 6))
 
-    routes = [(cfg_k1["std1"], None)]
-    gap_th = _gap_threshold(close, as_of, cfg_k1["gap"])
-    if gap_th is not None:
-        routes.append((cfg_k1["std2"], gap_th))
+    routes = [(cfg_k1["std1"], None), (cfg_k1["std2"], cfg_k1["gap"])]
     # 明天那個 6 營業日窗的**起始日收盤** = seq[1]（明天入窗、最舊那天出窗）。
     # 不是 seq[0]——seq[0] 只參與累積漲跌幅的第一個日變動，價差窗比累積窗少一個點，見 _gap()。
     cands = [r for r in (_trigger_route(base5, close, seq[1], bt, gt, mkt6, peer6, peer_ok_flag)
@@ -578,8 +633,10 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
     cov, tot = official_coverage(market, market_date)
     if tot and cov < tot * 0.5:
         k1_recent |= self_k1_history(series, sector, cfg)
-    # 款6 用「當日」PE/PB；上市有逐日端點，上櫃無 → 沿用 openapi 最新日（回測失真、forward 準）
-    day_pb = pb_pe_daily(market_date) if market == "TWSE" else None
+    # 款1 本益比豁免與款6 都用「當日」PE/PB。FinMind TaiwanStockPER 上市上櫃都有
+    # （2026-11-04 實測 1,980 筆，含群聯、信驊）。原本只給上市用，上櫃 PE 一律是空值
+    # （BWIBBU_ALL 只有上市）→ 上櫃款1 的 PE≥65 豁免從沒作用、款6 回測 0/85。
+    day_pb = pb_pe_daily(market_date)
     today = series[-1][1]
     prev = series[-2][1] if len(series) >= 2 else {}
 
@@ -646,13 +703,13 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
 
         # ── 明天的觸發價（反推，盤後即可定案）──
         tg = _trigger(series, c, cl, cfg["k1"], A6[0],
-                      A6[1].get(s), peer_ok(s, A6[2], c), market_date)
+                      A6[1].get(s), peer_ok(s, A6[2], c))
         if tg:
             triggers[c] = {"name": m["name"], "market": market, "close": cl, **tg}
 
         # ── 款1 ──（並算出 k1_25 供款3/4/7 前置）
         k1_25 = False
-        if m["ret6"] is not None and not _price_break(series, c, 6):
+        if m["ret6"] is not None and not _cum_break(series, c, 6):
             a, mkt6, peer6, pn6 = m["ret6"], A6[0], A6[1], A6[2]
             papp = peer_ok(s, pn6, c)
             mdiff = abs(a - mkt6) if mkt6 is not None else None
@@ -661,8 +718,7 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
             p_ok = (pdiff is not None and pdiff >= DIFF) if papp else True
             t = cfg["k1"]
             g = _gap(series, c, 5)          # 6 個營業日的頭尾價差，非 _ret_cum 的 7 點窗
-            gap_th = _gap_threshold(cl, market_date, t["gap"])   # None＝低標版此時不適用
-            lo_ok = gap_th is not None and abs(a) > t["std2"] and g is not None and g >= gap_th
+            lo_ok = abs(a) > t["std2"] and g is not None and g >= t["gap"]
             base_ok = abs(a) > t["std1"] or lo_ok
             if base_ok and m_ok and p_ok:
                 std = "32%版" if abs(a) > t["std1"] else "25%版"
@@ -874,51 +930,23 @@ def notice():
     json.dump(rec, open(os.path.join(NOTI, f"notice_{ann}.json"), "w"), ensure_ascii=False, indent=2)
     print(f"[notice] {ann}: 官方注意 {len(codes)} 檔 -> {list(codes)}")
 
-def _prev_trading(ann_date):
-    d = datetime.datetime.strptime(ann_date, "%Y%m%d").date() - datetime.timedelta(days=1)
-    for _ in range(10):
-        ymd = d.strftime("%Y%m%d")
-        if os.path.exists(os.path.join(CACHE, f"mi_{ymd}.json")):
-            return ymd
-        d -= datetime.timedelta(days=1)
-    return None
-
-_ROC = re.compile(r"(\d{3})年(\d{1,2})月(\d{1,2})日")
-def _roc_dates(text):
-    ds = [f"{int(y)+1911:04d}{int(m):02d}{int(d):02d}" for y, m, d in _ROC.findall(text)]
-    if len(ds) < 2:
-        return ds
-    lo, hi = min(ds), max(ds)
-    return [d for d in sorted(set(list_cached_days())) if lo <= d <= hi]
-
 def list_cached_days():
-    """快取裡**真的有盤後資料**的交易日。非交易日會被寫入 {"stat": "NO_DATA"} 佔位檔
-    （避免每次回補都去打 TWSE、遇 404 整批全滅），那些不算交易日，用檔案大小排除。"""
-    return sorted(f[3:11] for f in os.listdir(CACHE)
-                  if f.startswith("mi_") and f.endswith(".json")
-                  and os.path.getsize(os.path.join(CACHE, f)) > 1000)
+    """確定有開盤的交易日：舊 mi_ 快取（MI_INDEX 時期，停在 2026-08-28）∪ 有官方注意名單的日子。
+
+    只看 mi_ 的話 8/28 之後全部消失——缺日偵測、30 日官方覆蓋率、款2「近 60 日曾處置」
+    的回看窗都會停在 8 月。mi_ 佔位檔（{"stat": "NO_DATA"}）用檔案大小排除。"""
+    mi = {f[3:11] for f in os.listdir(CACHE)
+          if f.startswith("mi_") and f.endswith(".json")
+          and os.path.getsize(os.path.join(CACHE, f)) > 1000}
+    return sorted(mi | _official_dates())
 
 def _is_stock(code):
     return len(code) == 4 and code[0].isdigit()
 
-def official_k1_by_date():
-    """從所有 notetrans 快照聚合官方款1（連續N次）→ {trigger_date: {code: name}}。已排除權證。"""
-    out = {}
-    for f in sorted(os.listdir(NOTI)):
-        if not f.startswith("notice_"):
-            continue
-        noti = json.load(open(os.path.join(NOTI, f)))
-        for c, v in noti.get("counter_detail", {}).items():
-            if not _is_stock(c):
-                continue
-            for d in _roc_dates(v.get("criteria_raw", "")):
-                out.setdefault(d, {})[c] = v.get("name")
-    return out
-
 # ── 官方注意名單「帶款號」封存（可回溯）───────────────────────
-# openapi 的 notice/notetrans 只回最新日、且 notetrans 無款號；
-# 但 TWSE rwd 端點吃 startDate/endDate 可回溯數年，且原文含「第X款」標籤。
-# TPEx 對應端點的 date 參數無效（一律回最近兩個公告日）→ 上櫃仍只能 forward 累積。
+# 證交所 openapi 的 notice 回空、notetrans 無款號且只回最新日；
+# 上市改用 rwd 端點（吃 startDate/endDate 可回溯，原文含「第X款」）。
+# 上櫃走櫃買 OpenAPI 當日快照，沒有歷史 → 只能每天 forward 累積。
 _CN = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7,
        "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12, "十三": 13, "十四": 14}
 _CLAUSE_RE = re.compile(r"第([一二三四五六七八九十]+)款")
@@ -981,25 +1009,6 @@ def _official_rows_twse(start, end):
                         "clauses": _clauses(r[4])})
     return out
 
-def _official_rows_tpex(start=None, end=None):
-    """上櫃注意名單（網頁端點，**僅供手動補洞**）。吃 startDate/endDate 可回溯；
-    `date=` 參數會被無視（一律回最近兩個公告日）——同 TPEx 歷史報價的老坑，別再踩。
-    日期格式為西元斜線 YYYY/MM/DD。"""
-    q = ""
-    if start and end:
-        q = (f"startDate={start[:4]}/{start[4:6]}/{start[6:8]}"
-             f"&endDate={end[:4]}/{end[4:6]}/{end[6:8]}&")
-    x = fj(f"https://www.tpex.org.tw/www/zh-tw/bulletin/attention?{q}response=json")
-    tbl = next((t for t in x.get("tables", []) if t.get("data")), None)
-    out = []
-    for r in (tbl or {}).get("data", []):
-        ann = _roc_to_ymd(r[5])
-        if ann:
-            out.append({"date": ann, "code": r[1], "name": r[2], "market": "TPEx",
-                        "count": _f(r[3]), "close": _f(r[6]), "text": r[4],
-                        "clauses": _clauses(r[4])})
-    return out
-
 def _save_official(rows):
     """依公告日分檔存 notices/official_{ann}.json；同市場覆寫、他市場保留（TWSE/TPEx 分開抓）。"""
     by = {}
@@ -1012,7 +1021,7 @@ def _save_official(rows):
             markets = {r["market"] for r in rs}
             keep = [r for r in json.load(open(fp)).get("rows", []) if r.get("market") not in markets]
         json.dump({"date": ann, "captured_at": _now(),
-                   "source": "twse-rwd/tpex-bulletin（原文含款號）", "rows": keep + rs},
+                   "source": "twse-rwd/tpex-openapi（原文含款號）", "rows": keep + rs},
                   open(fp, "w"), ensure_ascii=False, indent=2)
     return by
 
@@ -1023,8 +1032,9 @@ def backfill_notice(start=None, end=None):
     **不帶日期（每日排程走這條）**：上櫃走 OpenAPI 當日快照，上市仍走網頁端點近 60 天
     （上市的 OpenAPI 版回空，見上方 WARNING）。
 
-    **帶日期（手動補洞走這條）**：兩邊都走網頁端點回溯。OpenAPI 沒有歷史，某天排程掛掉
-    或官方事後修正名單時才用得到：
+    **帶日期（手動補洞走這條）**：只補上市（網頁端點可回溯）。上櫃**不補**：2026-11-04 起
+    不再碰櫃買網站內部 JSON（`bulletin/attention`，非開放資料），OpenAPI 又沒有歷史，
+    排程兩班都漏掉的那天上櫃名單就是缺的。
         python3 -m finance_tools.disposition.p1_reconcile backfill-notice 20260801 20260828
     """
     auto = not (start and end)
@@ -1033,16 +1043,19 @@ def backfill_notice(start=None, end=None):
                       - datetime.timedelta(days=60)).strftime("%Y%m%d")
 
     rows = []
-    # 上櫃：自動路徑走 OpenAPI（不碰網頁端點）；手動補洞才用網頁端點回溯。
-    tpex = (_official_rows_openapi if auto else (lambda: _official_rows_tpex(start, end)))
-    for label, fn in (("上市", lambda: _official_rows_twse(start, end)),
-                      ("上櫃", tpex)):
+    # 上櫃只有 OpenAPI 當日快照，手動補洞時略過（_save_official 只覆寫抓到的市場，既有上櫃列保留）
+    sources = [("上市", lambda: _official_rows_twse(start, end))]
+    if auto:
+        sources.append(("上櫃", _official_rows_openapi))
+    else:
+        print("[backfill] 上櫃沒有可回溯的開放資料，只補上市")
+    for label, fn in sources:
         try:
             rows += fn()
         except Exception as e:
             print(f"[backfill] {label}抓取失敗: {e}")
     by = _save_official(rows)
-    src = "上市網頁＋上櫃 OpenAPI" if auto else "網頁端點補洞"
+    src = "上市網頁＋上櫃 OpenAPI" if auto else "上市網頁端點補洞"
     print(f"[backfill] {start}~{end}（{src}）: {len(rows)} 筆 / {len(by)} 個公告日")
 
 def official_index():
@@ -1271,6 +1284,12 @@ def refresh_punish(days_back=90, days_fwd=30):
             # 找不到表格時是**靜默**回 []，不擋下來就會被當成「今天真的沒有處置股」。
             if not got:
                 raise RuntimeError("回 0 筆")
+            # 主來源改成 FinMind 單一支後，「某一市場整批消失」不會再表現成抓取失敗，
+            # 要直接檢查兩市場的股票都在（±120 天窗內兩邊常態都有上百筆）。
+            mk = {r.get("market") for r in got if _is_stock(r.get("code", ""))}
+            missing = [label for m, label in (("市", "上市"), ("櫃", "上櫃")) if m not in mk]
+            if missing:
+                raise RuntimeError(f"{'/'.join(missing)}處置股 0 筆（疑似來源缺一邊）")
             rows += got
         except Exception as e:
             bad.append(name)
@@ -1654,8 +1673,11 @@ def record():
     # 對 07/31 生效的處置根本來不及示警，算成漏警是自我抹黑。
     pubs = sorted(p for p in ((hist[d].get("published_at") or "") for d in days) if p)
 
-    hit, miss, uncovered = [], [], 0
+    hit, miss, uncovered, esb = [], [], 0, 0
     for v in sorted(disposals.values(), key=lambda x: x.get("start") or ""):
+        if v.get("market") == "興":
+            esb += 1                            # 興櫃不在引擎範圍，算進分母只會被當成漏報
+            continue
         start = v.get("start")
         if not start or not any(p[:10].replace("-", "") < start for p in pubs):
             uncovered += 1                      # 處置生效前我們還沒發布過任何名單 → 不計分母
@@ -1664,7 +1686,7 @@ def record():
         (hit if a.get("alerted_published_at") else miss).append((v, a))
 
     total = len(hit) + len(miss)
-    print(f"\n=== 戰績（只計快照涵蓋期間；另有 {uncovered} 筆處置發生於上線前，不計）===")
+    print(f"\n=== 戰績（只計快照涵蓋期間；另有 {uncovered} 筆處置發生於上線前、{esb} 筆興櫃，不計）===")
     if not total:
         print("尚無可計分的處置事件——需要至少一天快照早於某次處置開始日。")
         return
@@ -1728,7 +1750,7 @@ REASON = {1: "近期漲跌劇烈", 2: "中長期漲幅過大", 3: "成交爆量"
 #   3) `self_k1_history` proxy → 上櫃官方名單不可回溯，否則豁免形同失效（長尾 16 次 → 5 次）
 # 驗證：`audit` 逐檔比對「我方 vs 官方近30日次數」（countdown 真正依賴的量，非單日 Precision）。
 # 三道到齊後，納入款2 對 danger/near 完全無影響（2/0 不變）、僅 watch +3 → 安全且覆蓋更完整。
-# 款6 仍排除：實測 0 命中（PB 來源落後一日 + 38% 案例需買不到的分點資料），計入等於加 0。
+# 款6 仍排除：自算只算得出「同產業 PB×4」一支，回測召回率上市約 28%、上櫃約 13%，計入只會讓累積忽高忽低。
 ACCUM_CLAUSES = {1, 2, 3, 4, 7}
 # 官方名單來源的日子用這組：官方即以款1~7 累積，含我們算不出的款5（分點）與只算到 41% 的款6。
 ACCUM_OFFICIAL = {1, 2, 3, 4, 5, 6, 7, 8}
@@ -1873,7 +1895,7 @@ def forecast(as_of=None, window=30, disposal_date=None):
             acc = {d: v for d, v in acc.items() if d > trig}
             any_days = {d for d in any_days if d > trig}
             k1_days = {d for d in k1_days if d > trig}
-        # 處置中的股票**繼續累積**：處置期間再達門檻 → 升級為下一次處置（撮合 5分→20分、全面預收）。
+        # 處置中的股票**繼續累積**：處置期間再達門檻 → 升級為下一次處置（2026-08-10 新制下加重的是全面預收款券）。
         # 起算點＝處置開始日，否則處置前的舊帳會被算進來。
         # disp＝「處置生效中」才有，供第二次處置的累積起算用；
         # disp_any 另含「已公布未生效」，戰績（_alerted）要用它，否則剛達標那批查不到示警紀錄。

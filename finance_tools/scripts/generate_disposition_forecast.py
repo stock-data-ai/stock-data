@@ -6,7 +6,7 @@
 - dry_run=True 或無 PAT → 寫入 /tmp/disposition-forecast.json
 
 引擎邏輯：finance_tools/disposition/p1_reconcile.py（款1~7 規則 + 狀態機 + reconcile）。
-規則對照與設計：stock_map docs/future/處置股預測.md。
+架構與維運：stock_map docs/features/market/處置股預測.md。
 
 每日流程：notice 快照官方標籤 → 回測近 N 日 prediction → forecast 摺算 → 裁掉純 safe → 推送。
 predictions/cache 皆可再生（gitignore），CI 每次重建，故 stateless。
@@ -80,7 +80,7 @@ def run(dry_run: bool = False) -> None:
     except Exception as e:
         print(f"[disposition] notice 快照失敗（略過，不影響預警）: {e}")
     try:
-        # 官方注意名單（含款號）：上市可回溯 60 日、上櫃補最近兩日。
+        # 官方注意名單（含款號）：上市回抓近 60 日、上櫃取 OpenAPI 當日快照。
         # 必須在 backtest 之前 —— 款2 豁免要靠「近30日曾公告款1」的官方 state。
         engine.backfill_notice()
     except Exception as e:
