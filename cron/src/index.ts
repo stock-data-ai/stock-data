@@ -47,8 +47,6 @@ const CRON_MAP: Record<string, CronJob> = {
   // 籌碼題材接在每日更新成功之後（generate-chip-topic.yml 的 workflow_run）。
   // 週六只撿 FinMind 外資持股的補正（週五資料晚一天定案），沒有「今天」可等，維持固定一班。
   '30 11 * * 7':          { workflow: 'daily-update.yml', inputs: { force: 'true' } },             // 台灣 19:30 週六
-  '0 4 * * *':            { workflow: 'scraper-mops.yml' },                                         // 台灣 12:00 每天
-  '0 9 * * *':            { workflow: 'scraper-mops.yml' },                                         // 台灣 17:00 每天
   '0 12 * * *':           { workflow: 'scraper-mops.yml' },                                         // 台灣 20:00 每天（20:30 通知前刷新）
   '55 12 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 20:55 週一到週五（第三次）
   '55 13 * * 2,3,4,5,6':  { workflow: 'market-sentiment.yml' },                                    // 台灣 21:55 週一到週五（第四次，融資融券公布後）

@@ -82,11 +82,15 @@ def fetch_mops_detail(
     return {}
 
 
+TW_TZ = datetime.timezone(datetime.timedelta(hours=8))
+
+
 def scrape_mops_material_info(
     stock_codes: Optional[List[str]] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    keyword: Optional[str] = None
+    keyword: Optional[str] = None,
+    since: Optional[datetime.datetime] = None,
 ) -> pd.DataFrame:
     """
     從公開資訊觀測站 API 爬取重大訊息資料。
@@ -97,6 +101,11 @@ def scrape_mops_material_info(
         start_date (str, optional): 起始日期 (格式: YYYYMMDD)，預設為今日。
         end_date (str, optional): 結束日期 (格式: YYYYMMDD)，預設與 start_date 相同。
         keyword (str, optional): 主旨關鍵字篩選。
+        since (datetime, optional): 只收發布時間（台灣時間）不早於此刻的公告，較早的不抓全文。
+
+    不帶日期時抓「過去 24 小時」：查昨天與今天兩天，再以 since 篩掉 24 小時以前的。
+    排程每天 20:00 跑一次（2026-11-04 起），每則公告剛好落在一個 24 小時窗內只抓一次；
+    晚上 8 點以後才發的公告由隔天那班補上（以前只查今天，這批會永遠漏掉）。
 
     Returns:
         pd.DataFrame: 包含重大訊息的 DataFrame，欄位包括:
@@ -123,9 +132,14 @@ def scrape_mops_material_info(
         # 關鍵字篩選
         df = scrape_mops_material_info(keyword='董事')
     """
-    # 處理日期參數
+    # 處理日期參數（排程在 UTC 的 runner 上跑，日期一律用台灣時間算）
+    if start_date is None and end_date is None:
+        now = datetime.datetime.now(TW_TZ)
+        since = since or now - datetime.timedelta(hours=24)
+        start_date = since.strftime('%Y%m%d')
+        end_date = now.strftime('%Y%m%d')
     if start_date is None:
-        start_date = datetime.datetime.now().strftime('%Y%m%d')
+        start_date = end_date
     if end_date is None:
         end_date = start_date
 
@@ -140,6 +154,8 @@ def scrape_mops_material_info(
         print(f"篩選股票: {stock_codes}")
     if keyword:
         print(f"關鍵字篩選: {keyword}")
+    if since:
+        print(f"只收 {since.strftime('%Y-%m-%d %H:%M')} 以後發布的公告")
 
     column_names = ['code', 'name', 'pub_date', 'pub_time', 'subject', 'source']
 
@@ -152,6 +168,8 @@ def scrape_mops_material_info(
 
     api_url = 'https://mops.twse.com.tw/mops/api/t05st02'
     all_data = []
+    # 列表本身會重複列同一則（2026-11-04 實測 502 列只有 435 則），全文 API 只對第一次出現的打
+    seen = set()
 
     for idx, target_date in enumerate(date_list):
         # 轉換為民國年月日
@@ -202,6 +220,21 @@ def scrape_mops_material_info(
 
                     # 轉換日期
                     pub_date = convert_roc_date(roc_date)
+
+                    # 24 小時窗以前的公告上一班已抓過，不再打全文 API
+                    if since:
+                        try:
+                            pub_at = datetime.datetime.strptime(
+                                f'{pub_date} {pub_time}', '%Y%m%d %H:%M:%S').replace(tzinfo=TW_TZ)
+                        except ValueError:
+                            pub_at = None
+                        if pub_at and pub_at < since:
+                            continue
+
+                    key = (code, pub_date, pub_time, subject)
+                    if key in seen:
+                        continue
+                    seen.add(key)
 
                     # 解析 detail 參數（item[5] 含 enterDate/serialNumber/marketKind）
                     meta = item[5] if len(item) > 5 else {}
