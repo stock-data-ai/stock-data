@@ -76,7 +76,7 @@ CFG = {
 
 # ── 2026-08-10 新制（證交所/櫃買 2026-08 修正，自 2026/08/10 施行）───────────
 #   一、處置期間：一般 10 → **5** 營業日；當沖占比過高加重者 12 → **7** 營業日。
-#   二、撮合間隔：5分/20分 → 一律**約每 2 分鐘**（引擎不推測，只讀官方公告原文）。
+#   二、撮合間隔：5分/20分 → 多數**約每 2 分鐘**，少數個股官方公告 10／45 分鐘（引擎不推測，只讀官方公告原文）。
 #   三、**注意第11款**「6 個營業日收盤價起迄價差標準」改為僅適用收盤價逾 1000 元，
 #       價差門檻 100 → 300 元；>2000 元後每增 1000 元一級距 +150 元（2000~3000 → 450）。
 # 新制只對 as_of >= 施行日生效，舊資料仍走舊制，否則歷史準確度會被今天的規則污染。
@@ -107,7 +107,8 @@ K6_TURN, K6_VOL, K6_SECPB_MULT = 5.0, 3_000_000, 4.0   # 量≥3000張=300萬股
 # 款7（券資比）
 K7_RQ, K7_FIN, K7_SHORT, K7_RQ_X = 20.0, 25.0, 15.0, 4.0
 # 款2 豁免
-K2_EX_DISPOSED_RET = 10.0                  # 近60日曾處置 且 6日累積<10% → 豁免
+K2_EX_DISPOSED_RET = 10.0                  # 近60日曾因款2 處置：6日累積未超過 10% → 除外
+K2_EX_DISPOSED_DIFF = 5.0                  #   或超過 10% 但與全體及同類差幅均未達 5% → 除外
 
 def _f(x):
     try:
@@ -764,17 +765,26 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
                     continue
                 if r < 0 and not (cl < pc):
                     continue
-            # 豁免1：近60營業日內**曾發布**處置 且 6日累積<10%（官方原文是「曾發布」，
-            # 不是「現在還在處置中」；且必須以預測當日為基準，否則歷史預測會隨今天的名單漂移）
-            if c in disposed and m["ret6"] is not None and abs(m["ret6"]) < K2_EX_DISPOSED_RET:
+            # 款2 的兩條除外（附件「詳細數據及除外情形」第三條第二項），都看「當下的 6 日表現」。
+            # 「差幅均未達」＝與全體**及**同類的差幅**都**未達才除外；同類比較不適用時只看全體。
+            r6 = m["ret6"]
+            md6 = abs(r6 - A6[0]) if (r6 is not None and A6[0] is not None) else None
+            pd6 = (abs(r6 - A6[1][s]) if (r6 is not None and peer_ok(s, A6[2], c) and s in A6[1])
+                   else None)
+            def _small(th):
+                return md6 is not None and md6 < th and (pd6 is None or pd6 < th)
+            # 第四款：近 60 營業日曾發布處置，且**最近一次處置的原因只有本款（30/60/90 日漲幅）**。
+            #   (一) 6 日累積未超過 10%  (二) 超過但差幅均未達 5%  (三) 方向相反
+            # 2026-11-04 依條文更正：原本只要曾處置就豁免，但多數處置是因款1 → 官方照列款2
+            # （大量、AMAX、玉晶光、川湖、陽程、富喬 6 例官方照列；美而快 5321 上次處置只因款2 → 官方未列）。
+            if c in disposed and r6 is not None and (
+                    abs(r6) <= K2_EX_DISPOSED_RET or _small(K2_EX_DISPOSED_DIFF) or r6 * r < 0):
                 continue
-            # 豁免2：近30日曾公告款1 者，若「當下的 6 日表現」符合下列任一 → 不適用款2。
-            # 官方原文（詳細數據第三條第二項）分三種情事，我們原本只做了第一種：
-            #   (一) 6 日累積未超過 25%(上市)/27%(上櫃)
-            #   (二) 超過門檻，但與全體／同類平均的差幅未達 20% ← (一)+(二) 合起來就是「不成立款1 低標」
-            #   (三) 6 日方向與本款所達標準的漲跌方向相反
-            if c in k1_recent and (not k1_25
-                                   or (m["ret6"] is not None and m["ret6"] * r < 0)):
+            # 第三款：近 30 營業日曾因款1 公布注意。
+            #   (一) 6 日累積未超過 25%(上市)/27%(上櫃)  (二) 超過但差幅均未達 20%  (三) 方向相反
+            # 原本用 k1_25 判斷，那是「任一差幅未達就除外」，比條文寬；這裡照條文寫。
+            if c in k1_recent and (r6 is None or abs(r6) <= cfg["k1"].get("pre", cfg["k1"]["std2"])
+                                   or _small(DIFF) or r6 * r < 0):
                 continue
             add(c, {"clause": 2, "standard": f"{p}日",
                     "metrics": {f"return_{p}d": round(r, 2), "market_diff": round(mdiff, 2),
@@ -838,7 +848,7 @@ def predict(market_date):
     sector, pe_api = sector_pe()
     shares_tw, pb, margin = ref_data()
     official_hist = official_index()          # 官方注意名單（含款號）→ 款2 豁免
-    disposed = disposed_recent(market_date)     # 以預測當日為準，不可用 _today()
+    disposed = disposed_recent(market_date, idx=official_hist)   # 以預測當日為準，不可用 _today()
     hits, triggers = [], {}
     for mkt in ("TWSE", "TPEx"):
         try:
@@ -871,7 +881,7 @@ def backtest(n=30, end=None):
     shares, pb, margin = ref_data()
     hist = official_index()
     for d in days:
-        disp = disposed_recent(d)          # 逐日算：款2 豁免的處置名單以該日為準，不可全期共用
+        disp = disposed_recent(d, idx=hist)   # 逐日算：款2 豁免的處置名單以該日為準，不可全期共用
         hits, triggers = [], {}
         for mkt in ("TWSE", "TPEx"):
             try:
@@ -1241,7 +1251,7 @@ def _punish_rows_finmind(start, end):
             "announced": str(r.get("date") or "").replace("-", "") or None,
             "start": str(r.get("period_start") or "").replace("-", "") or None,
             "end": str(r.get("period_end") or "").replace("-", "") or None,
-            # 2026-08-10 新制起撮合一律約每 2 分鐘；舊制的 5 分／10 分只存在於歷史區間，
+            # 2026-08-10 新制起撮合多數約每 2 分鐘（少數 10／45 分）；舊制的 5 分／10 分只存在於歷史區間，
             # 而 forecast 那側本來就會把生效中的處置一律標成 2 分（見 rule_2026_08_10）。
             # 解不出就留 None：舊制的 5 分／10 分只存在於歷史區間，硬填 2 分會把
             # 歷史資料改寫成新制。生效中的處置那側本來就會覆蓋成 2 分（rule_2026_08_10）。
@@ -1346,7 +1356,7 @@ def _shorten_period(r, as_of):
     st, en = r.get("start"), r.get("end")
     if as_of < RULE_2026_08_10 or not (st and en) or st >= RULE_2026_08_10 or en < RULE_2026_08_10:
         return r
-    # 撮合間隔跟著新制走：舊公告原文寫 5分/20分，但 8/10 起實際一律約 2 分鐘。
+    # 撮合間隔跟著新制走：舊公告原文寫 5分/20分，8/10 起跨越施行日的這批實際約 2 分鐘。
     # 不覆寫的話，跨越施行日還在處置中的個股會一直顯示已作廢的舊間隔。
     out = {**r, "interval": "2分", "rule_2026_08_10": True}
     new_en = _bdays_from(st, 7 if _bdays_span(st, en) >= 12 else 5)   # ≥12 營業日＝當沖加重版
@@ -1421,19 +1431,41 @@ def export_punishments(as_of=None):
         })
     return {"lastUpdated": _now(), "count": len(rows), "punishments": rows}
 
-def disposed_recent(as_of=None, days=60):
-    """最近 `days` 個營業日內**曾被發布處置**的代號（款2 豁免1 用）。
+def disposed_recent(as_of=None, days=60, idx=None):
+    """最近 `days` 個營業日內曾發布處置、**且最近一次處置原因只有款2** 的代號（款2 第四款除外用）。
 
-    與 disposed_set() 的差別：那個是「此刻仍在處置期間」，這個是「窗內曾經發布過」——
-    官方款2 除外情形寫的是後者。且必須吃 as_of：用 _today() 會讓歷史預測隨今天的名單漂移
-    （2026-08-10 新制放人後，昨天算 21 檔、今天算 9 檔，整批歷史款2 成績跟著變）。
+    條文是「最近六十個營業日內曾發布處置，且最近一次處置原因僅有本款（30/60/90 日漲幅）」。
+    處置公告本身不寫款別，所以用官方注意名單反推：取最近一次處置公告日往前、到上一次處置
+    之後（最多 30 個交易日）這段被列注意的款別，只剩款2 才算。查不到注意紀錄的一律不算
+    （多數處置是因款1，寧可不豁免）。`idx` 為 official_index()；不給就無從判斷，回空集合。
+
+    與 disposed_set() 的差別：那個是「此刻仍在處置期間」，這個是「窗內曾經發布過」。
+    必須吃 as_of：用 _today() 會讓歷史預測隨今天的名單漂移。
     """
     d = as_of or _today()
-    axis = [x for x in list_cached_days() if x <= d][-days:]
-    lo = axis[0] if axis else d
-    return {r["code"] for r in _punish_rows(d)
-            if (r.get("announced") or r.get("start") or "") >= lo
-            and (r.get("start") or "") <= d}
+    if not idx:
+        return set()
+    axis = [x for x in list_cached_days() if x <= d]
+    lo = axis[-days:][0] if axis else d
+    by_code = {}
+    for r in _punish_rows(d):
+        a = r.get("announced") or r.get("start") or ""
+        if a and a <= d:
+            by_code.setdefault(r["code"], []).append(a)
+    out = set()
+    for c, anns in by_code.items():
+        anns = sorted(set(anns))
+        last = anns[-1]
+        if last < lo:
+            continue
+        prev = anns[-2] if len(anns) >= 2 else ""
+        win = [x for x in axis if prev < x <= last][-30:]
+        causes = set()
+        for x in win:
+            causes |= set((idx.get(x, {}).get(c) or {}).get("clauses") or [])
+        if causes & set(range(1, 9)) == {2}:
+            out.add(c)
+    return out
 
 def announced_set(as_of=None):
     """**已公布、尚未生效**的代號（start > as_of）——這批已達處置門檻，只是還沒開始。"""
@@ -1774,7 +1806,7 @@ def _pub_trigger(t):
 
 def _next_disposition(disp, countdown, cnt10):
     """處置中的股票：距「下一次處置」還差幾次、會是第幾次。
-    2026-08-10 新制：撮合間隔與處置期間不再隨次數改變（一律約 2 分鐘 / 5 個營業日），
+    2026-08-10 新制：撮合間隔與處置期間不再隨次數改變（多數約 2 分鐘 / 5 個營業日），
     30 日內第二次起加重的是**全面預收款券**。
     近 10 日無活動就不輸出（休眠股不該被算術距離誤判成快被加重）。"""
     if cnt10 == 0 or countdown >= 99:
