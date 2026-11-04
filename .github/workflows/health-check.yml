@@ -613,6 +613,28 @@ jobs:
               send_ses_email(f'🚨 主動式 ETF 持股停更：{len(stale)} 檔（{tw_date}）', etf_html)
               all_good = False
 
+          # ── ETF 配息紀錄新鮮度（另寄一封）──────────────────────────────────
+          # 2026-05-07～11-04 這份資料停更半年沒人發現：它原本由手動腳本產生，沒有排程，
+          # 上面「workflow 有沒有準時跑」的檢查永遠看不到它。改由週六股利班的 update-etf-dividends
+          # 寫入，每次確認過就把 lastUpdated 設成當天；最新一份超過 9 天沒更新＝這班沒在跑或一直失敗。
+          div_dates = []
+          for p in __import__('pathlib').Path('src/data/etf/dividends').glob('*.json'):
+              try:
+                  div_dates.append(json.load(open(p, encoding='utf-8')).get('lastUpdated') or '')
+              except Exception:
+                  continue
+          newest_div = max(div_dates, default='')
+          div_threshold = (taiwan_now.date() - timedelta(days=9)).isoformat()
+          print(f'[ETF dividends] 最新 lastUpdated {newest_div or "—"}，門檻 {div_threshold}')
+          if newest_div < div_threshold:
+              send_ses_email(
+                  f'🚨 ETF 配息資料停更：最後更新 {newest_div or "—"}（{tw_date}）',
+                  f'<p>src/data/etf/dividends/ 最新一份的 lastUpdated 是 {newest_div or "—"}，超過 9 天沒有更新。'
+                  f'ETF 頁「配息」分頁與 AI 助理都讀這份資料。</p>'
+                  f'<p>先看 <a href="https://github.com/{REPO}/actions/workflows/weekly-dividend-update.yml">週六股利 workflow</a> '
+                  f'的「Run ETF dividend update」步驟 log。</p>')
+              all_good = False
+
           if not all_good:
               sys.exit(1)
           PYEOF

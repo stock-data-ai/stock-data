@@ -46,6 +46,10 @@ jobs:
             -o src/data/etf/index.json
           echo "✅ index.json 已取得（$(jq length src/data/etf/index.json) 筆）"
 
+      # 新 ETF 上架：stock_map index 有、detail 檔沒有的先建骨架，下面的持股爬蟲才會處理它
+      - name: Create skeletons for new ETFs
+        run: uv run python etf_Crawler/update_etf_basics.py --skeletons-only
+
       - name: Run ETF holdings crawler (CMoney)
         run: |
           set -o pipefail
@@ -54,6 +58,27 @@ jobs:
           else
             uv run python etf_Crawler/fetch_etf_holdings_cmoney.py 2>&1 | tee /tmp/run.log
           fi
+
+      # 配息紀錄（FinMind 除權息結果）：2026-11-04 前由已刪除的手動腳本爬玩股網，5/7 後停更半年沒人發現
+      - name: Update ETF dividends (FinMind)
+        id: dividends
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          FINMIND_API_TOKENS: ${{ secrets.FINMIND_API_TOKENS }}
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-etf-dividends 2>&1 | tee /tmp/etf-div.log
+
+      # 基本資料（受益人數、規模、上市日期、殖利率、配息頻率）：證交所／櫃買／集保開放資料＋上一步的配息。
+      # 取代本機 Playwright 爬玩股網的 sync_etf_metadata.py（已刪除）；管理費不在這裡（人工維護，每月用 compare_etf_fees.py 對照）
+      - name: Update ETF basics (open data)
+        id: basics
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          uv run python etf_Crawler/update_etf_basics.py ${{ inputs.codes }} 2>&1 | tee /tmp/etf-basics.log
 
       - name: 執行摘要
         if: always()
@@ -79,6 +104,12 @@ jobs:
               echo "| ❌ 失敗 | $FAILED |"
             fi
             echo "| 狀態 | $STATUS |"
+            echo ""
+            echo "配息：$(grep -oP 'OK ETF dividend update: \K.*' /tmp/etf-div.log 2>/dev/null | tail -1 || echo '—')"
+            echo ""
+            echo "基本資料：$(grep -oP 'ETF 基本資料更新完成 — \K.*' /tmp/etf-basics.log 2>/dev/null | tail -1 || echo '—')"
+            echo ""
+            echo "待上架：$(grep -oP 'NEW_ETF \K.*' /tmp/etf-basics.log 2>/dev/null | tail -1 || echo '—')"
           } >> $GITHUB_STEP_SUMMARY
 
       - name: Commit & push updated ETF holdings
@@ -135,3 +166,10 @@ jobs:
             "https://api.github.com/repos/CHIJUI0128/stock_map/contents/src/data/etf/index.json" \
             -d @/tmp/payload.json
           echo "✅ index.json 已推送至 stock_map"
+
+      # 配息或基本資料那步失敗：持股與索引照樣推送，但整個 run 要紅燈，health-check 才會寄信
+      - name: 配息或基本資料失敗就紅燈
+        if: ${{ !cancelled() && (steps.dividends.outcome == 'failure' || steps.basics.outcome == 'failure') }}
+        run: |
+          echo "::error::ETF 配息（${{ steps.dividends.outcome }}）或基本資料（${{ steps.basics.outcome }}）更新失敗，見對應步驟 log"
+          exit 1

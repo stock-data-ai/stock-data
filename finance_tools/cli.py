@@ -10,6 +10,7 @@ Commands:
   update-revenue        - 僅更新月營收。
   import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
   update-dividends      - 【定期】從 MOPS 更新 2025+ 股利。
+  update-etf-dividends  - 【定期】從 FinMind 更新 ETF 配息紀錄。
   update-balance-sheet  - 【定期】更新資產負債表 + 現金流量表（ROE/ROA/比率/OCF/FCF）。
   fetch-shareholder-data- 擷取 TDCC 股東分配資料。
   update-company-info   - 更新上市公司基本資訊。
@@ -53,6 +54,7 @@ from finance_tools.orchestration.financials_update import run_financials_update
 from finance_tools.orchestration.marketcap_inst_update import run_update_marketcap_inst
 from finance_tools.domains.dividends.tasks import run_import_historical_dividends, run_update_mops_dividends
 from finance_tools.domains.dividends.finmind_backfill import run_backfill_finmind_dividends
+from finance_tools.domains.dividends.etf_dividends import run_update_etf_dividends
 from finance_tools.domains.revenue.tasks import run_update_revenue
 from finance_tools.domains.balance_sheet.tasks import run_update_balance_sheet
 from finance_tools.orchestration.check_quality import run_check_quality
@@ -109,6 +111,12 @@ def main():
     # --- 'update-dividends' command (ongoing via GitHub Actions) ---
     parser_mops_div = subparsers.add_parser("update-dividends", help="【定期】從 MOPS 抓取 2025+ 股利並 merge 至 JSON。")
     parser_mops_div.set_defaults(func=run_update_mops_dividends)
+
+    # --- 'update-etf-dividends' command (ongoing via GitHub Actions, 週六股利班) ---
+    parser_etf_div = subparsers.add_parser("update-etf-dividends", help="【定期】從 FinMind 除權息結果更新 ETF 配息紀錄（src/data/etf/dividends/）。")
+    parser_etf_div.add_argument("--code", type=str, help="只處理這一檔 ETF。")
+    parser_etf_div.add_argument("--limit", type=int, help="只處理前 N 檔（測試用）。")
+    parser_etf_div.set_defaults(func=run_update_etf_dividends)
 
     # --- 'backfill-dividends' command (one-time) ---
     parser_backfill = subparsers.add_parser("backfill-dividends", help="【一次性】從 FinMind 補齊季配/半年配公司 2021-2025 每期明細，取代 CSV 年度合計。")
