@@ -182,6 +182,34 @@ for (const [cron, file] of dispatch) {
   }
 }
 
+// ── 反方向：清單上的每個時段都要還有 cron ─────────────────────────────
+// 上面只擋「cron 有、清單沒標」。2026-11-04 MOPS 拿掉 12:00／17:00 兩條 cron，清單沒跟著刪，
+// 隔天健康檢查就報兩班「未執行」。只比對「所有 cron 都是單一固定時間」的 workflow；
+// 有輪詢、多時段或 workflow_run 觸發的（每日更新、籌碼題材等）時間由程式決定，這裡不管。
+// 在 dispatch 表以外另有派送的 workflow（資料到齊才派的輪詢班等）：出現次數比 dispatch 表多
+const countIn = (list, f) => list.filter((v) => v === f).length;
+const allRefs = [...idx.matchAll(/\{\s*workflow:\s*'([^']+)'/g)].map((m) => m[1]);
+const dispatchedElsewhere = new Set(
+  allRefs.filter((f) => countIn(allRefs, f) > countIn([...dispatch.values()], f)),
+);
+for (const [name, file] of workflowNames) {
+  if (dispatchedElsewhere.has(file)) continue;
+  const crons = [...dispatch].filter(([, f]) => f === file).map(([c]) => c);
+  if (crons.length === 0) continue;
+  const tws = crons.map(twOf);
+  if (tws.some((t) => !t)) continue;
+  const at = new Set(tws.map((t) => t.at));
+  for (const c of checks.filter((x) => x.workflow === name)) {
+    const slot = `${String(c.hour).padStart(2, '0')}:${String(c.minute).padStart(2, '0')}`;
+    if (!at.has(slot)) {
+      fail(
+        `${YML} 的「${c.label}」預期台灣 ${slot} 有一班，但 ${file} 的 cron 只排在 ${[...at].join('／')}——`
+          + `這一項每天都會是「未執行」`,
+      );
+    }
+  }
+}
+
 // ── lenient 必須真的有「後面那一班」可以補 ────────────────────────────
 // lenient 的語意是「早班沒搶到資料不算異常，前提是後面真的有班補上」。
 // 若某筆標了 lenient 卻沒有更晚的同 workflow 班次，它永遠不會被降級，

@@ -53,9 +53,7 @@ jobs:
               {'label': '16:55 Market Sentiment Update',             'workflow_name': 'Market Sentiment Update｜市場情緒更新',                        'hour': 16, 'minute': 55, 'days': [1,2,3,4,5]},
               {'label': '17:55 Active ETF Holdings Update',          'workflow_name': 'Active ETF Holdings Update (Daily)｜主動型ETF持股（每日）',     'hour': 17, 'minute': 55},
               # 注意本清單的 days 是 Python %w（0=Sun），與 Cloudflare cron 的 1=Sun 差一位。
-              {'label': '12:00 MOPS Scraper｜午間刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 12, 'minute': 0, 'lenient': True},
-              {'label': '17:00 MOPS Scraper｜盤後刷新',              'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 17, 'minute': 0, 'lenient': True},
-              {'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0},
+              {'label': '20:00 MOPS Scraper｜重大訊息（每天一班）',    'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0},
               {'label': '19:05 Generate Disposition Forecast',       'workflow_name': 'Generate Disposition Forecast｜生成處置股預警',                'hour': 19, 'minute': 5,  'days': [1,2,3,4,5]},
               # 平日每日更新、融資融券：worker 每 10 分鐘問 FinMind，資料到齊才 dispatch（最晚 21:00／22:30
               # 照派一班），所以視窗從開始等的時間算起。籌碼題材接在每日更新成功之後（workflow_run）。
