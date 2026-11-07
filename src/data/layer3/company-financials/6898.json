@@ -11,7 +11,8 @@
     "marketCap": 1976395291.3,
     "pe": 10.23,
     "pb": 3.07,
-    "dividendYield": 8.41
+    "dividendYield": 8.41,
+    "dividendFrequency": "年"
   },
   "companyCode": "6898",
   "companyName": "程曦資訊整合股份有限公司",
@@ -707,7 +708,19 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2025,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 5.3,
+        "stockDividend": 0.0,
+        "totalDividend": 5.3,
+        "payoutDate": "2026-03-26",
+        "periodRange": "2025-01-01~2025-12-31",
+        "status": "董事會決議"
+      }
+    ],
     "institutionalInvestors": {
       "2026-11-02": {
         "dealer_hedging_buy": 0.0,
@@ -1234,5 +1247,6 @@
         "pledgePct": 0.0
       }
     }
-  }
+  },
+  "dividendsUpdated": "2026-11-07"
 }

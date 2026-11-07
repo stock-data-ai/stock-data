@@ -11,7 +11,8 @@
     "marketCap": 1134600000.0,
     "pe": 12.77,
     "pb": 3.85,
-    "dividendYield": 5.81
+    "dividendYield": 5.81,
+    "dividendFrequency": "年"
   },
   "companyCode": "6938",
   "companyName": "藍新資訊股份有限公司",
@@ -605,7 +606,19 @@
         "yoy": null
       }
     ],
-    "dividends": null,
+    "dividends": [
+      {
+        "year": 2025,
+        "period": "年度",
+        "sequence": 1,
+        "cashDividend": 5.0,
+        "stockDividend": 0.0,
+        "totalDividend": 5.0,
+        "payoutDate": "2026-02-26",
+        "periodRange": "2025-01-01~2025-12-31",
+        "status": "董事會決議"
+      }
+    ],
     "institutionalInvestors": {
       "2026-11-02": {
         "dealer_hedging_buy": 0.0,
@@ -1123,5 +1136,6 @@
         "pledgePct": 0.0
       }
     }
-  }
+  },
+  "dividendsUpdated": "2026-11-07"
 }
