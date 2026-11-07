@@ -7,49 +7,33 @@
   "managementFee": 1.2,
   "dividendFrequency": "不配息",
   "inceptionDate": "2015-09-10",
-  "fundSize": 6.43,
+  "fundSize": 5.64,
   "issuer": "富邦投信",
-  "beneficiaryCount": 1247,
+  "beneficiaryCount": 1226,
   "description": null,
   "topHoldings": [
     {
       "name": "東證指數期貨",
-      "weight": 187.94,
-      "shares": 149,
+      "weight": 186.34,
+      "shares": 148,
       "foreignCode": "202612JTIZ6F",
-      "previousWeight": 187.1,
-      "weightChange": 0.84,
-      "previousShares": 150,
+      "previousWeight": 187.94,
+      "weightChange": -1.6,
+      "previousShares": 149,
       "sharesChange": -1
     },
     {
       "name": "富邦日本",
-      "weight": 12.13,
+      "weight": 12.06,
       "shares": 1400000,
       "code": "00645",
-      "previousWeight": 11.92,
-      "weightChange": 0.21,
+      "previousWeight": 12.13,
+      "weightChange": -0.07,
       "previousShares": 1400000,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-04-28": [
-      {
-        "name": "2026/06東證指數期貨",
-        "weight": 175.97
-      },
-      {
-        "name": "2026/06迷你東證指數期貨",
-        "weight": 16.34
-      },
-      {
-        "name": "富邦日本",
-        "weight": 6.92,
-        "shares": 1400000,
-        "code": "00645"
-      }
-    ],
     "2026-04-30": [
       {
         "name": "2026/06東證指數期貨",
@@ -441,8 +425,21 @@
         "shares": 1400000,
         "code": "00645"
       }
+    ],
+    "2026-11-06": [
+      {
+        "name": "東證指數期貨",
+        "weight": 186.34,
+        "shares": 148
+      },
+      {
+        "name": "富邦日本",
+        "weight": 12.06,
+        "shares": 1400000,
+        "code": "00645"
+      }
     ]
   },
-  "lastUpdated": "2026-10-30",
+  "lastUpdated": "2026-11-06",
   "trailingYield": 0.0
 }

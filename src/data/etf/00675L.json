@@ -6,45 +6,34 @@
   "managementFee": 0.69,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-10-05",
-  "fundSize": 316.24,
+  "fundSize": 265.67,
   "issuer": "富邦投信",
-  "beneficiaryCount": 19255,
+  "beneficiaryCount": 19760,
   "description": "",
   "references": [],
   "topHoldings": [
     {
       "name": "台股指數期貨",
-      "weight": 200.36,
-      "shares": 7687,
+      "weight": 199.06,
+      "shares": 6791,
       "foreignCode": "202611WTXX6F",
-      "previousWeight": 200.27,
-      "weightChange": 0.09,
-      "previousShares": 7720,
-      "sharesChange": -33
+      "previousWeight": 200.36,
+      "weightChange": -1.3,
+      "previousShares": 7687,
+      "sharesChange": -896
     },
     {
       "name": "富邦吉祥貨幣市場",
-      "weight": 3.24,
+      "weight": 4.17,
       "shares": 67139533,
       "foreignCode": "97980579",
-      "previousWeight": 3.16,
-      "weightChange": 0.08,
+      "previousWeight": 3.24,
+      "weightChange": 0.93,
       "previousShares": 67139533,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-04-30": [
-      {
-        "name": "2026/05台股指數期貨",
-        "weight": 199.98
-      },
-      {
-        "name": "富邦吉祥貨幣市場",
-        "weight": 4.02,
-        "shares": 67139533
-      }
-    ],
     "2026-05-06": [
       {
         "name": "2026/05台股指數期貨",
@@ -387,8 +376,20 @@
         "weight": 3.24,
         "shares": 67139533
       }
+    ],
+    "2026-11-06": [
+      {
+        "name": "台股指數期貨",
+        "weight": 199.06,
+        "shares": 6791
+      },
+      {
+        "name": "富邦吉祥貨幣市場",
+        "weight": 4.17,
+        "shares": 67139533
+      }
     ]
   },
-  "lastUpdated": "2026-10-30",
+  "lastUpdated": "2026-11-06",
   "trailingYield": 0.0
 }

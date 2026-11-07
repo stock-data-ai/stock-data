@@ -7,28 +7,28 @@
   "managementFee": 1.16,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-03-18",
-  "fundSize": 16.51,
+  "fundSize": 16.55,
   "issuer": "國泰投信",
-  "beneficiaryCount": 2326,
+  "beneficiaryCount": 2327,
   "description": null,
   "topHoldings": [
     {
       "name": "SGX FTSE CHINA A50",
-      "weight": 197.04,
-      "shares": 7871,
+      "weight": 196.28,
+      "shares": 7841,
       "foreignCode": "202611SCN",
-      "previousWeight": 197.4,
-      "weightChange": -0.36,
-      "previousShares": 7761,
-      "sharesChange": 110
+      "previousWeight": 197.04,
+      "weightChange": -0.76,
+      "previousShares": 7871,
+      "sharesChange": -30
     },
     {
       "name": "CFA50",
-      "weight": 3.03,
+      "weight": 3.01,
       "shares": 2000000,
       "code": "00636",
-      "previousWeight": 3.04,
-      "weightChange": -0.01,
+      "previousWeight": 3.03,
+      "weightChange": -0.02,
       "previousShares": 2000000,
       "sharesChange": 0
     }
@@ -341,8 +341,21 @@
         "shares": 2000000,
         "code": "00636"
       }
+    ],
+    "2026-11-06": [
+      {
+        "name": "SGX FTSE CHINA A50",
+        "weight": 196.28,
+        "shares": 7841
+      },
+      {
+        "name": "CFA50",
+        "weight": 3.01,
+        "shares": 2000000,
+        "code": "00636"
+      }
     ]
   },
-  "lastUpdated": "2026-10-30",
+  "lastUpdated": "2026-11-06",
   "trailingYield": 0.0
 }

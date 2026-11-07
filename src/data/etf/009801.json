@@ -5,9 +5,9 @@
   "managementFee": 0.42,
   "dividendFrequency": "年配",
   "inceptionDate": "2025-02-11",
-  "fundSize": 9.92,
+  "fundSize": 9.61,
   "issuer": "中國信託投信",
-  "beneficiaryCount": 8460,
+  "beneficiaryCount": 8423,
   "description": "中信美國創新科技 (009801) 是追蹤特定指數或產業的 ETF，提供投資人參與市場表現的管道。",
   "references": [
     "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid=009801.TW"
@@ -15,803 +15,546 @@
   "topHoldings": [
     {
       "name": "蘋果公司",
-      "weight": 18.17,
-      "shares": 16834,
+      "weight": 19.98,
+      "shares": 16747,
       "foreignCode": "AAPL UW",
-      "previousWeight": 17.58,
-      "weightChange": 0.59,
-      "previousShares": 16746,
-      "sharesChange": 88
+      "previousWeight": 18.17,
+      "weightChange": 1.81,
+      "previousShares": 16834,
+      "sharesChange": -87
     },
     {
       "name": "輝達",
-      "weight": 16.94,
-      "shares": 25639,
+      "weight": 16.06,
+      "shares": 25506,
       "foreignCode": "NVDA UW",
-      "previousWeight": 17.28,
-      "weightChange": -0.34,
-      "previousShares": 25505,
-      "sharesChange": 134
+      "previousWeight": 16.94,
+      "weightChange": -0.88,
+      "previousShares": 25639,
+      "sharesChange": -133
     },
     {
       "name": "亞馬遜公司",
-      "weight": 8.52,
-      "shares": 11293,
+      "weight": 10.14,
+      "shares": 11234,
       "foreignCode": "AMZN UW",
-      "previousWeight": 9.0,
-      "weightChange": -0.48,
-      "previousShares": 11234,
-      "sharesChange": 59
+      "previousWeight": 8.52,
+      "weightChange": 1.62,
+      "previousShares": 11293,
+      "sharesChange": -59
     },
     {
       "name": "Alphabet公司 Class A",
-      "weight": 6.01,
-      "shares": 6847,
+      "weight": 6.68,
+      "shares": 6812,
       "foreignCode": "GOOGL UW",
-      "previousWeight": 6.96,
-      "weightChange": -0.95,
-      "previousShares": 6812,
-      "sharesChange": 35
+      "previousWeight": 6.01,
+      "weightChange": 0.67,
+      "previousShares": 6847,
+      "sharesChange": -35
     },
     {
       "name": "博通公司",
-      "weight": 5.83,
-      "shares": 5467,
+      "weight": 5.5,
+      "shares": 5438,
       "foreignCode": "AVGO UW",
-      "previousWeight": 5.61,
-      "weightChange": 0.22,
-      "previousShares": 5438,
-      "sharesChange": 29
+      "previousWeight": 5.83,
+      "weightChange": -0.33,
+      "previousShares": 5467,
+      "sharesChange": -29
     },
     {
       "name": "美光科技公司",
-      "weight": 5.81,
-      "shares": 2011,
+      "weight": 4.55,
+      "shares": 2000,
       "foreignCode": "MU UW",
-      "previousWeight": 5.58,
-      "weightChange": 0.23,
-      "previousShares": 2000,
-      "sharesChange": 11
-    },
-    {
-      "name": "超微半導體公司",
-      "weight": 5.07,
-      "shares": 2894,
-      "foreignCode": "AMD UW",
-      "previousWeight": 4.86,
-      "weightChange": 0.21,
-      "previousShares": 2879,
-      "sharesChange": 15
+      "previousWeight": 5.81,
+      "weightChange": -1.26,
+      "previousShares": 2011,
+      "sharesChange": -11
     },
     {
       "name": "Meta平台公司",
-      "weight": 4.06,
-      "shares": 2103,
+      "weight": 4.39,
+      "shares": 2092,
       "foreignCode": "META UW",
-      "previousWeight": 4.45,
-      "weightChange": -0.39,
-      "previousShares": 2092,
-      "sharesChange": 11
+      "previousWeight": 4.06,
+      "weightChange": 0.33,
+      "previousShares": 2103,
+      "sharesChange": -11
     },
     {
-      "name": "思科",
-      "weight": 2.37,
-      "shares": 7066,
-      "foreignCode": "CSCO UW",
-      "previousWeight": 2.3,
-      "weightChange": 0.07,
-      "previousShares": 7029,
-      "sharesChange": 37
-    },
-    {
-      "name": "帕蘭提爾科技公司",
-      "weight": 2.31,
-      "shares": 3799,
-      "foreignCode": "PLTR UW",
-      "previousWeight": 2.33,
-      "weightChange": -0.02,
-      "previousShares": 3780,
-      "sharesChange": 19
+      "name": "超微半導體公司",
+      "weight": 4.04,
+      "shares": 2879,
+      "foreignCode": "AMD UW",
+      "previousWeight": 5.07,
+      "weightChange": -1.03,
+      "previousShares": 2894,
+      "sharesChange": -15
     },
     {
       "name": "CASH",
-      "weight": 2.25,
-      "shares": 726513,
+      "weight": 2.53,
+      "shares": 728410,
       "foreignCode": "C_USD",
-      "previousWeight": 0.35,
-      "weightChange": 1.9,
-      "previousShares": 3673536,
-      "sharesChange": -2947023
+      "previousWeight": 1.42,
+      "weightChange": 1.11,
+      "previousShares": 14961116,
+      "sharesChange": -14232706
+    },
+    {
+      "name": "思科",
+      "weight": 2.33,
+      "shares": 7029,
+      "foreignCode": "CSCO UW",
+      "previousWeight": 2.37,
+      "weightChange": -0.04,
+      "previousShares": 7066,
+      "sharesChange": -37
+    },
+    {
+      "name": "奇異公司",
+      "weight": 2.03,
+      "shares": 1859,
+      "foreignCode": "GE UN",
+      "previousWeight": 1.81,
+      "weightChange": 0.22,
+      "previousShares": 1869,
+      "sharesChange": -10
+    },
+    {
+      "name": "帕蘭提爾科技公司",
+      "weight": 2.03,
+      "shares": 3780,
+      "foreignCode": "PLTR UW",
+      "previousWeight": 2.31,
+      "weightChange": -0.28,
+      "previousShares": 3799,
+      "sharesChange": -19
     },
     {
       "name": "E-迷你納斯達克100指數期貨",
-      "weight": 1.83,
+      "weight": 1.86,
       "shares": 1,
       "foreignCode": "202612  NQ",
       "previousWeight": 1.83,
-      "weightChange": 0.0,
+      "weightChange": 0.03,
       "previousShares": 1,
       "sharesChange": 0
     },
     {
-      "name": "奇異公司",
-      "weight": 1.81,
-      "shares": 1869,
-      "foreignCode": "GE UN",
-      "previousWeight": 1.68,
-      "weightChange": 0.13,
-      "previousShares": 1859,
-      "sharesChange": 10
+      "name": "雷神科技公司",
+      "weight": 1.59,
+      "shares": 2386,
+      "foreignCode": "RTX UN",
+      "previousWeight": 1.48,
+      "weightChange": 0.11,
+      "previousShares": 2399,
+      "sharesChange": -13
     },
     {
       "name": "德州儀器公司",
-      "weight": 1.57,
-      "shares": 1620,
+      "weight": 1.56,
+      "shares": 1612,
       "foreignCode": "TXN UW",
-      "previousWeight": 1.4,
-      "weightChange": 0.17,
-      "previousShares": 1612,
-      "sharesChange": 8
-    },
-    {
-      "name": "雷神科技公司",
-      "weight": 1.48,
-      "shares": 2399,
-      "foreignCode": "RTX UN",
-      "previousWeight": 1.4,
-      "weightChange": 0.08,
-      "previousShares": 2386,
-      "sharesChange": 13
-    },
-    {
-      "name": "CASH",
-      "weight": 1.42,
-      "shares": 14961116,
-      "foreignCode": "C_NTD",
-      "previousWeight": 0.35,
-      "weightChange": 1.07,
-      "previousShares": 3673536,
-      "sharesChange": 11287580
+      "previousWeight": 1.57,
+      "weightChange": -0.01,
+      "previousShares": 1620,
+      "sharesChange": -8
     },
     {
       "name": "甲骨文公司",
-      "weight": 1.3,
-      "shares": 3004,
+      "weight": 1.19,
+      "shares": 2988,
       "foreignCode": "ORCL UN",
-      "previousWeight": 1.18,
-      "weightChange": 0.12,
-      "previousShares": 2988,
-      "sharesChange": 16
-    },
-    {
-      "name": "科磊公司",
-      "weight": 1.21,
-      "shares": 2341,
-      "foreignCode": "KLAC UW",
-      "previousWeight": 1.16,
-      "weightChange": 0.05,
-      "previousShares": 2328,
-      "sharesChange": 13
+      "previousWeight": 1.3,
+      "weightChange": -0.11,
+      "previousShares": 3004,
+      "sharesChange": -16
     },
     {
       "name": "亞德諾公司",
-      "weight": 1.17,
-      "shares": 871,
+      "weight": 1.08,
+      "shares": 866,
       "foreignCode": "ADI UW",
-      "previousWeight": 1.07,
-      "weightChange": 0.1,
-      "previousShares": 866,
-      "sharesChange": 5
+      "previousWeight": 1.17,
+      "weightChange": -0.09,
+      "previousShares": 871,
+      "sharesChange": -5
     },
     {
       "name": "安費諾",
-      "weight": 1.1,
-      "shares": 4328,
+      "weight": 1.07,
+      "shares": 4306,
       "foreignCode": "APH UN",
-      "previousWeight": 1.04,
-      "weightChange": 0.06,
-      "previousShares": 4305,
-      "sharesChange": 23
+      "previousWeight": 1.1,
+      "weightChange": -0.03,
+      "previousShares": 4328,
+      "sharesChange": -22
+    },
+    {
+      "name": "科磊公司",
+      "weight": 1.05,
+      "shares": 2329,
+      "foreignCode": "KLAC UW",
+      "previousWeight": 1.21,
+      "weightChange": -0.16,
+      "previousShares": 2341,
+      "sharesChange": -12
     },
     {
       "name": "Arista網路公司",
-      "weight": 1.05,
-      "shares": 1844,
+      "weight": 1.01,
+      "shares": 1834,
       "foreignCode": "ANET UN",
-      "previousWeight": 1.03,
-      "weightChange": 0.02,
-      "previousShares": 1834,
-      "sharesChange": 10
+      "previousWeight": 1.05,
+      "weightChange": -0.04,
+      "previousShares": 1844,
+      "sharesChange": -10
+    },
+    {
+      "name": "CASH",
+      "weight": 0.86,
+      "shares": 8193419,
+      "foreignCode": "C_NTD",
+      "previousWeight": 1.42,
+      "weightChange": -0.56,
+      "previousShares": 14961116,
+      "sharesChange": -6767697
     },
     {
       "name": "Marvell Technology Inc",
-      "weight": 1.05,
-      "shares": 1560,
+      "weight": 0.72,
+      "shares": 1552,
       "foreignCode": "MRVL UW",
-      "previousWeight": 1.16,
-      "weightChange": -0.11,
-      "previousShares": 1552,
-      "sharesChange": 8
+      "previousWeight": 1.05,
+      "weightChange": -0.33,
+      "previousShares": 1560,
+      "sharesChange": -8
     },
     {
       "name": "Sandisk Corp/DE",
-      "weight": 1.01,
-      "shares": 245,
+      "weight": 0.68,
+      "shares": 243,
       "foreignCode": "SNDK UW",
-      "previousWeight": 1.02,
-      "weightChange": -0.01,
-      "previousShares": 243,
-      "sharesChange": 2
+      "previousWeight": 1.01,
+      "weightChange": -0.33,
+      "previousShares": 245,
+      "sharesChange": -2
     },
     {
       "name": "希捷科技控股公開有限公司",
-      "weight": 0.84,
-      "shares": 389,
+      "weight": 0.63,
+      "shares": 387,
       "foreignCode": "STX UW",
-      "previousWeight": 0.82,
-      "weightChange": 0.02,
-      "previousShares": 387,
-      "sharesChange": 2
+      "previousWeight": 0.84,
+      "weightChange": -0.21,
+      "previousShares": 389,
+      "sharesChange": -2
     },
     {
       "name": "威騰電子公司",
-      "weight": 0.74,
-      "shares": 604,
+      "weight": 0.56,
+      "shares": 601,
       "foreignCode": "WDC UW",
-      "previousWeight": 0.69,
-      "weightChange": 0.05,
-      "previousShares": 601,
-      "sharesChange": 3
-    },
-    {
-      "name": "康寧公司",
-      "weight": 0.55,
-      "shares": 1386,
-      "foreignCode": "GLW UN",
-      "previousWeight": 0.57,
-      "weightChange": -0.02,
-      "previousShares": 1379,
-      "sharesChange": 7
+      "previousWeight": 0.74,
+      "weightChange": -0.18,
+      "previousShares": 604,
+      "sharesChange": -3
     },
     {
       "name": "艾默生電氣",
-      "weight": 0.53,
-      "shares": 1001,
+      "weight": 0.56,
+      "shares": 996,
       "foreignCode": "EMR UN",
-      "previousWeight": 0.5,
+      "previousWeight": 0.53,
       "weightChange": 0.03,
-      "previousShares": 996,
-      "sharesChange": 5
-    },
-    {
-      "name": "Cadence設計系統公司",
-      "weight": 0.52,
-      "shares": 492,
-      "foreignCode": "CDNS UW",
-      "previousWeight": 0.49,
-      "weightChange": 0.03,
-      "previousShares": 489,
-      "sharesChange": 3
-    },
-    {
-      "name": "維諦技術控股公司",
-      "weight": 0.47,
-      "shares": 620,
-      "foreignCode": "VRT UN",
-      "previousWeight": 0.4,
-      "weightChange": 0.07,
-      "previousShares": 617,
-      "sharesChange": 3
-    },
-    {
-      "name": "摩托羅拉系統公司",
-      "weight": 0.45,
-      "shares": 295,
-      "foreignCode": "MSI UN",
-      "previousWeight": 0.42,
-      "weightChange": 0.03,
-      "previousShares": 294,
-      "sharesChange": 1
-    },
-    {
-      "name": "MARGIN",
-      "weight": 0.42,
-      "shares": 134348,
-      "foreignCode": "M_USD",
-      "previousWeight": 0.44,
-      "weightChange": -0.02,
-      "previousShares": 143248,
-      "sharesChange": -8900
-    },
-    {
-      "name": "漢威聯合國際公司",
-      "weight": 0.39,
-      "shares": 568,
-      "foreignCode": "HON UW",
-      "previousWeight": 0.37,
-      "weightChange": 0.02,
-      "previousShares": 565,
-      "sharesChange": 3
-    },
-    {
-      "name": "恩智浦半導體股份有限公司",
-      "weight": 0.37,
-      "shares": 451,
-      "foreignCode": "NXPI UW",
-      "previousWeight": 0.33,
-      "weightChange": 0.04,
-      "previousShares": 449,
-      "sharesChange": 2
-    },
-    {
-      "name": "TE Connectivity PLC",
-      "weight": 0.36,
-      "shares": 524,
-      "foreignCode": "TEL UN",
-      "previousWeight": 0.34,
-      "weightChange": 0.02,
-      "previousShares": 521,
-      "sharesChange": 3
+      "previousShares": 1001,
+      "sharesChange": -5
     },
     {
       "name": "AppLovin公司",
-      "weight": 0.36,
-      "shares": 453,
+      "weight": 0.56,
+      "shares": 450,
       "foreignCode": "APP UW",
-      "previousWeight": 0.37,
-      "weightChange": -0.01,
-      "previousShares": 450,
-      "sharesChange": 3
+      "previousWeight": 0.36,
+      "weightChange": 0.2,
+      "previousShares": 453,
+      "sharesChange": -3
     },
     {
-      "name": "布魯姆能源公司",
-      "weight": 0.33,
-      "shares": 477,
-      "foreignCode": "BE UN",
-      "previousWeight": 0.35,
-      "weightChange": -0.02,
-      "previousShares": 475,
-      "sharesChange": 2
+      "name": "Cadence設計系統公司",
+      "weight": 0.53,
+      "shares": 489,
+      "foreignCode": "CDNS UW",
+      "previousWeight": 0.52,
+      "weightChange": 0.01,
+      "previousShares": 492,
+      "sharesChange": -3
+    },
+    {
+      "name": "摩托羅拉系統公司",
+      "weight": 0.53,
+      "shares": 294,
+      "foreignCode": "MSI UN",
+      "previousWeight": 0.45,
+      "weightChange": 0.08,
+      "previousShares": 295,
+      "sharesChange": -1
+    },
+    {
+      "name": "康寧公司",
+      "weight": 0.49,
+      "shares": 1379,
+      "foreignCode": "GLW UN",
+      "previousWeight": 0.55,
+      "weightChange": -0.06,
+      "previousShares": 1386,
+      "sharesChange": -7
+    },
+    {
+      "name": "漢威聯合國際公司",
+      "weight": 0.42,
+      "shares": 565,
+      "foreignCode": "HON UW",
+      "previousWeight": 0.39,
+      "weightChange": 0.03,
+      "previousShares": 568,
+      "sharesChange": -3
+    },
+    {
+      "name": "維諦技術控股公司",
+      "weight": 0.38,
+      "shares": 617,
+      "foreignCode": "VRT UN",
+      "previousWeight": 0.47,
+      "weightChange": -0.09,
+      "previousShares": 620,
+      "sharesChange": -3
+    },
+    {
+      "name": "恩智浦半導體股份有限公司",
+      "weight": 0.38,
+      "shares": 449,
+      "foreignCode": "NXPI UW",
+      "previousWeight": 0.37,
+      "weightChange": 0.01,
+      "previousShares": 451,
+      "sharesChange": -2
+    },
+    {
+      "name": "TE Connectivity PLC",
+      "weight": 0.37,
+      "shares": 521,
+      "foreignCode": "TEL UN",
+      "previousWeight": 0.36,
+      "weightChange": 0.01,
+      "previousShares": 524,
+      "sharesChange": -3
+    },
+    {
+      "name": "電子灣拍賣網站公司",
+      "weight": 0.34,
+      "shares": 795,
+      "foreignCode": "EBAY UW",
+      "previousWeight": 0.3,
+      "weightChange": 0.04,
+      "previousShares": 799,
+      "sharesChange": -4
     },
     {
       "name": "芯源系統有限公司",
-      "weight": 0.31,
+      "weight": 0.33,
       "shares": 84,
       "foreignCode": "MPWR UW",
-      "previousWeight": 0.33,
-      "weightChange": -0.02,
+      "previousWeight": 0.31,
+      "weightChange": 0.02,
       "previousShares": 84,
       "sharesChange": 0
     },
     {
-      "name": "是德科技公司",
-      "weight": 0.31,
-      "shares": 306,
-      "foreignCode": "KEYS UN",
-      "previousWeight": 0.32,
-      "weightChange": -0.01,
-      "previousShares": 304,
-      "sharesChange": 2
-    },
-    {
-      "name": "電子灣拍賣網站公司",
-      "weight": 0.3,
-      "shares": 799,
-      "foreignCode": "EBAY UW",
-      "previousWeight": 0.3,
-      "weightChange": 0.0,
-      "previousShares": 795,
-      "sharesChange": 4
-    },
-    {
       "name": "Honeywell Aerospace Inc",
-      "weight": 0.28,
-      "shares": 568,
+      "weight": 0.29,
+      "shares": 565,
       "foreignCode": "HONA UW",
       "previousWeight": 0.28,
-      "weightChange": 0.0,
-      "previousShares": 565,
-      "sharesChange": 3
-    },
-    {
-      "name": "喜雅納公司",
-      "weight": 0.27,
-      "shares": 251,
-      "foreignCode": "CIEN UN",
-      "previousWeight": 0.28,
-      "weightChange": -0.01,
-      "previousShares": 250,
-      "sharesChange": 1
-    },
-    {
-      "name": "泰瑞達公司",
-      "weight": 0.26,
-      "shares": 280,
-      "foreignCode": "TER UW",
-      "previousWeight": 0.29,
-      "weightChange": -0.03,
-      "previousShares": 278,
-      "sharesChange": 2
-    },
-    {
-      "name": "連貫公司",
-      "weight": 0.25,
-      "shares": 334,
-      "foreignCode": "COHR UN",
-      "previousWeight": 0.24,
       "weightChange": 0.01,
-      "previousShares": 333,
-      "sharesChange": 1
+      "previousShares": 568,
+      "sharesChange": -3
     },
     {
-      "name": "超捷國際股份有限公司",
-      "weight": 0.24,
-      "shares": 947,
-      "foreignCode": "MCHP UW",
-      "previousWeight": 0.22,
-      "weightChange": 0.02,
-      "previousShares": 942,
-      "sharesChange": 5
+      "name": "布魯姆能源公司",
+      "weight": 0.28,
+      "shares": 475,
+      "foreignCode": "BE UN",
+      "previousWeight": 0.33,
+      "weightChange": -0.05,
+      "previousShares": 477,
+      "sharesChange": -2
+    },
+    {
+      "name": "是德科技公司",
+      "weight": 0.27,
+      "shares": 304,
+      "foreignCode": "KEYS UN",
+      "previousWeight": 0.31,
+      "weightChange": -0.04,
+      "previousShares": 306,
+      "sharesChange": -2
     },
     {
       "name": "國際航電股份有限公司",
-      "weight": 0.24,
-      "shares": 274,
+      "weight": 0.27,
+      "shares": 272,
       "foreignCode": "GRMN UN",
       "previousWeight": 0.24,
-      "weightChange": 0.0,
-      "previousShares": 272,
-      "sharesChange": 2
+      "weightChange": 0.03,
+      "previousShares": 274,
+      "sharesChange": -2
+    },
+    {
+      "name": "MARGIN",
+      "weight": 0.27,
+      "shares": 78148,
+      "foreignCode": "M_USD",
+      "previousWeight": 0.42,
+      "weightChange": -0.15,
+      "previousShares": 134348,
+      "sharesChange": -56200
+    },
+    {
+      "name": "超捷國際股份有限公司",
+      "weight": 0.21,
+      "shares": 942,
+      "foreignCode": "MCHP UW",
+      "previousWeight": 0.24,
+      "weightChange": -0.03,
+      "previousShares": 947,
+      "sharesChange": -5
     },
     {
       "name": "網路應用公司",
-      "weight": 0.24,
-      "shares": 352,
+      "weight": 0.21,
+      "shares": 350,
       "foreignCode": "NTAP UW",
-      "previousWeight": 0.23,
-      "weightChange": 0.01,
-      "previousShares": 350,
-      "sharesChange": 2
+      "previousWeight": 0.24,
+      "weightChange": -0.03,
+      "previousShares": 352,
+      "sharesChange": -2
     },
     {
-      "name": "Astera實驗室公司",
+      "name": "泰瑞達公司",
       "weight": 0.21,
-      "shares": 237,
-      "foreignCode": "ALAB UW",
-      "previousWeight": 0.21,
-      "weightChange": 0.0,
-      "previousShares": 235,
-      "sharesChange": 2
+      "shares": 278,
+      "foreignCode": "TER UW",
+      "previousWeight": 0.26,
+      "weightChange": -0.05,
+      "previousShares": 280,
+      "sharesChange": -2
+    },
+    {
+      "name": "喜雅納公司",
+      "weight": 0.2,
+      "shares": 250,
+      "foreignCode": "CIEN UN",
+      "previousWeight": 0.27,
+      "weightChange": -0.07,
+      "previousShares": 251,
+      "sharesChange": -1
+    },
+    {
+      "name": "連貫公司",
+      "weight": 0.2,
+      "shares": 333,
+      "foreignCode": "COHR UN",
+      "previousWeight": 0.25,
+      "weightChange": -0.05,
+      "previousShares": 334,
+      "sharesChange": -1
     },
     {
       "name": "得立達科技公司",
       "weight": 0.17,
-      "shares": 82,
+      "shares": 81,
       "foreignCode": "TDY UN",
-      "previousWeight": 0.16,
-      "weightChange": 0.01,
-      "previousShares": 81,
-      "sharesChange": 1
+      "previousWeight": 0.17,
+      "weightChange": 0.0,
+      "previousShares": 82,
+      "sharesChange": -1
     },
     {
       "name": "安森美半導體",
-      "weight": 0.16,
-      "shares": 702,
+      "weight": 0.15,
+      "shares": 698,
       "foreignCode": "ON UW",
       "previousWeight": 0.16,
-      "weightChange": 0.0,
-      "previousShares": 698,
-      "sharesChange": 4
+      "weightChange": -0.01,
+      "previousShares": 702,
+      "sharesChange": -4
     },
     {
-      "name": "Credo科技集團控股有限公司",
+      "name": "Astera實驗室公司",
       "weight": 0.15,
-      "shares": 293,
-      "foreignCode": "CRDO UW",
-      "previousWeight": 0.16,
-      "weightChange": -0.01,
-      "previousShares": 292,
-      "sharesChange": 1
+      "shares": 235,
+      "foreignCode": "ALAB UW",
+      "previousWeight": 0.21,
+      "weightChange": -0.06,
+      "previousShares": 237,
+      "sharesChange": -2
     },
     {
       "name": "啟諾迪電子公司",
       "weight": 0.14,
-      "shares": 374,
+      "shares": 372,
       "foreignCode": "Q UN",
       "previousWeight": 0.14,
       "weightChange": 0.0,
-      "previousShares": 372,
-      "sharesChange": 2
-    },
-    {
-      "name": "Fortive公司",
-      "weight": 0.11,
-      "shares": 549,
-      "foreignCode": "FTV UN",
-      "previousWeight": 0.1,
-      "weightChange": 0.01,
-      "previousShares": 546,
-      "sharesChange": 3
+      "previousShares": 374,
+      "sharesChange": -2
     },
     {
       "name": "第一太陽能",
-      "weight": 0.1,
-      "shares": 182,
+      "weight": 0.12,
+      "shares": 181,
       "foreignCode": "FSLR UW",
       "previousWeight": 0.1,
-      "weightChange": 0.0,
-      "previousShares": 181,
-      "sharesChange": 1
+      "weightChange": 0.02,
+      "previousShares": 182,
+      "sharesChange": -1
+    },
+    {
+      "name": "Fortive公司",
+      "weight": 0.12,
+      "shares": 546,
+      "foreignCode": "FTV UN",
+      "previousWeight": 0.11,
+      "weightChange": 0.01,
+      "previousShares": 549,
+      "sharesChange": -3
+    },
+    {
+      "name": "Credo科技集團控股有限公司",
+      "weight": 0.11,
+      "shares": 292,
+      "foreignCode": "CRDO UW",
+      "previousWeight": 0.15,
+      "weightChange": -0.04,
+      "previousShares": 293,
+      "sharesChange": -1
     },
     {
       "name": "Reddit公司",
-      "weight": 0.09,
-      "shares": 232,
+      "weight": 0.08,
+      "shares": 231,
       "foreignCode": "RDDT UN",
-      "previousWeight": 0.11,
-      "weightChange": -0.02,
-      "previousShares": 231,
-      "sharesChange": 1
+      "previousWeight": 0.09,
+      "weightChange": -0.01,
+      "previousShares": 232,
+      "sharesChange": -1
     }
   ],
   "holdingsHistory": {
-    "2026-04-29": [
-      {
-        "name": "NVIDIA",
-        "weight": 18.05,
-        "shares": 38266
-      },
-      {
-        "name": "Apple",
-        "weight": 14.4,
-        "shares": 23684
-      },
-      {
-        "name": "Microsoft",
-        "weight": 11.35,
-        "shares": 11878
-      },
-      {
-        "name": "Amazon",
-        "weight": 9.08,
-        "shares": 15329
-      },
-      {
-        "name": "Alphabet - Class A Common Stock",
-        "weight": 7.74,
-        "shares": 9830
-      },
-      {
-        "name": "Broadcom",
-        "weight": 7.69,
-        "shares": 8426
-      },
-      {
-        "name": "Meta",
-        "weight": 5.32,
-        "shares": 3532
-      },
-      {
-        "name": "Netflix",
-        "weight": 1.94,
-        "shares": 9379
-      },
-      {
-        "name": "Cisco",
-        "weight": 1.8,
-        "shares": 8939
-      },
-      {
-        "name": "Palantir Technologies",
-        "weight": 1.46,
-        "shares": 4688
-      },
-      {
-        "name": "Oracle",
-        "weight": 1.35,
-        "shares": 3672
-      },
-      {
-        "name": "Texas Instruments",
-        "weight": 1.23,
-        "shares": 2037
-      },
-      {
-        "name": "KLA",
-        "weight": 1.22,
-        "shares": 298
-      },
-      {
-        "name": "RTX",
-        "weight": 1.17,
-        "shares": 2999
-      },
-      {
-        "name": "IBM",
-        "weight": 1.06,
-        "shares": 2082
-      },
-      {
-        "name": "Analog Devices",
-        "weight": 0.97,
-        "shares": 1111
-      },
-      {
-        "name": "Arista Networks",
-        "weight": 0.88,
-        "shares": 2327
-      },
-      {
-        "name": "QUALCOMM",
-        "weight": 0.87,
-        "shares": 2482
-      },
-      {
-        "name": "Salesforce",
-        "weight": 0.86,
-        "shares": 2096
-      },
-      {
-        "name": "Honeywell",
-        "weight": 0.69,
-        "shares": 1457
-      },
-      {
-        "name": "Seagate",
-        "weight": 0.64,
-        "shares": 443
-      },
-      {
-        "name": "Palo Alto",
-        "weight": 0.6,
-        "shares": 1473
-      },
-      {
-        "name": "Corning",
-        "weight": 0.59,
-        "shares": 1740
-      },
-      {
-        "name": "Applovin",
-        "weight": 0.57,
-        "shares": 573
-      },
-      {
-        "name": "Intuit",
-        "weight": 0.54,
-        "shares": 611
-      },
-      {
-        "name": "Vertiv",
-        "weight": 0.53,
-        "shares": 765
-      },
-      {
-        "name": "Adobe",
-        "weight": 0.52,
-        "shares": 956
-      },
-      {
-        "name": "ServiceNow",
-        "weight": 0.46,
-        "shares": 2310
-      },
-      {
-        "name": "Automatic Data Processing",
-        "weight": 0.44,
-        "shares": 913
-      },
-      {
-        "name": "MercadoLibre",
-        "weight": 0.42,
-        "shares": 106
-      },
-      {
-        "name": "Emerson Electric",
-        "weight": 0.39,
-        "shares": 1263
-      },
-      {
-        "name": "Motorola Solutions",
-        "weight": 0.36,
-        "shares": 374
-      },
-      {
-        "name": "Spotify",
-        "weight": 0.35,
-        "shares": 346
-      },
-      {
-        "name": "TE Connectivity",
-        "weight": 0.31,
-        "shares": 670
-      },
-      {
-        "name": "Fortinet",
-        "weight": 0.27,
-        "shares": 1388
-      },
-      {
-        "name": "Autodesk",
-        "weight": 0.25,
-        "shares": 478
-      },
-      {
-        "name": "Electronic Arts",
-        "weight": 0.24,
-        "shares": 530
-      },
-      {
-        "name": "eBay Inc.",
-        "weight": 0.24,
-        "shares": 1044
-      },
-      {
-        "name": "MSCI",
-        "weight": 0.23,
-        "shares": 170
-      },
-      {
-        "name": "Garmin",
-        "weight": 0.2,
-        "shares": 344
-      },
-      {
-        "name": "Roper Technologies",
-        "weight": 0.19,
-        "shares": 241
-      },
-      {
-        "name": "Teledyne Technologies",
-        "weight": 0.15,
-        "shares": 104
-      },
-      {
-        "name": "Workday",
-        "weight": 0.13,
-        "shares": 479
-      },
-      {
-        "name": "Zoom",
-        "weight": 0.13,
-        "shares": 590
-      },
-      {
-        "name": "Fair Isaac",
-        "weight": 0.13,
-        "shares": 54
-      },
-      {
-        "name": "Veeva Systems",
-        "weight": 0.12,
-        "shares": 334
-      },
-      {
-        "name": "VeriSign",
-        "weight": 0.11,
-        "shares": 183
-      },
-      {
-        "name": "Tyler Technologies",
-        "weight": 0.08,
-        "shares": 95
-      },
-      {
-        "name": "Solstice",
-        "weight": 0.06,
-        "shares": 359
-      },
-      {
-        "name": "GoDaddy",
-        "weight": 0.06,
-        "shares": 298
-      },
-      {
-        "name": "Pinterest",
-        "weight": 0.06,
-        "shares": 1297
-      }
-    ],
     "2026-05-05": [
       {
         "name": "NVIDIA",
@@ -8709,8 +8452,280 @@
         "weight": 0.09,
         "shares": 232
       }
+    ],
+    "2026-11-05": [
+      {
+        "name": "蘋果公司",
+        "weight": 19.98,
+        "shares": 16747
+      },
+      {
+        "name": "輝達",
+        "weight": 16.06,
+        "shares": 25506
+      },
+      {
+        "name": "亞馬遜公司",
+        "weight": 10.14,
+        "shares": 11234
+      },
+      {
+        "name": "Alphabet公司 Class A",
+        "weight": 6.68,
+        "shares": 6812
+      },
+      {
+        "name": "博通公司",
+        "weight": 5.5,
+        "shares": 5438
+      },
+      {
+        "name": "美光科技公司",
+        "weight": 4.55,
+        "shares": 2000
+      },
+      {
+        "name": "Meta平台公司",
+        "weight": 4.39,
+        "shares": 2092
+      },
+      {
+        "name": "超微半導體公司",
+        "weight": 4.04,
+        "shares": 2879
+      },
+      {
+        "name": "CASH",
+        "weight": 2.53,
+        "shares": 728410
+      },
+      {
+        "name": "思科",
+        "weight": 2.33,
+        "shares": 7029
+      },
+      {
+        "name": "奇異公司",
+        "weight": 2.03,
+        "shares": 1859
+      },
+      {
+        "name": "帕蘭提爾科技公司",
+        "weight": 2.03,
+        "shares": 3780
+      },
+      {
+        "name": "E-迷你納斯達克100指數期貨",
+        "weight": 1.86,
+        "shares": 1
+      },
+      {
+        "name": "雷神科技公司",
+        "weight": 1.59,
+        "shares": 2386
+      },
+      {
+        "name": "德州儀器公司",
+        "weight": 1.56,
+        "shares": 1612
+      },
+      {
+        "name": "甲骨文公司",
+        "weight": 1.19,
+        "shares": 2988
+      },
+      {
+        "name": "亞德諾公司",
+        "weight": 1.08,
+        "shares": 866
+      },
+      {
+        "name": "安費諾",
+        "weight": 1.07,
+        "shares": 4306
+      },
+      {
+        "name": "科磊公司",
+        "weight": 1.05,
+        "shares": 2329
+      },
+      {
+        "name": "Arista網路公司",
+        "weight": 1.01,
+        "shares": 1834
+      },
+      {
+        "name": "CASH",
+        "weight": 0.86,
+        "shares": 8193419
+      },
+      {
+        "name": "Marvell Technology Inc",
+        "weight": 0.72,
+        "shares": 1552
+      },
+      {
+        "name": "Sandisk Corp/DE",
+        "weight": 0.68,
+        "shares": 243
+      },
+      {
+        "name": "希捷科技控股公開有限公司",
+        "weight": 0.63,
+        "shares": 387
+      },
+      {
+        "name": "威騰電子公司",
+        "weight": 0.56,
+        "shares": 601
+      },
+      {
+        "name": "艾默生電氣",
+        "weight": 0.56,
+        "shares": 996
+      },
+      {
+        "name": "AppLovin公司",
+        "weight": 0.56,
+        "shares": 450
+      },
+      {
+        "name": "Cadence設計系統公司",
+        "weight": 0.53,
+        "shares": 489
+      },
+      {
+        "name": "摩托羅拉系統公司",
+        "weight": 0.53,
+        "shares": 294
+      },
+      {
+        "name": "康寧公司",
+        "weight": 0.49,
+        "shares": 1379
+      },
+      {
+        "name": "漢威聯合國際公司",
+        "weight": 0.42,
+        "shares": 565
+      },
+      {
+        "name": "維諦技術控股公司",
+        "weight": 0.38,
+        "shares": 617
+      },
+      {
+        "name": "恩智浦半導體股份有限公司",
+        "weight": 0.38,
+        "shares": 449
+      },
+      {
+        "name": "TE Connectivity PLC",
+        "weight": 0.37,
+        "shares": 521
+      },
+      {
+        "name": "電子灣拍賣網站公司",
+        "weight": 0.34,
+        "shares": 795
+      },
+      {
+        "name": "芯源系統有限公司",
+        "weight": 0.33,
+        "shares": 84
+      },
+      {
+        "name": "Honeywell Aerospace Inc",
+        "weight": 0.29,
+        "shares": 565
+      },
+      {
+        "name": "布魯姆能源公司",
+        "weight": 0.28,
+        "shares": 475
+      },
+      {
+        "name": "是德科技公司",
+        "weight": 0.27,
+        "shares": 304
+      },
+      {
+        "name": "國際航電股份有限公司",
+        "weight": 0.27,
+        "shares": 272
+      },
+      {
+        "name": "MARGIN",
+        "weight": 0.27,
+        "shares": 78148
+      },
+      {
+        "name": "超捷國際股份有限公司",
+        "weight": 0.21,
+        "shares": 942
+      },
+      {
+        "name": "網路應用公司",
+        "weight": 0.21,
+        "shares": 350
+      },
+      {
+        "name": "泰瑞達公司",
+        "weight": 0.21,
+        "shares": 278
+      },
+      {
+        "name": "喜雅納公司",
+        "weight": 0.2,
+        "shares": 250
+      },
+      {
+        "name": "連貫公司",
+        "weight": 0.2,
+        "shares": 333
+      },
+      {
+        "name": "得立達科技公司",
+        "weight": 0.17,
+        "shares": 81
+      },
+      {
+        "name": "安森美半導體",
+        "weight": 0.15,
+        "shares": 698
+      },
+      {
+        "name": "Astera實驗室公司",
+        "weight": 0.15,
+        "shares": 235
+      },
+      {
+        "name": "啟諾迪電子公司",
+        "weight": 0.14,
+        "shares": 372
+      },
+      {
+        "name": "第一太陽能",
+        "weight": 0.12,
+        "shares": 181
+      },
+      {
+        "name": "Fortive公司",
+        "weight": 0.12,
+        "shares": 546
+      },
+      {
+        "name": "Credo科技集團控股有限公司",
+        "weight": 0.11,
+        "shares": 292
+      },
+      {
+        "name": "Reddit公司",
+        "weight": 0.08,
+        "shares": 231
+      }
     ]
   },
-  "lastUpdated": "2026-10-29",
-  "trailingYield": 9.29
+  "lastUpdated": "2026-11-05",
+  "trailingYield": 9.63
 }

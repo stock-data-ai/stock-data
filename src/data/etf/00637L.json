@@ -6,62 +6,44 @@
   "managementFee": 1.22,
   "dividendFrequency": "不配息",
   "inceptionDate": "2015-05-18",
-  "fundSize": 135.5,
+  "fundSize": 134.3,
   "issuer": "元大投信",
-  "beneficiaryCount": 12879,
+  "beneficiaryCount": 12815,
   "description": "",
   "references": [],
   "topHoldings": [
     {
       "name": "富時中國A50指數期貨",
-      "weight": 191.58,
-      "shares": 63000,
+      "weight": 190.77,
+      "shares": 61200,
       "foreignCode": "202611CN",
-      "previousWeight": 61.91,
-      "weightChange": 129.67,
-      "previousShares": 20500,
-      "sharesChange": 42500
+      "previousWeight": 191.58,
+      "weightChange": -0.81,
+      "previousShares": 63000,
+      "sharesChange": -1800
     },
     {
       "name": "CHINAAMC ETF SERIES - CH-HKD",
-      "weight": 8.86,
+      "weight": 9.24,
       "shares": 6000000,
       "foreignCode": "3188 HK",
-      "previousWeight": 8.9,
-      "weightChange": -0.04,
+      "previousWeight": 8.86,
+      "weightChange": 0.38,
       "previousShares": 6000000,
       "sharesChange": 0
     },
     {
       "name": "元大寶滬深",
-      "weight": 1.37,
+      "weight": 1.41,
       "shares": 8511000,
       "code": "0061",
-      "previousWeight": 1.36,
-      "weightChange": 0.01,
+      "previousWeight": 1.37,
+      "weightChange": 0.04,
       "previousShares": 8511000,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-04-30": [
-      {
-        "name": "富時中國A50指數期貨",
-        "weight": 192.47,
-        "shares": 72100
-      },
-      {
-        "name": "華夏滬深三百",
-        "weight": 7.51,
-        "shares": 6000000
-      },
-      {
-        "name": "元大寶滬深",
-        "weight": 1.26,
-        "shares": 9511000,
-        "code": "0061"
-      }
-    ],
     "2026-05-06": [
       {
         "name": "富時中國A50指數期貨",
@@ -598,8 +580,26 @@
         "shares": 8511000,
         "code": "0061"
       }
+    ],
+    "2026-11-06": [
+      {
+        "name": "富時中國A50指數期貨",
+        "weight": 190.77,
+        "shares": 61200
+      },
+      {
+        "name": "CHINAAMC ETF SERIES - CH-HKD",
+        "weight": 9.24,
+        "shares": 6000000
+      },
+      {
+        "name": "元大寶滬深",
+        "weight": 1.41,
+        "shares": 8511000,
+        "code": "0061"
+      }
     ]
   },
-  "lastUpdated": "2026-10-30",
+  "lastUpdated": "2026-11-06",
   "trailingYield": 0.0
 }

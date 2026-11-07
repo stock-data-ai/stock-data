@@ -5,9 +5,9 @@
   "managementFee": 1.19,
   "dividendFrequency": "不配息",
   "inceptionDate": "2018-10-31",
-  "fundSize": 65.54,
+  "fundSize": 69.76,
   "issuer": "中國信託投信",
-  "beneficiaryCount": 13761,
+  "beneficiaryCount": 12879,
   "description": "中信中國50正2 (00753L) 是追蹤特定指數或產業的 ETF，提供投資人參與市場表現的管道。",
   "references": [
     "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid=00753L.TW"
@@ -15,64 +15,56 @@
   "topHoldings": [
     {
       "name": "MSCI中國",
-      "weight": 192.8,
+      "weight": 189.53,
       "shares": 14000,
       "foreignCode": "202612MUR",
-      "previousWeight": 195.74,
-      "weightChange": -2.94,
-      "previousShares": 13288,
-      "sharesChange": 712
+      "previousWeight": 192.8,
+      "weightChange": -3.27,
+      "previousShares": 14000,
+      "sharesChange": 0
     },
     {
       "name": "MARGIN",
-      "weight": 58.82,
-      "shares": 116928950,
+      "weight": 65.52,
+      "shares": 140728950,
       "foreignCode": "M_USD",
-      "previousWeight": 58.53,
-      "weightChange": 0.29,
-      "previousShares": 111301573,
-      "sharesChange": 5627377
+      "previousWeight": 58.82,
+      "weightChange": 6.7,
+      "previousShares": 116928950,
+      "sharesChange": 23800000
     },
     {
       "name": "CASH",
-      "weight": 21.78,
-      "shares": 1410683021,
+      "weight": 19.88,
+      "shares": 1404654691,
       "foreignCode": "C_NTD",
-      "previousWeight": 5.12,
-      "weightChange": 16.66,
-      "previousShares": 9739527,
-      "sharesChange": 1400943494
+      "previousWeight": 11.92,
+      "weightChange": 7.96,
+      "previousShares": 23702950,
+      "sharesChange": 1380951741
     },
     {
       "name": "CASH",
-      "weight": 11.92,
+      "weight": 11.04,
       "shares": 23702950,
       "foreignCode": "C_USD",
-      "previousWeight": 5.12,
-      "weightChange": 6.8,
-      "previousShares": 9739527,
-      "sharesChange": 13963423
+      "previousWeight": 11.92,
+      "weightChange": -0.88,
+      "previousShares": 23702950,
+      "sharesChange": 0
     },
     {
       "name": "中國信託MSCI中外資自由50 ETF",
-      "weight": 7.46,
+      "weight": 7.48,
       "shares": 22760000,
       "code": "00752",
-      "previousWeight": 8.1,
-      "weightChange": -0.64,
+      "previousWeight": 7.46,
+      "weightChange": 0.02,
       "previousShares": 22760000,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-04-29": [
-      {
-        "name": "中信中國50",
-        "weight": 7.67,
-        "shares": 24760000,
-        "code": "00752"
-      }
-    ],
     "2026-05-05": [
       {
         "name": "中信中國50",
@@ -708,8 +700,36 @@
         "shares": 22760000,
         "code": "00752"
       }
+    ],
+    "2026-11-05": [
+      {
+        "name": "MSCI中國",
+        "weight": 189.53,
+        "shares": 14000
+      },
+      {
+        "name": "MARGIN",
+        "weight": 65.52,
+        "shares": 140728950
+      },
+      {
+        "name": "CASH",
+        "weight": 19.88,
+        "shares": 1404654691
+      },
+      {
+        "name": "CASH",
+        "weight": 11.04,
+        "shares": 23702950
+      },
+      {
+        "name": "中國信託MSCI中外資自由50 ETF",
+        "weight": 7.48,
+        "shares": 22760000,
+        "code": "00752"
+      }
     ]
   },
-  "lastUpdated": "2026-10-29",
+  "lastUpdated": "2026-11-05",
   "trailingYield": 0.0
 }

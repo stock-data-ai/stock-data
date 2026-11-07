@@ -5,9 +5,9 @@
   "managementFee": 1.15,
   "dividendFrequency": "不配息",
   "inceptionDate": "2015-09-07",
-  "fundSize": 15.07,
+  "fundSize": 14.37,
   "issuer": "元大投信",
-  "beneficiaryCount": 6136,
+  "beneficiaryCount": 6182,
   "description": "期元大S&P石油 (00642U) 是追蹤特定指數或產業的 ETF，提供投資人參與市場表現的管道。",
   "references": [
     "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid=00642U.TW"
@@ -15,23 +15,26 @@
   "topHoldings": [
     {
       "name": "輕原油",
-      "weight": 99.94,
-      "shares": 504,
+      "weight": 79.78,
+      "shares": 387,
+      "foreignCode": "202701CL",
+      "previousWeight": 99.94,
+      "weightChange": -20.16,
+      "previousShares": 504,
+      "sharesChange": -117
+    },
+    {
+      "name": "輕原油",
+      "weight": 20.08,
+      "shares": 96,
       "foreignCode": "202612CL",
-      "previousWeight": 99.36,
-      "weightChange": 0.58,
-      "previousShares": 524,
-      "sharesChange": -20
+      "previousWeight": 99.94,
+      "weightChange": -79.86,
+      "previousShares": 504,
+      "sharesChange": -408
     }
   ],
   "holdingsHistory": {
-    "2026-04-29": [
-      {
-        "name": "輕原油",
-        "weight": 99.96,
-        "shares": 1343
-      }
-    ],
     "2026-05-05": [
       {
         "name": "輕原油",
@@ -259,8 +262,20 @@
         "weight": 99.94,
         "shares": 504
       }
+    ],
+    "2026-11-05": [
+      {
+        "name": "輕原油",
+        "weight": 79.78,
+        "shares": 387
+      },
+      {
+        "name": "輕原油",
+        "weight": 20.08,
+        "shares": 96
+      }
     ]
   },
-  "lastUpdated": "2026-10-29",
+  "lastUpdated": "2026-11-05",
   "trailingYield": 0.0
 }

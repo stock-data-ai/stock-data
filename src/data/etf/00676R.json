@@ -7,29 +7,23 @@
   "managementFee": 0.69,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-10-05",
-  "fundSize": 10.31,
+  "fundSize": 10.85,
   "issuer": "富邦投信",
-  "beneficiaryCount": 4029,
+  "beneficiaryCount": 3714,
   "description": null,
   "topHoldings": [
     {
       "name": "台股指數期貨",
-      "weight": 100.52,
-      "shares": -110,
+      "weight": 100.34,
+      "shares": -137,
       "foreignCode": "202611WTXX6F",
-      "previousWeight": 99.54,
-      "weightChange": 0.98,
+      "previousWeight": 100.52,
+      "weightChange": -0.18,
       "previousShares": -110,
-      "sharesChange": 0
+      "sharesChange": -27
     }
   ],
   "holdingsHistory": {
-    "2026-04-30": [
-      {
-        "name": "2026/05台股指數期貨",
-        "weight": 100.18
-      }
-    ],
     "2026-05-06": [
       {
         "name": "2026/05台股指數期貨",
@@ -223,8 +217,15 @@
         "weight": 100.52,
         "shares": -110
       }
+    ],
+    "2026-11-06": [
+      {
+        "name": "台股指數期貨",
+        "weight": 100.34,
+        "shares": -137
+      }
     ]
   },
-  "lastUpdated": "2026-10-30",
+  "lastUpdated": "2026-11-06",
   "trailingYield": 0.0
 }

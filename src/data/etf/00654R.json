@@ -7,44 +7,23 @@
   "managementFee": 1.22,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-03-29",
-  "fundSize": 1.35,
+  "fundSize": 1.3,
   "issuer": "富邦投信",
-  "beneficiaryCount": 360,
+  "beneficiaryCount": 361,
   "description": null,
   "topHoldings": [
     {
       "name": "印度50輕巧指數期貨",
-      "weight": 101.33,
-      "shares": -94,
+      "weight": 99.44,
+      "shares": -80,
       "foreignCode": "202611GINX6F",
-      "previousWeight": 99.47,
-      "weightChange": 1.86,
-      "previousShares": -95,
-      "sharesChange": 1
-    },
-    {
-      "name": "富邦吉祥貨幣市場",
-      "weight": 0.77,
-      "shares": 63941,
-      "foreignCode": "97980579",
-      "previousWeight": 0.76,
-      "weightChange": 0.01,
-      "previousShares": 63941,
-      "sharesChange": 0
+      "previousWeight": 101.33,
+      "weightChange": -1.89,
+      "previousShares": -94,
+      "sharesChange": 14
     }
   ],
   "holdingsHistory": {
-    "2026-04-29": [
-      {
-        "name": "2026/05印度50輕巧指數期貨",
-        "weight": 98.32
-      },
-      {
-        "name": "富邦吉祥貨幣市場",
-        "weight": 0.77,
-        "shares": 63941
-      }
-    ],
     "2026-05-05": [
       {
         "name": "2026/05印度50輕巧指數期貨",
@@ -383,8 +362,15 @@
         "weight": 0.77,
         "shares": 63941
       }
+    ],
+    "2026-11-05": [
+      {
+        "name": "印度50輕巧指數期貨",
+        "weight": 99.44,
+        "shares": -80
+      }
     ]
   },
-  "lastUpdated": "2026-10-29",
+  "lastUpdated": "2026-11-05",
   "trailingYield": 0.0
 }

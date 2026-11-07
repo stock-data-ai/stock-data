@@ -5,9 +5,9 @@
   "managementFee": 1.04,
   "dividendFrequency": "不配息",
   "inceptionDate": "2014-10-31",
-  "fundSize": 2668.04,
+  "fundSize": 2401.15,
   "issuer": "元大投信",
-  "beneficiaryCount": 355615,
+  "beneficiaryCount": 390595,
   "description": "元大台灣50正2 (00631L) 是追蹤特定指數或產業的 ETF，提供投資人參與市場表現的管道。",
   "references": [
     "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid=00631L.TW"
@@ -15,43 +15,36 @@
   "topHoldings": [
     {
       "name": "臺股期貨",
-      "weight": 159.65,
-      "shares": 50700,
+      "weight": 159.23,
+      "shares": 51515,
       "foreignCode": "202611TX",
-      "previousWeight": 158.1,
-      "weightChange": 1.55,
-      "previousShares": 47600,
-      "sharesChange": 3100
+      "previousWeight": 159.65,
+      "weightChange": -0.42,
+      "previousShares": 50700,
+      "sharesChange": 815
     },
     {
       "name": "台積電",
-      "weight": 37.55,
+      "weight": 37.93,
       "shares": 45587000,
       "code": "2330",
-      "previousWeight": 39.05,
-      "weightChange": -1.5,
+      "previousWeight": 37.55,
+      "weightChange": 0.38,
       "previousShares": 45587000,
       "sharesChange": 0
     },
     {
       "name": "台灣50ETF股票期貨",
-      "weight": 2.84,
+      "weight": 2.81,
       "shares": 7800,
       "foreignCode": "202611NYF",
-      "previousWeight": 2.99,
-      "weightChange": -0.15,
+      "previousWeight": 2.84,
+      "weightChange": -0.03,
       "previousShares": 7800,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-04-30": [
-      {
-        "name": "臺股期貨",
-        "weight": 200.3,
-        "shares": 29375
-      }
-    ],
     "2026-05-06": [
       {
         "name": "臺股期貨",
@@ -523,8 +516,26 @@
         "weight": 2.84,
         "shares": 7800
       }
+    ],
+    "2026-11-06": [
+      {
+        "name": "臺股期貨",
+        "weight": 159.23,
+        "shares": 51515
+      },
+      {
+        "name": "台積電",
+        "weight": 37.93,
+        "shares": 45587000,
+        "code": "2330"
+      },
+      {
+        "name": "台灣50ETF股票期貨",
+        "weight": 2.81,
+        "shares": 7800
+      }
     ]
   },
-  "lastUpdated": "2026-10-30",
+  "lastUpdated": "2026-11-06",
   "trailingYield": 0.0
 }
