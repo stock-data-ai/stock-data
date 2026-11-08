@@ -3,16 +3,16 @@
   "companyName": "The Coca-Cola Company",
   "latest": {
     "year": 2026,
-    "quarter": 2,
+    "quarter": 3,
     "revenue": 13380000000,
-    "yoy": 6.7,
-    "grossMargin": 62.89,
-    "operatingMargin": 35.09,
-    "netMargin": 33.07,
-    "eps": 1.03,
-    "pe": 27.75,
-    "pb": 10.83,
-    "marketCap": 404722974720
+    "yoy": 7.4,
+    "grossMargin": 63.15,
+    "operatingMargin": 33.37,
+    "netMargin": 29.96,
+    "eps": 0.93,
+    "pe": 28.22,
+    "pb": 11.01,
+    "marketCap": 411562999808
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 13380000000,
+        "grossProfit": 8450000000,
+        "operatingIncome": 4465000000,
+        "netIncome": 4009000000,
+        "eps": 0.93,
+        "grossMargin": 63.15,
+        "operatingMargin": 33.37,
+        "netMargin": 29.96,
+        "native": {
+          "revenue": 13380000000,
+          "grossProfit": 8450000000,
+          "operatingIncome": 4465000000,
+          "netIncome": 4009000000
+        },
+        "revenueYoY": 7.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

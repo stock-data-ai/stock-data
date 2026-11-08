@@ -3,16 +3,16 @@
   "companyName": "Amphenol Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 1,
-    "revenue": 7620100000,
-    "yoy": 58.4,
-    "grossMargin": 36.75,
-    "operatingMargin": 25.57,
-    "netMargin": 12.24,
-    "eps": 0.36,
-    "pe": 34.33,
-    "pb": 11.43,
-    "marketCap": 195812425728
+    "quarter": 3,
+    "revenue": 10229700000,
+    "yoy": 65.1,
+    "grossMargin": 39.26,
+    "operatingMargin": 29.68,
+    "netMargin": 19.89,
+    "eps": 0.79,
+    "pe": 32.43,
+    "pb": 10.75,
+    "marketCap": 184182194176
   },
   "historical": {
     "annual": [
@@ -95,6 +95,26 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 10229700000,
+        "grossProfit": 4016200000,
+        "operatingIncome": 3036300000,
+        "netIncome": 2034300000,
+        "eps": 0.79,
+        "grossMargin": 39.26,
+        "operatingMargin": 29.68,
+        "netMargin": 19.89,
+        "native": {
+          "revenue": 10229700000,
+          "grossProfit": 4016200000,
+          "operatingIncome": 3036300000,
+          "netIncome": 2034300000
+        },
+        "revenueYoY": 65.1
+      },
+      {
+        "year": 2026,
         "quarter": 1,
         "periodEnd": "2026-03-31",
         "revenue": 7620100000,
@@ -159,7 +179,7 @@
         "grossProfit": 2053300000,
         "operatingIncome": 1430800000,
         "netIncome": 1091300000,
-        "eps": 0.43,
+        "eps": null,
         "grossMargin": 36.34,
         "operatingMargin": 25.32,
         "netMargin": 19.31,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -2,17 +2,17 @@
   "companyCode": "FDXF",
   "companyName": "FedEx Freight Holding Company, Inc.",
   "latest": {
-    "year": 2026,
+    "year": 2027,
     "quarter": 2,
-    "revenue": 2139000000,
-    "yoy": null,
-    "grossMargin": 26.74,
-    "operatingMargin": 10.19,
-    "netMargin": 5.61,
-    "eps": 0.8,
-    "pe": 36.96,
-    "pb": -37.92,
-    "marketCap": 18845661184
+    "revenue": 2442000000,
+    "yoy": 8.1,
+    "grossMargin": 38.82,
+    "operatingMargin": 14.66,
+    "netMargin": 6.02,
+    "eps": 0.98,
+    "pe": 36.23,
+    "pb": -73.55,
+    "marketCap": 18474846208
   },
   "historical": {
     "annual": [
@@ -94,6 +94,26 @@
     ],
     "quarterly": [
       {
+        "year": 2027,
+        "quarter": 2,
+        "periodEnd": "2026-09-30",
+        "revenue": 2442000000,
+        "grossProfit": 948000000,
+        "operatingIncome": 358000000,
+        "netIncome": 147000000,
+        "eps": 0.98,
+        "grossMargin": 38.82,
+        "operatingMargin": 14.66,
+        "netMargin": 6.02,
+        "native": {
+          "revenue": 2442000000,
+          "grossProfit": 948000000,
+          "operatingIncome": 358000000,
+          "netIncome": 147000000
+        },
+        "revenueYoY": 8.1
+      },
+      {
         "year": 2026,
         "quarter": 2,
         "periodEnd": "2025-11-30",
@@ -111,10 +131,29 @@
           "operatingIncome": 218000000,
           "netIncome": 120000000
         }
+      },
+      {
+        "year": 2026,
+        "quarter": 2,
+        "periodEnd": "2025-09-30",
+        "revenue": 2259000000,
+        "grossProfit": 833000000,
+        "operatingIncome": 320000000,
+        "netIncome": 291000000,
+        "eps": 1.95,
+        "grossMargin": 36.87,
+        "operatingMargin": 14.17,
+        "netMargin": 12.88,
+        "native": {
+          "revenue": 2259000000,
+          "grossProfit": 833000000,
+          "operatingIncome": 320000000,
+          "netIncome": 291000000
+        }
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

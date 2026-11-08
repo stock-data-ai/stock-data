@@ -3,16 +3,16 @@
   "companyName": "Albemarle Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 1743313000,
-    "yoy": 31.1,
-    "grossMargin": 33.86,
-    "operatingMargin": 26.4,
-    "netMargin": 27.53,
-    "eps": 3.52,
-    "pe": 337.04,
-    "pb": 1.34,
-    "marketCap": 10738459648
+    "quarter": 3,
+    "revenue": 1553097000,
+    "yoy": 18.8,
+    "grossMargin": 19.36,
+    "operatingMargin": 10.06,
+    "netMargin": 19.11,
+    "eps": 2.15,
+    "pe": 23.92,
+    "pb": 1.41,
+    "marketCap": 11712477184
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 1553097000,
+        "grossProfit": 300724000,
+        "operatingIncome": 156198000,
+        "netIncome": 296755000,
+        "eps": 2.15,
+        "grossMargin": 19.36,
+        "operatingMargin": 10.06,
+        "netMargin": 19.11,
+        "native": {
+          "revenue": 1553097000,
+          "grossProfit": 300724000,
+          "operatingIncome": 156198000,
+          "netIncome": 296755000
+        },
+        "revenueYoY": 18.8
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 1743313000,
         "grossProfit": 590301000,
         "operatingIncome": 460281000,
         "netIncome": 479959000,
-        "eps": 3.52,
+        "eps": 3.72,
         "grossMargin": 33.86,
         "operatingMargin": 26.4,
         "netMargin": 27.53,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

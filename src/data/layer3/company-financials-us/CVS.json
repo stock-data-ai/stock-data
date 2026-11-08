@@ -3,16 +3,16 @@
   "companyName": "CVS Health Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 106096000000,
-    "yoy": 7.3,
-    "grossMargin": 14.84,
-    "operatingMargin": 4.43,
-    "netMargin": 2.81,
-    "eps": 2.31,
-    "pe": 23.75,
-    "pb": 1.45,
-    "marketCap": 115427074048
+    "quarter": 3,
+    "revenue": 108399000000,
+    "yoy": 5.4,
+    "grossMargin": 13.74,
+    "operatingMargin": 3.29,
+    "netMargin": 2.0,
+    "eps": 1.68,
+    "pe": 9.74,
+    "pb": 1.33,
+    "marketCap": 107283906560
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 108399000000,
+        "grossProfit": 14898000000,
+        "operatingIncome": 3566000000,
+        "netIncome": 2172000000,
+        "eps": 1.68,
+        "grossMargin": 13.74,
+        "operatingMargin": 3.29,
+        "netMargin": 2.0,
+        "native": {
+          "revenue": 108399000000,
+          "grossProfit": 14898000000,
+          "operatingIncome": 3566000000,
+          "netIncome": 2172000000
+        },
+        "revenueYoY": 5.4
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 106096000000,
         "grossProfit": 15749000000,
         "operatingIncome": 4703000000,
         "netIncome": 2979000000,
-        "eps": 2.31,
+        "eps": null,
         "grossMargin": 14.84,
         "operatingMargin": 4.43,
         "netMargin": 2.81,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

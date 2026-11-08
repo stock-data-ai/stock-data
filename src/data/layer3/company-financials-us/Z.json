@@ -3,16 +3,16 @@
   "companyName": "Zillow Group, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 772000000,
-    "yoy": 17.9,
-    "grossMargin": 72.8,
-    "operatingMargin": 3.37,
-    "netMargin": -0.52,
-    "eps": -0.02,
-    "pe": 134.61,
-    "pb": 1.62,
-    "marketCap": 6962128384
+    "quarter": 3,
+    "revenue": 724000000,
+    "yoy": 7.1,
+    "grossMargin": 71.27,
+    "operatingMargin": -17.82,
+    "netMargin": -21.82,
+    "eps": -0.7,
+    "pe": null,
+    "pb": 1.58,
+    "marketCap": 6664135168
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 724000000,
+        "grossProfit": 516000000,
+        "operatingIncome": -129000000,
+        "netIncome": -158000000,
+        "eps": -0.7,
+        "grossMargin": 71.27,
+        "operatingMargin": -17.82,
+        "netMargin": -21.82,
+        "native": {
+          "revenue": 724000000,
+          "grossProfit": 516000000,
+          "operatingIncome": -129000000,
+          "netIncome": -158000000
+        },
+        "revenueYoY": 7.1
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

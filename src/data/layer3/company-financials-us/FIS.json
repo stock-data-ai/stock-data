@@ -3,16 +3,16 @@
   "companyName": "Fidelity National Information Services, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 3377000000,
-    "yoy": 29.1,
-    "grossMargin": 34.76,
-    "operatingMargin": 15.01,
-    "netMargin": 6.84,
-    "eps": 0.45,
-    "pe": 5.92,
-    "pb": 1.24,
-    "marketCap": 19880462336
+    "quarter": 3,
+    "revenue": 3454000000,
+    "yoy": 27.1,
+    "grossMargin": 37.03,
+    "operatingMargin": 19.11,
+    "netMargin": 10.31,
+    "eps": 0.69,
+    "pe": 4.29,
+    "pb": 0.91,
+    "marketCap": 14809459712
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 3454000000,
+        "grossProfit": 1279000000,
+        "operatingIncome": 660000000,
+        "netIncome": 356000000,
+        "eps": 0.69,
+        "grossMargin": 37.03,
+        "operatingMargin": 19.11,
+        "netMargin": 10.31,
+        "native": {
+          "revenue": 3454000000,
+          "grossProfit": 1279000000,
+          "operatingIncome": 660000000,
+          "netIncome": 356000000
+        },
+        "revenueYoY": 27.1
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 3377000000,
         "grossProfit": 1174000000,
         "operatingIncome": 507000000,
         "netIncome": 231000000,
-        "eps": 0.45,
+        "eps": null,
         "grossMargin": 34.76,
         "operatingMargin": 15.01,
         "netMargin": 6.84,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

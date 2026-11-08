@@ -3,19 +3,38 @@
   "companyName": "Apple Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 109417000000,
-    "yoy": 16.4,
-    "grossMargin": 50.06,
-    "operatingMargin": 32.62,
-    "netMargin": 27.23,
-    "eps": 2.02,
-    "pe": 39.52,
-    "pb": 46.82,
-    "marketCap": 5029592301568
+    "quarter": 4,
+    "revenue": 114477000000,
+    "yoy": 11.7,
+    "grossMargin": 47.89,
+    "operatingMargin": 31.13,
+    "netMargin": 26.83,
+    "eps": null,
+    "pe": 38.13,
+    "pb": 44.39,
+    "marketCap": 4975383019520
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 478834000000,
+        "grossProfit": 233602000000,
+        "operatingIncome": 158063000000,
+        "netIncome": 132175000000,
+        "eps": 8.98,
+        "grossMargin": 48.79,
+        "operatingMargin": 33.01,
+        "netMargin": 27.6,
+        "native": {
+          "revenue": 478834000000,
+          "grossProfit": 233602000000,
+          "operatingIncome": 158063000000,
+          "netIncome": 132175000000
+        },
+        "revenueYoY": 15.1
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 114477000000,
+        "grossProfit": 54820000000,
+        "operatingIncome": 35631000000,
+        "netIncome": 30711000000,
+        "eps": null,
+        "grossMargin": 47.89,
+        "operatingMargin": 31.13,
+        "netMargin": 26.83,
+        "native": {
+          "revenue": 114477000000,
+          "grossProfit": 54820000000,
+          "operatingIncome": 35631000000,
+          "netIncome": 30711000000
+        },
+        "revenueYoY": 11.7
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

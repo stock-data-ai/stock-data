@@ -3,16 +3,16 @@
   "companyName": "Entergy Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 1,
-    "revenue": 3187626000,
-    "yoy": 12.0,
-    "grossMargin": 47.53,
-    "operatingMargin": 18.52,
-    "netMargin": 12.26,
-    "eps": 0.83,
-    "pe": 28.16,
-    "pb": 2.82,
-    "marketCap": 52608077824
+    "quarter": 3,
+    "revenue": 4365168000,
+    "yoy": 14.5,
+    "grossMargin": 52.99,
+    "operatingMargin": 33.93,
+    "netMargin": 21.66,
+    "eps": 1.98,
+    "pe": 25.3,
+    "pb": 2.67,
+    "marketCap": 52823789568
   },
   "historical": {
     "annual": [
@@ -95,6 +95,26 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 4365168000,
+        "grossProfit": 2312917000,
+        "operatingIncome": 1481153000,
+        "netIncome": 945569000,
+        "eps": 1.98,
+        "grossMargin": 52.99,
+        "operatingMargin": 33.93,
+        "netMargin": 21.66,
+        "native": {
+          "revenue": 4365168000,
+          "grossProfit": 2312917000,
+          "operatingIncome": 1481153000,
+          "netIncome": 945569000
+        },
+        "revenueYoY": 14.5
+      },
+      {
+        "year": 2026,
         "quarter": 1,
         "periodEnd": "2026-03-31",
         "revenue": 3187626000,
@@ -159,7 +179,7 @@
         "grossProfit": 1562394000,
         "operatingIncome": 837425000,
         "netIncome": 471954000,
-        "eps": 4.17,
+        "eps": null,
         "grossMargin": 46.93,
         "operatingMargin": 25.16,
         "netMargin": 14.18,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

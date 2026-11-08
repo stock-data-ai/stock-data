@@ -3,16 +3,16 @@
   "companyName": "The Southern Company",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 6977000000,
-    "yoy": 0.1,
-    "grossMargin": 51.27,
-    "operatingMargin": 25.46,
-    "netMargin": 16.83,
-    "eps": 1.03,
-    "pe": 22.58,
-    "pb": 2.72,
-    "marketCap": 107800518656
+    "quarter": 3,
+    "revenue": 8843000000,
+    "yoy": 13.0,
+    "grossMargin": 55.16,
+    "operatingMargin": 33.93,
+    "netMargin": 23.14,
+    "eps": 1.76,
+    "pe": 21.08,
+    "pb": 2.56,
+    "marketCap": 107507859456
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 8843000000,
+        "grossProfit": 4878000000,
+        "operatingIncome": 3000000000,
+        "netIncome": 2046000000,
+        "eps": 1.76,
+        "grossMargin": 55.16,
+        "operatingMargin": 33.93,
+        "netMargin": 23.14,
+        "native": {
+          "revenue": 8843000000,
+          "grossProfit": 4878000000,
+          "operatingIncome": 3000000000,
+          "netIncome": 2046000000
+        },
+        "revenueYoY": 13.0
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

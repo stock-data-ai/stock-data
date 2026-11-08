@@ -3,16 +3,16 @@
   "companyName": "Strategy Inc",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 122368000,
-    "yoy": 6.9,
-    "grossMargin": 66.64,
-    "operatingMargin": -12.74,
-    "netMargin": -6717.14,
-    "eps": -24.45,
+    "quarter": 3,
+    "revenue": 125427000,
+    "yoy": -2.5,
+    "grossMargin": 71.46,
+    "operatingMargin": -2.07,
+    "netMargin": 15573.18,
+    "eps": 44.75,
     "pe": null,
-    "pb": 0.99,
-    "marketCap": 55280414720
+    "pb": 0.98,
+    "marketCap": 54573699072
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 125427000,
+        "grossProfit": 89634000,
+        "operatingIncome": -2600000,
+        "netIncome": 19532972000,
+        "eps": 44.75,
+        "grossMargin": 71.46,
+        "operatingMargin": -2.07,
+        "netMargin": 15573.18,
+        "native": {
+          "revenue": 125427000,
+          "grossProfit": 89634000,
+          "operatingIncome": -2600000,
+          "netIncome": 19532972000
+        },
+        "revenueYoY": -2.5
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

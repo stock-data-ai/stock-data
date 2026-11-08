@@ -3,16 +3,16 @@
   "companyName": "Metallus Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 334600000,
-    "yoy": 11.5,
-    "grossMargin": 8.28,
-    "operatingMargin": 3.11,
-    "netMargin": 2.66,
-    "eps": 0.21,
-    "pe": 111.16,
-    "pb": 1.27,
-    "marketCap": 875408896
+    "quarter": 3,
+    "revenue": 337200000,
+    "yoy": 10.2,
+    "grossMargin": 10.77,
+    "operatingMargin": 3.71,
+    "netMargin": 7.06,
+    "eps": 0.55,
+    "pe": 30.27,
+    "pb": 0.96,
+    "marketCap": 686960576
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 337200000,
+        "grossProfit": 36300000,
+        "operatingIncome": 12500000,
+        "netIncome": 23800000,
+        "eps": 0.55,
+        "grossMargin": 10.77,
+        "operatingMargin": 3.71,
+        "netMargin": 7.06,
+        "native": {
+          "revenue": 337200000,
+          "grossProfit": 36300000,
+          "operatingIncome": 12500000,
+          "netIncome": 23800000
+        },
+        "revenueYoY": 10.2
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

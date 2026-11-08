@@ -3,16 +3,16 @@
   "companyName": "Schrödinger, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 58889000,
-    "yoy": 7.5,
-    "grossMargin": 55.07,
-    "operatingMargin": -70.55,
-    "netMargin": 10.15,
-    "eps": 0.08,
+    "quarter": 3,
+    "revenue": 64491000,
+    "yoy": 18.7,
+    "grossMargin": 59.32,
+    "operatingMargin": -40.52,
+    "netMargin": -58.47,
+    "eps": -0.5,
     "pe": null,
-    "pb": 6.01,
-    "marketCap": 2030224768
+    "pb": 7.41,
+    "marketCap": 2230703872
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 64491000,
+        "grossProfit": 38253000,
+        "operatingIncome": -26129000,
+        "netIncome": -37711000,
+        "eps": -0.5,
+        "grossMargin": 59.32,
+        "operatingMargin": -40.52,
+        "netMargin": -58.47,
+        "native": {
+          "revenue": 64491000,
+          "grossProfit": 38253000,
+          "operatingIncome": -26129000,
+          "netIncome": -37711000
+        },
+        "revenueYoY": 18.7
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

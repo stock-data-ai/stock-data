@@ -3,16 +3,16 @@
   "companyName": "Intel Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 16128000000,
-    "yoy": 25.4,
-    "grossMargin": 40.36,
-    "operatingMargin": 12.19,
-    "netMargin": -68.41,
-    "eps": -2.16,
+    "quarter": 3,
+    "revenue": 16513000000,
+    "yoy": 20.9,
+    "grossMargin": 42.97,
+    "operatingMargin": 15.6,
+    "netMargin": 20.11,
+    "eps": 0.6,
     "pe": null,
-    "pb": 3.04,
-    "marketCap": 349514399744
+    "pb": 2.6,
+    "marketCap": 299128193024
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 16513000000,
+        "grossProfit": 7096000000,
+        "operatingIncome": 2576000000,
+        "netIncome": 3320000000,
+        "eps": 0.6,
+        "grossMargin": 42.97,
+        "operatingMargin": 15.6,
+        "netMargin": 20.11,
+        "native": {
+          "revenue": 16513000000,
+          "grossProfit": 7096000000,
+          "operatingIncome": 2576000000,
+          "netIncome": 3320000000
+        },
+        "revenueYoY": 20.9
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -3,16 +3,16 @@
   "companyName": "Westlake Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 3271000000,
-    "yoy": 10.8,
-    "grossMargin": 19.93,
-    "operatingMargin": 11.22,
-    "netMargin": 7.95,
-    "eps": 2.01,
+    "quarter": 3,
+    "revenue": 2981000000,
+    "yoy": 5.0,
+    "grossMargin": 12.81,
+    "operatingMargin": 3.39,
+    "netMargin": 0.2,
+    "eps": 0.05,
     "pe": null,
-    "pb": 1.0,
-    "marketCap": 8725947392
+    "pb": 0.94,
+    "marketCap": 8119542272
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 2981000000,
+        "grossProfit": 382000000,
+        "operatingIncome": 101000000,
+        "netIncome": 6000000,
+        "eps": 0.05,
+        "grossMargin": 12.81,
+        "operatingMargin": 3.39,
+        "netMargin": 0.2,
+        "native": {
+          "revenue": 2981000000,
+          "grossProfit": 382000000,
+          "operatingIncome": 101000000,
+          "netIncome": 6000000
+        },
+        "revenueYoY": 5.0
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

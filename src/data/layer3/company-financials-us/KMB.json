@@ -3,16 +3,16 @@
   "companyName": "Kimberly-Clark Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 4189000000,
-    "yoy": 0.6,
-    "grossMargin": 38.27,
-    "operatingMargin": 15.11,
-    "netMargin": 8.24,
-    "eps": 1.04,
-    "pe": 21.29,
-    "pb": 20.51,
-    "marketCap": 35898580992
+    "quarter": 3,
+    "revenue": 4134000000,
+    "yoy": -0.4,
+    "grossMargin": 34.86,
+    "operatingMargin": 12.48,
+    "netMargin": 43.37,
+    "eps": 5.37,
+    "pe": 20.69,
+    "pb": 12.3,
+    "marketCap": 66540814336
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 4134000000,
+        "grossProfit": 1441000000,
+        "operatingIncome": 516000000,
+        "netIncome": 1793000000,
+        "eps": 5.37,
+        "grossMargin": 34.86,
+        "operatingMargin": 12.48,
+        "netMargin": 43.37,
+        "native": {
+          "revenue": 4134000000,
+          "grossProfit": 1441000000,
+          "operatingIncome": 516000000,
+          "netIncome": 1793000000
+        },
+        "revenueYoY": -0.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

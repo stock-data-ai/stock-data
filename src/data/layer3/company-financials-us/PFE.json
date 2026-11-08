@@ -3,16 +3,16 @@
   "companyName": "Pfizer Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 15034000000,
-    "yoy": 2.6,
-    "grossMargin": 72.78,
-    "operatingMargin": 23.53,
-    "netMargin": -1.65,
-    "eps": -0.04,
-    "pe": 40.16,
-    "pb": 2.04,
-    "marketCap": 173954039808
+    "quarter": 3,
+    "revenue": 16583000000,
+    "yoy": -0.4,
+    "grossMargin": 75.71,
+    "operatingMargin": 30.95,
+    "netMargin": 19.55,
+    "eps": 0.56,
+    "pe": 41.99,
+    "pb": 1.88,
+    "marketCap": 167518699520
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 16583000000,
+        "grossProfit": 12555000000,
+        "operatingIncome": 5132000000,
+        "netIncome": 3242000000,
+        "eps": 0.56,
+        "grossMargin": 75.71,
+        "operatingMargin": 30.95,
+        "netMargin": 19.55,
+        "native": {
+          "revenue": 16583000000,
+          "grossProfit": 12555000000,
+          "operatingIncome": 5132000000,
+          "netIncome": 3242000000
+        },
+        "revenueYoY": -0.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

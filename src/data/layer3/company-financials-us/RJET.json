@@ -3,16 +3,16 @@
   "companyName": "Republic Airways Holdings Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 571100000,
-    "yoy": 40.8,
-    "grossMargin": 27.68,
-    "operatingMargin": 12.66,
-    "netMargin": 5.46,
-    "eps": 0.68,
-    "pe": 12.79,
-    "pb": 0.62,
-    "marketCap": 904552704
+    "quarter": 3,
+    "revenue": 553500000,
+    "yoy": 34.3,
+    "grossMargin": 27.46,
+    "operatingMargin": 12.63,
+    "netMargin": 6.25,
+    "eps": 0.75,
+    "pe": 9.46,
+    "pb": 0.65,
+    "marketCap": 942018880
   },
   "historical": {
     "annual": [
@@ -95,6 +95,26 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 553500000,
+        "grossProfit": 152000000,
+        "operatingIncome": 69900000,
+        "netIncome": 34600000,
+        "eps": 0.75,
+        "grossMargin": 27.46,
+        "operatingMargin": 12.63,
+        "netMargin": 6.25,
+        "native": {
+          "revenue": 553500000,
+          "grossProfit": 152000000,
+          "operatingIncome": 69900000,
+          "netIncome": 34600000
+        },
+        "revenueYoY": 34.3
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 571100000,
@@ -121,7 +141,7 @@
         "grossProfit": 146400000,
         "operatingIncome": 63700000,
         "netIncome": 26900000,
-        "eps": 0.6,
+        "eps": 0.58,
         "grossMargin": 27.76,
         "operatingMargin": 12.08,
         "netMargin": 5.1,
@@ -132,6 +152,44 @@
           "netIncome": 26900000
         },
         "revenueYoY": 33.6
+      },
+      {
+        "year": 2025,
+        "quarter": 4,
+        "periodEnd": "2025-12-31",
+        "revenue": 464100000,
+        "grossProfit": 123000000,
+        "operatingIncome": 49400000,
+        "netIncome": 5000000,
+        "eps": 0.12,
+        "grossMargin": 26.5,
+        "operatingMargin": 10.64,
+        "netMargin": 1.08,
+        "native": {
+          "revenue": 464100000,
+          "grossProfit": 123000000,
+          "operatingIncome": 49400000,
+          "netIncome": 5000000
+        }
+      },
+      {
+        "year": 2025,
+        "quarter": 3,
+        "periodEnd": "2025-09-30",
+        "revenue": 412000000,
+        "grossProfit": 113500000,
+        "operatingIncome": 51900000,
+        "netIncome": 6700000,
+        "eps": 0.17,
+        "grossMargin": 27.55,
+        "operatingMargin": 12.6,
+        "netMargin": 1.63,
+        "native": {
+          "revenue": 412000000,
+          "grossProfit": 113500000,
+          "operatingIncome": 51900000,
+          "netIncome": 6700000
+        }
       },
       {
         "year": 2025,
@@ -173,7 +231,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

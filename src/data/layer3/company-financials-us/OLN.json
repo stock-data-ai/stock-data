@@ -3,16 +3,16 @@
   "companyName": "Olin Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 1741900000,
-    "yoy": -0.9,
-    "grossMargin": 9.77,
-    "operatingMargin": 3.88,
-    "netMargin": -0.76,
-    "eps": -0.12,
+    "quarter": 3,
+    "revenue": 1747700000,
+    "yoy": 2.0,
+    "grossMargin": 9.88,
+    "operatingMargin": 4.27,
+    "netMargin": 0.82,
+    "eps": 0.13,
     "pe": null,
-    "pb": 1.17,
-    "marketCap": 2006091776
+    "pb": 1.15,
+    "marketCap": 1973439104
   },
   "historical": {
     "annual": [
@@ -23,7 +23,7 @@
         "grossProfit": 501500000,
         "operatingIncome": 38700000,
         "netIncome": -100500000,
-        "eps": -0.88,
+        "eps": -0.37,
         "grossMargin": 7.4,
         "operatingMargin": 0.57,
         "netMargin": -1.48,
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 1747700000,
+        "grossProfit": 172700000,
+        "operatingIncome": 74600000,
+        "netIncome": 14400000,
+        "eps": 0.13,
+        "grossMargin": 9.88,
+        "operatingMargin": 4.27,
+        "netMargin": 0.82,
+        "native": {
+          "revenue": 1747700000,
+          "grossProfit": 172700000,
+          "operatingIncome": 74600000,
+          "netIncome": 14400000
+        },
+        "revenueYoY": 2.0
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

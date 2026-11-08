@@ -3,16 +3,16 @@
   "companyName": "Celanese Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 2752000000,
-    "yoy": 8.7,
-    "grossMargin": 22.46,
-    "operatingMargin": 10.86,
-    "netMargin": 4.54,
-    "eps": 1.13,
-    "pe": null,
-    "pb": 1.3,
-    "marketCap": 5410621952
+    "quarter": 3,
+    "revenue": 2556000000,
+    "yoy": 5.7,
+    "grossMargin": 21.09,
+    "operatingMargin": 8.69,
+    "netMargin": 2.9,
+    "eps": 0.67,
+    "pe": 18.82,
+    "pb": 1.21,
+    "marketCap": 5102405632
   },
   "historical": {
     "annual": [
@@ -42,7 +42,7 @@
         "grossProfit": 2336000000,
         "operatingIncome": 1014000000,
         "netIncome": -1542000000,
-        "eps": -14.11,
+        "eps": -13.93,
         "grossMargin": 22.75,
         "operatingMargin": 9.88,
         "netMargin": -15.02,
@@ -61,7 +61,7 @@
         "grossProfit": 2583000000,
         "operatingIncome": 1196000000,
         "netIncome": 1943000000,
-        "eps": 17.76,
+        "eps": 17.92,
         "grossMargin": 23.64,
         "operatingMargin": 10.95,
         "netMargin": 17.78,
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 2556000000,
+        "grossProfit": 539000000,
+        "operatingIncome": 222000000,
+        "netIncome": 74000000,
+        "eps": 0.67,
+        "grossMargin": 21.09,
+        "operatingMargin": 8.69,
+        "netMargin": 2.9,
+        "native": {
+          "revenue": 2556000000,
+          "grossProfit": 539000000,
+          "operatingIncome": 222000000,
+          "netIncome": 74000000
+        },
+        "revenueYoY": 5.7
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 2752000000,
         "grossProfit": 618000000,
         "operatingIncome": 299000000,
         "netIncome": 125000000,
-        "eps": 1.13,
+        "eps": null,
         "grossMargin": 22.46,
         "operatingMargin": 10.86,
         "netMargin": 4.54,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -3,16 +3,16 @@
   "companyName": "Targa Resources Corp.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 4440100000,
-    "yoy": 4.2,
-    "grossMargin": 37.95,
-    "operatingMargin": 27.8,
-    "netMargin": 17.22,
-    "eps": 3.57,
-    "pe": 30.11,
-    "pb": 18.47,
-    "marketCap": 67543625728
+    "quarter": 3,
+    "revenue": 5598600000,
+    "yoy": 34.9,
+    "grossMargin": 27.87,
+    "operatingMargin": 19.58,
+    "netMargin": 11.76,
+    "eps": 3.04,
+    "pe": 23.42,
+    "pb": 14.87,
+    "marketCap": 56768847872
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 5598600000,
+        "grossProfit": 1560400000,
+        "operatingIncome": 1096000000,
+        "netIncome": 658200000,
+        "eps": 3.04,
+        "grossMargin": 27.87,
+        "operatingMargin": 19.58,
+        "netMargin": 11.76,
+        "native": {
+          "revenue": 5598600000,
+          "grossProfit": 1560400000,
+          "operatingIncome": 1096000000,
+          "netIncome": 658200000
+        },
+        "revenueYoY": 34.9
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 4440100000,
         "grossProfit": 1685000000,
         "operatingIncome": 1234500000,
         "netIncome": 764600000,
-        "eps": 3.57,
+        "eps": 3.54,
         "grossMargin": 37.95,
         "operatingMargin": 27.8,
         "netMargin": 17.22,
@@ -121,7 +141,7 @@
         "grossProfit": 1274200000,
         "operatingIncome": 846900000,
         "netIncome": 479600000,
-        "eps": 2.23,
+        "eps": 2.21,
         "grossMargin": 31.12,
         "operatingMargin": 20.68,
         "netMargin": 11.71,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -3,16 +3,16 @@
   "companyName": "Eastman Chemical Company",
   "latest": {
     "year": 2026,
-    "quarter": 1,
-    "revenue": 2177000000,
-    "yoy": -4.9,
-    "grossMargin": 19.8,
-    "operatingMargin": 8.87,
-    "netMargin": 4.92,
-    "eps": 0.93,
-    "pe": 11.84,
-    "pb": 1.25,
-    "marketCap": 7606351872
+    "quarter": 3,
+    "revenue": 2385000000,
+    "yoy": 8.3,
+    "grossMargin": 22.31,
+    "operatingMargin": 13.21,
+    "netMargin": 10.57,
+    "eps": 2.19,
+    "pe": 11.46,
+    "pb": 1.17,
+    "marketCap": 7363973632
   },
   "historical": {
     "annual": [
@@ -95,6 +95,26 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 2385000000,
+        "grossProfit": 532000000,
+        "operatingIncome": 315000000,
+        "netIncome": 252000000,
+        "eps": 2.19,
+        "grossMargin": 22.31,
+        "operatingMargin": 13.21,
+        "netMargin": 10.57,
+        "native": {
+          "revenue": 2385000000,
+          "grossProfit": 532000000,
+          "operatingIncome": 315000000,
+          "netIncome": 252000000
+        },
+        "revenueYoY": 8.3
+      },
+      {
+        "year": 2026,
         "quarter": 1,
         "periodEnd": "2026-03-31",
         "revenue": 2177000000,
@@ -138,17 +158,17 @@
         "periodEnd": "2025-09-30",
         "revenue": 2202000000,
         "grossProfit": 433000000,
-        "operatingIncome": 210000000,
-        "netIncome": 47000000,
+        "operatingIncome": 211000000,
+        "netIncome": 69000000,
         "eps": 0.4,
         "grossMargin": 19.66,
-        "operatingMargin": 9.54,
-        "netMargin": 2.13,
+        "operatingMargin": 9.58,
+        "netMargin": 3.13,
         "native": {
           "revenue": 2202000000,
           "grossProfit": 433000000,
-          "operatingIncome": 210000000,
-          "netIncome": 47000000
+          "operatingIncome": 211000000,
+          "netIncome": 69000000
         }
       },
       {
@@ -159,7 +179,7 @@
         "grossProfit": 506000000,
         "operatingIncome": 284000000,
         "netIncome": 140000000,
-        "eps": 1.2,
+        "eps": null,
         "grossMargin": 22.13,
         "operatingMargin": 12.42,
         "netMargin": 6.12,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

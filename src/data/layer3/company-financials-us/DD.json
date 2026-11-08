@@ -3,16 +3,16 @@
   "companyName": "DuPont de Nemours, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 1819000000,
-    "yoy": 4.0,
-    "grossMargin": 35.13,
-    "operatingMargin": 14.29,
-    "netMargin": 7.86,
-    "eps": 1.05,
-    "pe": 37.65,
-    "pb": 1.37,
-    "marketCap": 18912770048
+    "quarter": 3,
+    "revenue": 1868000000,
+    "yoy": 4.1,
+    "grossMargin": 35.71,
+    "operatingMargin": 15.9,
+    "netMargin": 6.58,
+    "eps": 0.91,
+    "pe": 51.05,
+    "pb": 1.43,
+    "marketCap": 19418638336
   },
   "historical": {
     "annual": [
@@ -95,6 +95,26 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 1868000000,
+        "grossProfit": 667000000,
+        "operatingIncome": 297000000,
+        "netIncome": 123000000,
+        "eps": 0.91,
+        "grossMargin": 35.71,
+        "operatingMargin": 15.9,
+        "netMargin": 6.58,
+        "native": {
+          "revenue": 1868000000,
+          "grossProfit": 667000000,
+          "operatingIncome": 297000000,
+          "netIncome": 123000000
+        },
+        "revenueYoY": 4.1
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 1819000000,
@@ -156,18 +176,18 @@
         "year": 2025,
         "quarter": 3,
         "periodEnd": "2025-09-30",
-        "revenue": 3072000000,
-        "grossProfit": 1195000000,
-        "operatingIncome": 547000000,
+        "revenue": 1795000000,
+        "grossProfit": 616000000,
+        "operatingIncome": 232000000,
         "netIncome": -123000000,
-        "eps": -0.87,
-        "grossMargin": 38.9,
-        "operatingMargin": 17.81,
-        "netMargin": -4.0,
+        "eps": -0.88,
+        "grossMargin": 34.32,
+        "operatingMargin": 12.92,
+        "netMargin": -6.85,
         "native": {
-          "revenue": 3072000000,
-          "grossProfit": 1195000000,
-          "operatingIncome": 547000000,
+          "revenue": 1795000000,
+          "grossProfit": 616000000,
+          "operatingIncome": 232000000,
           "netIncome": -123000000
         }
       },
@@ -179,7 +199,7 @@
         "grossProfit": 606000000,
         "operatingIncome": 217000000,
         "netIncome": 59000000,
-        "eps": 0.42,
+        "eps": null,
         "grossMargin": 34.65,
         "operatingMargin": 12.41,
         "netMargin": 3.37,
@@ -211,7 +231,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

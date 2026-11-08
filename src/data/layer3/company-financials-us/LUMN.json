@@ -3,16 +3,16 @@
   "companyName": "Lumen Technologies, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 2805000000,
-    "yoy": -9.3,
-    "grossMargin": 49.55,
-    "operatingMargin": -2.03,
-    "netMargin": -7.17,
-    "eps": -0.2,
+    "quarter": 3,
+    "revenue": 2715000000,
+    "yoy": -12.1,
+    "grossMargin": 47.26,
+    "operatingMargin": -6.3,
+    "netMargin": -9.76,
+    "eps": -0.26,
     "pe": null,
-    "pb": -3.38,
-    "marketCap": 5033453568
+    "pb": -2.39,
+    "marketCap": 4113860352
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 2715000000,
+        "grossProfit": 1283000000,
+        "operatingIncome": -171000000,
+        "netIncome": -265000000,
+        "eps": -0.26,
+        "grossMargin": 47.26,
+        "operatingMargin": -6.3,
+        "netMargin": -9.76,
+        "native": {
+          "revenue": 2715000000,
+          "grossProfit": 1283000000,
+          "operatingIncome": -171000000,
+          "netIncome": -265000000
+        },
+        "revenueYoY": -12.1
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 2805000000,
         "grossProfit": 1390000000,
         "operatingIncome": -57000000,
         "netIncome": -201000000,
-        "eps": -0.2,
+        "eps": null,
         "grossMargin": 49.55,
         "operatingMargin": -2.03,
         "netMargin": -7.17,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

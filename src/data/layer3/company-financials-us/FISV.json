@@ -3,16 +3,16 @@
   "companyName": "Fiserv, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 5292000000,
-    "yoy": -4.1,
-    "grossMargin": 54.74,
-    "operatingMargin": 19.07,
-    "netMargin": 11.85,
-    "eps": 1.17,
-    "pe": 9.6,
-    "pb": 0.99,
-    "marketCap": 26598971392
+    "quarter": 3,
+    "revenue": 5196000000,
+    "yoy": -1.3,
+    "grossMargin": 53.06,
+    "operatingMargin": 16.47,
+    "netMargin": -114.34,
+    "eps": -11.17,
+    "pe": null,
+    "pb": 1.59,
+    "marketCap": 33455161344
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 5196000000,
+        "grossProfit": 2757000000,
+        "operatingIncome": 856000000,
+        "netIncome": -5941000000,
+        "eps": -11.17,
+        "grossMargin": 53.06,
+        "operatingMargin": 16.47,
+        "netMargin": -114.34,
+        "native": {
+          "revenue": 5196000000,
+          "grossProfit": 2757000000,
+          "operatingIncome": 856000000,
+          "netIncome": -5941000000
+        },
+        "revenueYoY": -1.3
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

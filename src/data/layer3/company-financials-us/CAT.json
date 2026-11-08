@@ -3,16 +3,16 @@
   "companyName": "Caterpillar Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 20543000000,
-    "yoy": 24.0,
-    "grossMargin": 36.02,
-    "operatingMargin": 20.91,
-    "netMargin": 17.49,
-    "eps": 7.77,
-    "pe": 24.44,
-    "pb": 13.31,
-    "marketCap": 286262525952
+    "quarter": 3,
+    "revenue": 20682000000,
+    "yoy": 17.3,
+    "grossMargin": 33.68,
+    "operatingMargin": 20.38,
+    "netMargin": 15.89,
+    "eps": 7.13,
+    "pe": 21.92,
+    "pb": 11.9,
+    "marketCap": 255625838592
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 20682000000,
+        "grossProfit": 6966000000,
+        "operatingIncome": 4214000000,
+        "netIncome": 3287000000,
+        "eps": 7.13,
+        "grossMargin": 33.68,
+        "operatingMargin": 20.38,
+        "netMargin": 15.89,
+        "native": {
+          "revenue": 20682000000,
+          "grossProfit": 6966000000,
+          "operatingIncome": 4214000000,
+          "netIncome": 3287000000
+        },
+        "revenueYoY": 17.3
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 20543000000,
         "grossProfit": 7400000000,
         "operatingIncome": 4295000000,
         "netIncome": 3593000000,
-        "eps": 7.77,
+        "eps": null,
         "grossMargin": 36.02,
         "operatingMargin": 20.91,
         "netMargin": 17.49,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

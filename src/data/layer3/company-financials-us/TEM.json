@@ -3,16 +3,16 @@
   "companyName": "Tempus AI, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 382486000,
-    "yoy": 21.6,
-    "grossMargin": 64.45,
-    "operatingMargin": -19.85,
-    "netMargin": 1.48,
-    "eps": 0.03,
+    "quarter": 3,
+    "revenue": 411537000,
+    "yoy": 23.1,
+    "grossMargin": 64.81,
+    "operatingMargin": -13.82,
+    "netMargin": -3.61,
+    "eps": -0.08,
     "pe": null,
-    "pb": 29.23,
-    "marketCap": 13161519104
+    "pb": 27.66,
+    "marketCap": 13871644672
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 411537000,
+        "grossProfit": 266701000,
+        "operatingIncome": -56864000,
+        "netIncome": -14851000,
+        "eps": -0.08,
+        "grossMargin": 64.81,
+        "operatingMargin": -13.82,
+        "netMargin": -3.61,
+        "native": {
+          "revenue": 411537000,
+          "grossProfit": 266701000,
+          "operatingIncome": -56864000,
+          "netIncome": -14851000
+        },
+        "revenueYoY": 23.1
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-01",
+  "lastUpdated": "2026-11-08",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
