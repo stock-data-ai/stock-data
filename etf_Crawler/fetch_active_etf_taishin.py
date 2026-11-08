@@ -17,6 +17,7 @@ fetch_active_etf_taishin.py
 支援 ETF：
   00986A  台新全球龍頭成長主動式ETF基金
   00987A  台新台灣優勢成長主動式ETF基金
+  00416A  台新臺灣中小主動式ETF基金
 
 用法：
     uv run etf_Crawler/fetch_active_etf_taishin.py          # 更新全部
@@ -57,6 +58,7 @@ HEADERS = {
 TAISHIN_ACTIVE_ETFS = [
     "00986A",  # 台新全球龍頭成長主動式ETF基金
     "00987A",  # 台新台灣優勢成長主動式ETF基金
+    "00416A",  # 台新臺灣中小主動式ETF基金
 ]
 
 session = create_session()

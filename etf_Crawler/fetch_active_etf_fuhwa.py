@@ -20,6 +20,7 @@ fetch_active_etf_fuhwa.py
 支援 ETF：
   00991A (fundId=ETF23) 復華台灣未來50主動式ETF基金
   00998A (fundId=ETF24) 復華全球金融股息主動式ETF基金
+  00409A (fundId=ETF26) 復華全球未來50主動式ETF基金
 
 用法：
     uv run etf_Crawler/fetch_active_etf_fuhwa.py                       # 更新全部（最新）
@@ -52,6 +53,7 @@ ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
 FUHWA_ACTIVE_ETFS = {
     "00991A": "ETF23",  # 復華台灣未來50主動式ETF基金
     "00998A": "ETF24",  # 復華全球金融股息主動式ETF基金
+    "00409A": "ETF26",  # 復華全球未來50主動式ETF基金
 }
 
 BASE_URL = "https://www.fhtrust.com.tw/ETF/etf_detail/{fund_id}"
@@ -108,6 +110,8 @@ def _parse_excel(content: bytes) -> List[dict]:
         entry: dict = {"name": name, "weight": weight, "shares": shares}
         if code_raw.replace(' ', '').isdigit() and 4 <= len(code_raw.replace(' ', '')) <= 6:
             entry["code"] = code_raw.replace(' ', '')
+        elif code_raw and code_raw != 'nan':
+            entry["foreignCode"] = code_raw  # 海外個股，如 "PLTR US"
 
         holdings.append(entry)
 
@@ -173,6 +177,7 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
     return write_holdings_update(
         ETF_DATA_DIR / f"{etf_code}.json",
         etf_code, holdings, tran_date,
+        has_foreign_code=True,
         history_only=history_only,
     )
 

@@ -18,6 +18,8 @@ fetch_active_etf_allianz.py
 支援 ETF：
   00984A (FundID=E0001) 安聯台灣高息主動式ETF基金
   00993A (FundID=E0002) 安聯台灣智慧主動式ETF基金
+  00402A (FundID=E0003) 安聯美國科技主動式ETF基金（海外，官網晚一天）
+  00412A (FundID=E0004) 安聯亞洲半導體主動式ETF基金（海外，官網晚一天）
 
 用法：
     uv run etf_Crawler/fetch_active_etf_allianz.py          # 更新全部
@@ -59,6 +61,8 @@ HEADERS = {
 ALLIANZ_ACTIVE_ETFS = {
     "00984A": "E0001",  # 安聯台灣高息主動式ETF基金
     "00993A": "E0002",  # 安聯台灣智慧主動式ETF基金
+    "00402A": "E0003",  # 安聯美國科技主動式ETF基金
+    "00412A": "E0004",  # 安聯亞洲半導體主動式ETF基金
 }
 
 
@@ -146,6 +150,8 @@ def fetch_holdings(etf_code: str, fund_id: str,
                 entry: dict = {"name": name, "weight": weight, "shares": shares}
                 if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
                     entry["code"] = code_raw
+                elif code_raw:
+                    entry["foreignCode"] = code_raw  # 海外個股，如 "AAPL US"、"6857 JP"
 
                 holdings.append(entry)
 
@@ -163,6 +169,7 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str]) -> 
     return write_holdings_update(
         ETF_DATA_DIR / f"{etf_code}.json",
         etf_code, holdings, tran_date,
+        has_foreign_code=True,
     )
 
 

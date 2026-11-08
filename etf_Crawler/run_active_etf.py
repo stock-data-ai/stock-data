@@ -40,13 +40,13 @@ CRAWLER_DIR = Path(__file__).parent
 # 沒有也會被 CMoney 層接住（清單讀 index.json）。
 OFFICIAL = [
     ("統一",   "fetch_active_etf_unipres.py",         ["00403A", "00981A", "00988A"]),
-    ("群益",   "fetch_active_etf_capital.py",         ["00982A", "00992A", "00997A"]),
+    ("群益",   "fetch_active_etf_capital.py",         ["00415A", "00982A", "00992A", "00997A"]),
     ("野村",   "fetch_active_etf_nomura.py",          ["00980A", "00985A", "00999A"]),
     ("元大",   "fetch_active_etf_yuanta.py",          ["00990A"]),
     ("中信",   "fetch_active_etf_ctbc.py",            ["00406A", "00983A", "00995A"]),
-    ("復華",   "fetch_active_etf_fuhwa.py",           ["00991A", "00998A"]),
-    ("安聯",   "fetch_active_etf_allianz.py",         ["00984A", "00993A"]),
-    ("台新",   "fetch_active_etf_taishin.py",         ["00986A", "00987A"]),
+    ("復華",   "fetch_active_etf_fuhwa.py",           ["00409A", "00991A", "00998A"]),
+    ("安聯",   "fetch_active_etf_allianz.py",         ["00402A", "00412A", "00984A", "00993A"]),
+    ("台新",   "fetch_active_etf_taishin.py",         ["00416A", "00986A", "00987A"]),
     ("第一金", "fetch_active_etf_first_financial.py", ["00994A", "00408A"]),
     ("兆豐",   "fetch_active_etf_mega.py",            ["00996A"]),
     ("國泰",   "fetch_active_etf_cathay.py",          ["00400A"]),

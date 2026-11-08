@@ -205,10 +205,21 @@ def write_holdings_update(
         def _snap(h: dict) -> dict:
             return clean_snapshot(h, has_foreign_code=has_foreign_code)
 
+        # CMoney 的現金與保證金會有好幾列同名（「MARGIN」M_HKD／M_NTD、「CASH」C_NTD／C_USD），
+        # 只用名稱比對會互相覆蓋、加減碼算錯（2026-11-08：00650L、00753L）。撞名時才加上 foreignCode；
+        # 不撞名照舊用名稱，避免期貨每月換約（202611HSI → 202612HSI）被當成一進一出。
+        _dup_names: set = set()
+        for _rows in (holdings, data.get("topHoldings", [])):
+            _names = [h.get("name", "") for h in _rows if not h.get("code")]
+            _dup_names |= {n for n in _names if _names.count(n) > 1}
+
         def _key(h: dict) -> str:
             if has_foreign_code:
                 return h.get("code") or h.get("foreignCode") or h.get("name", "")
-            return h.get("code") or h.get("name", "")
+            name = h.get("name", "")
+            if not h.get("code") and name in _dup_names and h.get("foreignCode"):
+                return f"{name}|{h['foreignCode']}"
+            return h.get("code") or name
 
         # 日期不倒退：分層補資料後，同一檔可能先被 A 來源寫到 D，再被 B 來源拿到 D-1。
         # 舊的那份只補進 history（若還沒有），不動 topHoldings／lastUpdated，
@@ -238,8 +249,13 @@ def write_holdings_update(
                 data["holdingsHistory"][prev_date] = [_snap(h) for h in prev_holdings]
 
             prev_map = {_key(h): h for h in prev_holdings}
+            # 爬蟲新開 foreignCode 的第一天，舊持股只有名稱、key 對不上，否則整檔會全被算成新進。
+            # 只對沒有任何代號的舊持股退回名稱比對：同名的 MARGIN／CASH 等有代號的列不可互配
+            prev_by_name = {h.get("name"): h for h in prev_holdings
+                            if not h.get("code") and not h.get("foreignCode")}
             for h in holdings:
-                prev = prev_map.get(_key(h))
+                prev = prev_map.get(_key(h)) or (
+                    None if h.get("name") in _dup_names else prev_by_name.get(h.get("name")))
                 if prev:
                     prev_w = prev.get("weight", 0)
                     h["previousWeight"] = prev_w
