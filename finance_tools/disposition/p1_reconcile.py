@@ -771,7 +771,8 @@ def rules_for_market(market, market_date, sector, pe_api, shares_tw, pb, margin,
             md6 = abs(r6 - A6[0]) if (r6 is not None and A6[0] is not None) else None
             pd6 = (abs(r6 - A6[1][s]) if (r6 is not None and peer_ok(s, A6[2], c) and s in A6[1])
                    else None)
-            def _small(th):
+            # md6/pd6 用預設參數綁住這一輪的值（ruff B023：閉包不綁迴圈變數）
+            def _small(th, md6=md6, pd6=pd6):
                 return md6 is not None and md6 < th and (pd6 is None or pd6 < th)
             # 第四款：近 60 營業日曾發布處置，且**最近一次處置的原因只有本款（30/60/90 日漲幅）**。
             #   (一) 6 日累積未超過 10%  (二) 超過但差幅均未達 5%  (三) 方向相反

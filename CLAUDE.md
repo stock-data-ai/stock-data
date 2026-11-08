@@ -60,8 +60,9 @@ uv run pytest finance_tools/tests/
 uvx ruff@0.14.0 check
 ```
 
-程式有改時 `.github/workflows/code-quality.yml` 會跑 ruff、pytest、Node 守門測試（`npm test`、
-`npm run check:cron`）與 cron Worker 型別檢查，全部必過；只推資料（`src/data`、rerun 佇列）不觸發。
+程式檢查在本機 push 前跑（pre-push hook，新 clone 先 `sh scripts/setup-hooks.sh` 安裝），做法與 stock_map 一致，
+GitHub 上沒有程式檢查 workflow。cron 一致性每次都跑；推的 commit 有改到程式時再跑 ruff、pytest、
+Node 守門測試（`npm test`），改到 `cron/src` 再加 cron Worker 型別檢查，全部必過；只推資料或文件不跑。
 
 These examples use current parser commands in `finance_tools/cli.py`; older `full-update`, `update-marketcap` and `update-institutional-investors` examples in legacy guides are not executable instructions. `financials-update` does not mean “all domains”.
 

@@ -1,4 +1,4 @@
-# Python lint（code-quality CI 必過）。與 stock_map 的 ruff.toml 同一套規則。
+# Python lint（push 前本機 hook 必過，見 scripts/setup-hooks.sh）。與 stock_map 的 ruff.toml 同一套規則。
 #
 # 只開「多半代表 bug」的規則：未定義名稱、重複定義、算了沒用的變數、迴圈閉包、
 # 例外鏈結等。沒用到的 import、空白、f-string 這類格式問題不擋——

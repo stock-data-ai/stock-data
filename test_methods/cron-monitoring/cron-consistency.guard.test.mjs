@@ -160,8 +160,8 @@ test('T3 reverse: dispatching a workflow file that does not exist is caught', ()
 test('reverse: a CHECK_JOBS time that drifts from the cron is caught', () => {
     const dir = fixture('time');
     edit(dir, '.github/workflows/health-check.yml', (s) =>
-        s.replace("{'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0}",
-            "{'label': '20:00 MOPS Scraper｜通知前刷新',            'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 18, 'minute': 0}"));
+        s.replace("{'label': '20:00 MOPS Scraper｜重大訊息（每天一班）',    'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 20, 'minute': 0}",
+            "{'label': '20:00 MOPS Scraper｜重大訊息（每天一班）',    'workflow_name': 'MOPS Scraper｜公開資訊觀測站爬蟲',                             'hour': 18, 'minute': 0}"));
     const r = runGuard(dir);
     assert.equal(r.status, 1, r.out);
     assert.match(r.out, /信上的時間會誤導人/);
@@ -212,8 +212,6 @@ test('existing lenient entries are early shifts with a later same-workflow refre
     const lenient = [...yml.matchAll(/\{'label': '([^']+)'[^}]*'lenient':\s*True[^}]*\}/g)].map((m) => m[1]);
     assert.deepEqual(lenient, [
         '15:55 Market Sentiment Update',
-        '12:00 MOPS Scraper｜午間刷新',
-        '17:00 MOPS Scraper｜盤後刷新',
     ],
         'lenient is for shifts that deliberately race ahead of the data, not for flaky ones');
 });
