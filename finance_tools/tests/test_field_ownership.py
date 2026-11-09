@@ -179,14 +179,15 @@ def test_ownership_securities_lending_task(seeded):
 
 
 def test_ownership_insider_merge():
-    """內部人持股只碰兩個 top-level 欄位（明細只留當期、歷史只留合計）。"""
+    """內部人持股只碰自己的三個 top-level 欄位（明細只留當期、歷史只留合計與逐人變動）。"""
     before = json.loads(json.dumps(SEED))
     after = DataAssembler.merge_insider_holdings(
         json.loads(json.dumps(SEED)),
         {"month": "202601", "insiders": [{"name": "A"}], "totals": {"x": 1}, "boardTotals": {"y": 2}})
     changed = changed_paths(before, after)
     tops = {p.split(".")[0] for p in changed}
-    assert tops <= {"insiderHoldingsRecent", "insiderHoldingsHistory", "lastUpdated"}, sorted(changed)
+    assert tops <= {"insiderHoldingsRecent", "insiderHoldingsHistory", "insiderHoldingsChanges",
+                    "lastUpdated"}, sorted(changed)
     assert "202512" in after["insiderHoldingsHistory"], "舊月份合計保留"
     assert after["insiderHoldingsRecent"]["month"] == "202601", "明細只留當期"
 
@@ -336,3 +337,29 @@ def test_isolation_is_fail_closed_without_asking_for_the_fixture(tmp_path):
         f"路徑隔離失效，FileManager 指向 {fm.financials_dir}——"
         "conftest 的 _isolate_data_paths 必須是 autouse"
     )
+
+
+def test_insider_person_changes_month_over_month():
+    """換月時記下持股或質押有變的人；同月重跑不重算；新任／卸任用 None 表示。"""
+    prev = {"insiderHoldingsRecent": {"month": "2026-08", "insiders": [
+        {"person": "甲", "roles": ["董事長本人"], "shares": 1000, "pledged": 0},
+        {"person": "乙", "roles": ["董事本人"], "shares": 500, "pledged": 0},
+        {"person": "丙", "roles": ["經理人本人"], "shares": 300, "pledged": 0},
+    ], "totals": {}, "boardTotals": {}}}
+    cur = {"month": "2026-09", "insiders": [
+        {"person": "甲", "roles": ["董事長本人"], "shares": 3000, "pledged": 0},
+        {"person": "乙", "roles": ["董事本人"], "shares": 500, "pledged": 0},
+        {"person": "丁", "roles": ["董事本人"], "shares": 10, "pledged": 0},
+    ], "totals": {}, "boardTotals": {}}
+    after = DataAssembler.merge_insider_holdings(json.loads(json.dumps(prev)), cur)
+    entry = after["insiderHoldingsChanges"]["2026-09"]
+    assert entry["prev"] == "2026-08"
+    by = {c["person"]: c for c in entry["changes"]}
+    assert set(by) == {"甲", "丙", "丁"}, "沒變的人不記"
+    assert by["甲"]["from"] == 1000 and by["甲"]["to"] == 3000
+    assert by["丙"]["to"] is None, "卸任記 None，不是 0"
+    assert by["丁"]["from"] is None, "新任記 None"
+    assert entry["changes"][0]["person"] == "甲", "依變動量排序"
+
+    again = DataAssembler.merge_insider_holdings(json.loads(json.dumps(after)), cur)
+    assert again["insiderHoldingsChanges"]["2026-09"] == entry, "同月重跑不跟自己比"

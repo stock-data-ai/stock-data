@@ -1651,5 +1651,32 @@
       }
     }
   },
-  "dataQuality": "high"
+  "dataQuality": "high",
+  "insiderHoldingsChanges": {
+    "2026-09": {
+      "prev": "2026-08",
+      "changes": [
+        {
+          "person": "施月桂",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": null,
+          "to": 2990000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林振義",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 2990000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
+    }
+  }
 }

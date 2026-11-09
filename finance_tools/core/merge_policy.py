@@ -9,7 +9,7 @@
 
 | 類別 | 集合 | 規則 | 舊資料 |
 |---|---|---|---|
-| 期別型列表（低頻，一年最多 12 筆） | `quarterly` `annual` `dividends` `insiderHoldingsHistory` | 不設限 | — |
+| 期別型列表（低頻，一年最多 12 筆） | `quarterly` `annual` `dividends` `insiderHoldingsHistory` `insiderHoldingsChanges` | 不設限 | — |
 | 同上 | `monthlyRevenue` | `MONTHLY_REVENUE_LIMIT` = 72 筆 | 丟棄 |
 | 日期型字典（高頻，一年約 245 筆） | `institutionalInvestors` `marginTrading` `securitiesLending` `shareholderDataHistory` | 主檔留當年＋前一年 | **搬進封存** |
 
@@ -33,8 +33,8 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 MONTHLY_REVENUE_LIMIT = 72
 
 #: 這些集合刻意不設上限——季報／年報／股利是低頻且有長期查詢價值，
-#: 內部人歷史每月只有一筆合計（約 100 bytes）。
-UNBOUNDED = ("quarterly", "annual", "dividends", "insiderHoldingsHistory")
+#: 內部人歷史每月只有一筆合計（約 100 bytes）；逐人變動每月只記有變的人（通常幾筆）。
+UNBOUNDED = ("quarterly", "annual", "dividends", "insiderHoldingsHistory", "insiderHoldingsChanges")
 
 #: quarterly[] 裡由 `update-balance-sheet` 寫入的欄位。損益重抓（`build_final_data`）整筆換掉
 #: 同季時必須保留它們，否則每次日更都會把資產負債表／現金流的季度數字沖掉。

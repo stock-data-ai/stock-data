@@ -64,6 +64,7 @@ class DataAssembler:
         與 `shareholderDataRecent` / `shareholderDataHistory` 同一個拆法：
           - `insiderHoldingsRecent`  當期逐人明細（約 20~40 人、4 KB）
           - `insiderHoldingsHistory` 月份 → 兩組合計（每月約 100 bytes）
+          - `insiderHoldingsChanges` 月份 → 跟上一期比、持股或質押有變的人（每月通常幾筆）
 
         為什麼明細只留當期：一家最多 250 人，每月留一份明細會讓檔案幾個月就翻倍；
         而要看趨勢的是「董監持股與質押比怎麼變」，那是合計層級的事，
@@ -73,6 +74,17 @@ class DataAssembler:
             existing_data = {}
 
         month = holdings.get('month')
+        # 明細被覆寫之前先跟上一期比：逐人歷史不留全份明細（見上），只留「這個月誰變了」，
+        # 公司頁股價圖才標得出「董事長 等 2 人 持股增加」。同月重跑不重算（會跟自己比成零變動）。
+        prev = existing_data.get('insiderHoldingsRecent') or {}
+        prev_month = prev.get('month')
+        if month and prev_month and prev_month < month and prev.get('insiders') is not None:
+            changes = DataAssembler.insider_person_changes(prev['insiders'], holdings.get('insiders') or [])
+            existing_data.setdefault('insiderHoldingsChanges', {})[month] = {
+                'prev': prev_month,
+                'changes': changes,
+            }
+
         existing_data['insiderHoldingsRecent'] = {
             'month': month,
             'insiders': holdings['insiders'],
@@ -91,6 +103,38 @@ class DataAssembler:
 
         existing_data['lastUpdated'] = today_str()
         return existing_data
+
+    @staticmethod
+    def insider_person_changes(prev_insiders: List[Dict], cur_insiders: List[Dict]) -> List[Dict]:
+        """兩期逐人明細 → 持股或質押有變的人。
+
+        `from` 為 None＝上一期不在名單（新任、新列大股東）；`to` 為 None＝這一期不在名單（卸任）。
+        卸任那一筆不能當成「賣光」：人不在名單上，持股就不再申報，不代表股票賣掉了。
+        依持股變動絕對值排序，前端取前幾名組「董事長 等 N 人」。
+        """
+        def index(rows):
+            return {r.get('person'): r for r in rows if r.get('person')}
+
+        before, after = index(prev_insiders), index(cur_insiders)
+        out = []
+        for person in list(after) + [p for p in before if p not in after]:
+            a, b = before.get(person), after.get(person)
+            frm = a.get('shares') if a else None
+            to = b.get('shares') if b else None
+            pf = a.get('pledged') if a else None
+            pt = b.get('pledged') if b else None
+            if a and b and frm == to and pf == pt:
+                continue
+            out.append({
+                'person': person,
+                'roles': (b or a).get('roles') or [],
+                'from': frm,
+                'to': to,
+                'pledgedFrom': pf,
+                'pledgedTo': pt,
+            })
+        out.sort(key=lambda c: -abs((c['to'] or 0) - (c['from'] or 0)))
+        return out
 
     @staticmethod
     def build_final_data(existing_data: Dict, code: str, name: str, latest_block: Dict, annual: List, quarterly: List, monthly: List, dividends: List, quality: str, institutional_investors_data: Dict[str, Any]):
