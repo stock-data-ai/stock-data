@@ -1,4 +1,4 @@
-"""月營收：每月 1～13 號比對觀測站彙總表記下公布日，15～25 號用開放資料核對並寄信。
+"""月營收：每月 1～13 號比對觀測站彙總表記下公布日，15～20 號用開放資料核對並寄信。
 
 產物：
 - `src/data/market/revenue-announcements/{YYYY-MM}.json`（YYYY-MM 是營收所屬月份），
@@ -38,7 +38,7 @@ NUM_FIELDS = ("revenue", "prevMonth", "lastYear", "mom", "yoy", "cumulative", "c
 SHRINK_GUARD_MIN, SHRINK_GUARD_RATIO = 100, 0.8
 BACKFILL_FROM_DAY = 3
 # 開放資料到這天還沒換到目標月份，就寄信說「還沒能核對」
-VERIFY_GIVE_UP_DAY = 25
+VERIFY_GIVE_UP_DAY = 20
 # 開放資料有、觀測站彙總表沒有是常態的產業（金控、保險另有申報格式）
 EXPECTED_OFFICIAL_ONLY_INDUSTRIES = ("金融保險業", "金融業")
 # 數字差多少才算不一致（元）。兩邊都是千元整數乘 1000，差 1 千元就是真的不同
@@ -401,7 +401,7 @@ def run_verify_revenue_announcements(args) -> None:
 
 
 def run_revenue_monthly(args) -> None:
-    """排程只派這一支，依日期決定做什麼：1～13 號收集公布、15～25 號月中核對、其他日子不做事。"""
+    """排程只派這一支，依日期決定做什麼：1～13 號收集公布、15～20 號月中核對、其他日子不做事。"""
     day = now_tw().day
     if day <= 13:
         run_update_revenue_announcements(args)

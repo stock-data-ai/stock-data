@@ -181,7 +181,7 @@ def test_apply_to_financials(isolated_file_manager):
     assert tasks.apply_to_financials(companies, 2026, 10, fm)["updated"] == 0
 
 
-@pytest.mark.parametrize("day,expected", [(1, "update"), (13, "update"), (14, None), (15, "verify"), (25, "verify"), (26, None)])
+@pytest.mark.parametrize("day,expected", [(1, "update"), (13, "update"), (14, None), (15, "verify"), (20, "verify"), (21, None)])
 def test_revenue_monthly_dispatch_by_day(monkeypatch, day, expected):
     called = []
     monkeypatch.setattr(tasks, "now_tw", lambda: datetime(2026, 11, day, 20, 30, tzinfo=TW_TZ))

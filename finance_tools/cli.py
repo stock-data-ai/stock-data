@@ -8,7 +8,7 @@ Commands:
   update-marketcap-inst - 每日更新：市值估值 + 三大法人（皆為 TWSE/TPEx 批次）。
   financials-update     - 財務報表更新：損益表、月營收。
   update-revenue        - 僅更新月營收。
-  revenue-monthly       - 月營收排程入口：1～13 號收集公布、15～25 號月中核對（依日期自動判斷）。
+  revenue-monthly       - 月營收排程入口：1～13 號收集公布、15～20 號月中核對（依日期自動判斷）。
   update-revenue-announcements - 收集：比對觀測站彙總表，記下公布日並補進財報檔。
   verify-revenue-announcements - 核對：用證交所／櫃買開放資料核對月營收並寄信。
   import-historical-dividends - 【一次性】從 CSV 匯入 2021–2024 歷史股利。
@@ -140,7 +140,7 @@ def main():
 
     # --- 月營收公布日（行事曆）與財報檔月營收 ---
     parser_rev_monthly = subparsers.add_parser(
-        "revenue-monthly", help="排程入口：1～13 號收集公布、15～25 號月中核對，依日期自動判斷。")
+        "revenue-monthly", help="排程入口：1～13 號收集公布、15～20 號月中核對，依日期自動判斷。")
     parser_rev_monthly.set_defaults(func=run_revenue_monthly)
     parser_rev_ann = subparsers.add_parser(
         "update-revenue-announcements", help="比對觀測站月營收彙總表，記下當月新公布的公司與公布日。")
