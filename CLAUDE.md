@@ -103,7 +103,7 @@ GitHub Pages (public static JSON API)
 - **domains/** — 一個資料領域一個資料夾，內含 `fetcher.py`（抓＋正規化）與 `tasks.py`（CLI 任務）。
   財報類（financials／revenue／balance_sheet）沒有 fetcher.py，抓取統一走 `core/market_fetch.py`。
   現有：`balance_sheet`、`company_info`、`dividends`、`financials`、`insider`、
-  `institutional_investors`、`margin_trading`、`market_sentiment`、`revenue`、
+  `institutional_investors`、`margin_trading`、`market_sentiment`、`revenue`、`revenue_announcements`（月營收公布日，觀測站彙總表＋月中開放資料核對）、
   `securities_lending`、`shareholder`、`valuation`
 - **orchestration/** — `company_processor.py`（逐家組裝）、`data_assembler.py`（把各領域的結果併進
   `company-financials/{code}.json`，一個領域一個 `merge_*`）、`fetch_orchestrator.py`（批次協調）、

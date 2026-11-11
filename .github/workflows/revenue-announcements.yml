@@ -1,0 +1,65 @@
+name: Revenue Announcements｜月營收公布
+
+# 每月 1～13 號由 cron worker 派兩班（20:30、隔天 07:30），見 cron/src/index.ts。
+# 比對觀測站月營收彙總表，記下新公布的公司與公布日，給 stock_map 行事曆的「營收」分頁。
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: revenue-announcements
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Update revenue announcements
+        run: |
+          set -o pipefail
+          uv run finance_tools/cli.py update-revenue-announcements 2>&1 | tee /tmp/run.log
+
+      - name: 執行摘要
+        if: always()
+        run: |
+          STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
+          {
+            echo "## 月營收公布 — $(TZ=Asia/Taipei date +%Y-%m-%d\ %H:%M)"
+            echo ""
+            echo "| 指標 | 值 |"
+            echo "|------|---|"
+            echo "| 結果 | $(grep -oE '(新公布 [0-9]+ 家、更正 [0-9]+ 家|沒有新公布或更正)' /tmp/run.log | tail -1) |"
+            echo "| 觀測站出表 | $(grep -oE '出表 [0-9-]+ [0-9:]+' /tmp/run.log | sort -u | tr '\n' ' ') |"
+            echo "| 狀態 | $STATUS |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/market/revenue-announcements/
+          git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
+          git commit -m "月營收公布 $(TZ=Asia/Taipei date +%Y-%m-%d\ %H:%M)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            echo "Retry $i failed, sleeping..."
+            sleep $((i * 5))
+          done
+          echo "::error::推送失敗三次，月營收公布資料沒有發布出去"
+          exit 1

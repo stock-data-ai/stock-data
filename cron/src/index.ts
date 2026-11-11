@@ -20,7 +20,11 @@ interface CronJob {
    * 判斷只打一次 GitHub API，不啟動 Actions、不花分鐘數——重試的等待交給這裡，不在 Actions 裡空等。
    */
   skipIfWeekSucceeded?: boolean;
+  /** 只在台灣日期的這幾號 dispatch（月營收這類月頻工作），其他天不開 Actions。 */
+  monthDays?: number[];
 }
+
+const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
 
 const CRON_MAP: Record<string, CronJob> = {
   '0 0 * * 7':            { workflow: 'etf-holdings-update.yml' },                                  // 台灣 08:00 週六
@@ -57,6 +61,11 @@ const CRON_MAP: Record<string, CronJob> = {
   // 推播前等 GitHub Pages 部署的重試次數更少（2026-08-25 實測 20:30 那輪等了 8 分鐘）。
   // 改這裡要同步改 health-check.yml 的『21:00 Active ETF』那筆，否則健康檢查每天報缺班。
   '0 13 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 21:00 每天（第三次）
+  // 月營收公布（行事曆）：申報截止 10 號，抓到 12 號接住假日順延與更正；早班接住前一晚 20:30 以後申報的。
+  '30 12 * * *':          { workflow: 'revenue-announcements.yml', monthDays: range(1, 12) },      // 台灣 20:30 每月 1～12 號
+  '30 23 * * *':          { workflow: 'revenue-announcements.yml', monthDays: range(2, 13) },      // 台灣 07:30 每月 2～13 號（UTC 前一天 23:30）
+  // 月中核對：開放資料約 17 號整批發布，15～25 號每天看一次，核對過就直接結束
+  '0 1 * * *':            { workflow: 'verify-revenue-announcements.yml', monthDays: range(15, 25) }, // 台灣 09:00 每月 15～25 號
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };
 
@@ -109,6 +118,11 @@ function taiwanClock(now: Date) {
   const day = tw.toISOString().slice(0, 10);
   const startUtc = new Date(Date.UTC(tw.getUTCFullYear(), tw.getUTCMonth(), tw.getUTCDate()) - TAIWAN_OFFSET_MS);
   return { day, minutes: tw.getUTCHours() * 60 + tw.getUTCMinutes(), startUtc };
+}
+
+/** 台灣日期是幾號。UTC 23:30 的班在台灣已是隔天，不能用 UTC 日期判斷。 */
+export function taiwanMonthDay(now: Date): number {
+  return new Date(now.getTime() + TAIWAN_OFFSET_MS).getUTCDate();
 }
 
 /** FinMind 有沒有「今天」這一天的資料（只查 2330）。任何錯誤都當作還沒有。 */
@@ -324,6 +338,7 @@ export default {
       await alertError(`Unknown cron: ${event.cron}`, env);
       throw new Error(`Unknown cron: ${event.cron}`);
     }
+    if (job.monthDays && !job.monthDays.includes(taiwanMonthDay(new Date()))) return;
     try {
       if (job.skipIfWeekSucceeded && await weekAlreadyCovered(job.workflow, env.GH_TOKEN)) {
         console.log(`skip ${job.workflow}: 本週已成功或仍在執行`);
