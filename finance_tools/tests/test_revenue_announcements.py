@@ -159,3 +159,33 @@ def test_index_counts_by_date(tmp_path):
     m = idx["months"]["2026-10"]
     assert m["byDate"] == {"2026-11-01": 1, "2026-11-03": 1} and m["total"] == 2 and m["verified"] is None
     assert json.loads((tmp_path / "index.json").read_text())["months"]["2026-10"]["total"] == 2
+
+
+def test_apply_to_financials(isolated_file_manager):
+    fm = isolated_file_manager
+    fm.save_financial_data("2330", {"historical": {"monthlyRevenue": [
+        {"year": 2026, "month": 9, "revenue": 500.0, "yoy": None},
+        {"year": 2025, "month": 10, "revenue": 800.0, "yoy": None},
+    ]}})
+    fm.save_financial_data("2317", {"historical": {"monthlyRevenue": [
+        {"year": 2026, "month": 10, "revenue": 300.0, "yoy": None},
+    ]}})
+    companies = [{"code": "2330", "revenue": 1000}, {"code": "2317", "revenue": 300},
+                 {"code": "9999", "revenue": 1}, {"code": "1101", "revenue": None}]
+    stats = tasks.apply_to_financials(companies, 2026, 10, fm)
+    assert stats == {"updated": 1, "same": 1, "noFile": 1, "failed": 0}
+    m = fm.load_financial_data("2330")["historical"]["monthlyRevenue"]
+    assert m[0] == {"year": 2026, "month": 10, "revenue": 1000.0, "yoy": 25.0}   # 新→舊、年增重算
+    assert len(m) == 3
+    # 冪等：再跑一次不寫檔
+    assert tasks.apply_to_financials(companies, 2026, 10, fm)["updated"] == 0
+
+
+@pytest.mark.parametrize("day,expected", [(1, "update"), (13, "update"), (14, None), (15, "verify"), (25, "verify"), (26, None)])
+def test_revenue_monthly_dispatch_by_day(monkeypatch, day, expected):
+    called = []
+    monkeypatch.setattr(tasks, "now_tw", lambda: datetime(2026, 11, day, 20, 30, tzinfo=TW_TZ))
+    monkeypatch.setattr(tasks, "run_update_revenue_announcements", lambda a: called.append("update"))
+    monkeypatch.setattr(tasks, "run_verify_revenue_announcements", lambda a: called.append("verify"))
+    tasks.run_revenue_monthly(None)
+    assert called == ([expected] if expected else [])

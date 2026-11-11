@@ -82,9 +82,8 @@ jobs:
               {'label': '週日 10:00 Update US Financials',           'workflow_name': 'Update US Financials｜美股財務更新',                           'hour': 10, 'minute': 0,  'days': [0]},
               {'label': '週日 11:00 Weekly Balance Sheet Update',    'workflow_name': 'Weekly Balance Sheet Update (Monday)｜資產負債表（週）',        'hour': 11, 'minute': 0,  'days': [0]},
               # mdays：只在台灣日期的這幾號檢查（月頻工作，cron worker 其他天不派）
-              {'label': '07:30 Revenue Announcements（每月 2～13 號）', 'workflow_name': 'Revenue Announcements｜月營收公布',                         'hour': 7,  'minute': 30, 'mdays': list(range(2, 14))},
-              {'label': '20:30 Revenue Announcements（每月 1～12 號）', 'workflow_name': 'Revenue Announcements｜月營收公布',                         'hour': 20, 'minute': 30, 'mdays': list(range(1, 13))},
-              {'label': '09:00 Verify Revenue Announcements（每月 15～25 號）', 'workflow_name': 'Verify Revenue Announcements｜月營收月中核對',      'hour': 9,  'minute': 0,  'mdays': list(range(15, 26))},
+              {'label': '07:30 月營收（每月 2～13 號）',               'workflow_name': 'Monthly Revenue｜月營收（公布＋月中核對）', 'hour': 7,  'minute': 30, 'mdays': list(range(2, 14))},
+              {'label': '20:30 月營收（每月 1～12、15～25 號）',        'workflow_name': 'Monthly Revenue｜月營收（公布＋月中核對）', 'hour': 20, 'minute': 30, 'mdays': list(range(1, 13)) + list(range(15, 26))},
               {'label': '週一 03:00 Cleanup old workflow runs',      'workflow_name': 'Cleanup old workflow runs｜清理舊 workflow 記錄',              'hour': 3,  'minute': 0,  'days': [1]},
           ]
 

@@ -1,8 +1,12 @@
-"""月營收公布紀錄：每天比對觀測站彙總表記下公布日，月中用開放資料核對並寄信。
+"""月營收：每月 1～13 號比對觀測站彙總表記下公布日，15～25 號用開放資料核對並寄信。
 
-產物：`src/data/market/revenue-announcements/{YYYY-MM}.json`（YYYY-MM 是營收所屬月份），
-給 stock_map 行事曆的「營收」分頁讀。單位一律是元（觀測站與開放資料是千元，進來就乘 1000），
-與 company-financials 的 `monthlyRevenue` 一致。
+產物：
+- `src/data/market/revenue-announcements/{YYYY-MM}.json`（YYYY-MM 是營收所屬月份），
+  給 stock_map 行事曆的「營收」分頁讀。
+- 同一個數字也補進 `company-financials/{code}.json` 的 `monthlyRevenue`，公司頁、選股、
+  AI 助理在公布當天就看得到，不用等週日的 financials-update（FinMind）。週日那班照跑，
+  以同一個 (年,月) 覆蓋；2026-11-11 實測兩邊已有的 650 家數字完全相同。
+單位一律是元（觀測站與開放資料是千元，進來就乘 1000），與 `monthlyRevenue` 一致。
 
 公布日（`date`）怎麼來：觀測站沒有申報日欄位，只能看「第一次出現在表上」是哪一班。
 - 晚班（台灣 12:00 以後）第一次看到 → 當天，`window: "day"`
@@ -22,7 +26,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import finance_tools.config as config
-from finance_tools.core import FileManager
+from finance_tools.core import FileManager, merge_policy
+from finance_tools.domains.financials.calculator import FinancialCalculator
 from finance_tools.core.timezone import now_tw
 from finance_tools.domains.revenue_announcements import fetcher
 
@@ -121,6 +126,46 @@ def previous_high(code: str, year: int, month: int, fm: FileManager) -> Dict:
     return {"prevHigh": max(m["revenue"] for m in hist), "historyMonths": len(hist)}
 
 
+def apply_to_financials(companies: List[Dict], year: int, month: int, fm: FileManager) -> Dict[str, int]:
+    """把月份檔的營收補進財報檔的 monthlyRevenue。只動目標月份那一筆，數字相同就不寫檔。
+
+    沒有財報檔的公司跳過（新公司由 financials-update 建檔，這裡不拿單月資料建新檔）。
+    每一班都對整份月份檔跑一次：冪等，漏跑或寫失敗的下一班會自己補上。
+    """
+    stats = {"updated": 0, "same": 0, "noFile": 0, "failed": 0}
+    key = lambda m: (m.get("year"), m.get("month"))  # noqa: E731
+    for c in companies:
+        if c.get("revenue") is None:
+            continue
+        data = fm.load_financial_data(c["code"])
+        if not data:
+            stats["noFile"] += 1
+            continue
+        hist = data.setdefault("historical", {})
+        monthly = hist.get("monthlyRevenue") or []
+        cur = next((m for m in monthly if key(m) == (year, month)), None)
+        if cur is not None and cur.get("revenue") == c["revenue"]:
+            stats["same"] += 1
+            continue
+        hist["monthlyRevenue"] = merge_policy.merge_by_key(
+            monthly, [{"year": year, "month": month, "revenue": float(c["revenue"]), "yoy": None}],
+            key=key, limit=merge_policy.MONTHLY_REVENUE_LIMIT)
+        FinancialCalculator.fill_monthly_yoy(hist["monthlyRevenue"])
+        if fm.save_financial_data(c["code"], data):
+            stats["updated"] += 1
+        else:
+            stats["failed"] += 1
+    return stats
+
+
+def _apply_and_log(data: Dict, year: int, month: int, fm: FileManager) -> None:
+    s = apply_to_financials(data["companies"], year, month, fm)
+    logger.info(f"財報檔月營收：更新 {s['updated']} 家、已相同 {s['same']} 家、"
+                f"沒有財報檔 {s['noFile']} 家" + (f"、寫檔失敗 {s['failed']} 家" if s["failed"] else ""))
+    if s["failed"]:
+        sys.exit(1)
+
+
 def _same_numbers(a: Dict, b: Dict) -> bool:
     return all(a.get(k) == b.get(k) for k in NUM_FIELDS)
 
@@ -186,13 +231,16 @@ def run_update_revenue_announcements(args) -> None:
         logger.error(f"❌ 觀測站只回 {total} 家，上一班有 {mops_before} 家，疑似來源異常，不寫檔")
         sys.exit(1)
 
-    data, stats = merge_announcements(existing, fetched, now, year, month, FileManager())
+    fm = FileManager()
+    data, stats = merge_announcements(existing, fetched, now, year, month, fm)
     if existing is not None and stats["new"] == 0 and stats["revised"] == 0:
         logger.info(f"沒有新公布或更正（表上 {total} 家），不改檔")
-        return
-    save_month(path, data)
-    write_index(path.parent)
-    logger.info(f"✅ 新公布 {stats['new']} 家、更正 {stats['revised']} 家；累計 {len(data['companies'])} 家（原 {before}）")
+    else:
+        save_month(path, data)
+        write_index(path.parent)
+        logger.info(f"✅ 新公布 {stats['new']} 家、更正 {stats['revised']} 家；累計 {len(data['companies'])} 家（原 {before}）")
+    # 月份檔沒變也照跑：上一班寫財報檔失敗或被週日 FinMind 蓋成別的數字時，這裡會補回來
+    _apply_and_log(data, year, month, fm)
 
 
 # ── 月中核對 ──────────────────────────────────────────────────────────────
@@ -335,9 +383,13 @@ def run_verify_revenue_announcements(args) -> None:
             write_index(path.parent)
         return
 
-    report = verify_against_official(data, official, now, FileManager(), year, month)
+    fm = FileManager()
+    report = verify_against_official(data, official, now, fm, year, month)
     save_month(path, data)
     write_index(path.parent)
+    # 更正的數字與補入的金控、保險也寫進財報檔
+    apply = apply_to_financials(data["companies"], year, month, fm)
+    logger.info(f"財報檔月營收：更新 {apply['updated']} 家、已相同 {apply['same']} 家")
     logger.info(f"核對完成：相符 {report['matched']}、不符 {len(report['corrected'])}、"
                 f"補入 {len(report['addedExpected']) + len(report['addedUnexpected'])}、"
                 f"正式資料沒有 {len(report['notInOfficial'])}")
@@ -346,3 +398,14 @@ def run_verify_revenue_announcements(args) -> None:
         # 檔已寫好；寄信失敗讓 workflow 變紅，健康檢查看得到
         logger.error("❌ 核對結果信寄送失敗")
         sys.exit(3)
+
+
+def run_revenue_monthly(args) -> None:
+    """排程只派這一支，依日期決定做什麼：1～13 號收集公布、15～25 號月中核對、其他日子不做事。"""
+    day = now_tw().day
+    if day <= 13:
+        run_update_revenue_announcements(args)
+    elif 15 <= day <= VERIFY_GIVE_UP_DAY:
+        run_verify_revenue_announcements(args)
+    else:
+        logger.info(f"{day} 號不在收集（1～13）或核對（15～{VERIFY_GIVE_UP_DAY}）期間，不做事")

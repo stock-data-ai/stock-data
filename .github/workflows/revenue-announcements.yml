@@ -1,7 +1,11 @@
-name: Revenue Announcements｜月營收公布
+name: Monthly Revenue｜月營收（公布＋月中核對）
 
-# 每月 1～13 號由 cron worker 派兩班（20:30、隔天 07:30），見 cron/src/index.ts。
-# 比對觀測站月營收彙總表，記下新公布的公司與公布日，給 stock_map 行事曆的「營收」分頁。
+# 月營收只有這一支 workflow，由 cron worker 派（見 cron/src/index.ts）：
+#   1～12 號 20:30、2～13 號 07:30：比對觀測站彙總表，記下新公布的公司與公布日（行事曆「營收」分頁），
+#                                   同時把數字補進財報檔，公司頁當天就更新
+#   15～25 號 20:30：開放資料一換到上個月就核對、修正並寄結果信；核對過的月份直接結束
+# 要做哪一件由 `revenue-monthly` 依日期判斷。週日的財報更新（FinMind）照跑，同一個月份以那邊為準覆蓋。
+# 全市場基本面快照（選股）不在這裡重建：平日 21:30 融資那班與週日財報更新都會建。
 on:
   workflow_dispatch:
 
@@ -30,36 +34,66 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Update revenue announcements
+      # 結束碼 3＝核對檔已寫好但結果信寄送失敗：先 commit，最後一步再讓 job 變紅
+      - name: Run monthly revenue
+        id: run
+        env:
+          AWS_SES_ACCESS_KEY_ID: ${{ secrets.AWS_SES_ACCESS_KEY_ID }}
+          AWS_SES_SECRET_ACCESS_KEY: ${{ secrets.AWS_SES_SECRET_ACCESS_KEY }}
+          AWS_SES_REGION: ${{ secrets.AWS_SES_REGION }}
         run: |
-          set -o pipefail
-          uv run finance_tools/cli.py update-revenue-announcements 2>&1 | tee /tmp/run.log
+          set +e
+          uv run finance_tools/cli.py revenue-monthly 2>&1 | tee /tmp/run.log
+          code=${PIPESTATUS[0]}
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          [ "$code" = 0 ] || [ "$code" = 3 ]
 
       - name: 執行摘要
         if: always()
         run: |
           STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
           {
-            echo "## 月營收公布 — $(TZ=Asia/Taipei date +%Y-%m-%d\ %H:%M)"
+            echo "## 月營收 — $(TZ=Asia/Taipei date +%Y-%m-%d\ %H:%M)"
             echo ""
-            echo "| 指標 | 值 |"
-            echo "|------|---|"
-            echo "| 結果 | $(grep -oE '(新公布 [0-9]+ 家、更正 [0-9]+ 家|沒有新公布或更正)' /tmp/run.log | tail -1) |"
-            echo "| 觀測站出表 | $(grep -oE '出表 [0-9-]+ [0-9:]+' /tmp/run.log | sort -u | tr '\n' ' ') |"
-            echo "| 狀態 | $STATUS |"
+            grep -E '新公布 [0-9]+ 家|沒有新公布或更正|出表 [0-9-]+|財報檔月營收|核對完成|尚未換到|已在 .* 核對過|不在收集|❌' /tmp/run.log \
+              | sed 's/.* - INFO - //; s/.* - ERROR - //' | sed 's/^/- /'
+            echo ""
+            echo "狀態：$STATUS"
           } >> $GITHUB_STEP_SUMMARY
 
+      # 財報檔與平日每日更新（三大法人）寫同一批檔：用 JSON 結構合併，與 _reusable-data-job.yml 同一套
       - name: Commit
+        if: always() && (steps.run.outputs.code == '0' || steps.run.outputs.code == '3')
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/market/revenue-announcements/
+          git config merge.company-json.driver "python3 finance_tools/scripts/json_merge_driver.py %O %A %B"
+          git add src/data/market/revenue-announcements/ src/data/layer3/company-financials/
           git diff --cached --quiet && { echo "No changes to commit."; exit 0; }
-          git commit -m "月營收公布 $(TZ=Asia/Taipei date +%Y-%m-%d\ %H:%M)"
+          git commit -m "月營收 $(TZ=Asia/Taipei date +%Y-%m-%d\ %H:%M)"
           for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && exit 0
+            if git pull --rebase -X theirs origin main; then
+              # 最後防線：財報檔合併壞掉就改用遠端版本（下一班 apply 會再補回營收）
+              for f in $(git diff --name-only HEAD~1 -- src/data/layer3/company-financials/); do
+                python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null || {
+                  echo "::warning::$f 合併後不是合法 JSON，改用遠端版本"
+                  git show HEAD~1:"$f" > "$f"
+                  git add "$f"
+                  git commit --amend --no-edit
+                }
+              done
+              git push && exit 0
+            else
+              git rebase --abort 2>/dev/null || true
+            fi
             echo "Retry $i failed, sleeping..."
             sleep $((i * 5))
           done
-          echo "::error::推送失敗三次，月營收公布資料沒有發布出去"
+          echo "::error::推送失敗三次，月營收資料沒有發布出去"
+          exit 1
+
+      - name: 結果信寄送失敗
+        if: steps.run.outputs.code == '3'
+        run: |
+          echo "::error::核對已完成並 commit，但結果信沒寄出去"
           exit 1

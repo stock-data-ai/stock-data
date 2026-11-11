@@ -61,11 +61,11 @@ const CRON_MAP: Record<string, CronJob> = {
   // 推播前等 GitHub Pages 部署的重試次數更少（2026-08-25 實測 20:30 那輪等了 8 分鐘）。
   // 改這裡要同步改 health-check.yml 的『21:00 Active ETF』那筆，否則健康檢查每天報缺班。
   '0 13 * * *':           { workflow: 'etf-active-daily.yml' },                                     // 台灣 21:00 每天（第三次）
-  // 月營收公布（行事曆）：申報截止 10 號，抓到 12 號接住假日順延與更正；早班接住前一晚 20:30 以後申報的。
-  '30 12 * * *':          { workflow: 'revenue-announcements.yml', monthDays: range(1, 12) },      // 台灣 20:30 每月 1～12 號
+  // 月營收（行事曆＋公司頁）只有一支 workflow，做哪件事由它依日期判斷：
+  // 1～13 號收集公布（申報截止 10 號，抓到 13 號接住假日順延與更正；早班接住前一晚 20:30 以後申報的）；
+  // 15～25 號月中核對（開放資料約 17 號整批發布，每天看一次，核對過就直接結束）。
+  '30 12 * * *':          { workflow: 'revenue-announcements.yml', monthDays: [...range(1, 12), ...range(15, 25)] }, // 台灣 20:30 每月 1～12、15～25 號
   '30 23 * * *':          { workflow: 'revenue-announcements.yml', monthDays: range(2, 13) },      // 台灣 07:30 每月 2～13 號（UTC 前一天 23:30）
-  // 月中核對：開放資料約 17 號整批發布，15～25 號每天看一次，核對過就直接結束
-  '0 1 * * *':            { workflow: 'verify-revenue-announcements.yml', monthDays: range(15, 25) }, // 台灣 09:00 每月 15～25 號
   '0 19 * * 1':           { workflow: 'cleanup-workflow-runs.yml' },                                // 台灣 03:00 週一（CF 1=Sun, UTC Sun 19:00 = TW Mon 03:00）
 };
 
