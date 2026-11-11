@@ -147,3 +147,15 @@ def test_verify_mismatch_missing_and_financials():
 def test_target_month():
     assert tasks.target_month(at(1, 7)) == (2026, 10)
     assert tasks.target_month(datetime(2027, 1, 5, tzinfo=TW_TZ)) == (2026, 12)
+
+
+def test_index_counts_by_date(tmp_path):
+    a = {"code": "2330", "name": "台積電", "rev": "100", "note": "-"}
+    b = {"code": "3017", "name": "奇鋐", "rev": "50", "note": "-"}
+    data, _ = tasks.merge_announcements(None, fetched(a), at(1, 20), 2026, 10, None)
+    data, _ = tasks.merge_announcements(data, fetched(a, b), at(3, 20), 2026, 10, None)
+    tasks.save_month(tmp_path / "2026-10.json", data)
+    idx = tasks.write_index(tmp_path)
+    m = idx["months"]["2026-10"]
+    assert m["byDate"] == {"2026-11-01": 1, "2026-11-03": 1} and m["total"] == 2 and m["verified"] is None
+    assert json.loads((tmp_path / "index.json").read_text())["months"]["2026-10"]["total"] == 2

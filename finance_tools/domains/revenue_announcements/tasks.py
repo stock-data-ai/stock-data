@@ -80,6 +80,35 @@ def save_month(path: Path, data: Dict) -> None:
         raise
 
 
+INDEX_MONTHS = 13
+
+
+def write_index(directory: Path) -> Dict:
+    """index.json：每個月份每天公布幾家。行事曆的「全部」只需要這份（幾 KB），
+    切到「營收」才下載那個月的完整檔（gzip 後約 150KB）。"""
+    months = {}
+    files = sorted(p for p in directory.glob("????-??.json"))[-INDEX_MONTHS:]
+    for p in files:
+        with open(p, encoding="utf-8") as f:
+            d = json.load(f)
+        by_date: Dict[str, int] = {}
+        for c in d["companies"]:
+            if c.get("date"):
+                by_date[c["date"]] = by_date.get(c["date"], 0) + 1
+        v = d.get("verification") or {}
+        months[d["month"]] = {
+            "updatedAt": d.get("updatedAt"),
+            "total": len(d["companies"]),
+            "byDate": dict(sorted(by_date.items())),
+            "verified": v.get("ok") if v.get("checkedAt") else None,
+        }
+    index = {"updatedAt": now_tw().isoformat(timespec="minutes"), "months": months}
+    tmp = directory / ".index.json.tmp"
+    tmp.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(tmp, directory / "index.json")
+    return index
+
+
 def previous_high(code: str, year: int, month: int, fm: FileManager) -> Dict:
     """目標月份以前的最高月營收（元），供「創新高」判斷。沒有歷史就不給。"""
     data = fm.load_financial_data(code)
@@ -162,6 +191,7 @@ def run_update_revenue_announcements(args) -> None:
         logger.info(f"沒有新公布或更正（表上 {total} 家），不改檔")
         return
     save_month(path, data)
+    write_index(path.parent)
     logger.info(f"✅ 新公布 {stats['new']} 家、更正 {stats['revised']} 家；累計 {len(data['companies'])} 家（原 {before}）")
 
 
@@ -302,10 +332,12 @@ def run_verify_revenue_announcements(args) -> None:
             data["verification"] = {"checkedAt": now.isoformat(timespec="minutes"), "ok": None,
                                     "skipped": f"開放資料未更新：{months}"}
             save_month(path, data)
+            write_index(path.parent)
         return
 
     report = verify_against_official(data, official, now, FileManager(), year, month)
     save_month(path, data)
+    write_index(path.parent)
     logger.info(f"核對完成：相符 {report['matched']}、不符 {len(report['corrected'])}、"
                 f"補入 {len(report['addedExpected']) + len(report['addedUnexpected'])}、"
                 f"正式資料沒有 {len(report['notInOfficial'])}")
