@@ -14,7 +14,10 @@
     "marketCap": 356554994.40000004,
     "pe": 266.6667,
     "pb": 1.38,
-    "dividendYield": 0.0
+    "dividendYield": 0.0,
+    "marginBalance": 0,
+    "shortBalance": 0,
+    "sblBalance": 0
   },
   "historical": {
     "annual": [
@@ -3281,6 +3284,25 @@
         "code": "6661",
         "foreign_ratio": 0.0,
         "foreign_shares": 2
+      }
+    },
+    "marginTrading": {
+      "2026-11-13": {
+        "marginBuy": 0,
+        "marginSell": 0,
+        "marginBalance": 0,
+        "shortBuy": 0,
+        "shortSell": 0,
+        "shortBalance": 0
+      }
+    },
+    "securitiesLending": {
+      "2026-11-13": {
+        "sblBalance": 0,
+        "sblShortSales": 0,
+        "sblReturns": 0,
+        "sblAdjustments": 0,
+        "sblAvailable": 0
       }
     }
   },
