@@ -23,7 +23,7 @@ import sys
 import time
 from datetime import date
 from pathlib import Path
-from etf_utils import cmoney_guest_token, create_session, write_holdings_update
+from etf_utils import MIXED_MARKET_ETFS, classify_holding_code, cmoney_guest_token, create_session, warn_if_mixed_market, write_holdings_update
 
 try:
     import requests
@@ -60,7 +60,7 @@ def all_passive_codes() -> list:
     return codes
 
 
-def _parse_rows(rows: list) -> dict:
+def _parse_rows(rows: list, etf_code: str = "") -> dict:
     """把 API rows 依日期分組，回傳 {date_str: [holdings]}，由舊到新排序。"""
     from collections import defaultdict
     by_date: dict = defaultdict(list)
@@ -80,10 +80,11 @@ def _parse_rows(rows: list) -> dict:
         except (ValueError, TypeError):
             shares = None
         entry: dict = {"name": name, "weight": weight, "shares": shares}
-        if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-            entry["code"] = code_raw
-        elif code_raw:
-            entry["foreignCode"] = code_raw
+        tw_code, foreign_code = classify_holding_code(code_raw, entry["name"], mixed_market=etf_code in MIXED_MARKET_ETFS)
+        if tw_code:
+            entry["code"] = tw_code
+        elif foreign_code:
+            entry["foreignCode"] = foreign_code
         by_date[tran_date].append(entry)
     return dict(sorted(by_date.items()))
 
@@ -114,8 +115,9 @@ def fetch_all_dates(etf_code: str, dtrange: int = 1) -> dict:
         if not rows:
             print("無資料")
             return {}
-        by_date = _parse_rows(rows)
+        by_date = _parse_rows(rows, etf_code)
         latest = max(by_date)
+        warn_if_mixed_market(etf_code, by_date[latest])
         print(f"{len(by_date[latest])} 筆，{latest}")
         return by_date
     except Exception as e:

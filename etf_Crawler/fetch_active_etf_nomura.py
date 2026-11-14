@@ -30,7 +30,7 @@ import json
 import sys
 import time
 from datetime import date, timedelta
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, write_github_output, write_holdings_update, classify_holding_code
 from pathlib import Path
 from typing import Optional
 
@@ -138,8 +138,9 @@ def fetch_holdings(etf_code: str, search_date: Optional[str] = None) -> tuple:
                     shares = None
 
                 entry: dict = {"name": name, "weight": weight, "shares": shares}
-                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                    entry["code"] = code_raw
+                tw_code, _ = classify_holding_code(code_raw, entry["name"])  # 只收台股
+                if tw_code:
+                    entry["code"] = tw_code
 
                 holdings.append(entry)
 

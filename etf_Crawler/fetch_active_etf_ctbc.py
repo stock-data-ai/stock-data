@@ -29,7 +29,7 @@ import json
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, write_github_output, write_holdings_update, classify_holding_code
 from pathlib import Path
 from typing import Optional
 
@@ -157,10 +157,11 @@ def fetch_holdings(etf_code: str, fid: str, token: str) -> tuple:
 
                     entry: dict = {"name": name, "weight": weight, "shares": shares}
 
-                    if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                        entry["code"] = code_raw
-                    elif code_raw:
-                        entry["foreignCode"] = code_raw
+                    tw_code, foreign_code = classify_holding_code(code_raw, entry["name"])
+                    if tw_code:
+                        entry["code"] = tw_code
+                    elif foreign_code:
+                        entry["foreignCode"] = foreign_code
 
                     holdings.append(entry)
 

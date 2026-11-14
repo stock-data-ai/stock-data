@@ -29,7 +29,7 @@ import json
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, pcf_to_holdings_date, write_github_output, write_holdings_update
+from etf_utils import create_session, pcf_to_holdings_date, write_github_output, write_holdings_update, classify_holding_code
 from pathlib import Path
 from typing import Optional
 
@@ -136,8 +136,9 @@ def fetch_holdings(etf_code: str, fund_id: str) -> tuple:
                     "weight": weight,
                     "shares": int(shares) if shares is not None else None,
                 }
-                if code_raw.isdigit() and 4 <= len(code_raw) <= 6:
-                    entry["code"] = code_raw
+                tw_code, _ = classify_holding_code(code_raw, entry["name"])  # 只收台股
+                if tw_code:
+                    entry["code"] = tw_code
 
                 holdings.append(entry)
 

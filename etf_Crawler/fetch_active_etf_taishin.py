@@ -30,7 +30,7 @@ import re
 import sys
 import time
 from datetime import date
-from etf_utils import create_session, pcf_to_holdings_date, write_github_output, write_holdings_update
+from etf_utils import create_session, pcf_to_holdings_date, write_github_output, write_holdings_update, classify_holding_code
 from pathlib import Path
 from typing import Optional
 
@@ -120,12 +120,12 @@ def fetch_holdings(etf_code: str) -> tuple:
 
                 entry: dict = {"name": name, "weight": weight, "shares": shares}
 
-                parts = code_raw.split()
-                numeric = parts[0] if parts else ""
-                if numeric.isdigit() and 4 <= len(numeric) <= 6:
-                    entry["code"] = numeric
-                elif code_raw:
-                    entry["foreignCode"] = code_raw
+                # 「2330 TT」才是台股；「6857 JP」以前只看前半段數字，會被當成台股
+                tw_code, foreign_code = classify_holding_code(code_raw, entry["name"])
+                if tw_code:
+                    entry["code"] = tw_code
+                elif foreign_code:
+                    entry["foreignCode"] = foreign_code
 
                 holdings.append(entry)
 

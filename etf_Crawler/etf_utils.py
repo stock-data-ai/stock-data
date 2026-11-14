@@ -9,6 +9,7 @@ etf_utils.py — 主動式 ETF 爬蟲共用工具
   write_github_output()      輸出逐筆 ETF 狀態到 GITHUB_OUTPUT
   pcf_to_holdings_date()     申購買回清單日期 → 持股所屬交易日
   today_tw()                 台北今天
+  classify_holding_code()    持股代號 → 台股 code 或海外 foreignCode（所有爬蟲共用）
 """
 
 import json
@@ -24,6 +25,54 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 HISTORY_KEEP_DAYS = 30
+
+
+# ─── 持股代號分類（所有爬蟲共用，不要在各爬蟲另寫 isdigit 判斷）────────────────
+#
+# 台股代號＝4～6 碼數字，ETF 可帶一個字尾字母（00679B、00400A），與 stock_map 一致
+# （docs/features/platform/公司名稱與代號顯示.md）。帶交易所的照交易所判斷（「2330 TT」台股、
+# 「6857 JP」日股）；期貨（202701S）不是台股。
+_TW_CODE_RE = re.compile(r"^(?:\d{4,6}|\d{4,5}[A-Z])$")
+_TW_EXCHANGES = frozenset({"TT", "TW", "TWO"})
+_CJK_RE = re.compile(r"[\u3400-\u9fff]")
+
+# 資料來源不標國家、又同時持有台股與外國股的 ETF。
+# CMoney 只給「6857 / ADVANTEST」，日、港、韓股的數字代號會撞到台股（6857 是宏碁智醫），
+# 2026-11-14 曾讓網站把 Advantest 顯示成宏碁智醫、連到錯的公司頁。
+# 這些 ETF 的數字代號一律不當台股（中文名稱的除外），持股照常顯示但不連公司頁——不連結比連錯好。
+# 新增時機：CMoney 爬蟲對某檔 ETF 發出「疑似混合市場」警告（見 warn_if_mixed_market）。
+MIXED_MARKET_ETFS = frozenset({"009826"})  # 貝萊德世界股票
+
+
+def classify_holding_code(code_raw, name=None, *, mixed_market: bool = False) -> Tuple[Optional[str], Optional[str]]:
+    """持股代號 → (code, foreignCode)；台股才有 code，海外只有 foreignCode，空值回 (None, None)。
+
+    mixed_market：這檔 ETF 在 MIXED_MARKET_ETFS 裡，數字代號分不出國家。
+    """
+    raw = str(code_raw or "").strip()
+    if not raw or raw.lower() == "nan":
+        return None, None
+    parts = raw.split()
+    if len(parts) == 2 and _TW_CODE_RE.match(parts[0]):
+        return (parts[0], None) if parts[1].upper() in _TW_EXCHANGES else (None, raw)
+    if not _TW_CODE_RE.match(raw):
+        return None, raw
+    if mixed_market and not _CJK_RE.search(str(name or "")):
+        return None, raw
+    return raw, None
+
+
+def warn_if_mixed_market(etf_code: str, holdings: list, threshold: int = 10) -> None:
+    """數字代號＋英文名稱的持股很多，代表資料來源可能把外國股寫成數字代號：提醒加進 MIXED_MARKET_ETFS。"""
+    if etf_code in MIXED_MARKET_ETFS:
+        return
+    suspects = [h for h in holdings if _TW_CODE_RE.match(str(h.get("code") or ""))
+                and not _CJK_RE.search(str(h.get("name") or ""))]
+    if len(suspects) >= threshold:
+        sample = "、".join(f"{h['code']} {h['name']}" for h in suspects[:3])
+        print(f"::warning::{etf_code} 有 {len(suspects)} 筆數字代號配英文名稱（{sample}…），"
+              f"可能是不標國家的混合市場 ETF，確認後加進 etf_utils.MIXED_MARKET_ETFS")
+
 
 TWSE_HOLIDAY_URL = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
 

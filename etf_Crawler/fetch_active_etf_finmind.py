@@ -26,7 +26,7 @@ import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
-from etf_utils import today_tw, write_github_output, write_holdings_update
+from etf_utils import today_tw, write_github_output, write_holdings_update, classify_holding_code
 
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
@@ -84,8 +84,9 @@ def fetch_holdings(etf_code: str, tk: str) -> tuple:
         entry = {"name": (r.get("component_stock_name") or "").strip(), "weight": weight,
                  "shares": shares if shares > 0 else None}
         code = (r.get("component_stock_id") or "").strip()
-        if kind == "stock" and code.isdigit() and 4 <= len(code) <= 6:
-            entry["code"] = code
+        tw_code, _ = classify_holding_code(code, entry["name"]) if kind == "stock" else (None, None)
+        if tw_code:
+            entry["code"] = tw_code
         holdings.append(entry)
     holdings.sort(key=lambda x: -x["weight"])
     print(f"{len(holdings)} 筆，日期 {tran_date}")

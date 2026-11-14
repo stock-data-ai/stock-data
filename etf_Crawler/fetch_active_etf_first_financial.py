@@ -19,7 +19,7 @@ import json
 import sys
 import time
 from datetime import date, datetime
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, write_github_output, write_holdings_update, classify_holding_code
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
@@ -124,10 +124,11 @@ def fetch_holdings(etf_code: str) -> tuple:
                     "shares": shares if shares > 0 else None,
                 }
 
-                if code.isdigit() and 4 <= len(code) <= 6:
-                    entry["code"] = code
-                elif code:
-                    entry["foreignCode"] = code
+                tw_code, foreign_code = classify_holding_code(code, entry["name"])
+                if tw_code:
+                    entry["code"] = tw_code
+                elif foreign_code:
+                    entry["foreignCode"] = foreign_code
 
                 holdings.append(entry)
 

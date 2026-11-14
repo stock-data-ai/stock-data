@@ -35,7 +35,7 @@ import json
 import sys
 import time
 from datetime import date, timedelta
-from etf_utils import create_session, prev_trading_day, today_tw, write_github_output, write_holdings_update
+from etf_utils import classify_holding_code, create_session, prev_trading_day, today_tw, write_github_output, write_holdings_update
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -108,10 +108,11 @@ def _parse_excel(content: bytes) -> List[dict]:
             shares = None
 
         entry: dict = {"name": name, "weight": weight, "shares": shares}
-        if code_raw.replace(' ', '').isdigit() and 4 <= len(code_raw.replace(' ', '')) <= 6:
-            entry["code"] = code_raw.replace(' ', '')
-        elif code_raw and code_raw != 'nan':
-            entry["foreignCode"] = code_raw  # 海外個股，如 "PLTR US"
+        tw_code, foreign_code = classify_holding_code(code_raw, entry["name"])
+        if tw_code:
+            entry["code"] = tw_code
+        elif foreign_code:
+            entry["foreignCode"] = foreign_code  # 海外個股，如 "PLTR US"
 
         holdings.append(entry)
 

@@ -29,7 +29,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from etf_utils import create_session, write_github_output, write_holdings_update
+from etf_utils import create_session, write_github_output, write_holdings_update, classify_holding_code
 
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
@@ -83,8 +83,9 @@ def fetch_holdings(etf_code: str) -> tuple:
                 entry = {"name": (r.get("securityDescription") or "").strip(), "weight": weight,
                          "shares": shares if shares > 0 else None}
                 code = (r.get("securityTicker") or "").strip()
-                if code.isdigit() and 4 <= len(code) <= 6:
-                    entry["code"] = code
+                tw_code, _ = classify_holding_code(code, entry["name"])  # 只收台股
+                if tw_code:
+                    entry["code"] = tw_code
                 holdings.append(entry)
             for r in _rows(h.get("pcfCashHoldings")):
                 try:
