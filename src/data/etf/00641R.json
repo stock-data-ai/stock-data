@@ -7,43 +7,33 @@
   "managementFee": 1.17,
   "dividendFrequency": "不配息",
   "inceptionDate": "2015-09-10",
-  "fundSize": 3.44,
+  "fundSize": 3.17,
   "issuer": "富邦投信",
-  "beneficiaryCount": 1253,
+  "beneficiaryCount": 1216,
   "description": null,
   "topHoldings": [
     {
       "name": "東證指數期貨",
-      "weight": 86.04,
-      "shares": -38,
+      "weight": 86.77,
+      "shares": -34,
       "foreignCode": "202612JTIZ6F",
-      "previousWeight": 86.89,
-      "weightChange": -0.85,
-      "previousShares": -35,
-      "sharesChange": -3
+      "previousWeight": 86.04,
+      "weightChange": 0.73,
+      "previousShares": -38,
+      "sharesChange": 4
     },
     {
       "name": "迷你東證指數期貨",
-      "weight": 13.36,
-      "shares": -59,
+      "weight": 13.53,
+      "shares": -53,
       "foreignCode": "202612JTMZ6F",
-      "previousWeight": 12.91,
-      "weightChange": 0.45,
-      "previousShares": -52,
-      "sharesChange": -7
+      "previousWeight": 13.36,
+      "weightChange": 0.17,
+      "previousShares": -59,
+      "sharesChange": 6
     }
   ],
   "holdingsHistory": {
-    "2026-04-30": [
-      {
-        "name": "2026/06東證指數期貨",
-        "weight": 95.81
-      },
-      {
-        "name": "2026/06迷你東證指數期貨",
-        "weight": 5.27
-      }
-    ],
     "2026-05-07": [
       {
         "name": "2026/06東證指數期貨",
@@ -375,8 +365,20 @@
         "weight": 13.36,
         "shares": -59
       }
+    ],
+    "2026-11-13": [
+      {
+        "name": "東證指數期貨",
+        "weight": 86.77,
+        "shares": -34
+      },
+      {
+        "name": "迷你東證指數期貨",
+        "weight": 13.53,
+        "shares": -53
+      }
     ]
   },
-  "lastUpdated": "2026-11-06",
+  "lastUpdated": "2026-11-13",
   "trailingYield": 0.0
 }

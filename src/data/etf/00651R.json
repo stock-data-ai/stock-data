@@ -7,40 +7,40 @@
   "managementFee": 1.12,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-01-27",
-  "fundSize": 1.72,
+  "fundSize": 1.77,
   "issuer": "復華投信",
-  "beneficiaryCount": 354,
+  "beneficiaryCount": 356,
   "description": null,
   "topHoldings": [
     {
       "name": "MARGIN",
-      "weight": 51.47,
+      "weight": 49.57,
       "shares": 88979081,
       "foreignCode": "M_NTD",
-      "previousWeight": 28.32,
-      "weightChange": 23.15,
-      "previousShares": 12410450,
-      "sharesChange": 76568631
+      "previousWeight": 51.47,
+      "weightChange": -1.9,
+      "previousShares": 88979081,
+      "sharesChange": 0
     },
     {
       "name": "MARGIN",
-      "weight": 24.51,
-      "shares": 10112370,
+      "weight": 27.33,
+      "shares": 11704060,
       "foreignCode": "M_HKD",
-      "previousWeight": 28.32,
-      "weightChange": -3.81,
-      "previousShares": 12410450,
-      "sharesChange": -2298080
+      "previousWeight": 24.51,
+      "weightChange": 2.82,
+      "previousShares": 10112370,
+      "sharesChange": 1591690
     },
     {
       "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
-      "weight": 23.97,
+      "weight": 23.08,
       "shares": 41435109,
       "foreignCode": "DA_NTD",
-      "previousWeight": 22.85,
-      "weightChange": 1.12,
-      "previousShares": 41605165,
-      "sharesChange": -170056
+      "previousWeight": 23.97,
+      "weightChange": -0.89,
+      "previousShares": 41435109,
+      "sharesChange": 0
     }
   ],
   "holdingsHistory": {
@@ -400,8 +400,25 @@
         "weight": 23.97,
         "shares": 41435109
       }
+    ],
+    "2026-11-13": [
+      {
+        "name": "MARGIN",
+        "weight": 49.57,
+        "shares": 88979081
+      },
+      {
+        "name": "MARGIN",
+        "weight": 27.33,
+        "shares": 11704060
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 23.08,
+        "shares": 41435109
+      }
     ]
   },
-  "lastUpdated": "2026-11-06",
+  "lastUpdated": "2026-11-13",
   "trailingYield": 0.0
 }

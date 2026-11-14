@@ -7,29 +7,33 @@
   "managementFee": 0.34,
   "dividendFrequency": "不配息",
   "inceptionDate": "2017-03-30",
-  "fundSize": 790.93,
+  "fundSize": 1046.85,
   "issuer": "群益投信",
-  "beneficiaryCount": 238946,
+  "beneficiaryCount": 237925,
   "description": null,
   "topHoldings": [
     {
       "name": "台指期",
-      "weight": 199.93,
-      "shares": 21666,
+      "weight": 180.01,
+      "shares": 21176,
       "foreignCode": "202611TX",
-      "previousWeight": 200.5,
-      "weightChange": -0.57,
-      "previousShares": 19836,
-      "sharesChange": 1830
+      "previousWeight": 199.93,
+      "weightChange": -19.92,
+      "previousShares": 21666,
+      "sharesChange": -490
+    },
+    {
+      "name": "台指期",
+      "weight": 20.01,
+      "shares": 2350,
+      "foreignCode": "202612TX",
+      "previousWeight": 0,
+      "weightChange": 20.01,
+      "previousShares": 0,
+      "sharesChange": 2350
     }
   ],
   "holdingsHistory": {
-    "2026-05-06": [
-      {
-        "name": "台指期202605",
-        "weight": 200.23
-      }
-    ],
     "2026-05-07": [
       {
         "name": "台指期202605",
@@ -252,8 +256,20 @@
         "weight": 199.93,
         "shares": 21666
       }
+    ],
+    "2026-11-13": [
+      {
+        "name": "台指期",
+        "weight": 180.01,
+        "shares": 21176
+      },
+      {
+        "name": "台指期",
+        "weight": 20.01,
+        "shares": 2350
+      }
     ]
   },
-  "lastUpdated": "2026-11-06",
+  "lastUpdated": "2026-11-13",
   "trailingYield": 0.0
 }

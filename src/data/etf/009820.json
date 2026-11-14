@@ -7,680 +7,533 @@
   "managementFee": 0.4,
   "dividendFrequency": "年配",
   "inceptionDate": "2026-04-23",
-  "fundSize": 83.36,
+  "fundSize": 88.58,
   "issuer": "元大投信",
-  "beneficiaryCount": 32288,
+  "beneficiaryCount": 32378,
   "description": null,
   "topHoldings": [
     {
       "name": "MICROSOFT CORP",
-      "weight": 9.76,
-      "shares": 45535,
+      "weight": 8.77,
+      "shares": 45252,
       "foreignCode": "MSFT UQ",
-      "previousWeight": 8.56,
-      "weightChange": 1.2,
-      "previousShares": 46085,
-      "sharesChange": -550
+      "previousWeight": 9.76,
+      "weightChange": -0.99,
+      "previousShares": 45535,
+      "sharesChange": -283
     },
     {
       "name": "AMAZON.COM INC",
-      "weight": 9.25,
-      "shares": 88922,
+      "weight": 8.76,
+      "shares": 88370,
       "foreignCode": "AMZN UQ",
-      "previousWeight": 7.69,
-      "weightChange": 1.56,
-      "previousShares": 89996,
-      "sharesChange": -1074
-    },
-    {
-      "name": "NVIDIA CORP",
-      "weight": 7.6,
-      "shares": 104626,
-      "foreignCode": "NVDA UQ",
-      "previousWeight": 7.93,
-      "weightChange": -0.33,
-      "previousShares": 105890,
-      "sharesChange": -1264
+      "previousWeight": 9.25,
+      "weightChange": -0.49,
+      "previousShares": 88922,
+      "sharesChange": -552
     },
     {
       "name": "BROADCOM INC",
-      "weight": 6.24,
-      "shares": 53573,
+      "weight": 7.19,
+      "shares": 53240,
       "foreignCode": "AVGO UQ",
-      "previousWeight": 6.56,
-      "weightChange": -0.32,
-      "previousShares": 54220,
-      "sharesChange": -647
+      "previousWeight": 6.24,
+      "weightChange": 0.95,
+      "previousShares": 53573,
+      "sharesChange": -333
+    },
+    {
+      "name": "NVIDIA CORP",
+      "weight": 6.41,
+      "shares": 103976,
+      "foreignCode": "NVDA UQ",
+      "previousWeight": 7.6,
+      "weightChange": -1.19,
+      "previousShares": 104626,
+      "sharesChange": -650
     },
     {
       "name": "META PLATFORMS INC-CLASS A",
-      "weight": 6.01,
-      "shares": 24831,
+      "weight": 5.7,
+      "shares": 24677,
       "foreignCode": "META UQ",
-      "previousWeight": 5.5,
-      "weightChange": 0.51,
-      "previousShares": 25131,
-      "sharesChange": -300
-    },
-    {
-      "name": "ADVANCED MICRO DEVICES",
-      "weight": 4.19,
-      "shares": 25903,
-      "foreignCode": "AMD UQ",
-      "previousWeight": 5.2,
-      "weightChange": -1.01,
-      "previousShares": 26215,
-      "sharesChange": -312
-    },
-    {
-      "name": "ALPHABET INC-CL A",
-      "weight": 3.98,
-      "shares": 35252,
-      "foreignCode": "GOOGL UQ",
-      "previousWeight": 3.55,
-      "weightChange": 0.43,
-      "previousShares": 35678,
-      "sharesChange": -426
-    },
-    {
-      "name": "ALPHABET INC-CL C",
-      "weight": 3.74,
-      "shares": 33204,
-      "foreignCode": "GOOG UQ",
-      "previousWeight": 3.32,
-      "weightChange": 0.42,
-      "previousShares": 33605,
-      "sharesChange": -401
-    },
-    {
-      "name": "SPACE EXPLORATION TECHN-CL A",
-      "weight": 3.36,
-      "shares": 67884,
-      "foreignCode": "SPCX UQ",
-      "previousWeight": 3.46,
-      "weightChange": -0.1,
-      "previousShares": 68703,
-      "sharesChange": -819
-    },
-    {
-      "name": "MICRON TECHNOLOGY INC",
-      "weight": 3.34,
-      "shares": 12718,
-      "foreignCode": "MU UQ",
-      "previousWeight": 4.21,
-      "weightChange": -0.87,
-      "previousShares": 12872,
+      "previousWeight": 6.01,
+      "weightChange": -0.31,
+      "previousShares": 24831,
       "sharesChange": -154
     },
     {
+      "name": "ADVANCED MICRO DEVICES",
+      "weight": 5.59,
+      "shares": 25742,
+      "foreignCode": "AMD UQ",
+      "previousWeight": 4.19,
+      "weightChange": 1.4,
+      "previousShares": 25903,
+      "sharesChange": -161
+    },
+    {
+      "name": "ALPHABET INC-CL A",
+      "weight": 3.88,
+      "shares": 35033,
+      "foreignCode": "GOOGL UQ",
+      "previousWeight": 3.98,
+      "weightChange": -0.1,
+      "previousShares": 35252,
+      "sharesChange": -219
+    },
+    {
+      "name": "MICRON TECHNOLOGY INC",
+      "weight": 3.74,
+      "shares": 12639,
+      "foreignCode": "MU UQ",
+      "previousWeight": 3.34,
+      "weightChange": 0.4,
+      "previousShares": 12718,
+      "sharesChange": -79
+    },
+    {
+      "name": "ALPHABET INC-CL C",
+      "weight": 3.61,
+      "shares": 32997,
+      "foreignCode": "GOOG UQ",
+      "previousWeight": 3.74,
+      "weightChange": -0.13,
+      "previousShares": 33204,
+      "sharesChange": -207
+    },
+    {
+      "name": "SPACE EXPLORATION TECHN-CL A",
+      "weight": 3.46,
+      "shares": 66618,
+      "foreignCode": "SPCX UQ",
+      "previousWeight": 3.36,
+      "weightChange": 0.1,
+      "previousShares": 67884,
+      "sharesChange": -1266
+    },
+    {
       "name": "CISCO SYSTEMS INC",
-      "weight": 2.86,
-      "shares": 74825,
+      "weight": 2.81,
+      "shares": 74360,
       "foreignCode": "CSCO UQ",
-      "previousWeight": 2.88,
-      "weightChange": -0.02,
-      "previousShares": 75729,
-      "sharesChange": -904
+      "previousWeight": 2.86,
+      "weightChange": -0.05,
+      "previousShares": 74825,
+      "sharesChange": -465
     },
     {
       "name": "PALANTIR TECHNOLOGIES INC-A",
-      "weight": 2.71,
-      "shares": 43678,
+      "weight": 2.76,
+      "shares": 43406,
       "foreignCode": "PLTR UQ",
-      "previousWeight": 3.04,
-      "weightChange": -0.33,
-      "previousShares": 44205,
-      "sharesChange": -527
-    },
-    {
-      "name": "INTEL CORP",
-      "weight": 2.08,
-      "shares": 99753,
-      "foreignCode": "INTC UQ",
-      "previousWeight": 3.26,
-      "weightChange": -1.18,
-      "previousShares": 100958,
-      "sharesChange": -1205
-    },
-    {
-      "name": "PALO ALTO NETWORKS INC",
-      "weight": 1.95,
-      "shares": 15473,
-      "foreignCode": "PANW UQ",
-      "previousWeight": 2.09,
-      "weightChange": -0.14,
-      "previousShares": 15659,
-      "sharesChange": -186
-    },
-    {
-      "name": "TEXAS INSTRUMENTS INC",
-      "weight": 1.93,
-      "shares": 17338,
-      "foreignCode": "TXN UQ",
-      "previousWeight": 1.92,
-      "weightChange": 0.01,
-      "previousShares": 17547,
-      "sharesChange": -209
-    },
-    {
-      "name": "APPLIED MATERIALS INC",
-      "weight": 1.92,
-      "shares": 15066,
-      "foreignCode": "AMAT UQ",
-      "previousWeight": 2.25,
-      "weightChange": -0.33,
-      "previousShares": 15248,
-      "sharesChange": -182
-    },
-    {
-      "name": "AMGEN INC",
-      "weight": 1.89,
-      "shares": 10264,
-      "foreignCode": "AMGN UQ",
-      "previousWeight": 1.68,
-      "weightChange": 0.21,
-      "previousShares": 10388,
-      "sharesChange": -124
-    },
-    {
-      "name": "LAM RESEARCH CORP",
-      "weight": 1.76,
-      "shares": 23756,
-      "foreignCode": "LRCX UQ",
-      "previousWeight": 2.14,
-      "weightChange": -0.38,
-      "previousShares": 24043,
-      "sharesChange": -287
-    },
-    {
-      "name": "CROWDSTRIKE HOLDINGS INC - A",
-      "weight": 1.69,
-      "shares": 19439,
-      "foreignCode": "CRWD UQ",
-      "previousWeight": 1.8,
-      "weightChange": -0.11,
-      "previousShares": 19674,
-      "sharesChange": -235
-    },
-    {
-      "name": "GILEAD SCIENCES INC",
-      "weight": 1.58,
-      "shares": 23540,
-      "foreignCode": "GILD UQ",
-      "previousWeight": 1.38,
-      "weightChange": 0.2,
-      "previousShares": 23824,
-      "sharesChange": -284
+      "previousWeight": 2.71,
+      "weightChange": 0.05,
+      "previousShares": 43678,
+      "sharesChange": -272
     },
     {
       "name": "小那斯達克指數期貨",
-      "weight": 1.5,
-      "shares": 7,
+      "weight": 2.31,
+      "shares": 11,
       "foreignCode": "202612NQ",
-      "previousWeight": 1.24,
-      "weightChange": 0.26,
-      "previousShares": 6,
-      "sharesChange": 1
+      "previousWeight": 1.5,
+      "weightChange": 0.81,
+      "previousShares": 7,
+      "sharesChange": 4
     },
     {
-      "name": "SHOPIFY INC - CLASS A",
-      "weight": 1.32,
-      "shares": 22944,
-      "foreignCode": "SHOP UQ",
-      "previousWeight": 1.36,
-      "weightChange": -0.04,
-      "previousShares": 23221,
-      "sharesChange": -277
-    },
-    {
-      "name": "KLA CORP",
-      "weight": 1.29,
-      "shares": 24804,
-      "foreignCode": "KLAC UQ",
-      "previousWeight": 1.47,
-      "weightChange": -0.18,
-      "previousShares": 25104,
-      "sharesChange": -300
-    },
-    {
-      "name": "INTUITIVE SURGICAL INC",
-      "weight": 1.26,
-      "shares": 6707,
-      "foreignCode": "ISRG UQ",
-      "previousWeight": 0.75,
-      "weightChange": 0.51,
-      "previousShares": 4752,
-      "sharesChange": 1955
-    },
-    {
-      "name": "QUALCOMM INC",
-      "weight": 1.25,
-      "shares": 19938,
-      "foreignCode": "QCOM UQ",
-      "previousWeight": 1.31,
-      "weightChange": -0.06,
-      "previousShares": 20179,
-      "sharesChange": -241
-    },
-    {
-      "name": "VERTEX PHARMACEUTICALS INC",
-      "weight": 1.04,
-      "shares": 4812,
-      "foreignCode": "VRTX UQ",
-      "previousWeight": 0.92,
-      "weightChange": 0.12,
-      "previousShares": 4870,
-      "sharesChange": -58
-    },
-    {
-      "name": "ASML HOLDING NV-NY REG SHS",
-      "weight": 0.97,
-      "shares": 1785,
-      "foreignCode": "ASML UQ",
-      "previousWeight": 1.06,
-      "weightChange": -0.09,
-      "previousShares": 1807,
-      "sharesChange": -22
-    },
-    {
-      "name": "BOOKING HOLDINGS INC",
-      "weight": 0.96,
-      "shares": 14265,
-      "foreignCode": "BKNG UQ",
-      "previousWeight": 0.76,
-      "weightChange": 0.2,
-      "previousShares": 14437,
-      "sharesChange": -172
-    },
-    {
-      "name": "SANDISK CORP",
-      "weight": 0.9,
-      "shares": 2780,
-      "foreignCode": "SNDK UQ",
-      "previousWeight": 1.31,
-      "weightChange": -0.41,
-      "previousShares": 2814,
-      "sharesChange": -34
-    },
-    {
-      "name": "MARVELL TECHNOLOGY INC",
-      "weight": 0.89,
-      "shares": 16648,
-      "foreignCode": "MRVL UQ",
-      "previousWeight": 1.29,
-      "weightChange": -0.4,
-      "previousShares": 16849,
-      "sharesChange": -201
-    },
-    {
-      "name": "APPLOVIN CORP-CLASS A",
-      "weight": 0.82,
-      "shares": 5780,
-      "foreignCode": "APP UQ",
-      "previousWeight": 0.37,
-      "weightChange": 0.45,
-      "previousShares": 4095,
-      "sharesChange": 1685
-    },
-    {
-      "name": "SEAGATE TECHNOLOGY HOLDINGS",
-      "weight": 0.8,
-      "shares": 4303,
-      "foreignCode": "STX UQ",
-      "previousWeight": 1.07,
-      "weightChange": -0.27,
-      "previousShares": 4355,
-      "sharesChange": -52
-    },
-    {
-      "name": "ADOBE INC",
-      "weight": 0.74,
-      "shares": 7547,
-      "foreignCode": "ADBE UQ",
-      "previousWeight": 0.66,
-      "weightChange": 0.08,
-      "previousShares": 7638,
-      "sharesChange": -91
-    },
-    {
-      "name": "INTUIT INC",
-      "weight": 0.74,
-      "shares": 5193,
-      "foreignCode": "INTU UQ",
-      "previousWeight": 0.43,
-      "weightChange": 0.31,
-      "previousShares": 3679,
-      "sharesChange": 1514
-    },
-    {
-      "name": "REGENERON PHARMACEUTICALS",
-      "weight": 0.69,
-      "shares": 1921,
-      "foreignCode": "REGN UQ",
-      "previousWeight": 0.56,
-      "weightChange": 0.13,
-      "previousShares": 1944,
-      "sharesChange": -23
-    },
-    {
-      "name": "FORTINET INC",
-      "weight": 0.68,
-      "shares": 13929,
-      "foreignCode": "FTNT UQ",
-      "previousWeight": 0.69,
-      "weightChange": -0.01,
-      "previousShares": 14098,
-      "sharesChange": -169
-    },
-    {
-      "name": "CADENCE DESIGN SYS INC",
-      "weight": 0.65,
-      "shares": 5229,
-      "foreignCode": "CDNS UQ",
-      "previousWeight": 0.64,
-      "weightChange": 0.01,
-      "previousShares": 5292,
-      "sharesChange": -63
-    },
-    {
-      "name": "SYNOPSYS INC",
-      "weight": 0.64,
-      "shares": 3639,
-      "foreignCode": "SNPS UQ",
-      "previousWeight": 0.63,
-      "weightChange": 0.01,
-      "previousShares": 3682,
-      "sharesChange": -43
-    },
-    {
-      "name": "MERCADOLIBRE INC",
-      "weight": 0.59,
-      "shares": 963,
-      "foreignCode": "MELI UQ",
-      "previousWeight": 0.57,
-      "weightChange": 0.02,
-      "previousShares": 975,
-      "sharesChange": -12
-    },
-    {
-      "name": "DOORDASH INC - A",
-      "weight": 0.56,
-      "shares": 7767,
-      "foreignCode": "DASH UQ",
-      "previousWeight": 0.49,
-      "weightChange": 0.07,
-      "previousShares": 7860,
+      "name": "APPLIED MATERIALS INC",
+      "weight": 2.11,
+      "shares": 14973,
+      "foreignCode": "AMAT UQ",
+      "previousWeight": 1.92,
+      "weightChange": 0.19,
+      "previousShares": 15066,
       "sharesChange": -93
     },
     {
-      "name": "ARM HOLDINGS PLC-ADR",
-      "weight": 0.55,
-      "shares": 8280,
-      "foreignCode": "ARM UQ",
-      "previousWeight": 0.67,
-      "weightChange": -0.12,
-      "previousShares": 8380,
-      "sharesChange": -100
+      "name": "LAM RESEARCH CORP",
+      "weight": 2.05,
+      "shares": 23608,
+      "foreignCode": "LRCX UQ",
+      "previousWeight": 1.76,
+      "weightChange": 0.29,
+      "previousShares": 23756,
+      "sharesChange": -148
     },
     {
-      "name": "AIRBNB INC-CLASS A",
-      "weight": 0.54,
-      "shares": 7965,
-      "foreignCode": "ABNB UQ",
-      "previousWeight": 0.47,
+      "name": "TEXAS INSTRUMENTS INC",
+      "weight": 2.0,
+      "shares": 17230,
+      "foreignCode": "TXN UQ",
+      "previousWeight": 1.93,
       "weightChange": 0.07,
-      "previousShares": 8061,
-      "sharesChange": -96
+      "previousShares": 17338,
+      "sharesChange": -108
     },
     {
-      "name": "DATADOG INC - CLASS A",
-      "weight": 0.44,
-      "shares": 6358,
-      "foreignCode": "DDOG UQ",
-      "previousWeight": 0.6,
-      "weightChange": -0.16,
-      "previousShares": 6435,
-      "sharesChange": -77
+      "name": "PALO ALTO NETWORKS INC",
+      "weight": 1.84,
+      "shares": 15376,
+      "foreignCode": "PANW UQ",
+      "previousWeight": 1.95,
+      "weightChange": -0.11,
+      "previousShares": 15473,
+      "sharesChange": -97
     },
     {
-      "name": "AUTODESK INC",
-      "weight": 0.43,
-      "shares": 3968,
-      "foreignCode": "ADSK UQ",
-      "previousWeight": 0.24,
-      "weightChange": 0.19,
-      "previousShares": 2811,
-      "sharesChange": 1157
+      "name": "AMGEN INC",
+      "weight": 1.77,
+      "shares": 10200,
+      "foreignCode": "AMGN UQ",
+      "previousWeight": 1.89,
+      "weightChange": -0.12,
+      "previousShares": 10264,
+      "sharesChange": -64
     },
     {
-      "name": "MONOLITHIC POWER SYSTEMS INC",
-      "weight": 0.42,
-      "shares": 933,
-      "foreignCode": "MPWR UQ",
-      "previousWeight": 0.4,
-      "weightChange": 0.02,
-      "previousShares": 945,
-      "sharesChange": -12
+      "name": "INTEL CORP",
+      "weight": 1.73,
+      "shares": 76333,
+      "foreignCode": "INTC UQ",
+      "previousWeight": 2.08,
+      "weightChange": -0.35,
+      "previousShares": 99753,
+      "sharesChange": -23420
     },
     {
-      "name": "WORKDAY INC-CLASS A",
-      "weight": 0.3,
-      "shares": 3721,
-      "foreignCode": "WDAY UQ",
-      "previousWeight": 0.26,
-      "weightChange": 0.04,
-      "previousShares": 3766,
-      "sharesChange": -45
+      "name": "CROWDSTRIKE HOLDINGS INC - A",
+      "weight": 1.65,
+      "shares": 19318,
+      "foreignCode": "CRWD UQ",
+      "previousWeight": 1.69,
+      "weightChange": -0.04,
+      "previousShares": 19439,
+      "sharesChange": -121
     },
     {
-      "name": "PDD HOLDINGS INC",
-      "weight": 0.3,
-      "shares": 8877,
-      "foreignCode": "PDD UQ",
-      "previousWeight": 0.25,
+      "name": "GILEAD SCIENCES INC",
+      "weight": 1.46,
+      "shares": 23394,
+      "foreignCode": "GILD UQ",
+      "previousWeight": 1.58,
+      "weightChange": -0.12,
+      "previousShares": 23540,
+      "sharesChange": -146
+    },
+    {
+      "name": "KLA CORP",
+      "weight": 1.44,
+      "shares": 24650,
+      "foreignCode": "KLAC UQ",
+      "previousWeight": 1.29,
+      "weightChange": 0.15,
+      "previousShares": 24804,
+      "sharesChange": -154
+    },
+    {
+      "name": "QUALCOMM INC",
+      "weight": 1.3,
+      "shares": 19814,
+      "foreignCode": "QCOM UQ",
+      "previousWeight": 1.25,
       "weightChange": 0.05,
-      "previousShares": 8984,
-      "sharesChange": -107
+      "previousShares": 19938,
+      "sharesChange": -124
     },
     {
-      "name": "TERADYNE INC",
-      "weight": 0.25,
-      "shares": 2968,
-      "foreignCode": "TER UQ",
-      "previousWeight": 0.31,
-      "weightChange": -0.06,
-      "previousShares": 3004,
+      "name": "SHOPIFY INC - CLASS A",
+      "weight": 1.24,
+      "shares": 22802,
+      "foreignCode": "SHOP UQ",
+      "previousWeight": 1.32,
+      "weightChange": -0.08,
+      "previousShares": 22944,
+      "sharesChange": -142
+    },
+    {
+      "name": "INTUITIVE SURGICAL INC",
+      "weight": 1.09,
+      "shares": 6665,
+      "foreignCode": "ISRG UQ",
+      "previousWeight": 1.26,
+      "weightChange": -0.17,
+      "previousShares": 6707,
+      "sharesChange": -42
+    },
+    {
+      "name": "MARVELL TECHNOLOGY INC",
+      "weight": 1.01,
+      "shares": 16544,
+      "foreignCode": "MRVL UQ",
+      "previousWeight": 0.89,
+      "weightChange": 0.12,
+      "previousShares": 16648,
+      "sharesChange": -104
+    },
+    {
+      "name": "ASML HOLDING NV-NY REG SHS",
+      "weight": 0.98,
+      "shares": 1774,
+      "foreignCode": "ASML UQ",
+      "previousWeight": 0.97,
+      "weightChange": 0.01,
+      "previousShares": 1785,
+      "sharesChange": -11
+    },
+    {
+      "name": "SANDISK CORP",
+      "weight": 0.96,
+      "shares": 2763,
+      "foreignCode": "SNDK UQ",
+      "previousWeight": 0.9,
+      "weightChange": 0.06,
+      "previousShares": 2780,
+      "sharesChange": -17
+    },
+    {
+      "name": "VERTEX PHARMACEUTICALS INC",
+      "weight": 0.96,
+      "shares": 4782,
+      "foreignCode": "VRTX UQ",
+      "previousWeight": 1.04,
+      "weightChange": -0.08,
+      "previousShares": 4812,
+      "sharesChange": -30
+    },
+    {
+      "name": "SEAGATE TECHNOLOGY HOLDINGS",
+      "weight": 0.86,
+      "shares": 4276,
+      "foreignCode": "STX UQ",
+      "previousWeight": 0.8,
+      "weightChange": 0.06,
+      "previousShares": 4303,
+      "sharesChange": -27
+    },
+    {
+      "name": "BOOKING HOLDINGS INC",
+      "weight": 0.85,
+      "shares": 14176,
+      "foreignCode": "BKNG UQ",
+      "previousWeight": 0.96,
+      "weightChange": -0.11,
+      "previousShares": 14265,
+      "sharesChange": -89
+    },
+    {
+      "name": "APPLOVIN CORP-CLASS A",
+      "weight": 0.84,
+      "shares": 5744,
+      "foreignCode": "APP UQ",
+      "previousWeight": 0.82,
+      "weightChange": 0.02,
+      "previousShares": 5780,
       "sharesChange": -36
     },
     {
-      "name": "ASTERA LABS INC",
-      "weight": 0.24,
-      "shares": 3294,
-      "foreignCode": "ALAB UQ",
-      "previousWeight": 0.34,
-      "weightChange": -0.1,
-      "previousShares": 3334,
-      "sharesChange": -40
+      "name": "REGENERON PHARMACEUTICALS",
+      "weight": 0.67,
+      "shares": 1909,
+      "foreignCode": "REGN UQ",
+      "previousWeight": 0.69,
+      "weightChange": -0.02,
+      "previousShares": 1921,
+      "sharesChange": -12
     },
     {
-      "name": "AXON ENTERPRISE INC",
-      "weight": 0.24,
-      "shares": 1543,
-      "foreignCode": "AXON UQ",
-      "previousWeight": 0.24,
-      "weightChange": 0.0,
-      "previousShares": 1561,
+      "name": "ADOBE INC",
+      "weight": 0.66,
+      "shares": 7500,
+      "foreignCode": "ADBE UQ",
+      "previousWeight": 0.74,
+      "weightChange": -0.08,
+      "previousShares": 7547,
+      "sharesChange": -47
+    },
+    {
+      "name": "FORTINET INC",
+      "weight": 0.66,
+      "shares": 13843,
+      "foreignCode": "FTNT UQ",
+      "previousWeight": 0.68,
+      "weightChange": -0.02,
+      "previousShares": 13929,
+      "sharesChange": -86
+    },
+    {
+      "name": "INTUIT INC",
+      "weight": 0.65,
+      "shares": 5161,
+      "foreignCode": "INTU UQ",
+      "previousWeight": 0.74,
+      "weightChange": -0.09,
+      "previousShares": 5193,
+      "sharesChange": -32
+    },
+    {
+      "name": "CADENCE DESIGN SYS INC",
+      "weight": 0.64,
+      "shares": 5196,
+      "foreignCode": "CDNS UQ",
+      "previousWeight": 0.65,
+      "weightChange": -0.01,
+      "previousShares": 5229,
+      "sharesChange": -33
+    },
+    {
+      "name": "SYNOPSYS INC",
+      "weight": 0.62,
+      "shares": 3616,
+      "foreignCode": "SNPS UQ",
+      "previousWeight": 0.64,
+      "weightChange": -0.02,
+      "previousShares": 3639,
+      "sharesChange": -23
+    },
+    {
+      "name": "ARM HOLDINGS PLC-ADR",
+      "weight": 0.61,
+      "shares": 8228,
+      "foreignCode": "ARM UQ",
+      "previousWeight": 0.55,
+      "weightChange": 0.06,
+      "previousShares": 8280,
+      "sharesChange": -52
+    },
+    {
+      "name": "AIRBNB INC-CLASS A",
+      "weight": 0.53,
+      "shares": 7915,
+      "foreignCode": "ABNB UQ",
+      "previousWeight": 0.54,
+      "weightChange": -0.01,
+      "previousShares": 7965,
+      "sharesChange": -50
+    },
+    {
+      "name": "MERCADOLIBRE INC",
+      "weight": 0.52,
+      "shares": 957,
+      "foreignCode": "MELI UQ",
+      "previousWeight": 0.59,
+      "weightChange": -0.07,
+      "previousShares": 963,
+      "sharesChange": -6
+    },
+    {
+      "name": "MONOLITHIC POWER SYSTEMS INC",
+      "weight": 0.5,
+      "shares": 928,
+      "foreignCode": "MPWR UQ",
+      "previousWeight": 0.42,
+      "weightChange": 0.08,
+      "previousShares": 933,
+      "sharesChange": -5
+    },
+    {
+      "name": "DOORDASH INC - A",
+      "weight": 0.49,
+      "shares": 7718,
+      "foreignCode": "DASH UQ",
+      "previousWeight": 0.56,
+      "weightChange": -0.07,
+      "previousShares": 7767,
+      "sharesChange": -49
+    },
+    {
+      "name": "DATADOG INC - CLASS A",
+      "weight": 0.43,
+      "shares": 6319,
+      "foreignCode": "DDOG UQ",
+      "previousWeight": 0.44,
+      "weightChange": -0.01,
+      "previousShares": 6358,
+      "sharesChange": -39
+    },
+    {
+      "name": "AUTODESK INC",
+      "weight": 0.38,
+      "shares": 3944,
+      "foreignCode": "ADSK UQ",
+      "previousWeight": 0.43,
+      "weightChange": -0.05,
+      "previousShares": 3968,
+      "sharesChange": -24
+    },
+    {
+      "name": "TERADYNE INC",
+      "weight": 0.29,
+      "shares": 2950,
+      "foreignCode": "TER UQ",
+      "previousWeight": 0.25,
+      "weightChange": 0.04,
+      "previousShares": 2968,
       "sharesChange": -18
     },
     {
+      "name": "ASTERA LABS INC",
+      "weight": 0.28,
+      "shares": 3273,
+      "foreignCode": "ALAB UQ",
+      "previousWeight": 0.24,
+      "weightChange": 0.04,
+      "previousShares": 3294,
+      "sharesChange": -21
+    },
+    {
+      "name": "WORKDAY INC-CLASS A",
+      "weight": 0.26,
+      "shares": 3698,
+      "foreignCode": "WDAY UQ",
+      "previousWeight": 0.3,
+      "weightChange": -0.04,
+      "previousShares": 3721,
+      "sharesChange": -23
+    },
+    {
+      "name": "PDD HOLDINGS INC",
+      "weight": 0.25,
+      "shares": 8821,
+      "foreignCode": "PDD UQ",
+      "previousWeight": 0.3,
+      "weightChange": -0.05,
+      "previousShares": 8877,
+      "sharesChange": -56
+    },
+    {
       "name": "ROCKET LAB CORP",
-      "weight": 0.15,
-      "shares": 7953,
+      "weight": 0.19,
+      "shares": 7904,
       "foreignCode": "RKLB UQ",
-      "previousWeight": 0.17,
-      "weightChange": -0.02,
-      "previousShares": 8049,
-      "sharesChange": -96
+      "previousWeight": 0.15,
+      "weightChange": 0.04,
+      "previousShares": 7953,
+      "sharesChange": -49
+    },
+    {
+      "name": "AXON ENTERPRISE INC",
+      "weight": 0.17,
+      "shares": 1533,
+      "foreignCode": "AXON UQ",
+      "previousWeight": 0.24,
+      "weightChange": -0.07,
+      "previousShares": 1543,
+      "sharesChange": -10
     },
     {
       "name": "ALNYLAM PHARMACEUTICALS INC",
-      "weight": 0.11,
-      "shares": 1779,
+      "weight": 0.1,
+      "shares": 1768,
       "foreignCode": "ALNY UQ",
       "previousWeight": 0.11,
-      "weightChange": 0.0,
-      "previousShares": 1800,
-      "sharesChange": -21
+      "weightChange": -0.01,
+      "previousShares": 1779,
+      "sharesChange": -11
     }
   ],
   "holdingsHistory": {
-    "2026-05-05": [
-      {
-        "name": "NVIDIA",
-        "weight": 16.43,
-        "shares": 501805
-      },
-      {
-        "name": "Broadcom",
-        "weight": 15.69,
-        "shares": 220418
-      },
-      {
-        "name": "Meta",
-        "weight": 13.82,
-        "shares": 137078
-      },
-      {
-        "name": "Microsoft",
-        "weight": 12.37,
-        "shares": 180524
-      },
-      {
-        "name": "ASML Holding",
-        "weight": 8.93,
-        "shares": 37133
-      },
-      {
-        "name": "Palantir Technologies",
-        "weight": 4.56,
-        "shares": 201543
-      },
-      {
-        "name": "QUALCOMM",
-        "weight": 2.67,
-        "shares": 85748
-      },
-      {
-        "name": "Intuitive Surgical",
-        "weight": 2.35,
-        "shares": 31277
-      },
-      {
-        "name": "Shopify",
-        "weight": 2.28,
-        "shares": 126904
-      },
-      {
-        "name": "Booking Holdings",
-        "weight": 2.01,
-        "shares": 71935
-      },
-      {
-        "name": "Palo Alto",
-        "weight": 1.91,
-        "shares": 62219
-      },
-      {
-        "name": "CrowdStrike Holdings",
-        "weight": 1.77,
-        "shares": 22243
-      },
-      {
-        "name": "Cadence Design Systems",
-        "weight": 1.4,
-        "shares": 23734
-      },
-      {
-        "name": "Synopsys",
-        "weight": 1.37,
-        "shares": 16389
-      },
-      {
-        "name": "Intuit",
-        "weight": 1.29,
-        "shares": 19411
-      },
-      {
-        "name": "Vertex Pharmaceuticals",
-        "weight": 1.27,
-        "shares": 17909
-      },
-      {
-        "name": "MercadoLibre",
-        "weight": 1.1,
-        "shares": 3621
-      },
-      {
-        "name": "Adobe",
-        "weight": 1.09,
-        "shares": 25549
-      },
-      {
-        "name": "Datadog",
-        "weight": 0.53,
-        "shares": 21890
-      },
-      {
-        "name": "Arm",
-        "weight": 0.5,
-        "shares": 14317
-      },
-      {
-        "name": "Autodesk",
-        "weight": 0.46,
-        "shares": 11091
-      },
-      {
-        "name": "Axon Enterprise",
-        "weight": 0.43,
-        "shares": 6717
-      },
-      {
-        "name": "Alnylam Pharmaceuticals",
-        "weight": 0.41,
-        "shares": 8228
-      },
-      {
-        "name": "Roper Technologies",
-        "weight": 0.33,
-        "shares": 5631
-      },
-      {
-        "name": "DexCom",
-        "weight": 0.32,
-        "shares": 32792
-      },
-      {
-        "name": "Insmed",
-        "weight": 0.25,
-        "shares": 10892
-      },
-      {
-        "name": "Workday",
-        "weight": 0.24,
-        "shares": 11143
-      },
-      {
-        "name": "Zscaler",
-        "weight": 0.21,
-        "shares": 8790
-      },
-      {
-        "name": "CoStar Group",
-        "weight": 0.12,
-        "shares": 20589
-      }
-    ],
     "2026-05-06": [
       {
         "name": "NVIDIA",
@@ -5858,7 +5711,269 @@
         "weight": 0.11,
         "shares": 1779
       }
+    ],
+    "2026-11-12": [
+      {
+        "name": "MICROSOFT CORP",
+        "weight": 8.77,
+        "shares": 45252
+      },
+      {
+        "name": "AMAZON.COM INC",
+        "weight": 8.76,
+        "shares": 88370
+      },
+      {
+        "name": "BROADCOM INC",
+        "weight": 7.19,
+        "shares": 53240
+      },
+      {
+        "name": "NVIDIA CORP",
+        "weight": 6.41,
+        "shares": 103976
+      },
+      {
+        "name": "META PLATFORMS INC-CLASS A",
+        "weight": 5.7,
+        "shares": 24677
+      },
+      {
+        "name": "ADVANCED MICRO DEVICES",
+        "weight": 5.59,
+        "shares": 25742
+      },
+      {
+        "name": "ALPHABET INC-CL A",
+        "weight": 3.88,
+        "shares": 35033
+      },
+      {
+        "name": "MICRON TECHNOLOGY INC",
+        "weight": 3.74,
+        "shares": 12639
+      },
+      {
+        "name": "ALPHABET INC-CL C",
+        "weight": 3.61,
+        "shares": 32997
+      },
+      {
+        "name": "SPACE EXPLORATION TECHN-CL A",
+        "weight": 3.46,
+        "shares": 66618
+      },
+      {
+        "name": "CISCO SYSTEMS INC",
+        "weight": 2.81,
+        "shares": 74360
+      },
+      {
+        "name": "PALANTIR TECHNOLOGIES INC-A",
+        "weight": 2.76,
+        "shares": 43406
+      },
+      {
+        "name": "小那斯達克指數期貨",
+        "weight": 2.31,
+        "shares": 11
+      },
+      {
+        "name": "APPLIED MATERIALS INC",
+        "weight": 2.11,
+        "shares": 14973
+      },
+      {
+        "name": "LAM RESEARCH CORP",
+        "weight": 2.05,
+        "shares": 23608
+      },
+      {
+        "name": "TEXAS INSTRUMENTS INC",
+        "weight": 2.0,
+        "shares": 17230
+      },
+      {
+        "name": "PALO ALTO NETWORKS INC",
+        "weight": 1.84,
+        "shares": 15376
+      },
+      {
+        "name": "AMGEN INC",
+        "weight": 1.77,
+        "shares": 10200
+      },
+      {
+        "name": "INTEL CORP",
+        "weight": 1.73,
+        "shares": 76333
+      },
+      {
+        "name": "CROWDSTRIKE HOLDINGS INC - A",
+        "weight": 1.65,
+        "shares": 19318
+      },
+      {
+        "name": "GILEAD SCIENCES INC",
+        "weight": 1.46,
+        "shares": 23394
+      },
+      {
+        "name": "KLA CORP",
+        "weight": 1.44,
+        "shares": 24650
+      },
+      {
+        "name": "QUALCOMM INC",
+        "weight": 1.3,
+        "shares": 19814
+      },
+      {
+        "name": "SHOPIFY INC - CLASS A",
+        "weight": 1.24,
+        "shares": 22802
+      },
+      {
+        "name": "INTUITIVE SURGICAL INC",
+        "weight": 1.09,
+        "shares": 6665
+      },
+      {
+        "name": "MARVELL TECHNOLOGY INC",
+        "weight": 1.01,
+        "shares": 16544
+      },
+      {
+        "name": "ASML HOLDING NV-NY REG SHS",
+        "weight": 0.98,
+        "shares": 1774
+      },
+      {
+        "name": "SANDISK CORP",
+        "weight": 0.96,
+        "shares": 2763
+      },
+      {
+        "name": "VERTEX PHARMACEUTICALS INC",
+        "weight": 0.96,
+        "shares": 4782
+      },
+      {
+        "name": "SEAGATE TECHNOLOGY HOLDINGS",
+        "weight": 0.86,
+        "shares": 4276
+      },
+      {
+        "name": "BOOKING HOLDINGS INC",
+        "weight": 0.85,
+        "shares": 14176
+      },
+      {
+        "name": "APPLOVIN CORP-CLASS A",
+        "weight": 0.84,
+        "shares": 5744
+      },
+      {
+        "name": "REGENERON PHARMACEUTICALS",
+        "weight": 0.67,
+        "shares": 1909
+      },
+      {
+        "name": "ADOBE INC",
+        "weight": 0.66,
+        "shares": 7500
+      },
+      {
+        "name": "FORTINET INC",
+        "weight": 0.66,
+        "shares": 13843
+      },
+      {
+        "name": "INTUIT INC",
+        "weight": 0.65,
+        "shares": 5161
+      },
+      {
+        "name": "CADENCE DESIGN SYS INC",
+        "weight": 0.64,
+        "shares": 5196
+      },
+      {
+        "name": "SYNOPSYS INC",
+        "weight": 0.62,
+        "shares": 3616
+      },
+      {
+        "name": "ARM HOLDINGS PLC-ADR",
+        "weight": 0.61,
+        "shares": 8228
+      },
+      {
+        "name": "AIRBNB INC-CLASS A",
+        "weight": 0.53,
+        "shares": 7915
+      },
+      {
+        "name": "MERCADOLIBRE INC",
+        "weight": 0.52,
+        "shares": 957
+      },
+      {
+        "name": "MONOLITHIC POWER SYSTEMS INC",
+        "weight": 0.5,
+        "shares": 928
+      },
+      {
+        "name": "DOORDASH INC - A",
+        "weight": 0.49,
+        "shares": 7718
+      },
+      {
+        "name": "DATADOG INC - CLASS A",
+        "weight": 0.43,
+        "shares": 6319
+      },
+      {
+        "name": "AUTODESK INC",
+        "weight": 0.38,
+        "shares": 3944
+      },
+      {
+        "name": "TERADYNE INC",
+        "weight": 0.29,
+        "shares": 2950
+      },
+      {
+        "name": "ASTERA LABS INC",
+        "weight": 0.28,
+        "shares": 3273
+      },
+      {
+        "name": "WORKDAY INC-CLASS A",
+        "weight": 0.26,
+        "shares": 3698
+      },
+      {
+        "name": "PDD HOLDINGS INC",
+        "weight": 0.25,
+        "shares": 8821
+      },
+      {
+        "name": "ROCKET LAB CORP",
+        "weight": 0.19,
+        "shares": 7904
+      },
+      {
+        "name": "AXON ENTERPRISE INC",
+        "weight": 0.17,
+        "shares": 1533
+      },
+      {
+        "name": "ALNYLAM PHARMACEUTICALS INC",
+        "weight": 0.1,
+        "shares": 1768
+      }
     ]
   },
-  "lastUpdated": "2026-11-05"
+  "lastUpdated": "2026-11-12"
 }

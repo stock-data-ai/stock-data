@@ -7,20 +7,20 @@
   "managementFee": 0.79,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-07-14",
-  "fundSize": 14.4,
+  "fundSize": 12.99,
   "issuer": "國泰投信",
-  "beneficiaryCount": 7873,
+  "beneficiaryCount": 7493,
   "description": null,
   "topHoldings": [
     {
       "name": "台股期貨",
-      "weight": 99.61,
-      "shares": -182,
+      "weight": 99.51,
+      "shares": -148,
       "foreignCode": "202611TX",
-      "previousWeight": 99.46,
-      "weightChange": 0.15,
-      "previousShares": -152,
-      "sharesChange": -30
+      "previousWeight": 99.61,
+      "weightChange": -0.1,
+      "previousShares": -182,
+      "sharesChange": 34
     }
   ],
   "holdingsHistory": {
@@ -188,8 +188,15 @@
         "weight": 99.61,
         "shares": -182
       }
+    ],
+    "2026-11-13": [
+      {
+        "name": "台股期貨",
+        "weight": 99.51,
+        "shares": -148
+      }
     ]
   },
-  "lastUpdated": "2026-11-06",
+  "lastUpdated": "2026-11-13",
   "trailingYield": 0.0
 }

@@ -7,29 +7,23 @@
   "managementFee": 1.02,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-08-05",
-  "fundSize": 1.11,
+  "fundSize": 1.16,
   "issuer": "富邦投信",
-  "beneficiaryCount": 106,
+  "beneficiaryCount": 105,
   "description": null,
   "topHoldings": [
     {
       "name": "H股指數期貨",
-      "weight": 100.93,
-      "shares": -65,
+      "weight": 99.37,
+      "shares": -70,
       "foreignCode": "202611HHIX6F",
-      "previousWeight": 99.7,
-      "weightChange": 1.23,
-      "previousShares": -72,
-      "sharesChange": 7
+      "previousWeight": 100.93,
+      "weightChange": -1.56,
+      "previousShares": -65,
+      "sharesChange": -5
     }
   ],
   "holdingsHistory": {
-    "2026-05-06": [
-      {
-        "name": "2026/05H股指數期貨",
-        "weight": 100.51
-      }
-    ],
     "2026-05-07": [
       {
         "name": "2026/05H股指數期貨",
@@ -224,8 +218,15 @@
         "weight": 100.93,
         "shares": -65
       }
+    ],
+    "2026-11-13": [
+      {
+        "name": "H股指數期貨",
+        "weight": 99.37,
+        "shares": -70
+      }
     ]
   },
-  "lastUpdated": "2026-11-06",
+  "lastUpdated": "2026-11-13",
   "trailingYield": 0.0
 }
