@@ -9,20 +9,25 @@ etf_utils.py — 主動式 ETF 爬蟲共用工具
   write_github_output()      輸出逐筆 ETF 狀態到 GITHUB_OUTPUT
   pcf_to_holdings_date()     申購買回清單日期 → 持股所屬交易日
   today_tw()                 台北今天
+  prev_trading_day()         前一交易日（實作在 finance_tools/core/trading_day.py）
   classify_holding_code()    持股代號 → 台股 code 或海外 foreignCode（所有爬蟲共用）
 """
 
 import json
 import os
 import re
-from datetime import date, datetime, timedelta, timezone
-from functools import lru_cache
+import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+# 交易日一律走 finance_tools/core/trading_day.py（兩個 repo 唯一實作），這裡不另寫休市判斷。
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from finance_tools.core.trading_day import prev_trading_day  # noqa: E402
 
 HISTORY_KEEP_DAYS = 30
 
@@ -74,44 +79,9 @@ def warn_if_mixed_market(etf_code: str, holdings: list, threshold: int = 10) -> 
               f"可能是不標國家的混合市場 ETF，確認後加進 etf_utils.MIXED_MARKET_ETFS")
 
 
-TWSE_HOLIDAY_URL = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
-
-
 def today_tw() -> str:
     """台北今天（CI 跑在 UTC，不能用 date.today()）。"""
     return (datetime.now(timezone.utc) + timedelta(hours=8)).date().isoformat()
-
-
-# 證交所休市表不列颱風等臨時停市，要手動補。同一份清單另見 etf_Crawler/etf_utils.py、
-# finance_tools/core/trading_day.py、.github/workflows/health-check.yml 與 stock_map 的 scripts/finance/short_cover_events.py。
-UNSCHEDULED_CLOSED = frozenset({"2026-10-23"})  # 颱風全日停市
-
-
-@lru_cache(maxsize=1)
-def _tw_holidays() -> frozenset:
-    """證交所 OpenAPI 休市表（當年）。名稱含「交易日」的是開始／最後交易日，那天有開盤，要排除。
-    抓不到就回空集合，退化成只跳週末。"""
-    try:
-        rows = requests.get(TWSE_HOLIDAY_URL, timeout=15).json()
-        out = set()
-        for r in rows:
-            roc = str(r.get("Date", ""))
-            if len(roc) != 7 or "交易日" in r.get("Name", ""):
-                continue
-            out.add(f"{int(roc[:3]) + 1911}-{roc[3:5]}-{roc[5:]}")
-        return frozenset(out) | UNSCHEDULED_CLOSED
-    except Exception as e:                                     # noqa: BLE001
-        print(f"  [WARN] 休市表取得失敗（{e}），只跳週末")
-        return UNSCHEDULED_CLOSED
-
-
-def prev_trading_day(iso: str) -> str:
-    """iso 之前（不含）最近的台股交易日。"""
-    d = date.fromisoformat(iso) - timedelta(days=1)
-    holidays = _tw_holidays()
-    while d.weekday() >= 5 or d.isoformat() in holidays:
-        d -= timedelta(days=1)
-    return d.isoformat()
 
 
 def pcf_to_holdings_date(pub_date: Optional[str]) -> Optional[str]:

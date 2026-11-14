@@ -41,6 +41,14 @@ jobs:
           python-version-file: pyproject.toml
       - run: uv sync --all-extras --dev
 
+      # 台股休市日曆（兩個 repo 唯一的一份，見 finance_tools/core/trading_day.py）。
+      # 證交所休市表只列當年、11 月起換成隔年，所以每天把它「併入」日曆，舊年份不動。
+      # 排在每日更新前：後面「交易日卻沒資料就判失敗」讀的就是這份。
+      # continue-on-error：證交所 API 掛掉時沿用進版控的日曆照跑；涵蓋不足由 health-check 寄信。
+      - name: 更新台股休市日曆
+        continue-on-error: true
+        run: python3 finance_tools/core/trading_day.py update
+
       # 下市清除：名單沒有的財報檔刪掉。每天跑一次就夠——其他 job 的名單也讀 companies-all，
       # 孤兒檔不會再被續抓，只是躺著等這步收走。刪除由下方「提交變更」的 git add 目錄一起收進 commit。
       - name: Prune delisted｜刪掉已下市的財報檔
@@ -85,6 +93,7 @@ jobs:
           git add src/data/layer3/company-financials/
           # archive-history 把舊年度搬到這裡；不 add 就等於白搬（主檔少了、封存沒進版控）。
           git add src/data/layer3/company-financials-archive/ 2>/dev/null || true
+          git add src/data/market/tw-trading-calendar.json
           git diff --cached --quiet && { echo "沒有變更需要提交。"; exit 0; }
           DATE_LABEL="${{ inputs.date || '' }}"
           [ -z "$DATE_LABEL" ] && DATE_LABEL=$(date -u +%Y-%m-%d)

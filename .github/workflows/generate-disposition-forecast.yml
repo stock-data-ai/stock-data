@@ -23,9 +23,12 @@ jobs:
       # 22:30 那班原本是為了補款7（融資融券 21:30 才公布），但 2026-11-04 盤點：
       # 105 個官方名單日款7 一次都沒出現，19:05 時當天官方注意名單已齊，
       # 連續 6 天兩班輸出完全相同 → 改成**只在今天 19:05 失敗時才補跑**。
-      # 證交所休市日（含補假）也跳過：沒有新交易資料，只會重發舊資料、白觸發一次網站部署。
-      # 颱風停市不在休市 API 裡，那天照跑（結果與前一天相同，無害）。
+      # 休市日（含補假、颱風停市）也跳過：沒有新交易資料，只會重發舊資料、白觸發一次網站部署。
+      # 休市只問 finance_tools/core/trading_day.py（兩個 repo 唯一的台股日曆），所以先 checkout。
       # 跳過的這班仍是 success，health-check 不會誤報。
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - name: 判斷這班要不要跑
         id: gate
         env:
@@ -36,11 +39,8 @@ jobs:
           HOUR=$(TZ=Asia/Taipei date +%H)
           skip() { echo "skip=true" >> "$GITHUB_OUTPUT"; echo "reason=$1" >> "$GITHUB_OUTPUT"; echo "⏭  $1"; exit 0; }
           if [ "$FORCE" = "true" ]; then echo "skip=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          # 休市日：證交所 OpenAPI 休市表（民國日期，如 1151026）。抓不到就照跑，不因檢查失敗而漏班。
-          ROC=$(TZ=Asia/Taipei date +%Y%m%d | awk '{printf "%d%s", substr($0,1,4)-1911, substr($0,5)}')
-          if curl -fsS --max-time 20 https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule \
-               | jq -e --arg d "$ROC" '.[] | select(.Date == $d) | select((.Name | test("市場無交易")) or (.Description | test("放假|補假|休市")))' >/dev/null 2>&1; then
-            skip "今天 $TODAY 證交所休市"
+          if python3 finance_tools/core/trading_day.py is-closed "$TODAY"; then
+            skip "今天 $TODAY 台股休市"
           fi
           # 備援班（台灣 21 點後）：今天已有成功的一班就跳過
           if [ "$HOUR" -ge 21 ]; then
@@ -50,10 +50,6 @@ jobs:
             if [ "${N:-0}" -gt 0 ]; then skip "今天 19:05 已成功，備援班不重跑"; fi
           fi
           echo "skip=false" >> "$GITHUB_OUTPUT"
-
-      - name: Checkout repository
-        if: steps.gate.outputs.skip != 'true'
-        uses: actions/checkout@v6
 
       - name: Install uv
         if: steps.gate.outputs.skip != 'true'

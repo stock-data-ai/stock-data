@@ -2,30 +2,17 @@ import sys
 import time
 import logging
 import pandas as pd
-from datetime import datetime, timedelta
-from typing import List, Dict, Any
+from datetime import timedelta
+from typing import Dict, Any
 
 from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.timezone import now_tw, today_str
-from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
+from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd, trading_days_between
 from finance_tools.domains.margin_trading.fetcher import MarginTradingFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 import finance_tools.config as config
 
 logger = logging.getLogger(__name__)
-
-
-def _trading_days_between(start_str: str, end_str: str) -> List[str]:
-    """回傳 start～end 之間所有週一到週五的日期 (YYYYMMDD)，不含假日判斷（假日當天 TWSE 回空）。"""
-    start = datetime.strptime(start_str, "%Y%m%d")
-    end = datetime.strptime(end_str, "%Y%m%d")
-    days = []
-    cur = start
-    while cur <= end:
-        if cur.weekday() < 5:  # Mon-Fri
-            days.append(cur.strftime("%Y%m%d"))
-        cur += timedelta(days=1)
-    return days
 
 
 def _process_one_date(target_date: str, fetcher, processor, file_mgr, company_codes) -> int:
@@ -82,7 +69,7 @@ def run_update_margin_trading(args):
         start = backfill_from.replace("-", "")
         now = now_tw()
         end = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
-        dates = _trading_days_between(start, end)
+        dates = [d.strftime("%Y%m%d") for d in trading_days_between(start, end)]
         logger.info(f"補齊融資融券：{start} ～ {end}，共 {len(dates)} 個交易日。")
         total = 0
         for d in dates:

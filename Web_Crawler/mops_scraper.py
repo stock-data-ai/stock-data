@@ -386,8 +386,8 @@ if __name__ == '__main__':
         # 2026-08-31 就是這樣：MOPS 回 0 筆本該報 STALE，卻先崩在這行 import，
         # 真正的原因（疑似機房 IP 被擋）被蓋掉了。
         sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        from finance_tools.core.trading_day import is_tw_trading_day
+        from finance_tools.core.trading_day import is_tw_trading_day, taipei_today
 
-        if is_tw_trading_day(datetime.date.today()):
+        if is_tw_trading_day(taipei_today()):
             print("\nSTALE: 今日為交易日，但重大訊息 0 筆，判定為撈取失敗。")
             sys.exit(1)

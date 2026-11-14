@@ -4,12 +4,12 @@ import sys
 import time
 import logging
 import math
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Dict, List
 
 from finance_tools.core import DataProcessor, FileManager
 from finance_tools.core.timezone import now_tw
-from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
+from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd, trading_days_between
 from finance_tools.domains.securities_lending.fetcher import SecuritiesLendingFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 
@@ -23,19 +23,6 @@ _RECORD_FIELDS = {
     "sblAdjustments": "sbl_adjustments",
     "sblAvailable": "sbl_available",
 }
-
-
-def _trading_days_between(start_str: str, end_str: str) -> List[str]:
-    """回傳 start～end 之間所有週一到週五的日期 (YYYYMMDD)，不含假日判斷（假日當天回空）。"""
-    start = datetime.strptime(start_str, "%Y%m%d")
-    end = datetime.strptime(end_str, "%Y%m%d")
-    days = []
-    cur = start
-    while cur <= end:
-        if cur.weekday() < 5:  # Mon-Fri
-            days.append(cur.strftime("%Y%m%d"))
-        cur += timedelta(days=1)
-    return days
 
 
 def _to_lots(value) -> int:
@@ -143,7 +130,7 @@ def run_update_securities_lending(args):
         start = backfill_from.replace("-", "")
         now = now_tw()
         end = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
-        dates = _trading_days_between(start, end)
+        dates = [d.strftime("%Y%m%d") for d in trading_days_between(start, end)]
         logger.info(f"補齊借券賣出餘額：{start} ～ {end}，共 {len(dates)} 個交易日。")
         _backfill_range(dates, fetcher, processor, file_mgr, company_codes)
         return

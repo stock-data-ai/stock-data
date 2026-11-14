@@ -29,6 +29,7 @@
 import json, os, sys, re, time, datetime, statistics, itertools
 import requests
 
+from finance_tools.core.trading_day import is_tw_trading_day
 from finance_tools.utils.finmind import fetch_finmind
 from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.stock_info import stock_info
@@ -1376,16 +1377,13 @@ def refresh_punish(days_back=90, days_fwd=30):
           f"（只寫半個市場會讓另一市場的處置股整批消失）")
     return len(kept)
 
-# 台股例假日以外的休市日（颱風停市等）。2026-08 無 → 空集合；跨到有休市日的期間要補。
-_MARKET_HOLIDAYS = set()
-
 def _bdays_from(start, n):
-    """從 start（含）起算第 n 個營業日。未來日以週一~五近似（颱風停市無法預知）。"""
+    """從 start（含）起算第 n 個營業日。休市日曆見 finance_tools/core/trading_day.py（颱風停市無法預知）。"""
     d = datetime.datetime.strptime(start, "%Y%m%d").date()
     cnt = 0
     while True:
         ymd = d.strftime("%Y%m%d")
-        if d.weekday() < 5 and ymd not in _MARKET_HOLIDAYS:
+        if is_tw_trading_day(d):
             cnt += 1
             if cnt >= n:
                 return ymd
@@ -1397,7 +1395,7 @@ def _bdays_span(start, end):
     e = datetime.datetime.strptime(end, "%Y%m%d").date()
     n = 0
     while d <= e:
-        if d.weekday() < 5 and d.strftime("%Y%m%d") not in _MARKET_HOLIDAYS:
+        if is_tw_trading_day(d):
             n += 1
         d += datetime.timedelta(days=1)
     return n

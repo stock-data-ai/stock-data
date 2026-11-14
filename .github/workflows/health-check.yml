@@ -558,33 +558,33 @@ jobs:
 
           send_ses_email(subj, html)
 
+          # ── 台股休市日曆涵蓋範圍（另寄一封）────────────────────────────────
+          # 日曆沒涵蓋的年份，國定假日會被當成交易日：融資、情緒、借券、籌碼題材在休市日一起誤報
+          # 「交易日卻沒資料」，ETF 持股日期也會算錯。證交所休市表 11 月起只列隔年，由 daily-update
+          # 每天併入；12 月起還沒有隔年就要提早知道。
+          # 這裡沒裝套件：直接載入 trading_day.py（只用標準函式庫），不經 finance_tools 套件的 __init__。
+          sys.path.insert(0, 'finance_tools/core')
+          import trading_day
+          cal_problem = trading_day.coverage_problem(taiwan_now.date())
+          print(f'[TW calendar] {cal_problem or "涵蓋足夠"}')
+          if cal_problem:
+              send_ses_email(
+                  f'🚨 台股休市日曆涵蓋不足（{tw_date}）',
+                  f'<p>{cal_problem}</p>'
+                  f'<p>日曆在 src/data/market/tw-trading-calendar.json，由 '
+                  f'<a href="https://github.com/{REPO}/actions/workflows/daily-update.yml">daily-update</a> '
+                  f'的「更新台股休市日曆」步驟從證交所休市表併入；先看那一步的 log。</p>')
+              all_good = False
+
           # ── 主動式 ETF 資料新鮮度（另寄一封）────────────────────────────────
           # 上面只看 workflow 成敗。2026-09 CMoney 對 00986A 回 9/24 舊資料一週，程式判斷
           # 「已是最新」略過、燈是綠的；10-01 CMoney 回 Auth Failed 的那封又混在大表裡。
           # 所以直接看檔案的 lastUpdated，落後 2 個交易日以上就單獨寄一封。
           # 海外型（00988A、00983A、00998A）官網本來就晚一天，落後 1 天不算。
-          # 休市表不列颱風等臨時停市，手動補（同一份清單另見 etf_Crawler/etf_utils.py 的 UNSCHEDULED_CLOSED）
-          _UNSCHEDULED = {'2026-10-23'}
-          def _tw_holidays():
-              try:
-                  with urllib.request.urlopen('https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule', timeout=15) as r:
-                      rows = json.loads(r.read())
-                  return {f"{int(x['Date'][:3]) + 1911}-{x['Date'][3:5]}-{x['Date'][5:]}"
-                          for x in rows if len(str(x.get('Date', ''))) == 7 and '交易日' not in x.get('Name', '')} | _UNSCHEDULED
-              except Exception as e:
-                  print(f'[ETF freshness] 休市表取得失敗（{e}），只跳週末')
-                  return set(_UNSCHEDULED)
-
-          _hol = _tw_holidays()
-          def _is_td(d):
-              return d.weekday() < 5 and d.isoformat() not in _hol
-          def _td_on_or_before(d):
-              while not _is_td(d):
-                  d -= timedelta(days=1)
-              return d
-
-          last_td = _td_on_or_before(taiwan_now.date())
-          threshold = _td_on_or_before(last_td - timedelta(days=1)).isoformat()
+          # 交易日只問 finance_tools/core/trading_day.py（上一段已載入）。
+          today_iso = taiwan_now.date().isoformat()
+          last_td = today_iso if trading_day.is_tw_trading_day(today_iso) else trading_day.prev_trading_day(today_iso)
+          threshold = trading_day.prev_trading_day(last_td)
 
           stale = []
           for p in sorted(__import__('pathlib').Path('src/data/etf').glob('*A.json')):

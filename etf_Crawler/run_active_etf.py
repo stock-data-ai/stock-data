@@ -30,7 +30,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from etf_utils import prev_trading_day, today_tw, _tw_holidays  # noqa: E402
+from etf_utils import prev_trading_day, today_tw  # noqa: E402  （etf_utils 已把 repo root 放進 sys.path）
+from finance_tools.core.trading_day import is_tw_trading_day  # noqa: E402
 
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DIR = REPO_ROOT / "src/data/etf"
@@ -74,9 +75,7 @@ def latest_trading_day() -> str:
     """應有資料的最近交易日：台北 15 點前今天的持股還沒發布，取前一交易日。"""
     now = _taipei_now()
     d = today_tw()
-    holidays = _tw_holidays()
-    is_td = datetime.fromisoformat(d).weekday() < 5 and d not in holidays
-    if is_td and now.hour >= 15:
+    if is_tw_trading_day(d) and now.hour >= 15:
         return d
     return prev_trading_day(d)
 
