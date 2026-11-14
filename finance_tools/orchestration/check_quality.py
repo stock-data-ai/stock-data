@@ -5,6 +5,7 @@ import urllib.request
 import finance_tools.config as config
 from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.rerun_manager import RerunManager
+from finance_tools.core.tw_codes import is_tw_stock
 
 logger = logging.getLogger(__name__)
 
@@ -51,8 +52,8 @@ def _report_delisted(output_dir):
         if not filename.endswith(".json"):
             continue
         code = filename[:-5]
-        # 只查純數字代號：ETF 與外國股另有規則，不在這三份名單裡是正常的
-        if not code.isdigit() or code in live:
+        # 只查台股個股：ETF 與外國股另有規則，不在這三份名單裡是正常的
+        if not is_tw_stock(code) or code in live:
             continue
         try:
             with open(os.path.join(output_dir, filename), encoding="utf-8") as f:

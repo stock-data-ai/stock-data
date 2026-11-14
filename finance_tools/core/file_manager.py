@@ -10,6 +10,7 @@ from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 from finance_tools.core.timezone import today_str
+from finance_tools.core.tw_codes import is_tw_stock
 import finance_tools.config as config
 
 # 名單的唯一來源是 stock_map 的 companies-all.json（政府上市／上櫃／興櫃三份名單的鏡像，
@@ -69,7 +70,7 @@ class FileManager:
         companies = [
             {"code": code, "name": detail.get("name") or code}
             for code, detail in all_companies_details.items()
-            if code.isdigit() and len(code) == 4 and not detail.get("isETF")
+            if is_tw_stock(code)
         ]
         if len(companies) < ROSTER_MIN_TW:
             raise RuntimeError(

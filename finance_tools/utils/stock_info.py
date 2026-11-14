@@ -11,7 +11,7 @@ emerging 545）。內容近乎靜態，所以在行程內快取一份就夠；�
 
 **權證不在 `TaiwanStockInfo` 裡**（實測 039038 查無）。需要權證的呼叫端要傳
 `include_warrant=True`，改查 `TaiwanStockInfoWithWarrant`——那支大得多，只在真的需要
-時才用（處置名單含權證，行情計算則已用 `len(code)==4` 濾掉）。
+時才用（處置名單含權證，行情計算則已用 `tw_codes.is_tw_stock` 濾掉）。
 """
 
 import json

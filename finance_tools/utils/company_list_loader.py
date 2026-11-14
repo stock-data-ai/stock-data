@@ -2,6 +2,7 @@ import json
 import logging
 from typing import List, Dict
 from finance_tools.core.file_manager import FileManager
+from finance_tools.core.tw_codes import is_tw_stock
 import finance_tools.config as config
 
 logger = logging.getLogger(__name__)
@@ -79,12 +80,12 @@ def load_companies_for_processing(args: object, file_mgr: FileManager, rerun_man
         all_companies_list = file_mgr.load_companies()
         companies = [{"code": c["code"], "name": c["name"]} for c in all_companies_list]
 
-    # 過濾非四位數字的公司代碼（跳過美股、日股等）
+    # 只留台股個股（跳過 ETF、美日韓股等；規則見 finance_tools/core/tw_codes.py）
     before_filter = len(companies)
-    companies = [c for c in companies if c["code"].isdigit() and len(c["code"]) == 4]
+    companies = [c for c in companies if is_tw_stock(c["code"])]
     skipped = before_filter - len(companies)
     if skipped > 0:
-        logger.info(f"已跳過 {skipped} 家非台灣公司 (非四位數代碼)。")
+        logger.info(f"已跳過 {skipped} 檔非台股個股。")
 
     if getattr(args, "limit", None) and args.limit > 0:
         companies = companies[:args.limit]

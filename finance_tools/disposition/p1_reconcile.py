@@ -30,6 +30,7 @@ import json, os, sys, re, time, datetime, statistics, itertools
 import requests
 
 from finance_tools.core.trading_day import is_tw_trading_day
+from finance_tools.core.tw_codes import is_tw_stock
 from finance_tools.utils.finmind import fetch_finmind
 from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.stock_info import stock_info
@@ -182,7 +183,7 @@ def _px_complete(rows):
     for r in rows or []:
         c = str(r.get("stock_id", "")).strip()
         mk = (info.get(c) or {}).get("market")
-        if len(c) == 4 and c[0].isdigit() and mk in n:
+        if is_tw_stock(c) and mk in n:
             n[mk] += 1
     return all(v >= MIN_DAILY_ROWS for v in n.values()), n
 
@@ -237,8 +238,8 @@ def _finmind_prices(date):
     for r in rows:
         c = str(r.get("stock_id", "")).strip()
         close = _f(r.get("close"))
-        # 只留四碼數字代號：權證／可轉債不參與量價規則（與原實作同一條件）
-        if len(c) == 4 and c[0].isdigit() and close is not None:
+        # 只留台股個股：ETF、權證、可轉債不參與量價規則
+        if is_tw_stock(c) and close is not None:
             out[c] = {"name": (names.get(c) or {}).get("name", ""),
                       "close": close, "open": _f(r.get("open")),
                       "vol": _f(r.get("Trading_Volume")), "amount": _f(r.get("Trading_money"))}
@@ -298,7 +299,7 @@ def pb_pe_daily(date):
     out = {}
     for r in rows:
         c = str(r.get("stock_id", "")).strip()
-        if len(c) == 4 and c[0].isdigit():
+        if is_tw_stock(c):
             out[c] = {"pe": _f(r.get("PER")), "pb": _f(r.get("PBR"))}
     return out or None
 
@@ -954,7 +955,7 @@ def _tpex_note_rows():
     try:
         for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_trading_warning_note"):
             code = str(r.get("SecuritiesCompanyCode") or "").strip()
-            if _is_stock(code):
+            if is_tw_stock(code):
                 out[code] = {"name": str(r.get("CompanyName") or "").strip(),
                              "date": str(r.get("Date") or "").strip(),
                              "criteria_raw": str(r.get("AccumulationSituation") or "")}
@@ -991,9 +992,6 @@ def list_cached_days():
           if f.startswith("mi_") and f.endswith(".json")
           and os.path.getsize(os.path.join(CACHE, f)) > 1000}
     return sorted(mi | _official_dates())
-
-def _is_stock(code):
-    return len(code) == 4 and code[0].isdigit()
 
 # ── 官方注意名單「帶款號」封存（可回溯）───────────────────────
 # 證交所 openapi 的 notice 回空、notetrans 無款號且只回最新日；
@@ -1118,7 +1116,7 @@ def official_index():
             continue
         rec = json.load(open(os.path.join(NOTI, f)))
         for r in rec.get("rows", []):
-            if not _is_stock(r.get("code", "")):
+            if not is_tw_stock(r.get("code", "")):
                 continue
             e = out.setdefault(rec["date"], {}).setdefault(
                 r["code"], {"name": r.get("name"), "market": r.get("market"),
@@ -1356,7 +1354,7 @@ def refresh_punish(days_back=90, days_fwd=30):
                 raise RuntimeError("回 0 筆")
             # 主來源改成 FinMind 單一支後，「某一市場整批消失」不會再表現成抓取失敗，
             # 要直接檢查兩市場的股票都在（±120 天窗內兩邊常態都有上百筆）。
-            mk = {r.get("market") for r in got if _is_stock(r.get("code", ""))}
+            mk = {r.get("market") for r in got if is_tw_stock(r.get("code", ""))}
             missing = [label for m, label in (("市", "上市"), ("櫃", "上櫃")) if m not in mk]
             if missing:
                 raise RuntimeError(f"{'/'.join(missing)}處置股 0 筆（疑似來源缺一邊）")
@@ -1426,7 +1424,7 @@ def _punish_rows(as_of=None, stocks_only=True):
     d = as_of or _today()
     try:
         return [_shorten_period(r, d) for r in json.load(open(fp))
-                if not stocks_only or _is_stock(r.get("code", ""))]
+                if not stocks_only or is_tw_stock(r.get("code", ""))]
     except (json.JSONDecodeError, OSError):
         return []
 
@@ -1576,13 +1574,13 @@ def _k1_predicted(pred):
     """從 prediction 取出「命中款1」的代號集合（多款引擎後 reconcile 只比款1）。"""
     out = set()
     for h in pred.get("hits", []):
-        if any(r["clause"] == 1 for r in h.get("rules", [])) and _is_stock(h["code"]):
+        if any(r["clause"] == 1 for r in h.get("rules", [])) and is_tw_stock(h["code"]):
             out.add(h["code"])
     return out
 
 def _predicted(pred, clause, market):
     return {h["code"] for h in pred["hits"]
-            if h.get("market") == market and _is_stock(h["code"])
+            if h.get("market") == market and is_tw_stock(h["code"])
             and any(r["clause"] == clause for r in h["rules"])}
 
 def reconcile(show_fn=True):
