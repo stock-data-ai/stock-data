@@ -306,7 +306,7 @@ def _list_html(title: str, items: List[Dict], limit: int = 50) -> str:
 
 
 def report_mail(report: Dict, year: int, month: int) -> Tuple[str, str]:
-    label = f"{year - 1911} 年 {month} 月營收核對"
+    label = f"{year} 年 {month} 月營收核對"
     if report["ok"]:
         subject = f"✅ {label}：全部相符（{report['matched']:,} 家）"
     else:
@@ -353,7 +353,7 @@ def run_verify_revenue_announcements(args) -> None:
         return
     path = month_path(year, month)
     data = load_month(path)
-    label = f"{year - 1911} 年 {month} 月營收核對"
+    label = f"{year} 年 {month} 月營收核對"
     if data is None:
         msg = f"<p>找不到 {path}，這個月的每日抓取可能都沒跑成功。</p>"
         logger.error(f"❌ {path} 不存在")

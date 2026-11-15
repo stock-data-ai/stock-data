@@ -31,6 +31,7 @@ import requests
 
 from finance_tools.core.trading_day import is_tw_trading_day
 from finance_tools.core.timezone import taipei_now
+from finance_tools.core.roc_date import roc_to_iso
 from finance_tools.core.tw_codes import is_tw_stock
 from finance_tools.utils.finmind import fetch_finmind
 from finance_tools.utils.http_fetch import get_json as http_get_json
@@ -1005,10 +1006,10 @@ _CLAUSE_RE = re.compile(r"第([一二三四五六七八九十]+)款")
 def _clauses(text):
     return sorted({_CN[c] for c in _CLAUSE_RE.findall(text or "") if c in _CN})
 
-def _roc_to_ymd(s):
-    """115.08.03 / 115/08/03 → 20260803。"""
-    m = re.match(r"(\d{3})[./-](\d{1,2})[./-](\d{1,2})", str(s).strip())
-    return f"{int(m.group(1))+1911:04d}{int(m.group(2)):02d}{int(m.group(3)):02d}" if m else None
+def _roc_ymd(s):
+    """民國日期（1150803、115/08/03、115.08.03、115年8月3日）→ 本檔內部的 20260803；格式不對回 None。"""
+    iso = roc_to_iso(s)
+    return iso.replace("-", "") if iso else None
 
 # 官方注意名單的來源分兩邊：
 #
@@ -1027,7 +1028,7 @@ def _official_rows_openapi():
     try:
         for r in fj("https://www.tpex.org.tw/openapi/v1/tpex_trading_warning_information"):
             code = str(r.get("SecuritiesCompanyCode") or "").strip()
-            ann = _disp_roc(str(r.get("Date") or ""))
+            ann = _roc_ymd(str(r.get("Date") or ""))
             if code and ann:
                 text = str(r.get("TradingInformation") or "")
                 out.append({"date": ann, "code": code, "name": str(r.get("CompanyName") or ""),
@@ -1053,7 +1054,7 @@ def _official_rows_twse(start, end):
         raise RuntimeError(f"TWSE notice stat={x.get('stat')}")
     out = []
     for r in x.get("data") or []:
-        ann = _roc_to_ymd(r[5])
+        ann = _roc_ymd(r[5])
         if ann:
             out.append({"date": ann, "code": r[1], "name": r[2], "market": "TWSE",
                         "count": _f(r[3]), "close": _f(r[6]), "text": r[4],
@@ -1199,7 +1200,7 @@ def _punish_rows_tpex_openapi():
         streak, clause, times = _disp_reason(reason + detail, detail)
         out.append({"code": code, "market": "櫃",
                     "name": re.sub(r"\(.*", "", str(r.get("CompanyName") or "")).strip(),
-                    "announced": _disp_roc(str(r.get("Date") or "")), "start": st, "end": en,
+                    "announced": _roc_ymd(str(r.get("Date") or "")), "start": st, "end": en,
                     "interval": _disp_interval(detail), "detail": detail.strip(),
                     "streak": streak, "clause": clause, "times": times})
     return out
@@ -1217,7 +1218,7 @@ def _punish_rows_esb_openapi():
         st, en = _disp_period(str(r.get("處置起訖時間") or ""))
         streak, clause, times = _disp_reason(reason + detail, detail)
         out.append({"code": code, "market": "興", "name": str(r.get("證券名稱") or "").strip(),
-                    "announced": _disp_roc(str(r.get("公布日期") or "")), "start": st, "end": en,
+                    "announced": _roc_ymd(str(r.get("公布日期") or "")), "start": st, "end": en,
                     "interval": _disp_interval(detail), "detail": detail.strip(),
                     "streak": streak, "clause": clause, "times": times})
     return out
@@ -1238,7 +1239,7 @@ def _punish_rows_twse_openapi():
         st, en = _disp_period(str(r.get("DispositionPeriod") or ""))
         streak, clause, times = _disp_reason(reason + detail, detail)
         out.append({"code": code, "market": "市", "name": str(r.get("Name") or "").strip(),
-                    "announced": _disp_roc(str(r.get("Date") or "")), "start": st, "end": en,
+                    "announced": _roc_ymd(str(r.get("Date") or "")), "start": st, "end": en,
                     "interval": _disp_interval(detail), "detail": detail.strip(),
                     "streak": streak, "clause": clause, "times": times})
     return out
@@ -1437,9 +1438,9 @@ def disposed_set(as_of=None):
 
 _ORD = {1: "第一次", 2: "第二次", 3: "第三次", 4: "第四次", 5: "第五次"}
 
-def _to_roc(d):
-    """20260811 → 115/08/11（舊 punishments.json 用民國紀年）。"""
-    return f"{int(d[:4]) - 1911}/{d[4:6]}/{d[6:8]}" if d and len(d) == 8 else ""
+def _ymd_iso(d):
+    """本檔內部的 20260811 → 2026-08-11（punishments.json 一律西元）。"""
+    return f"{d[:4]}-{d[4:6]}-{d[6:8]}" if d and len(d) == 8 else ""
 
 _PUNISH_MARKET = {"市": "TWSE", "櫃": "TPEx", "興": "ESB"}
 
@@ -1472,14 +1473,14 @@ def export_punishments(as_of=None):
         detail = r.get("detail") or ""
         if r.get("period_shortened"):
             # 官方不會改寫舊制公告原文，但實際已提前解除 → 明講，否則 details 會跟期間打架
-            detail += (f"\n＊本檔原公告處置至 {_to_roc(r['end_original'])}；"
+            detail += (f"\n＊本檔原公告處置至 {_ymd_iso(r['end_original'])}；"
                        f"因 115/08/10 起施行之新制（處置期間縮短為 5 個營業日、"
                        f"當日沖銷加重者 7 個營業日，撮合改約每 2 分鐘一次），"
-                       f"實際處置至 {_to_roc(en)} 止。")
+                       f"實際處置至 {_ymd_iso(en)} 止。")
         rows.append({
             "code": r["code"], "name": r.get("name") or "",
-            "period": f"{_to_roc(st)}～{_to_roc(en)}",
-            "startDate": _to_roc(st), "endDate": _to_roc(en),
+            "period": f"{_ymd_iso(st)}～{_ymd_iso(en)}",
+            "startDate": _ymd_iso(st), "endDate": _ymd_iso(en),
             "measure": measure, "details": detail,
             # 興櫃要明確對到 ESB：原本只判「櫃」，其餘一律 TWSE，興櫃處置股被標成上市。
             # 查不到市場（空字串）維持舊行為歸 TWSE。stock_map 端 market 只存不判斷，新增值安全。
@@ -1536,13 +1537,10 @@ def _cn2int(s):
 def _disp_interval(t):
     m = re.search(r'每(?:約)?\s*([0-9]+|二十|十[一二三四五六七八九]?|[一二三四五六七八九十])\s*分鐘', t or '')
     return f"{_cn2int(m.group(1))}分" if m else None
-def _disp_roc(s):
-    s = re.sub(r'[^0-9]', '', s or '')
-    return f"{int(s[:3]) + 1911}{s[3:5]}{s[5:7]}" if len(s) >= 7 else None
 def _disp_period(s):
     s = (s or '').replace('～', '~').replace('－', '~').replace('至', '~')
     parts = [p for p in s.split('~') if p.strip()]
-    return (_disp_roc(parts[0]), _disp_roc(parts[1])) if len(parts) >= 2 else (None, None)
+    return (_roc_ymd(parts[0]), _roc_ymd(parts[1])) if len(parts) >= 2 else (None, None)
 def _disp_reason(text, measures=''):
     days = re.search(r'連續([一二三四五六七八九十0-9]+)個?營業日', text or '')
     streak = f"連續{_cn2int(days.group(1))}日" if days else None

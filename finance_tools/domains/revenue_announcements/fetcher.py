@@ -18,6 +18,7 @@ import urllib.request
 from typing import Dict, List, Optional
 
 from finance_tools.utils import http_fetch
+from finance_tools.core.roc_date import ad_year_to_roc, roc_month_to_iso, roc_to_iso
 from finance_tools.utils.twse_url import bust
 
 logger = logging.getLogger(__name__)
@@ -62,14 +63,15 @@ def _pct(s: str) -> Optional[float]:
 
 def parse_mops_table(page: str, year: int, month: int) -> Dict:
     """解析一張觀測站彙總表。回傳 {generatedAt, rows}；「查無資料」回傳空 rows。"""
-    roc = year - 1911
+    roc = ad_year_to_roc(year)
     if f"{roc}年{month}月份" not in page:
         raise SourceError(f"表頭不是 {roc} 年 {month} 月")
     m = _GENERATED.search(page)
     generated = None
     if m:
         y, mo, d, t = m.groups()
-        generated = f"{int(y) + 1911}-{int(mo):02d}-{int(d):02d}" + (f" {t}" if t else "")
+        day = roc_to_iso(f"{y}/{mo}/{d}")
+        generated = (day + (f" {t}" if t else "")) if day else None
     if "查無資料" in page:
         return {"generatedAt": generated, "rows": []}
 
@@ -120,7 +122,7 @@ def fetch_mops(year: int, month: int) -> Dict[str, Dict]:
         rows: List[Dict] = []
         generated = None
         for kind, foreign in ((0, False), (1, True)):
-            url = MOPS_URL.format(market=market, roc=year - 1911, month=month, kind=kind)
+            url = MOPS_URL.format(market=market, roc=ad_year_to_roc(year), month=month, kind=kind)
             try:
                 table = parse_mops_table(_get_text(url), year, month)
             except SourceError as e:
@@ -145,8 +147,8 @@ def parse_open_data(records: List[Dict], market: str) -> Dict:
     gen = records[0].get("出表日期", "")
     if not re.fullmatch(r"\d{5}", ym):
         raise SourceError(f"{market} 開放資料年月格式不對：{ym!r}")
-    month = f"{int(ym[:3]) + 1911}-{ym[3:]}"
-    generated = f"{int(gen[:3]) + 1911}-{gen[3:5]}-{gen[5:7]}" if re.fullmatch(r"\d{7}", gen) else None
+    month = roc_month_to_iso(ym)
+    generated = roc_to_iso(gen)
     rows = []
     for r in records:
         if r.get("資料年月") != ym:

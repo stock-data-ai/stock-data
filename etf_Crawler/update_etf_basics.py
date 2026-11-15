@@ -33,6 +33,7 @@ from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from finance_tools.core.timezone import taipei_today  # noqa: E402
+from finance_tools.core.roc_date import roc_to_iso  # noqa: E402
 
 import requests
 
@@ -66,14 +67,6 @@ def _get(url: str, timeout: int = 120, retries: int = 5):
             last = err
             time.sleep(5 * (attempt + 1))
     raise RuntimeError(f"{url} 重試 {retries} 次仍失敗：{last}")
-
-
-def roc_to_iso(roc: str) -> Optional[str]:
-    """1150409 → 2026-04-09"""
-    s = (roc or "").strip()
-    if len(s) != 7 or not s.isdigit():
-        return None
-    return f"{int(s[:3]) + 1911}-{s[3:5]}-{s[5:]}"
 
 
 def _num(x) -> Optional[float]:

@@ -28,6 +28,7 @@ import time
 import urllib.request
 from typing import Any, Dict, List, Optional
 from finance_tools.utils.http_fetch import get_json as http_get_json
+from finance_tools.core.roc_date import roc_month_to_iso
 
 logger = logging.getLogger(__name__)
 
@@ -82,14 +83,6 @@ def _to_int(v: str) -> int:
         return int(str(v).replace(",", "").strip() or 0)
     except ValueError:
         return 0
-
-
-def roc_month_to_iso(v: str) -> Optional[str]:
-    """民國 11507 → 2026-07。"""
-    v = (v or "").strip()
-    if len(v) != 5 or not v.isdigit():
-        return None
-    return f"{int(v[:3]) + 1911:04d}-{v[3:]}"
 
 
 def is_board(role: str) -> bool:

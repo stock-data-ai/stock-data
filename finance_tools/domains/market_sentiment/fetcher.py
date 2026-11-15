@@ -28,6 +28,7 @@ from typing import Any, Dict, List, Optional
 import requests
 
 from finance_tools.utils.http_fetch import get_json as http_get_json
+from finance_tools.core.roc_date import iso_to_roc
 from finance_tools.utils.finmind import fetch_finmind
 
 logger = logging.getLogger(__name__)
@@ -237,7 +238,7 @@ class MarketSentimentFetcher:
         OpenAPI 沒有日期參數、只回最新一日，所以這裡自己核對 `Date` 欄——原實作刻意禁止
         跨日 fallback（避免把前一日數字標成 date_str），這個性質要保住。
         """
-        roc = f"{dt.year - 1911}{dt.month:02}{dt.day:02}"
+        roc = iso_to_roc(dt.strftime("%Y-%m-%d"))
         try:
             rows = [r for r in (http_get_json(self.TPEX_MARGIN_URL, headers=self.headers, timeout=20) or []) if str(r.get("Date", "")).strip() == roc]
             if not rows:

@@ -34,6 +34,7 @@ from typing import Iterable, Union
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from finance_tools.core.timezone import taipei_today  # noqa: E402
+from finance_tools.core.roc_date import roc_to_iso  # noqa: E402
 
 CALENDAR_PATH = Path(__file__).resolve().parents[2] / "src/data/market/tw-trading-calendar.json"
 TWSE_HOLIDAY_API = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
@@ -108,9 +109,9 @@ def parse_twse_holidays(rows: Iterable[dict]) -> tuple[set[int], set[str]]:
     closed: set[str] = set()
     for r in rows:
         roc = str(r.get("Date", ""))
-        if len(roc) != 7 or not roc.isdigit():
+        iso = roc_to_iso(roc)
+        if iso is None:
             raise ValueError(f"休市表日期格式不對：{r}")
-        iso = date(int(roc[:3]) + 1911, int(roc[3:5]), int(roc[5:])).isoformat()
         years.add(int(iso[:4]))
         name, desc = r.get("Name", ""), r.get("Description", "")
         if "市場無交易" in name or any(k in desc for k in ("放假", "補假", "休市")):

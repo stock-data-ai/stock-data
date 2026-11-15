@@ -16,6 +16,7 @@ import requests
 
 from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.retry import retry as _retry
+from finance_tools.core.roc_date import roc_to_iso
 from finance_tools.utils.finmind import fetch_finmind
 
 logger = logging.getLogger(__name__)
@@ -45,15 +46,6 @@ def _parse_int(val) -> int:
         return int(str(val).replace(",", "").strip())
     except (ValueError, AttributeError):
         return 0
-
-
-def _roc_date_to_iso(roc: str) -> str:
-    """'1150609' → '2026-06-09'"""
-    try:
-        year = int(roc[:3]) + 1911
-        return f"{year}-{roc[3:5]}-{roc[5:7]}"
-    except Exception:
-        return ""
 
 
 _BROWSER_HEADERS = {
@@ -161,7 +153,7 @@ class TWSEInstitutionalFetcher:
             if not data:
                 return None
 
-            date_iso = _roc_date_to_iso(data[0].get("Date", ""))
+            date_iso = roc_to_iso(data[0].get("Date")) or ""
             result: Dict[str, InstitutionalRecord] = {}
             for rec in data:
                 code = rec.get("SecuritiesCompanyCode", "").strip()

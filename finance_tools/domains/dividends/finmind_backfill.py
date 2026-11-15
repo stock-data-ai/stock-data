@@ -9,6 +9,7 @@ import os
 import re
 import time
 from typing import Dict, List, Optional, Tuple
+from finance_tools.core.roc_date import roc_year_to_ad
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ def _parse_year_str(year_str: str) -> Optional[Tuple[int, str, int]]:
     m = re.match(r'^(\d{2,3})年(.*)$', str(year_str or "").strip())
     if not m:
         return None
-    gregorian = int(m.group(1)) + 1911
+    gregorian = roc_year_to_ad(m.group(1))
     suffix = m.group(2).strip()
     if not suffix:
         return (gregorian, "年度", 1)

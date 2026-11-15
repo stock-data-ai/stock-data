@@ -7,6 +7,7 @@ import logging
 import pandas as pd
 import math
 from typing import Optional, List, Dict, Any, Tuple
+from finance_tools.core.roc_date import to_ad_year
 
 logger = logging.getLogger(__name__)
 
@@ -391,8 +392,8 @@ class DataProcessor:
                     continue
 
                 year_num = int(year_match.group())
-                # 民國年轉西元年
-                year = year_num + 1911 if year_num < 1000 else year_num
+                # FinMind 的 year 欄民國西元都有
+                year = to_ad_year(year_num)
 
                 cash = float(row.get("cash_dividend", 0) or 0)
                 stock = float(row.get("stock_dividend", 0) or 0)

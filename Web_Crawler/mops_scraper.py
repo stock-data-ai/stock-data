@@ -3,13 +3,13 @@ import datetime
 import os
 import sys
 import time
-import re
 import requests
 from typing import List, Optional, Dict, Any
 from cloudflare_d1_client import CloudflareD1Client
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from finance_tools.core.timezone import TAIPEI, taipei_now, taipei_today  # noqa: E402
+from finance_tools.core.roc_date import iso_to_roc, roc_to_iso  # noqa: E402
 
 
 def convert_roc_date(date_str: str) -> str:
@@ -20,19 +20,10 @@ def convert_roc_date(date_str: str) -> str:
         date_str (str): 民國日期字串 (例如: '115/01/29')
 
     Returns:
-        str: 西元日期字串 (YYYYMMDD 格式)
+        str: 西元日期字串 (YYYYMMDD 格式)；格式不對回 ''（以前原樣回傳民國字串，會寫進 D1）
     """
-    if not date_str:
-        return ''
-
-    match = re.match(r'(\d+)/(\d+)/(\d+)', date_str)
-    if match:
-        year = int(match.group(1)) + 1911
-        month = int(match.group(2))
-        day = int(match.group(3))
-        return f'{year}{month:02d}{day:02d}'
-
-    return date_str
+    iso = roc_to_iso(date_str)
+    return iso.replace('-', '') if iso else ''
 
 
 def fetch_mops_detail(
@@ -173,9 +164,8 @@ def scrape_mops_material_info(
 
     for idx, target_date in enumerate(date_list):
         # 轉換為民國年月日
-        year = str(int(target_date[0:4]) - 1911)
-        month = target_date[4:6]
-        day = target_date[6:8]
+        year, month, day = iso_to_roc(f'{target_date[0:4]}-{target_date[4:6]}-{target_date[6:8]}', '/').split('/')
+        year = str(int(year))   # 觀測站參數不補零
 
         params = {
             'year': year,
@@ -220,6 +210,9 @@ def scrape_mops_material_info(
 
                     # 轉換日期
                     pub_date = convert_roc_date(roc_date)
+                    if not pub_date:
+                        print(f'  略過日期格式不對的公告：{roc_date!r} {code}')
+                        continue
 
                     # 24 小時窗以前的公告上一班已抓過，不再打全文 API
                     if since:
@@ -259,7 +252,6 @@ def scrape_mops_material_info(
                         'content': detail.get('content'),
                         'speaker': detail.get('speaker'),
                         'event_date': detail.get('event_date'),
-                        'enter_date_roc': enter_date,
                         'serial_number': serial_number,
                         'market_kind': market_kind,
                     })
@@ -288,13 +280,12 @@ def scrape_mops_material_info(
             print("正在寫入 Cloudflare D1...")
             # Prepare data for insertion
             insert_sql = """
-            INSERT INTO mops_announcements (code, name, pub_date, pub_time, subject, source, content, speaker, event_date, enter_date_roc, serial_number, market_kind)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO mops_announcements (code, name, pub_date, pub_time, subject, source, content, speaker, event_date, serial_number, market_kind)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(code, pub_date, pub_time, subject) DO UPDATE SET
                 content = COALESCE(excluded.content, mops_announcements.content),
                 speaker = COALESCE(excluded.speaker, mops_announcements.speaker),
                 event_date = COALESCE(excluded.event_date, mops_announcements.event_date),
-                enter_date_roc = COALESCE(excluded.enter_date_roc, mops_announcements.enter_date_roc),
                 serial_number = COALESCE(excluded.serial_number, mops_announcements.serial_number),
                 market_kind = COALESCE(excluded.market_kind, mops_announcements.market_kind);
             """
@@ -311,7 +302,6 @@ def scrape_mops_material_info(
                     row.get('content'),
                     row.get('speaker'),
                     row.get('event_date'),
-                    row.get('enter_date_roc'),
                     row.get('serial_number'),
                     row.get('market_kind'),
                 ])

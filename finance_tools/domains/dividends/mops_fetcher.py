@@ -6,6 +6,7 @@ MOPS Dividend Fetcher - 從公開資訊觀測站開放資料抓取最新股利�
 import logging
 import pandas as pd
 from typing import Dict, Any, List, Optional, Tuple
+from finance_tools.core.roc_date import roc_to_iso, roc_year_to_ad
 
 logger = logging.getLogger(__name__)
 
@@ -29,13 +30,9 @@ _PERIOD_TO_SEQUENCE = {
 
 
 def _roc_to_date(val) -> Optional[str]:
-    """民國 7 碼整數 (e.g. 1150210) → 'YYYY-MM-DD'，失敗回 None"""
-    try:
-        s = str(int(val)).zfill(7)
-        y = int(s[:3]) + 1911
-        return f"{y}-{s[3:5]}-{s[5:7]}"
-    except Exception:
-        return None
+    """民國 7 碼（觀測站給整數，民國 99 年以前少一碼：990210）→ 'YYYY-MM-DD'，失敗回 None"""
+    s = str(val if val is not None else "").strip()
+    return roc_to_iso(s.zfill(7)) if s.isdigit() else None
 
 
 def _roc_range_to_date(raw: str) -> Optional[str]:
@@ -45,10 +42,8 @@ def _roc_range_to_date(raw: str) -> Optional[str]:
         return None
     try:
         a, b = raw.split("~")
-        def fmt(s):
-            s = s.strip().zfill(7)
-            return f"{int(s[:3])+1911}-{s[3:5]}-{s[5:7]}"
-        return f"{fmt(a)}~{fmt(b)}"
+        start, end = _roc_to_date(a), _roc_to_date(b)
+        return f"{start}~{end}" if start and end else None
     except Exception:
         return None
 
@@ -94,7 +89,7 @@ def fetch_all() -> Tuple[Dict[str, List[Dict[str, Any]]], Dict[str, str]]:
             mops_year = int(row.get("股利年度", 0))
             if mops_year == 0:
                 continue
-            fiscal_year = mops_year + 1911
+            fiscal_year = roc_year_to_ad(mops_year)
         except Exception:
             continue
 
