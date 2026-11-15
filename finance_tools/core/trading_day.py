@@ -32,9 +32,16 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterable, Union
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from finance_tools.core.timezone import taipei_today  # noqa: E402
-from finance_tools.core.roc_date import roc_to_iso  # noqa: E402
+# 以腳本執行（workflow 的 `python3 finance_tools/core/trading_day.py …`、health-check 的 `import trading_day`）時
+# 沒裝任何套件：直接載入同資料夾的 timezone／roc_date（兩支都只用標準函式庫），**不可**經過
+# finance_tools/core/__init__.py——它會 import api_client，需要 requests／pandas，沒裝就 ModuleNotFoundError，
+# 處置預測的休市閘門會因此把休市日當成交易日照跑（2026-11-15 發現）。
+if __package__:
+    from .timezone import taipei_today
+    from .roc_date import roc_to_iso
+else:
+    from timezone import taipei_today  # noqa: E402
+    from roc_date import roc_to_iso  # noqa: E402
 
 CALENDAR_PATH = Path(__file__).resolve().parents[2] / "src/data/market/tw-trading-calendar.json"
 TWSE_HOLIDAY_API = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
