@@ -3,16 +3,16 @@
   "companyName": "Brookfield Asset Management Ltd.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 1200000000,
-    "yoy": 4.1,
-    "grossMargin": 66.25,
-    "operatingMargin": 100.42,
-    "netMargin": 75.33,
-    "eps": 0.56,
-    "pe": 17.95,
-    "pb": 7.19,
-    "marketCap": 84574470144
+    "quarter": 3,
+    "revenue": 1545000000,
+    "yoy": 35.5,
+    "grossMargin": 66.8,
+    "operatingMargin": 90.87,
+    "netMargin": 171.2,
+    "eps": 1.65,
+    "pe": 17.47,
+    "pb": 8.74,
+    "marketCap": 82338660352
   },
   "historical": {
     "annual": [
@@ -92,6 +92,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 1545000000,
+        "grossProfit": 1032000000,
+        "operatingIncome": 1404000000,
+        "netIncome": 2645000000,
+        "eps": 1.65,
+        "grossMargin": 66.8,
+        "operatingMargin": 90.87,
+        "netMargin": 171.2,
+        "native": {
+          "revenue": 1545000000,
+          "grossProfit": 1032000000,
+          "operatingIncome": 1404000000,
+          "netIncome": 2645000000
+        },
+        "revenueYoY": 35.5
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -190,7 +210,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -3,16 +3,16 @@
   "companyName": "Spire Global, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 18048000,
-    "yoy": null,
-    "grossMargin": 34.12,
-    "operatingMargin": -107.31,
-    "netMargin": -110.64,
+    "quarter": 3,
+    "revenue": 17998000,
+    "yoy": 42.1,
+    "grossMargin": 46.11,
+    "operatingMargin": -112.04,
+    "netMargin": -112.52,
     "eps": -0.52,
     "pe": null,
-    "pb": 2.34,
-    "marketCap": 338345152
+    "pb": 2.84,
+    "marketCap": 361595808
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 17998000,
+        "grossProfit": 8299000,
+        "operatingIncome": -20165000,
+        "netIncome": -20252000,
+        "eps": -0.52,
+        "grossMargin": 46.11,
+        "operatingMargin": -112.04,
+        "netMargin": -112.52,
+        "native": {
+          "revenue": 17998000,
+          "grossProfit": 8299000,
+          "operatingIncome": -20165000,
+          "netIncome": -20252000
+        },
+        "revenueYoY": 42.1
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

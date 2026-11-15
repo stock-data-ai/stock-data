@@ -3,16 +3,16 @@
   "companyName": "Cogent Communications Holdings, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 235559000,
-    "yoy": -4.3,
-    "grossMargin": 46.93,
-    "operatingMargin": -6.15,
-    "netMargin": 28.29,
-    "eps": 1.38,
+    "quarter": 3,
+    "revenue": 231203000,
+    "yoy": -4.4,
+    "grossMargin": 47.51,
+    "operatingMargin": -5.25,
+    "netMargin": -12.87,
+    "eps": -0.62,
     "pe": null,
-    "pb": -3.35,
-    "marketCap": 203791456
+    "pb": -3.38,
+    "marketCap": 205327584
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 231203000,
+        "grossProfit": 109833000,
+        "operatingIncome": -12129000,
+        "netIncome": -29766000,
+        "eps": -0.62,
+        "grossMargin": 47.51,
+        "operatingMargin": -5.25,
+        "netMargin": -12.87,
+        "native": {
+          "revenue": 231203000,
+          "grossProfit": 109833000,
+          "operatingIncome": -12129000,
+          "netIncome": -29766000
+        },
+        "revenueYoY": -4.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

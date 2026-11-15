@@ -3,19 +3,38 @@
   "companyName": "Visa Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 11633000000,
-    "yoy": 14.4,
-    "grossMargin": 76.46,
-    "operatingMargin": 61.29,
-    "netMargin": 48.38,
-    "eps": 2.97,
-    "pe": 34.31,
-    "pb": 22.05,
-    "marketCap": 788580401152
+    "quarter": 4,
+    "revenue": 12139000000,
+    "yoy": 13.2,
+    "grossMargin": 82.17,
+    "operatingMargin": 63.73,
+    "netMargin": 49.44,
+    "eps": 3.19,
+    "pe": 34.56,
+    "pb": 22.21,
+    "marketCap": 794383024128
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 45903000000,
+        "grossProfit": 36903000000,
+        "operatingIncome": 29874000000,
+        "netIncome": 23504000000,
+        "eps": 12.32,
+        "grossMargin": 80.39,
+        "operatingMargin": 65.08,
+        "netMargin": 51.2,
+        "native": {
+          "revenue": 45903000000,
+          "grossProfit": 36903000000,
+          "operatingIncome": 29874000000,
+          "netIncome": 23504000000
+        },
+        "revenueYoY": 14.8
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 12139000000,
+        "grossProfit": 9975000000,
+        "operatingIncome": 7736000000,
+        "netIncome": 6002000000,
+        "eps": 3.19,
+        "grossMargin": 82.17,
+        "operatingMargin": 63.73,
+        "netMargin": 49.44,
+        "native": {
+          "revenue": 12139000000,
+          "grossProfit": 9975000000,
+          "operatingIncome": 7736000000,
+          "netIncome": 6002000000
+        },
+        "revenueYoY": 13.2
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

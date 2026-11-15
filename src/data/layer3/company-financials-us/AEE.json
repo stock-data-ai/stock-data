@@ -3,16 +3,16 @@
   "companyName": "Ameren Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 1,
-    "revenue": 2176000000,
-    "yoy": 3.8,
-    "grossMargin": 49.68,
-    "operatingMargin": 24.45,
-    "netMargin": 16.41,
-    "eps": 1.28,
-    "pe": 19.63,
-    "pb": 2.2,
-    "marketCap": 31241762816
+    "quarter": 3,
+    "revenue": 2882000000,
+    "yoy": 6.8,
+    "grossMargin": 52.39,
+    "operatingMargin": 31.23,
+    "netMargin": 23.46,
+    "eps": 2.42,
+    "pe": 19.96,
+    "pb": 2.24,
+    "marketCap": 31784116224
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 2882000000,
+        "grossProfit": 1510000000,
+        "operatingIncome": 900000000,
+        "netIncome": 676000000,
+        "eps": 2.42,
+        "grossMargin": 52.39,
+        "operatingMargin": 31.23,
+        "netMargin": 23.46,
+        "native": {
+          "revenue": 2882000000,
+          "grossProfit": 1510000000,
+          "operatingIncome": 900000000,
+          "netIncome": 676000000
+        },
+        "revenueYoY": 6.8
+      },
       {
         "year": 2026,
         "quarter": 1,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

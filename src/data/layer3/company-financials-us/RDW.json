@@ -3,16 +3,16 @@
   "companyName": "Redwire Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 117074000,
-    "yoy": 89.6,
-    "grossMargin": 27.8,
-    "operatingMargin": -18.86,
-    "netMargin": -35.0,
-    "eps": -0.19,
+    "quarter": 3,
+    "revenue": 109035000,
+    "yoy": 5.4,
+    "grossMargin": 32.3,
+    "operatingMargin": -23.24,
+    "netMargin": -21.26,
+    "eps": -0.09,
     "pe": null,
-    "pb": 1.12,
-    "marketCap": 1804081280
+    "pb": 1.2,
+    "marketCap": 1934195328
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 109035000,
+        "grossProfit": 35222000,
+        "operatingIncome": -25335000,
+        "netIncome": -23178000,
+        "eps": -0.09,
+        "grossMargin": 32.3,
+        "operatingMargin": -23.24,
+        "netMargin": -21.26,
+        "native": {
+          "revenue": 109035000,
+          "grossProfit": 35222000,
+          "operatingIncome": -25335000,
+          "netIncome": -23178000
+        },
+        "revenueYoY": 5.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

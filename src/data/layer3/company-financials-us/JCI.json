@@ -3,19 +3,38 @@
   "companyName": "Johnson Controls International plc",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 6614000000,
-    "yoy": 9.3,
-    "grossMargin": 37.41,
-    "operatingMargin": 16.13,
-    "netMargin": 11.32,
-    "eps": 1.23,
-    "pe": 28.61,
-    "pb": 5.99,
-    "marketCap": 81793269760
+    "quarter": 4,
+    "revenue": 7113000000,
+    "yoy": 10.4,
+    "grossMargin": 38.03,
+    "operatingMargin": 17.21,
+    "netMargin": 13.59,
+    "eps": 1.6,
+    "pe": 29.52,
+    "pb": 6.16,
+    "marketCap": 83625828352
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 25666000000,
+        "grossProfit": 9515000000,
+        "operatingIncome": 4005000000,
+        "netIncome": 2853000000,
+        "eps": 4.68,
+        "grossMargin": 37.07,
+        "operatingMargin": 15.6,
+        "netMargin": 11.12,
+        "native": {
+          "revenue": 25666000000,
+          "grossProfit": 9515000000,
+          "operatingIncome": 4005000000,
+          "netIncome": 2853000000
+        },
+        "revenueYoY": 8.8
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 7113000000,
+        "grossProfit": 2705000000,
+        "operatingIncome": 1224000000,
+        "netIncome": 967000000,
+        "eps": 1.6,
+        "grossMargin": 38.03,
+        "operatingMargin": 17.21,
+        "netMargin": 13.59,
+        "native": {
+          "revenue": 7113000000,
+          "grossProfit": 2705000000,
+          "operatingIncome": 1224000000,
+          "netIncome": 967000000
+        },
+        "revenueYoY": 10.4
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

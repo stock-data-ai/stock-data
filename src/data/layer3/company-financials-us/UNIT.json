@@ -3,16 +3,16 @@
   "companyName": "Uniti Group Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 909700000,
-    "yoy": 202.5,
-    "grossMargin": 57.83,
-    "operatingMargin": 4.59,
-    "netMargin": -17.14,
-    "eps": -0.68,
-    "pe": 3.35,
-    "pb": 7.61,
-    "marketCap": 1267025152
+    "quarter": 3,
+    "revenue": 848100000,
+    "yoy": 17.4,
+    "grossMargin": 53.91,
+    "operatingMargin": -2.81,
+    "netMargin": -28.83,
+    "eps": -1.03,
+    "pe": null,
+    "pb": -14.48,
+    "marketCap": 1184994944
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 848100000,
+        "grossProfit": 457200000,
+        "operatingIncome": -23800000,
+        "netIncome": -244500000,
+        "eps": -1.03,
+        "grossMargin": 53.91,
+        "operatingMargin": -2.81,
+        "netMargin": -28.83,
+        "native": {
+          "revenue": 848100000,
+          "grossProfit": 457200000,
+          "operatingIncome": -23800000,
+          "netIncome": -244500000
+        },
+        "revenueYoY": 17.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

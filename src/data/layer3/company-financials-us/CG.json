@@ -3,16 +3,16 @@
   "companyName": "The Carlyle Group Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 854600000,
-    "yoy": -12.6,
+    "quarter": 3,
+    "revenue": 414200000,
+    "yoy": -27.8,
     "grossMargin": null,
     "operatingMargin": null,
-    "netMargin": 16.04,
-    "eps": 0.37,
-    "pe": 40.93,
+    "netMargin": -1.86,
+    "eps": -0.02,
+    "pe": 41.86,
     "pb": 2.81,
-    "marketCap": 14041889792
+    "marketCap": 14075190272
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 414200000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": -7700000,
+        "eps": -0.02,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": -1.86,
+        "native": {
+          "revenue": 414200000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": -7700000
+        },
+        "revenueYoY": -27.8
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

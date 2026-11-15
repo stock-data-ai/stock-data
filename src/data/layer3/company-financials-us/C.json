@@ -3,16 +3,16 @@
   "companyName": "Citigroup Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 24765000000,
-    "yoy": 14.3,
+    "quarter": 3,
+    "revenue": 23839000000,
+    "yoy": 7.9,
     "grossMargin": null,
     "operatingMargin": null,
-    "netMargin": 23.55,
-    "eps": 3.15,
-    "pe": 11.6,
-    "pb": 1.03,
-    "marketCap": 197052104704
+    "netMargin": 22.0,
+    "eps": 2.85,
+    "pe": 12.09,
+    "pb": 1.07,
+    "marketCap": 205261914112
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 23839000000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 5245000000,
+        "eps": 2.85,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": 22.0,
+        "native": {
+          "revenue": 23839000000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": 5245000000
+        },
+        "revenueYoY": 7.9
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

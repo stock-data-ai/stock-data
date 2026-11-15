@@ -3,35 +3,54 @@
   "companyName": "Emerson Electric Co.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 4562000000,
-    "yoy": 2.9,
-    "grossMargin": 53.09,
-    "operatingMargin": 19.75,
-    "netMargin": 13.55,
-    "eps": 1.1,
-    "pe": 33.89,
-    "pb": 4.38,
-    "marketCap": 90932232192
+    "quarter": 4,
+    "revenue": 5201000000,
+    "yoy": 7.1,
+    "grossMargin": 52.68,
+    "operatingMargin": 21.98,
+    "netMargin": 14.42,
+    "eps": 1.33,
+    "pe": 34.73,
+    "pb": 4.47,
+    "marketCap": 91276066816
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 18982000000,
+        "grossProfit": 10128000000,
+        "operatingIncome": 4016000000,
+        "netIncome": 2691000000,
+        "eps": 4.79,
+        "grossMargin": 53.36,
+        "operatingMargin": 21.16,
+        "netMargin": 14.18,
+        "native": {
+          "revenue": 18982000000,
+          "grossProfit": 10128000000,
+          "operatingIncome": 4016000000,
+          "netIncome": 2691000000
+        },
+        "revenueYoY": 5.4
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
         "revenue": 18016000000,
         "grossProfit": 9519000000,
         "operatingIncome": 3532000000,
-        "netIncome": 2293000000,
-        "eps": 4.04,
+        "netIncome": 2270000000,
+        "eps": 4.0,
         "grossMargin": 52.84,
         "operatingMargin": 19.6,
-        "netMargin": 12.73,
+        "netMargin": 12.6,
         "native": {
           "revenue": 18016000000,
           "grossProfit": 9519000000,
           "operatingIncome": 3532000000,
-          "netIncome": 2293000000
+          "netIncome": 2270000000
         },
         "revenueYoY": 3.0
       },
@@ -41,16 +60,16 @@
         "revenue": 17492000000,
         "grossProfit": 8885000000,
         "operatingIncome": 2666000000,
-        "netIncome": 1968000000,
-        "eps": 3.43,
+        "netIncome": 1974000000,
+        "eps": 3.44,
         "grossMargin": 50.79,
         "operatingMargin": 15.24,
-        "netMargin": 11.25,
+        "netMargin": 11.29,
         "native": {
           "revenue": 17492000000,
           "grossProfit": 8885000000,
           "operatingIncome": 2666000000,
-          "netIncome": 1968000000
+          "netIncome": 1974000000
         },
         "revenueYoY": 15.3
       },
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 5201000000,
+        "grossProfit": 2740000000,
+        "operatingIncome": 1143000000,
+        "netIncome": 750000000,
+        "eps": 1.33,
+        "grossMargin": 52.68,
+        "operatingMargin": 21.98,
+        "netMargin": 14.42,
+        "native": {
+          "revenue": 5201000000,
+          "grossProfit": 2740000000,
+          "operatingIncome": 1143000000,
+          "netIncome": 750000000
+        },
+        "revenueYoY": 7.1
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -211,7 +250,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

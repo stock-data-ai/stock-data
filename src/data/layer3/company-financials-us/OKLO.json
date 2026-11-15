@@ -3,16 +3,16 @@
   "companyName": "Oklo Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 1210000,
+    "quarter": 3,
+    "revenue": 1861000,
     "yoy": null,
-    "grossMargin": 40.41,
-    "operatingMargin": -6048.76,
-    "netMargin": -4011.24,
-    "eps": -0.28,
+    "grossMargin": 41.48,
+    "operatingMargin": -4430.25,
+    "netMargin": -2243.2,
+    "eps": -0.22,
     "pe": null,
-    "pb": 2.56,
-    "marketCap": 4380715520
+    "pb": 1.28,
+    "marketCap": 4671327232
   },
   "historical": {
     "annual": [
@@ -92,6 +92,25 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 1861000,
+        "grossProfit": 772000,
+        "operatingIncome": -82447000,
+        "netIncome": -41746000,
+        "eps": -0.22,
+        "grossMargin": 41.48,
+        "operatingMargin": -4430.25,
+        "netMargin": -2243.2,
+        "native": {
+          "revenue": 1861000,
+          "grossProfit": 772000,
+          "operatingIncome": -82447000,
+          "netIncome": -41746000
+        }
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 1210000,
@@ -152,7 +171,7 @@
         "quarter": 3,
         "periodEnd": "2025-09-30",
         "revenue": 0,
-        "grossProfit": null,
+        "grossProfit": 0,
         "operatingIncome": -36309000,
         "netIncome": -29722000,
         "eps": -0.2,
@@ -161,7 +180,7 @@
         "netMargin": null,
         "native": {
           "revenue": 0,
-          "grossProfit": null,
+          "grossProfit": 0,
           "operatingIncome": -36309000,
           "netIncome": -29722000
         }
@@ -187,7 +206,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

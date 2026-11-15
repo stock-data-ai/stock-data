@@ -3,19 +3,38 @@
   "companyName": "Rockwell Automation, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 2313000000,
-    "yoy": 7.9,
-    "grossMargin": 49.46,
-    "operatingMargin": 20.8,
-    "netMargin": 17.64,
-    "eps": 3.65,
-    "pe": 29.97,
-    "pb": 11.76,
-    "marketCap": 41738752000
+    "quarter": 4,
+    "revenue": 2332000000,
+    "yoy": 0.7,
+    "grossMargin": 51.89,
+    "operatingMargin": 19.51,
+    "netMargin": 14.84,
+    "eps": 3.11,
+    "pe": 32.09,
+    "pb": 12.45,
+    "marketCap": 44173475840
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 8989000000,
+        "grossProfit": 4495000000,
+        "operatingIncome": 1769000000,
+        "netIncome": 1409000000,
+        "eps": 12.54,
+        "grossMargin": 50.01,
+        "operatingMargin": 19.68,
+        "netMargin": 15.67,
+        "native": {
+          "revenue": 8989000000,
+          "grossProfit": 4495000000,
+          "operatingIncome": 1769000000,
+          "netIncome": 1409000000
+        },
+        "revenueYoY": 7.8
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 2332000000,
+        "grossProfit": 1210000000,
+        "operatingIncome": 455000000,
+        "netIncome": 346000000,
+        "eps": 3.11,
+        "grossMargin": 51.89,
+        "operatingMargin": 19.51,
+        "netMargin": 14.84,
+        "native": {
+          "revenue": 2332000000,
+          "grossProfit": 1210000000,
+          "operatingIncome": 455000000,
+          "netIncome": 346000000
+        },
+        "revenueYoY": 0.7
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

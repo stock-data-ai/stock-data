@@ -3,16 +3,16 @@
   "companyName": "Main Street Capital Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 177983000,
-    "yoy": 22.8,
+    "quarter": 3,
+    "revenue": 144542000,
+    "yoy": -4.4,
     "grossMargin": null,
     "operatingMargin": null,
-    "netMargin": 82.92,
-    "eps": 1.58,
-    "pe": 11.75,
-    "pb": 1.67,
-    "marketCap": 5330917376
+    "netMargin": 81.0,
+    "eps": 1.25,
+    "pe": 11.63,
+    "pb": 1.65,
+    "marketCap": 5292948480
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 144542000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 117083000,
+        "eps": 1.25,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": 81.0,
+        "native": {
+          "revenue": 144542000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": 117083000
+        },
+        "revenueYoY": -4.4
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

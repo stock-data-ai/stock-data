@@ -3,19 +3,38 @@
   "companyName": "TE Connectivity plc",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 5160000000,
-    "yoy": 13.8,
-    "grossMargin": 35.56,
-    "operatingMargin": 20.79,
-    "netMargin": 14.5,
-    "eps": 2.55,
-    "pe": 18.7,
-    "pb": 4.38,
-    "marketCap": 59515486208
+    "quarter": 4,
+    "revenue": 5312000000,
+    "yoy": 11.9,
+    "grossMargin": 35.52,
+    "operatingMargin": 21.07,
+    "netMargin": 16.94,
+    "eps": 3.09,
+    "pe": 19.54,
+    "pb": 4.58,
+    "marketCap": 62023618560
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 19885000000,
+        "grossProfit": 7206000000,
+        "operatingIncome": 4140000000,
+        "netIncome": 3253000000,
+        "eps": 11.06,
+        "grossMargin": 36.24,
+        "operatingMargin": 20.82,
+        "netMargin": 16.36,
+        "native": {
+          "revenue": 19885000000,
+          "grossProfit": 7206000000,
+          "operatingIncome": 4140000000,
+          "netIncome": 3253000000
+        },
+        "revenueYoY": 15.2
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 5312000000,
+        "grossProfit": 1887000000,
+        "operatingIncome": 1119000000,
+        "netIncome": 900000000,
+        "eps": 3.09,
+        "grossMargin": 35.52,
+        "operatingMargin": 21.07,
+        "netMargin": 16.94,
+        "native": {
+          "revenue": 5312000000,
+          "grossProfit": 1887000000,
+          "operatingIncome": 1119000000,
+          "netIncome": 900000000
+        },
+        "revenueYoY": 11.9
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -3,16 +3,16 @@
   "companyName": "Playtika Holding Corp.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 731100000,
-    "yoy": 5.0,
-    "grossMargin": 73.62,
-    "operatingMargin": 18.48,
-    "netMargin": 6.57,
-    "eps": 0.13,
+    "quarter": 3,
+    "revenue": 673800000,
+    "yoy": -0.1,
+    "grossMargin": 74.03,
+    "operatingMargin": 17.85,
+    "netMargin": 6.0,
+    "eps": 0.11,
     "pe": null,
-    "pb": -2.61,
-    "marketCap": 933726656
+    "pb": -2.82,
+    "marketCap": 1010261632
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 673800000,
+        "grossProfit": 498800000,
+        "operatingIncome": 120300000,
+        "netIncome": 40400000,
+        "eps": 0.11,
+        "grossMargin": 74.03,
+        "operatingMargin": 17.85,
+        "netMargin": 6.0,
+        "native": {
+          "revenue": 673800000,
+          "grossProfit": 498800000,
+          "operatingIncome": 120300000,
+          "netIncome": 40400000
+        },
+        "revenueYoY": -0.1
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

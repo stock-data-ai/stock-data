@@ -3,16 +3,16 @@
   "companyName": "Howard Hughes Holdings Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 1122327000,
-    "yoy": 330.2,
-    "grossMargin": 29.03,
-    "operatingMargin": 20.14,
-    "netMargin": 14.11,
-    "eps": 2.68,
-    "pe": 29.56,
-    "pb": 1.16,
-    "marketCap": 4641725440
+    "quarter": 3,
+    "revenue": 636296000,
+    "yoy": 63.1,
+    "grossMargin": 30.41,
+    "operatingMargin": 15.63,
+    "netMargin": -0.17,
+    "eps": -0.39,
+    "pe": 31.57,
+    "pb": 1.24,
+    "marketCap": 4957622784
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 636296000,
+        "grossProfit": 193467000,
+        "operatingIncome": 99473000,
+        "netIncome": -1087000,
+        "eps": -0.39,
+        "grossMargin": 30.41,
+        "operatingMargin": 15.63,
+        "netMargin": -0.17,
+        "native": {
+          "revenue": 636296000,
+          "grossProfit": 193467000,
+          "operatingIncome": 99473000,
+          "netIncome": -1087000
+        },
+        "revenueYoY": 63.1
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

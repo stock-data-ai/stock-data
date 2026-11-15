@@ -3,16 +3,16 @@
   "companyName": "Morgan Stanley",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 19884000000,
-    "yoy": 27.4,
+    "quarter": 3,
+    "revenue": 18871000000,
+    "yoy": 10.5,
     "grossMargin": null,
     "operatingMargin": null,
-    "netMargin": 28.07,
-    "eps": 3.46,
-    "pe": 14.39,
-    "pb": 2.65,
-    "marketCap": 283598684160
+    "netMargin": 26.01,
+    "eps": 3.03,
+    "pe": 15.12,
+    "pb": 2.78,
+    "marketCap": 297994289152
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 18871000000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 4909000000,
+        "eps": 3.03,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": 26.01,
+        "native": {
+          "revenue": 18871000000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": 4909000000
+        },
+        "revenueYoY": 10.5
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

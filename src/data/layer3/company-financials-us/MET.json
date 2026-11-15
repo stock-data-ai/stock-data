@@ -3,16 +3,16 @@
   "companyName": "MetLife, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 18877000000,
-    "yoy": 9.9,
+    "quarter": 3,
+    "revenue": 19892000000,
+    "yoy": 17.8,
     "grossMargin": null,
     "operatingMargin": null,
-    "netMargin": 3.9,
-    "eps": 1.1,
-    "pe": 12.85,
-    "pb": 2.79,
-    "marketCap": 61757005824
+    "netMargin": 12.05,
+    "eps": 3.67,
+    "pe": 13.31,
+    "pb": 2.91,
+    "marketCap": 64509583360
   },
   "historical": {
     "annual": [
@@ -95,13 +95,33 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 19892000000,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 2397000000,
+        "eps": 3.67,
+        "grossMargin": null,
+        "operatingMargin": null,
+        "netMargin": 12.05,
+        "native": {
+          "revenue": 19892000000,
+          "grossProfit": null,
+          "operatingIncome": null,
+          "netIncome": 2397000000
+        },
+        "revenueYoY": 17.8
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 18877000000,
         "grossProfit": null,
         "operatingIncome": null,
         "netIncome": 736000000,
-        "eps": 1.1,
+        "eps": 1.09,
         "grossMargin": null,
         "operatingMargin": null,
         "netMargin": 3.9,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

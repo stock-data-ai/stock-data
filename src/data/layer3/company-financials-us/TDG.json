@@ -3,19 +3,38 @@
   "companyName": "TransDigm Group Incorporated",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 2741000000,
-    "yoy": 22.5,
-    "grossMargin": 59.39,
-    "operatingMargin": 45.49,
-    "netMargin": 19.66,
-    "eps": 9.39,
-    "pe": 36.31,
-    "pb": -6.74,
-    "marketCap": 66953060352
+    "quarter": 4,
+    "revenue": 2988000000,
+    "yoy": 22.6,
+    "grossMargin": 59.0,
+    "operatingMargin": 46.39,
+    "netMargin": 19.68,
+    "eps": 10.33,
+    "pe": 34.28,
+    "pb": -6.64,
+    "marketCap": 66451116032
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 10557000000,
+        "grossProfit": 6254000000,
+        "operatingIncome": 4867000000,
+        "netIncome": 2107000000,
+        "eps": 35.51,
+        "grossMargin": 59.24,
+        "operatingMargin": 46.1,
+        "netMargin": 19.96,
+        "native": {
+          "revenue": 10557000000,
+          "grossProfit": 6254000000,
+          "operatingIncome": 4867000000,
+          "netIncome": 2107000000
+        },
+        "revenueYoY": 19.5
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -40,16 +59,16 @@
         "periodEnd": "2024-09-30",
         "revenue": 7940000000,
         "grossProfit": 4672000000,
-        "operatingIncome": 3577000000,
+        "operatingIncome": 3531000000,
         "netIncome": 1714000000,
         "eps": 25.62,
         "grossMargin": 58.84,
-        "operatingMargin": 45.05,
+        "operatingMargin": 44.47,
         "netMargin": 21.59,
         "native": {
           "revenue": 7940000000,
           "grossProfit": 4672000000,
-          "operatingIncome": 3577000000,
+          "operatingIncome": 3531000000,
           "netIncome": 1714000000
         },
         "revenueYoY": 20.6
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 2988000000,
+        "grossProfit": 1763000000,
+        "operatingIncome": 1386000000,
+        "netIncome": 588000000,
+        "eps": 10.33,
+        "grossMargin": 59.0,
+        "operatingMargin": 46.39,
+        "netMargin": 19.68,
+        "native": {
+          "revenue": 2988000000,
+          "grossProfit": 1763000000,
+          "operatingIncome": 1386000000,
+          "netIncome": 588000000
+        },
+        "revenueYoY": 22.6
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

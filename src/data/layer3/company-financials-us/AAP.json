@@ -3,16 +3,16 @@
   "companyName": "Advance Auto Parts, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 2000000000,
-    "yoy": -0.5,
-    "grossMargin": 46.15,
-    "operatingMargin": 5.55,
-    "netMargin": 2.75,
-    "eps": 0.9,
-    "pe": 22.41,
+    "quarter": 3,
+    "revenue": 2012000000,
+    "yoy": -1.2,
+    "grossMargin": 44.58,
+    "operatingMargin": 4.42,
+    "netMargin": 0.75,
+    "eps": 0.25,
+    "pe": 22.4,
     "pb": 1.21,
-    "marketCap": 2748199936
+    "marketCap": 2746387968
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 2012000000,
+        "grossProfit": 897000000,
+        "operatingIncome": 89000000,
+        "netIncome": 15000000,
+        "eps": 0.25,
+        "grossMargin": 44.58,
+        "operatingMargin": 4.42,
+        "netMargin": 0.75,
+        "native": {
+          "revenue": 2012000000,
+          "grossProfit": 897000000,
+          "operatingIncome": 89000000,
+          "netIncome": 15000000
+        },
+        "revenueYoY": -1.2
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "periodBasis": "fiscal",

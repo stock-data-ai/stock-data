@@ -3,16 +3,16 @@
   "companyName": "Skydance Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 6913000000,
-    "yoy": 0.9,
-    "grossMargin": 35.73,
-    "operatingMargin": 9.59,
-    "netMargin": 0.59,
-    "eps": 0.04,
+    "quarter": 3,
+    "revenue": 7025000000,
+    "yoy": null,
+    "grossMargin": 33.72,
+    "operatingMargin": 7.9,
+    "netMargin": 1.04,
+    "eps": 0.06,
     "pe": null,
-    "pb": 0.76,
-    "marketCap": 40387846144
+    "pb": 0.71,
+    "marketCap": 37932552192
   },
   "historical": {
     "annual": [
@@ -95,6 +95,25 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 7025000000,
+        "grossProfit": 2369000000,
+        "operatingIncome": 555000000,
+        "netIncome": 73000000,
+        "eps": 0.06,
+        "grossMargin": 33.72,
+        "operatingMargin": 7.9,
+        "netMargin": 1.04,
+        "native": {
+          "revenue": 7025000000,
+          "grossProfit": 2369000000,
+          "operatingIncome": 555000000,
+          "netIncome": 73000000
+        }
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 6913000000,
@@ -160,7 +179,7 @@
         "grossProfit": 2231000000,
         "operatingIncome": 600000000,
         "netIncome": 152000000,
-        "eps": 0.22,
+        "eps": null,
         "grossMargin": 31.02,
         "operatingMargin": 8.34,
         "netMargin": 2.11,
@@ -173,7 +192,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

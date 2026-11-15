@@ -3,16 +3,16 @@
   "companyName": "Nebius Group N.V.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 582300000,
-    "yoy": 454.0,
-    "grossMargin": 77.06,
-    "operatingMargin": -30.21,
-    "netMargin": -32.7,
-    "eps": -0.68,
-    "pe": 101.16,
-    "pb": 3.43,
-    "marketCap": 32877279232
+    "quarter": 3,
+    "revenue": 980800000,
+    "yoy": 571.3,
+    "grossMargin": 77.6,
+    "operatingMargin": 5.14,
+    "netMargin": -3.82,
+    "eps": null,
+    "pe": 90.53,
+    "pb": 2.76,
+    "marketCap": 33941528576
   },
   "historical": {
     "annual": [
@@ -23,7 +23,7 @@
         "grossProfit": 363600000,
         "operatingIncome": -611700000,
         "netIncome": 82500000,
-        "eps": 0.4,
+        "eps": 0.33,
         "grossMargin": 68.63,
         "operatingMargin": -115.46,
         "netMargin": 15.57,
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 980800000,
+        "grossProfit": 761100000,
+        "operatingIncome": 50400000,
+        "netIncome": -37500000,
+        "eps": null,
+        "grossMargin": 77.6,
+        "operatingMargin": 5.14,
+        "netMargin": -3.82,
+        "native": {
+          "revenue": 980800000,
+          "grossProfit": 761100000,
+          "operatingIncome": 50400000,
+          "netIncome": -37500000
+        },
+        "revenueYoY": 571.3
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

@@ -3,16 +3,16 @@
   "companyName": "The Goodyear Tire & Rubber Company",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 4250000000,
-    "yoy": -4.8,
-    "grossMargin": 16.02,
-    "operatingMargin": -0.52,
-    "netMargin": -4.8,
-    "eps": -0.71,
+    "quarter": 3,
+    "revenue": 4540000000,
+    "yoy": -2.3,
+    "grossMargin": 15.93,
+    "operatingMargin": 1.28,
+    "netMargin": -5.24,
+    "eps": -0.82,
     "pe": null,
-    "pb": 0.48,
-    "marketCap": 1255472896
+    "pb": 0.45,
+    "marketCap": 1186364160
   },
   "historical": {
     "annual": [
@@ -93,6 +93,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 4540000000,
+        "grossProfit": 723000000,
+        "operatingIncome": 58000000,
+        "netIncome": -238000000,
+        "eps": -0.82,
+        "grossMargin": 15.93,
+        "operatingMargin": 1.28,
+        "netMargin": -5.24,
+        "native": {
+          "revenue": 4540000000,
+          "grossProfit": 723000000,
+          "operatingIncome": 58000000,
+          "netIncome": -238000000
+        },
+        "revenueYoY": -2.3
+      },
       {
         "year": 2026,
         "quarter": 2,
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-08",
+  "lastUpdated": "2026-11-15",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "periodBasis": "fiscal",
