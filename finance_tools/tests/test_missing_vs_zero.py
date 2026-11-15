@@ -100,3 +100,20 @@ def test_quarterly_reporter_partial_year_still_partial():
     rows = normal_quarter("2025-06-30") + normal_quarter("2025-09-30")
     annual, _ = DataProcessor.process_financials("1234", statements(rows))
     assert annual[0]["note"] == "累季"
+
+
+def test_financial_company_balance_sheet_names_are_recognised():
+    # 富邦金 2025-12-31 的 FinMind 原文科目（金額列＋百分比列）。以前對不上，ROE／ROA／負債比全是 None
+    d = "2025-12-31"
+    bs = pd.DataFrame([{"date": d, "origin_name": n, "value": v} for n, v in [
+        ("資產總計", 12875478154000.0), ("資產總計", 100.0),
+        ("負債總", 11877670227000.0), ("負債總", 92.25),
+        ("歸屬於母公司業主之權益", 982581684000.0), ("歸屬於母公司業主之權益", 7.63),
+        ("權益總計", 997807927000.0), ("權益總計", 7.75),
+        ("負債及權益總計", 12875478154000.0),
+    ]])
+    snap = DataProcessor.process_balance_sheet("2881", bs)[(2025, 4)]
+    assert snap["totalAssets"] == 12875478154000.0
+    assert snap["totalLiabilities"] == 11877670227000.0
+    # 與一般公司同規則：同一項目多個名稱取金額最大者（權益總計，含非控制權益）
+    assert snap["equity"] == 997807927000.0
