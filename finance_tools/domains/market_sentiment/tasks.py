@@ -5,7 +5,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Optional
 
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.market_sentiment.fetcher import MarketSentimentFetcher
 
@@ -43,7 +43,7 @@ def _write_margin_history(fetcher: MarketSentimentFetcher, margin_section: Optio
     當日那筆以剛抓到的 TWSE 官方數字覆蓋，確保線圖末端與資券卡上的餘額一致。
     FinMind 掛掉時保留既有檔案，只補當日一筆。
     """
-    end = now_tw()
+    end = taipei_now()
     start = end - timedelta(days=MARGIN_HISTORY_DAYS)
     start_str, end_str = start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
 
@@ -103,7 +103,7 @@ def _write_institutional_history(
     其餘策略與融資水位相同：整段重抓自我修復、當日以 BFI82U 官方數字覆蓋、
     FinMind 掛掉時保留既有檔案。
     """
-    end = now_tw()
+    end = taipei_now()
     start = end - timedelta(days=INST_HISTORY_DAYS)
     start_str, end_str = start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
 
@@ -178,7 +178,7 @@ def run_update_market_sentiment(args):
     """
     date_str = getattr(args, "date", None)
     if not date_str:
-        date_str = now_tw().strftime("%Y%m%d")
+        date_str = taipei_now().strftime("%Y%m%d")
     date_str = date_str.replace("-", "")
     formatted_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
 
@@ -203,7 +203,7 @@ def run_update_market_sentiment(args):
     # 交易日的 STALE 檢查：拿不到當日資料不可綠燈（休市日照舊跳過）。
     # 三大法人 ~15:00 公布，每一趟（15:55 起）都必須有；
     # 融資融券 ~21:00 公布，只在 21:30 後的那趟（21:55）強制要求。
-    now = now_tw()
+    now = taipei_now()
     is_trading = is_tw_trading_day(parse_yyyymmdd(date_str))
     is_today = date_str == now.strftime("%Y%m%d")
 

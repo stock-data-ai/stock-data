@@ -26,13 +26,12 @@ import base64
 import json
 import os
 import sys
-from datetime import datetime, date
 from pathlib import Path
 from typing import Union
 
 import requests
 
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now, taipei_today
 from finance_tools.core.trading_day import is_tw_trading_day
 
 BASE = Path(__file__).parent.parent.parent / "src/data"
@@ -212,7 +211,7 @@ def compute(topics_list: list, companies_index: list) -> dict:
 
     # 上游 daily-update 沒跑成功時，這裡會拿舊資料算完、照樣寫檔並標今天的日期——
     # 綠燈但籌碼訊號其實停在前一天（2026-08-19 實際發生過）。交易日就必須有當日資料。
-    today = now_tw().date()
+    today = taipei_now().date()
     if is_tw_trading_day(today) and newest_inst_date != today.isoformat():
         print(f"[chip_topic] STALE: 三大法人最新資料為 {newest_inst_date or '無'}，"
               f"但 {today.isoformat()} 為交易日 —— 上游每日更新未完成，中止產出。")
@@ -242,7 +241,7 @@ def _push_to_stock_map(output: dict, pat: str) -> None:
 
     put_url = f"https://api.github.com/repos/{STOCK_MAP_REPO}/contents/{CHIP_TOPIC_PATH}"
     payload: dict = {
-        "message": f"sync: chip-topic 籌碼訊號更新 {date.today().isoformat()}",
+        "message": f"sync: chip-topic 籌碼訊號更新 {taipei_today().isoformat()}",
         "content": content_b64,
         "branch": STOCK_MAP_BRANCH,
     }
@@ -260,7 +259,7 @@ def run(dry_run: bool = False) -> None:
     # 休市日沒有新的三大法人資料，算出來的就是上一交易日那份——不寫檔、不推送。
     # cron 只按星期排（週一~五），國定假日要靠這裡擋；否則 stock_map 會收到一份
     # 內容不變、日期卻換成今天的 chip-topic.json，觸發題材籌碼推播。
-    today = now_tw().date()
+    today = taipei_now().date()
     if not is_tw_trading_day(today):
         print(f"[chip_topic] {today.isoformat()} 休市，跳過（不產出、不推送）")
         return

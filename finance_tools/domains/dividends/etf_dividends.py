@@ -28,7 +28,7 @@ from typing import Dict, List, Optional
 
 import requests
 
-from finance_tools.core.timezone import today_str
+from finance_tools.core.timezone import taipei_today
 from finance_tools.utils.finmind import DATA_URL, TIMEOUT_SEC, finmind_token
 
 logger = logging.getLogger(__name__)
@@ -166,7 +166,7 @@ def update_one(code: str, today: str) -> str:
 
 
 def run_update_etf_dividends(args: argparse.Namespace) -> None:
-    today = today_str()
+    today = taipei_today().isoformat()
     codes = _etf_codes()
     if getattr(args, "code", None):
         codes = [args.code]

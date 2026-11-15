@@ -5,7 +5,7 @@ import pandas as pd
 from finance_tools.core import DataProcessor
 from finance_tools.core import merge_policy
 from finance_tools.domains.financials.calculator import FinancialCalculator
-from finance_tools.core.timezone import today_str
+from finance_tools.core.timezone import taipei_today
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class DataAssembler:
         existing_inst = existing_data['historical'].get('institutionalInvestors') or {}
         existing_inst.update(institutional_investors_data or {})
         existing_data['historical']['institutionalInvestors'] = existing_inst or None
-        existing_data['lastUpdated'] = today_str()
+        existing_data['lastUpdated'] = taipei_today().isoformat()
         return existing_data
 
     @staticmethod
@@ -54,7 +54,7 @@ class DataAssembler:
             # Yahoo returns yield as decimal (0.05), we store as percentage
             existing_data['latest']['dividendYield'] = valuation_stats['dividendYield'] * 100
             
-        existing_data['lastUpdated'] = today_str()
+        existing_data['lastUpdated'] = taipei_today().isoformat()
         return existing_data
 
     @staticmethod
@@ -101,7 +101,7 @@ class DataAssembler:
                 'boardTotals': holdings['boardTotals'],
             }
 
-        existing_data['lastUpdated'] = today_str()
+        existing_data['lastUpdated'] = taipei_today().isoformat()
         return existing_data
 
     @staticmethod
@@ -212,7 +212,7 @@ class DataAssembler:
             "dividends": merged_dividends if merged_dividends else None,
             "institutionalInvestors": {**(existing_historical.get('institutionalInvestors') or {}), **(institutional_investors_data or {})} or None,
         })
-        final_data["lastUpdated"] = today_str()
+        final_data["lastUpdated"] = taipei_today().isoformat()
         final_data["dataQuality"] = quality
         logger.debug(f"Assembled final data for {code} with quality '{quality}'.")
         return final_data

@@ -28,7 +28,7 @@ from typing import Dict, List, Optional, Tuple
 import finance_tools.config as config
 from finance_tools.core import FileManager, merge_policy
 from finance_tools.domains.financials.calculator import FinancialCalculator
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.domains.revenue_announcements import fetcher
 
 logger = logging.getLogger(__name__)
@@ -107,7 +107,7 @@ def write_index(directory: Path) -> Dict:
             "byDate": dict(sorted(by_date.items())),
             "verified": v.get("ok") if v.get("checkedAt") else None,
         }
-    index = {"updatedAt": now_tw().isoformat(timespec="minutes"), "months": months}
+    index = {"updatedAt": taipei_now().isoformat(timespec="minutes"), "months": months}
     tmp = directory / ".index.json.tmp"
     tmp.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     os.replace(tmp, directory / "index.json")
@@ -212,7 +212,7 @@ def merge_announcements(existing: Optional[Dict], fetched: Dict[str, Dict], now:
 
 
 def run_update_revenue_announcements(args) -> None:
-    now = now_tw()
+    now = taipei_now()
     year, month = target_month(now)
     path = month_path(year, month)
     existing = load_month(path)
@@ -345,7 +345,7 @@ def _send_mail(subject: str, body: str) -> bool:
 
 
 def run_verify_revenue_announcements(args) -> None:
-    now = now_tw()
+    now = taipei_now()
     year, month = target_month(now)
     if now.day < 14:
         # 13 號以前月份還在申報中，「上個月」不是要核對的那個月
@@ -402,7 +402,7 @@ def run_verify_revenue_announcements(args) -> None:
 
 def run_revenue_monthly(args) -> None:
     """排程只派這一支，依日期決定做什麼：1～13 號收集公布、15～20 號月中核對、其他日子不做事。"""
-    day = now_tw().day
+    day = taipei_now().day
     if day <= 13:
         run_update_revenue_announcements(args)
     elif 15 <= day <= VERIFY_GIVE_UP_DAY:

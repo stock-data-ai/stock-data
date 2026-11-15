@@ -8,6 +8,9 @@ import requests
 from typing import List, Optional, Dict, Any
 from cloudflare_d1_client import CloudflareD1Client
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from finance_tools.core.timezone import TAIPEI, taipei_now, taipei_today  # noqa: E402
+
 
 def convert_roc_date(date_str: str) -> str:
     """
@@ -82,9 +85,6 @@ def fetch_mops_detail(
     return {}
 
 
-TW_TZ = datetime.timezone(datetime.timedelta(hours=8))
-
-
 def scrape_mops_material_info(
     stock_codes: Optional[List[str]] = None,
     start_date: Optional[str] = None,
@@ -134,7 +134,7 @@ def scrape_mops_material_info(
     """
     # 處理日期參數（排程在 UTC 的 runner 上跑，日期一律用台灣時間算）
     if start_date is None and end_date is None:
-        now = datetime.datetime.now(TW_TZ)
+        now = taipei_now()
         since = since or now - datetime.timedelta(hours=24)
         start_date = since.strftime('%Y%m%d')
         end_date = now.strftime('%Y%m%d')
@@ -225,7 +225,7 @@ def scrape_mops_material_info(
                     if since:
                         try:
                             pub_at = datetime.datetime.strptime(
-                                f'{pub_date} {pub_time}', '%Y%m%d %H:%M:%S').replace(tzinfo=TW_TZ)
+                                f'{pub_date} {pub_time}', '%Y%m%d %H:%M:%S').replace(tzinfo=TAIPEI)
                         except ValueError:
                             pub_at = None
                         if pub_at and pub_at < since:
@@ -320,7 +320,7 @@ def scrape_mops_material_info(
             print("成功寫入 Cloudflare D1")
 
             # 清除 90 天前的舊資料
-            cutoff = (datetime.datetime.now() - datetime.timedelta(days=90)).strftime('%Y%m%d')
+            cutoff = (taipei_now() - datetime.timedelta(days=90)).strftime('%Y%m%d')
             client.execute_query(
                 f"DELETE FROM mops_announcements WHERE pub_date < '{cutoff}';"
             )
@@ -386,7 +386,7 @@ if __name__ == '__main__':
         # 2026-08-31 就是這樣：MOPS 回 0 筆本該報 STALE，卻先崩在這行 import，
         # 真正的原因（疑似機房 IP 被擋）被蓋掉了。
         sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        from finance_tools.core.trading_day import is_tw_trading_day, taipei_today
+        from finance_tools.core.trading_day import is_tw_trading_day
 
         if is_tw_trading_day(taipei_today()):
             print("\nSTALE: 今日為交易日，但重大訊息 0 筆，判定為撈取失敗。")

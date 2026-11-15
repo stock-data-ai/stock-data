@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 
 from finance_tools.core import DataProcessor, FileManager
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.finmind import fetch_finmind
 
@@ -54,7 +54,7 @@ def run_backfill_foreign_shares(args):
     if not start:
         logger.error("必須指定 --backfill-from YYYYMMDD")
         return
-    now = now_tw()
+    now = taipei_now()
     end = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
     dates = _weekdays_between(start, end)
     logger.info(f"回補外資持股張數：{start} ～ {end}，共 {len(dates)} 個交易日。")

@@ -24,6 +24,7 @@ import time
 from datetime import date
 from pathlib import Path
 from etf_utils import MIXED_MARKET_ETFS, classify_holding_code, cmoney_guest_token, create_session, warn_if_mixed_market, write_holdings_update
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 
 try:
     import requests
@@ -136,7 +137,7 @@ def needs_update(etf_code: str, tran_date: str) -> bool:
         last = data.get("lastUpdated", "")
         if not last:
             return True
-        today = date.today().isoformat()
+        today = taipei_today().isoformat()
         if last > today:
             print(f"  [WARN] {etf_code} 本地日期 {last} 為未來日期，覆蓋修正")
             return True
@@ -226,7 +227,7 @@ def main():
     # 所有 ETF 的最新資料日期都超過 7 天 → CMoney 整體停更或給舊資料，不可綠燈
     # （個別 ETF 揭露延遲屬正常，不在此檢查範圍）
     if newest_seen:
-        age_days = (date.today() - date.fromisoformat(newest_seen)).days
+        age_days = (taipei_today() - date.fromisoformat(newest_seen)).days
         if age_days > 7:
             print(f"STALE: CMoney 全部 ETF 最新資料日期為 {newest_seen}（距今 {age_days} 天），資料源疑似停更，視為失敗。")
             sys.exit(1)

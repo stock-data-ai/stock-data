@@ -28,7 +28,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from finance_tools.core.file_manager import FileManager
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 
 logger = logging.getLogger(__name__)
 
@@ -152,7 +152,7 @@ def process_file(file_mgr: FileManager, code: str, cutoff_year: int, dry_run: bo
 
 def run(dry_run: bool = False, limit=None) -> dict:
     file_mgr = FileManager()
-    cutoff_year = now_tw().year - KEEP_PAST_YEARS
+    cutoff_year = taipei_now().year - KEEP_PAST_YEARS
     codes = sorted(file_mgr.list_financial_codes())
     if limit:
         codes = codes[:limit]

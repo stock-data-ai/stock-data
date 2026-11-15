@@ -1,6 +1,6 @@
 import logging
 from finance_tools.core.file_manager import FileManager
-from finance_tools.core.timezone import today_str
+from finance_tools.core.timezone import taipei_today
 from finance_tools.utils.rerun_manager import RerunManager
 from finance_tools.domains.dividends.csv_fetcher import load_all as load_csv
 from finance_tools.domains.dividends.mops_fetcher import fetch_all as fetch_mops
@@ -78,7 +78,7 @@ def run_import_historical_dividends(args):
         if freq:
             financial_data["latest"]["dividendFrequency"] = freq
 
-        today = today_str()
+        today = taipei_today().isoformat()
         financial_data["dividendsUpdated"] = today
         financial_data["lastUpdated"] = today
 
@@ -137,7 +137,7 @@ def run_update_mops_dividends(args):
         if freq:
             financial_data["latest"]["dividendFrequency"] = freq
 
-        today = today_str()
+        today = taipei_today().isoformat()
         financial_data["dividendsUpdated"] = today
         financial_data["lastUpdated"] = today
 

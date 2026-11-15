@@ -46,7 +46,7 @@ def staged(isolated_file_manager, tmp_path, monkeypatch):
 def _fixed_year(monkeypatch):
     class _Now:
         year = 2026
-    monkeypatch.setattr(archive, "now_tw", lambda: _Now())
+    monkeypatch.setattr(archive, "taipei_now", lambda: _Now())
 
 
 def test_dry_run_writes_nothing(staged, tmp_path):

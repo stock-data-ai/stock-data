@@ -19,7 +19,11 @@ generate_stock_etf_index.py
 import json
 import statistics
 from datetime import date, timedelta
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
@@ -264,7 +268,7 @@ def write_moves_file(moves: dict[str, list], generated_at: str) -> None:
 
 
 def main():
-    today = str(date.today())
+    today = taipei_today().isoformat()
     print(f"📅 生成日期: {today}")
 
     print("📂 載入 ETF index...")

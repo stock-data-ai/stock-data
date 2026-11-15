@@ -28,8 +28,8 @@ fetch_active_etf_ctbc.py
 import json
 import sys
 import time
-from datetime import date
 from etf_utils import create_session, write_github_output, write_holdings_update, classify_holding_code
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 from pathlib import Path
 from typing import Optional
 
@@ -95,7 +95,7 @@ def fetch_holdings(etf_code: str, fid: str, token: str) -> tuple:
     holdings: [{"name": ..., "weight": ..., "code": ..., "shares": ...}, ...]
     data_date: "2026-04-09" 或 None
     """
-    query_date = date.today().isoformat()
+    query_date = taipei_today().isoformat()
     url = f"{API_BASE}/etf/ETFHoldingWeight"
 
     print(f"  抓取 {url}  FID={fid}  StartDate={query_date}")

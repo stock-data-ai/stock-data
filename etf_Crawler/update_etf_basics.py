@@ -31,6 +31,9 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from finance_tools.core.timezone import taipei_today  # noqa: E402
+
 import requests
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -219,7 +222,7 @@ def main() -> None:
         created = ensure_skeletons(dry)
         print(f"ETF 骨架：新建 {len(created)} 檔{('：' + ', '.join(created)) if created else ''}")
         return
-    today = date.today()
+    today = taipei_today()
     codes = args or sorted(p.stem for p in ETF_DIR.glob("*.json") if p.stem != "index")
 
     try:

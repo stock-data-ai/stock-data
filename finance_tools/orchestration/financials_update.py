@@ -9,7 +9,7 @@ loguru_logger.disable("FinMind")
 
 from finance_tools.core import FinMindClient, DataProcessor, FileManager
 from finance_tools.core.exceptions import ApiError, ApiExhaustedError
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.core import market_fetch
 import json
 from pathlib import Path
@@ -49,7 +49,7 @@ def _save_stats(task_name: str, batch, fin: int, rev: int, success: int, total: 
 
 def fetch_market_statements_and_revenue(client: FinMindClient):
     """全市場抓損益表（完整視窗）與月營收，回傳依代號分組的兩個 dict。"""
-    today = now_tw().date()
+    today = taipei_now().date()
     statements = market_fetch.fetch_market(
         client, "TaiwanStockFinancialStatements",
         market_fetch.quarter_end_dates(config.INCOME_STATEMENT_YEARS, today),

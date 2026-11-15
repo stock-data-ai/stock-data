@@ -7,7 +7,7 @@ from finance_tools.core import FinMindClient, DataProcessor, FileManager
 from finance_tools.core import market_fetch, merge_policy
 from finance_tools.core.exceptions import ApiError, ApiExhaustedError
 from finance_tools.domains.financials.calculator import FinancialCalculator
-from finance_tools.core.timezone import now_tw, today_str
+from finance_tools.core.timezone import taipei_now, taipei_today
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.rerun_manager import RerunManager
 import finance_tools.config as config
@@ -34,7 +34,7 @@ def run_update_revenue(args):
     try:
         revenue = market_fetch.fetch_market(
             client, "TaiwanStockMonthRevenue",
-            market_fetch.month_start_dates(config.MONTHLY_REVENUE_YEARS, now_tw().date()),
+            market_fetch.month_start_dates(config.MONTHLY_REVENUE_YEARS, taipei_now().date()),
         )
     except ApiExhaustedError as e:
         logger.warning(f"⚠️  FinMind 額度用盡：{e}；全部留待重跑。")
@@ -70,7 +70,7 @@ def run_update_revenue(args):
         ) or None
         # 與 build_final_data 同一條：合併後用完整歷史重算年增率
         FinancialCalculator.fill_monthly_yoy(existing_data["historical"]["monthlyRevenue"])
-        existing_data["lastUpdated"] = today_str()
+        existing_data["lastUpdated"] = taipei_today().isoformat()
 
         if file_mgr.save_financial_data(code, processor.clean_nan(existing_data)):
             success_count += 1

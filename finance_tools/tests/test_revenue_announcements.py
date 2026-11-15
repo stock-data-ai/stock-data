@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytest
 
-from finance_tools.core.timezone import TW_TZ
+from finance_tools.core.timezone import TAIPEI
 from finance_tools.domains.revenue_announcements import fetcher, tasks
 
 HEAD = ("<html><b>上市公司115年10月份(累計與當月)營業收入統計表</b>"
@@ -32,7 +32,7 @@ def fetched(*rows, market="sii"):
 
 
 def at(day, hour):
-    return datetime(2026, 11, day, hour, 30, tzinfo=TW_TZ)
+    return datetime(2026, 11, day, hour, 30, tzinfo=TAIPEI)
 
 
 def test_parse_row_units_and_note():
@@ -146,7 +146,7 @@ def test_verify_mismatch_missing_and_financials():
 
 def test_target_month():
     assert tasks.target_month(at(1, 7)) == (2026, 10)
-    assert tasks.target_month(datetime(2027, 1, 5, tzinfo=TW_TZ)) == (2026, 12)
+    assert tasks.target_month(datetime(2027, 1, 5, tzinfo=TAIPEI)) == (2026, 12)
 
 
 def test_index_counts_by_date(tmp_path):
@@ -184,7 +184,7 @@ def test_apply_to_financials(isolated_file_manager):
 @pytest.mark.parametrize("day,expected", [(1, "update"), (13, "update"), (14, None), (15, "verify"), (20, "verify"), (21, None)])
 def test_revenue_monthly_dispatch_by_day(monkeypatch, day, expected):
     called = []
-    monkeypatch.setattr(tasks, "now_tw", lambda: datetime(2026, 11, day, 20, 30, tzinfo=TW_TZ))
+    monkeypatch.setattr(tasks, "taipei_now", lambda: datetime(2026, 11, day, 20, 30, tzinfo=TAIPEI))
     monkeypatch.setattr(tasks, "run_update_revenue_announcements", lambda a: called.append("update"))
     monkeypatch.setattr(tasks, "run_verify_revenue_announcements", lambda a: called.append("verify"))
     tasks.run_revenue_monthly(None)

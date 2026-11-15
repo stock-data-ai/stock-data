@@ -30,6 +30,7 @@ import json, os, sys, re, time, datetime, statistics, itertools
 import requests
 
 from finance_tools.core.trading_day import is_tw_trading_day
+from finance_tools.core.timezone import taipei_now
 from finance_tools.core.tw_codes import is_tw_stock
 from finance_tools.utils.finmind import fetch_finmind
 from finance_tools.utils.http_fetch import get_json as http_get_json
@@ -213,7 +214,7 @@ def _load_px_rows(date):
             return []
         json.dump(rows, open(cp, "w"))
         return rows
-    stale = date < (datetime.datetime.strptime(_today(), "%Y%m%d")
+    stale = date < (datetime.datetime.strptime(taipei_now().strftime("%Y%m%d"), "%Y%m%d")
                     - datetime.timedelta(days=2)).strftime("%Y%m%d")
     if stale and not os.path.exists(cp) and date not in _official_dates():
         json.dump([], open(cp, "w"))
@@ -851,7 +852,7 @@ def predict(market_date):
     sector, pe_api = sector_pe()
     shares_tw, pb, margin = ref_data()
     official_hist = official_index()          # 官方注意名單（含款號）→ 款2 豁免
-    disposed = disposed_recent(market_date, idx=official_hist)   # 以預測當日為準，不可用 _today()
+    disposed = disposed_recent(market_date, idx=official_hist)   # 以預測當日為準，不可用 taipei_now().strftime("%Y%m%d")
     hits, triggers = [], {}
     for mkt in ("TWSE", "TPEx"):
         try:
@@ -878,7 +879,7 @@ def predict(market_date):
 
 def backtest(n=30, end=None):
     """一次生成近 n 個交易日 prediction（refs 只抓一次，回測用）。"""
-    end = end or _today()
+    end = end or taipei_now().strftime("%Y%m%d")
     days = trading_days_back(end, n)
     sector, pe = sector_pe()
     shares, pb, margin = ref_data()
@@ -914,13 +915,13 @@ def explain(code, market_date=None):
 
 def _latest_pred():
     ps = sorted(f[5:13] for f in os.listdir(PRED) if f.startswith("pred_"))
-    return ps[-1] if ps else _today()
+    return ps[-1] if ps else taipei_now().strftime("%Y%m%d")
 
 
 def notice():
     """抓當前官方 notice+notetrans 原文快照 + 更新處置名單。announcement_date = 今天。"""
     refresh_punish()
-    ann = _today()
+    ann = taipei_now().strftime("%Y%m%d")
     raw = {}
     for ep in ("notice", "notetrans"):
         try:
@@ -1088,7 +1089,7 @@ def backfill_notice(start=None, end=None):
         python3 -m finance_tools.disposition.p1_reconcile backfill-notice 20260801 20260828
     """
     auto = not (start and end)
-    end = end or _today()
+    end = end or taipei_now().strftime("%Y%m%d")
     start = start or (datetime.datetime.strptime(end, "%Y%m%d")
                       - datetime.timedelta(days=60)).strftime("%Y%m%d")
 
@@ -1328,7 +1329,7 @@ def refresh_punish(days_back=90, days_fwd=30):
     2026-08-20 19:05 那班就是上市抓取失敗、上櫃成功，快取被覆寫成只剩上櫃。
     寧可沿用既有快取——處置期間橫跨數週，晚一天更新的傷害遠小於少一整個市場。
     """
-    today = datetime.datetime.strptime(_today(), "%Y%m%d").date()
+    today = datetime.datetime.strptime(taipei_now().strftime("%Y%m%d"), "%Y%m%d").date()
     start = (today - datetime.timedelta(days=days_back)).strftime("%Y%m%d")
     end = (today + datetime.timedelta(days=days_fwd)).strftime("%Y%m%d")
     fp = os.path.join(CACHE, "punish_rows.json")
@@ -1421,7 +1422,7 @@ def _punish_rows(as_of=None, stocks_only=True):
     fp = os.path.join(CACHE, "punish_rows.json")
     if not os.path.exists(fp):
         return []
-    d = as_of or _today()
+    d = as_of or taipei_now().strftime("%Y%m%d")
     try:
         return [_shorten_period(r, d) for r in json.load(open(fp))
                 if not stocks_only or is_tw_stock(r.get("code", ""))]
@@ -1430,7 +1431,7 @@ def _punish_rows(as_of=None, stocks_only=True):
 
 def disposed_set(as_of=None):
     """**處置生效中**的代號（start <= as_of <= end）。尚未生效的不算，那是 announced_set。"""
-    d = as_of or _today()
+    d = as_of or taipei_now().strftime("%Y%m%d")
     return {r["code"] for r in _punish_rows(d)
             if r.get("start") and r["start"] <= d and (not r.get("end") or d <= r["end"])}
 
@@ -1454,7 +1455,7 @@ def export_punishments(as_of=None):
     改由本引擎產生後三個都解決，且與處置股預警 tab 共用同一個真相源。
     含權證（維持舊檔內容範圍；推播規則自己會濾成 4 碼股票）。
     """
-    d = as_of or _today()
+    d = as_of or taipei_now().strftime("%Y%m%d")
     rows = []
     for r in sorted(_punish_rows(d, stocks_only=False),
                     key=lambda x: (x.get("code") or "", x.get("start") or "")):
@@ -1495,9 +1496,9 @@ def disposed_recent(as_of=None, days=60, idx=None):
     （多數處置是因款1，寧可不豁免）。`idx` 為 official_index()；不給就無從判斷，回空集合。
 
     與 disposed_set() 的差別：那個是「此刻仍在處置期間」，這個是「窗內曾經發布過」。
-    必須吃 as_of：用 _today() 會讓歷史預測隨今天的名單漂移。
+    必須吃 as_of：用 taipei_now().strftime("%Y%m%d") 會讓歷史預測隨今天的名單漂移。
     """
-    d = as_of or _today()
+    d = as_of or taipei_now().strftime("%Y%m%d")
     if not idx:
         return set()
     axis = [x for x in list_cached_days() if x <= d]
@@ -1524,7 +1525,7 @@ def disposed_recent(as_of=None, days=60, idx=None):
 
 def announced_set(as_of=None):
     """**已公布、尚未生效**的代號（start > as_of）——這批已達處置門檻，只是還沒開始。"""
-    d = as_of or _today()
+    d = as_of or taipei_now().strftime("%Y%m%d")
     return {r["code"] for r in _punish_rows(d) if r.get("start") and r["start"] > d}
 
 # ── 處置公告細節（撮合/期間/原因/第幾次）——直接來自官方，非預測 ────────────
@@ -1564,7 +1565,7 @@ def _disp_reason(text, measures=''):
 def disposed_detail(as_of=None):
     """{code: {market,name,interval,start,end,streak,clause,times,announced,pending}}。
     pending=True 表示已公布但尚未生效（start > as_of）。同一檔多筆時取最新公布的那筆。"""
-    d = as_of or _today()
+    d = as_of or taipei_now().strftime("%Y%m%d")
     out = {}
     for r in sorted(_punish_rows(d), key=lambda x: (x.get("announced") or "", x.get("start") or "")):
         out[r["code"]] = {**r, "pending": bool(r.get("start") and r["start"] > d)}
@@ -1699,7 +1700,7 @@ def save_forecast_snapshot(out):
     會被永久當成漏警。判準同 CI 護欄：處置名單抓失敗（disposed=0）或全站零預警即視為異常。
     """
     fp_exist = os.path.join(FCAST, f"forecast_{out['as_of']}.json")
-    if os.path.exists(fp_exist) and out["as_of"] < _today():
+    if os.path.exists(fp_exist) and out["as_of"] < taipei_now().strftime("%Y%m%d"):
         # **既有的過去快照永不覆寫**：它記錄的是「那天實際發布給使用者的名單」，
         # 今天重跑會帶入今天的處置名單與改良後的規則，等於竄改歷史、讓戰績失真。
         print(f"[forecast] {out['as_of']} 快照已存在且非當日 → 保留原紀錄，不覆寫")
@@ -1734,7 +1735,7 @@ def save_disposals():
             continue
         k = f"{c}_{v['start']}"
         if k not in hist:
-            hist[k] = {"code": c, **v, "first_seen": _today()}
+            hist[k] = {"code": c, **v, "first_seen": taipei_now().strftime("%Y%m%d")}
             added += 1
     if added:
         json.dump(dict(sorted(hist.items())), open(DISPOSALS, "w"), ensure_ascii=False, indent=2)
@@ -1968,7 +1969,7 @@ def forecast(as_of=None, window=30, disposal_date=None):
         if c in meta and t.get("close"):
             meta[c]["close"] = t["close"]
 
-    dd = disposal_date or _today()                      # 處置狀態看今天，不看價格資料日
+    dd = disposal_date or taipei_now().strftime("%Y%m%d")                      # 處置狀態看今天，不看價格資料日
     disposed = disposed_set(dd)
     announced = announced_set(dd)                       # 已公布、尚未生效 → 已達標
     detail = disposed_detail(dd)                        # 官方處置公告細節
@@ -2118,12 +2119,11 @@ def forecast(as_of=None, window=30, disposal_date=None):
               f"（連{s['consecutive']}日/近10日{s['count_10d']}次/{s['path']}）：{s['plain_reason']}")
 
 def _now(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
-def _today(): return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y%m%d")
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "daily"
     if cmd == "predict":
-        predict(sys.argv[2] if len(sys.argv) > 2 else _today())
+        predict(sys.argv[2] if len(sys.argv) > 2 else taipei_now().strftime("%Y%m%d"))
     elif cmd == "notice":
         notice()
     elif cmd == "backfill-notice":
@@ -2143,6 +2143,6 @@ if __name__ == "__main__":
         explain(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     elif cmd == "daily":
         # 先抓官方名單再 predict：當日公告會餵給款2 豁免
-        backfill_notice(); notice(); predict(_today())
+        backfill_notice(); notice(); predict(taipei_now().strftime("%Y%m%d"))
     else:
         print(__doc__)

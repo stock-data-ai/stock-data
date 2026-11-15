@@ -15,7 +15,7 @@ import pandas as pd
 from finance_tools.core import FinMindClient, DataProcessor, FileManager
 from finance_tools.core import market_fetch
 from finance_tools.core.exceptions import ApiError, ApiExhaustedError
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.rerun_manager import RerunManager
 import finance_tools.config as config
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 def fetch_market_balance_sheet_and_cash_flows(client: FinMindClient):
     """全市場抓資產負債表與現金流量表（完整視窗），回傳依代號分組的兩個 dict。"""
-    dates = market_fetch.quarter_end_dates(config.BALANCE_SHEET_YEARS, now_tw().date())
+    dates = market_fetch.quarter_end_dates(config.BALANCE_SHEET_YEARS, taipei_now().date())
     bs = market_fetch.fetch_market(
         client, "TaiwanStockBalanceSheet", dates,
         keep=market_fetch.item_filter(DataProcessor.BALANCE_SHEET_ITEMS),

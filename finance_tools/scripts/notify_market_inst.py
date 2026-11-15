@@ -23,8 +23,10 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 
 import requests
 
@@ -37,7 +39,6 @@ PUSH_TOPIC = "market-inst"
 PAGES_URL = "https://stock-data-ai.github.io/stock-data/src/data/market/sentiment.json"
 PAGES_WAIT_SECONDS = 10 * 60
 PAGES_POLL_SECONDS = 20
-TAIPEI = timezone(timedelta(hours=8))
 
 # 與前端 MarketSentimentWidget 的 instNet 對齊：五個分項全加（foreignDealer 目前恆為 0，
 # 但 BFI82U 的「外資」是不含外資自營商的那列，漏加會在該欄有值時與 App 顯示對不上）。
@@ -80,7 +81,7 @@ def main() -> int:
     inst = data.get("institutional") or {}
     twse = inst.get("twse")
     date_str = inst.get("date")
-    today = datetime.now(TAIPEI).strftime("%Y-%m-%d")
+    today = taipei_today().isoformat()
 
     if not twse:
         print("[notify_market_inst] institutional.twse 缺漏，跳過")

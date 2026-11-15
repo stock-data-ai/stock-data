@@ -18,7 +18,7 @@ e.g. {"2330": {"ratio": 70.12, "shares": 17945329}}
 """
 import json
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 import urllib.request
 from typing import Dict, Optional
 
@@ -27,6 +27,7 @@ import requests
 from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.utils.retry import retry as _retry
 from finance_tools.utils.finmind import fetch_finmind
+from finance_tools.core.timezone import taipei_today
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +95,7 @@ class TWSEShareholdingFetcher:
         改成從今天往回逐日試，拿到第一個有資料的日期就停——這也還原了 MI_QFIIS
         「永遠給最新一筆」的語意。
         """
-        today = datetime.now(timezone(timedelta(hours=8))).date()
+        today = taipei_today()
         for back in range(self.LOOKBACK_DAYS):
             d = (today - timedelta(days=back)).isoformat()
             rows = fetch_finmind(

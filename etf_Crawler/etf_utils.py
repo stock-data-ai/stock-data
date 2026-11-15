@@ -8,7 +8,6 @@ etf_utils.py — 主動式 ETF 爬蟲共用工具
   record_unchanged_snapshot() 無更新時仍記錄當日快照
   write_github_output()      輸出逐筆 ETF 狀態到 GITHUB_OUTPUT
   pcf_to_holdings_date()     申購買回清單日期 → 持股所屬交易日
-  today_tw()                 台北今天
   prev_trading_day()         前一交易日（實作在 finance_tools/core/trading_day.py）
   classify_holding_code()    持股代號 → 台股 code 或海外 foreignCode（所有爬蟲共用）
 """
@@ -17,7 +16,6 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -28,6 +26,7 @@ from urllib3.util.retry import Retry
 # 交易日一律走 finance_tools/core/trading_day.py（兩個 repo 唯一實作），這裡不另寫休市判斷。
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from finance_tools.core.trading_day import prev_trading_day  # noqa: E402
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 
 HISTORY_KEEP_DAYS = 30
 
@@ -77,11 +76,6 @@ def warn_if_mixed_market(etf_code: str, holdings: list, threshold: int = 10) -> 
         sample = "、".join(f"{h['code']} {h['name']}" for h in suspects[:3])
         print(f"::warning::{etf_code} 有 {len(suspects)} 筆數字代號配英文名稱（{sample}…），"
               f"可能是不標國家的混合市場 ETF，確認後加進 etf_utils.MIXED_MARKET_ETFS")
-
-
-def today_tw() -> str:
-    """台北今天（CI 跑在 UTC，不能用 date.today()）。"""
-    return (datetime.now(timezone.utc) + timedelta(hours=8)).date().isoformat()
 
 
 def pcf_to_holdings_date(pub_date: Optional[str]) -> Optional[str]:
@@ -166,7 +160,7 @@ def record_unchanged_snapshot(
     讓歷史記錄連續、不留空白交易日。
     topHoldings 與 lastUpdated 不更動。
     """
-    today = today_tw()
+    today = taipei_today().isoformat()
     if "holdingsHistory" not in data:
         data["holdingsHistory"] = {}
 
@@ -211,7 +205,7 @@ def write_holdings_update(
 
         # 保險：持股不可能屬於未來。新接的官網若也標申購買回清單日，在這裡被攔下並告警，
         # 該在爬蟲裡改用 pcf_to_holdings_date()。
-        today = today_tw()
+        today = taipei_today().isoformat()
         if tran_date > today:
             fixed = min(prev_trading_day(tran_date), today)
             print(f"  [WARN] {etf_code} 來源日期 {tran_date} 晚於今天，改記為 {fixed}"

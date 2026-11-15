@@ -30,6 +30,7 @@ from finance_tools.utils.http_fetch import get_json as http_get_json
 from finance_tools.core.file_manager import resolve_companies_all_path
 from finance_tools.utils.retry import retry as _retry
 from finance_tools.utils.twse_url import bust
+from finance_tools.core.timezone import taipei_now
 
 BASE = Path(__file__).parent.parent.parent / "src/data"
 FINANCIALS_DIR = BASE / "layer3/company-financials"
@@ -280,7 +281,7 @@ def compute_for_threshold(raw: list[dict], min_lots: int) -> list[dict]:
 
 def compute(today: datetime = None) -> dict:
     if today is None:
-        today = datetime.today()
+        today = taipei_now().replace(tzinfo=None)  # 台北牆上時間；下游跟 naive 日期相減
 
     display_names = load_display_names()
     tradable = load_tradable_codes()

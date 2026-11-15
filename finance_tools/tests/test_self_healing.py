@@ -173,13 +173,13 @@ def test_shareholder_job_backs_off_on_corrupt_file(isolated_file_manager, monkey
     建骨架存檔——歷史沒了，壞檔訊號也跟著消失。旁邊的正常公司要照常寫入。
     """
     from types import SimpleNamespace
-    from finance_tools.core.timezone import now_tw
+    from finance_tools.core.timezone import taipei_now
     from finance_tools.domains.shareholder import tasks
 
     path = corrupt(isolated_file_manager)
     isolated_file_manager.save_financial_data("1101", {"companyCode": "1101", "historical": {}})
 
-    today = now_tw().strftime("%Y%m%d")
+    today = taipei_now().strftime("%Y%m%d")
     levels = [{"序": i, "holding_range": f"L{i}", "holder_count": 10, "shares": 100,
                "ratio_pct": 1.0, "data_date": today} for i in range(1, 16)]
     tdcc = {code: levels for code in ("9999", "1101")}

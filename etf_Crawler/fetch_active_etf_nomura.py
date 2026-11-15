@@ -29,8 +29,9 @@ API：POST https://www.nomurafunds.com.tw/API/ETFAPI/api/Fund/GetFundAssets
 import json
 import sys
 import time
-from datetime import date, timedelta
+from datetime import timedelta
 from etf_utils import create_session, write_github_output, write_holdings_update, classify_holding_code
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 from pathlib import Path
 from typing import Optional
 
@@ -181,7 +182,7 @@ def run_backfill(targets: list, days: int, force: bool = False) -> None:
     """補過去 N 天的 holdingsHistory。
     force=True 時：即使日期已存在，若無張數資料也重新抓取覆蓋。
     """
-    today = date.today()
+    today = taipei_today()
     dates = [
         (today - timedelta(days=i)).isoformat()
         for i in range(days, 0, -1)  # 由舊到新

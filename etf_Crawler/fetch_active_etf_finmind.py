@@ -23,10 +23,11 @@ import sys
 import time
 import urllib.parse
 import urllib.request
-from datetime import date, timedelta
+from datetime import timedelta
 from pathlib import Path
 
-from etf_utils import today_tw, write_github_output, write_holdings_update, classify_holding_code
+from etf_utils import write_github_output, write_holdings_update, classify_holding_code
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 
 REPO_ROOT = Path(__file__).parent.parent
 ETF_DATA_DIR = REPO_ROOT / "src/data/etf"
@@ -41,7 +42,7 @@ def _token() -> str:
 
 def fetch_holdings(etf_code: str, tk: str) -> tuple:
     """回傳 (holdings, tran_date)：近 LOOKBACK_DAYS 天內最新的一天。"""
-    start = (date.fromisoformat(today_tw()) - timedelta(days=LOOKBACK_DAYS)).isoformat()
+    start = (taipei_today() - timedelta(days=LOOKBACK_DAYS)).isoformat()
     params = {"dataset": "TaiwanStockActiveETFHolding", "data_id": etf_code, "start_date": start}
     req = urllib.request.Request(f"{API}?{urllib.parse.urlencode(params)}",
                                  headers={"Authorization": f"Bearer {tk}"})

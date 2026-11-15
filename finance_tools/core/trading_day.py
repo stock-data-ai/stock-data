@@ -27,10 +27,13 @@ from __future__ import annotations
 import json
 import sys
 import urllib.request
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterable, Union
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 
 CALENDAR_PATH = Path(__file__).resolve().parents[2] / "src/data/market/tw-trading-calendar.json"
 TWSE_HOLIDAY_API = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
@@ -50,11 +53,6 @@ def _as_date(d: DateLike) -> date:
 def parse_yyyymmdd(date_str: str) -> date:
     """'20260712' 或 '2026-07-12' → date"""
     return _as_date(date_str)
-
-
-def taipei_today() -> date:
-    """台北今天（CI 跑在 UTC，不能用 date.today()）。"""
-    return (datetime.now(timezone.utc) + timedelta(hours=8)).date()
 
 
 # ── 日曆檔 ────────────────────────────────────────────────────────────────

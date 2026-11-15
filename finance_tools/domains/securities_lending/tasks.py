@@ -8,7 +8,7 @@ from datetime import timedelta
 from typing import Dict, List
 
 from finance_tools.core import DataProcessor, FileManager
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd, trading_days_between
 from finance_tools.domains.securities_lending.fetcher import SecuritiesLendingFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing
@@ -128,7 +128,7 @@ def run_update_securities_lending(args):
     backfill_from = getattr(args, "backfill_from", None)
     if backfill_from:
         start = backfill_from.replace("-", "")
-        now = now_tw()
+        now = taipei_now()
         end = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
         dates = [d.strftime("%Y%m%d") for d in trading_days_between(start, end)]
         logger.info(f"補齊借券賣出餘額：{start} ～ {end}，共 {len(dates)} 個交易日。")
@@ -137,7 +137,7 @@ def run_update_securities_lending(args):
 
     target_date = getattr(args, "date", None)
     if not target_date:
-        now = now_tw()
+        now = taipei_now()
         target_date = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
     target_date = target_date.replace("-", "")
 

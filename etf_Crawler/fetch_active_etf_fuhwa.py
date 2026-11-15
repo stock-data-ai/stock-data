@@ -34,8 +34,9 @@ import io
 import json
 import sys
 import time
-from datetime import date, timedelta
-from etf_utils import classify_holding_code, create_session, prev_trading_day, today_tw, write_github_output, write_holdings_update
+from datetime import timedelta
+from etf_utils import classify_holding_code, create_session, prev_trading_day, write_github_output, write_holdings_update
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -131,7 +132,7 @@ def fetch_holdings(etf_code: str, fund_id: str, search_date: Optional[str] = Non
     海外型（00998A）官網晚一天才發布，以前只查今天，永遠是空檔，整檔停在 CMoney 的舊資料。
     """
     if not search_date:
-        d = today_tw()
+        d = taipei_today().isoformat()
         for _ in range(LOOKBACK_TRADING_DAYS + 1):
             holdings, tran_date = fetch_holdings(etf_code, fund_id, search_date=d)
             if holdings:
@@ -185,7 +186,7 @@ def update_etf_json(etf_code: str, holdings: list, tran_date: Optional[str],
 
 
 def run_backfill(targets: list, days: int) -> None:
-    today = date.today()
+    today = taipei_today()
     dates = [
         (today - timedelta(days=i)).isoformat()
         for i in range(days, 0, -1)

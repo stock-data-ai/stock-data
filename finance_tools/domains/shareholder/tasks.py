@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 
 from finance_tools.core.file_manager import FileManager
-from finance_tools.core.timezone import now_tw, today_str
+from finance_tools.core.timezone import taipei_now, taipei_today
 from finance_tools.domains.shareholder.fetcher import fetch_all_tdcc_shareholding_via_api
 from finance_tools.utils.company_list_loader import load_companies_for_processing
 from finance_tools.utils.quality_report import save_quality_report
@@ -47,7 +47,7 @@ def run_fetch_shareholder_data(args):
     except ValueError:
         logger.error(f"無法解析 TDCC 資料日期「{raw_data_date}」。終止任務。")
         sys.exit(1)
-    age_days = (now_tw().date() - data_date).days
+    age_days = (taipei_now().date() - data_date).days
     if age_days > 7:
         logger.error(
             f"STALE: TDCC 資料日期仍為 {raw_data_date}（距今 {age_days} 天），尚未發布新一期，終止任務。"
@@ -163,7 +163,7 @@ def run_fetch_shareholder_data(args):
 
                 financial_data['shareholderDataHistory'][formatted_date] = clean_records
                 financial_data['shareholderDataRecent'] = clean_records
-                financial_data['lastUpdated'] = today_str()
+                financial_data['lastUpdated'] = taipei_today().isoformat()
 
                 if file_mgr.save_financial_data(code, financial_data):
                     logger.info(f"[{idx}/{len(companies_to_process)}] OK {code} {name}")

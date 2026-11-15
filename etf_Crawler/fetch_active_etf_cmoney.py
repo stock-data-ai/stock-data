@@ -21,8 +21,8 @@ API: https://www.cmoney.tw/api/cm/MobileService/ashx/GetDtnoData.ashx
 import json
 import sys
 import time
-from datetime import date
 from etf_utils import cmoney_guest_token, create_session, write_github_output, write_holdings_update, classify_holding_code
+from finance_tools.core.timezone import taipei_today  # noqa: E402
 from pathlib import Path
 from typing import Optional
 
@@ -212,7 +212,7 @@ def needs_update(etf_code: str, tran_date: str) -> bool:
         last = data.get("lastUpdated", "")
         if not last:
             return True
-        today = date.today().isoformat()
+        today = taipei_today().isoformat()
         if last > today:
             print(f"  [WARN] {etf_code} 本地日期 {last} 為未來日期，CMoney（{tran_date}）覆蓋修正")
             return True

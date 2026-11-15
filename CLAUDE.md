@@ -19,6 +19,7 @@ Engineering principles (one rule one implementation, missing is not zero, `/simp
 - **TW trading days / market holidays**: `finance_tools/core/trading_day.py` (calendar file `src/data/market/tw-trading-calendar.json`; typhoon closures go only in its `unscheduled`). Never fetch the TWSE holiday table or hard-code closed dates elsewhere. Rule for daily jobs: today's data present → update; absent and calendar says closed → skip as success; absent but a trading day → fail.
 - **TW individual stock vs ETF**: `finance_tools/core/tw_codes.py` `is_tw_stock` (mirrors stock_map `company.mjs`); no `len(code) == 4` / `isdigit()` checks.
 - **Missing financial items are `None`, never `0`**: `data_processor` (`_round_or_none`, `_margin`); financial companies have no gross profit / operating income.
+- **Taipei date / time**: `finance_tools/core/timezone.py` (`taipei_now`, `taipei_today`, `TAIPEI`; same names as stock_map `scripts/lib/taipei_time.py`). CI runs in UTC, so never `date.today()`, a bare `datetime.now()`, `timedelta(hours=8)` or `ZoneInfo('Asia/Taipei')`. The cron Worker keeps its own `TAIWAN_OFFSET_MS` (it cannot import Python).
 
 Before committing code changes run `/simplify` on the diff to catch rewritten helpers.
 

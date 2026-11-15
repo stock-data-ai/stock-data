@@ -6,7 +6,7 @@ from datetime import timedelta
 from typing import Dict, Any
 
 from finance_tools.core import DataProcessor, FileManager
-from finance_tools.core.timezone import now_tw, today_str
+from finance_tools.core.timezone import taipei_now
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd, trading_days_between
 from finance_tools.domains.margin_trading.fetcher import MarginTradingFetcher
 from finance_tools.utils.company_list_loader import load_companies_for_processing
@@ -67,7 +67,7 @@ def run_update_margin_trading(args):
     if backfill_from:
         # 補齊歷史區間
         start = backfill_from.replace("-", "")
-        now = now_tw()
+        now = taipei_now()
         end = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
         dates = [d.strftime("%Y%m%d") for d in trading_days_between(start, end)]
         logger.info(f"補齊融資融券：{start} ～ {end}，共 {len(dates)} 個交易日。")
@@ -81,7 +81,7 @@ def run_update_margin_trading(args):
     # 單日模式
     target_date = getattr(args, 'date', None)
     if not target_date:
-        now = now_tw()
+        now = taipei_now()
         target_date = (now - timedelta(days=1) if now.hour < 18 else now).strftime("%Y%m%d")
     target_date = target_date.replace("-", "")
 

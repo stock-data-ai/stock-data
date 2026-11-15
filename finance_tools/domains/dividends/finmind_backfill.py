@@ -62,7 +62,7 @@ def _safe_float(val) -> float:
 def run_backfill_finmind_dividends(args):
     """【一次性】從 FinMind 補齊季配/半年配公司每期股利明細（2021-2025）。"""
     from finance_tools.core.file_manager import FileManager
-    from finance_tools.core.timezone import today_str
+    from finance_tools.core.timezone import taipei_today
 
     try:
         from FinMind.data import DataLoader
@@ -158,7 +158,7 @@ def run_backfill_finmind_dividends(args):
             if latest_period and latest_period in _PERIOD_TO_FREQ:
                 financial_data.setdefault('latest', {})['dividendFrequency'] = _PERIOD_TO_FREQ[latest_period]
 
-            today = today_str()
+            today = taipei_today().isoformat()
             financial_data['dividendsUpdated'] = today
             financial_data['lastUpdated'] = today
 

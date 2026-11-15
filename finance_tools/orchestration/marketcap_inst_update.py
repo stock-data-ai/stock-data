@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from finance_tools.core import DataProcessor, FileManager
-from finance_tools.core.timezone import now_tw
+from finance_tools.core.timezone import taipei_now
 from finance_tools.core.trading_day import is_tw_trading_day, parse_yyyymmdd
 from finance_tools.domains.institutional_investors.twse_fetcher import TWSEInstitutionalFetcher
 from finance_tools.domains.institutional_investors.twse_shareholding_fetcher import TWSEShareholdingFetcher
@@ -50,7 +50,7 @@ def run_update_marketcap_inst(args):
     if raw_date:
         today_str = raw_date.replace("-", "")
     else:
-        today_str = now_tw().strftime("%Y%m%d")
+        today_str = taipei_now().strftime("%Y%m%d")
     inst_fetcher = TWSEInstitutionalFetcher()
     try:
         pre_inst = inst_fetcher.fetch_all(today_str)
@@ -102,7 +102,7 @@ def run_update_marketcap_inst(args):
         inst_ratio_calculator=inst_ratio_calc,
     )
 
-    start_date = (now_tw() - timedelta(days=config.DEFAULT_FETCH_DAYS)).strftime("%Y-%m-%d")
+    start_date = (taipei_now() - timedelta(days=config.DEFAULT_FETCH_DAYS)).strftime("%Y-%m-%d")
 
     processed = 0
     no_marketcap = []

@@ -26,11 +26,11 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from etf_utils import prev_trading_day, today_tw  # noqa: E402  （etf_utils 已把 repo root 放進 sys.path）
+from etf_utils import prev_trading_day  # noqa: E402
+from finance_tools.core.timezone import taipei_now, taipei_today  # noqa: E402  （etf_utils 已把 repo root 放進 sys.path）
 from finance_tools.core.trading_day import is_tw_trading_day  # noqa: E402
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -67,14 +67,10 @@ LAGGED = {"00983A", "00988A", "00989A", "00998A", "00402A", "00412A", "00409A"}
 STEP_TIMEOUT = 15 * 60
 
 
-def _taipei_now() -> datetime:
-    return datetime.now(timezone.utc) + timedelta(hours=8)
-
-
 def latest_trading_day() -> str:
     """應有資料的最近交易日：台北 15 點前今天的持股還沒發布，取前一交易日。"""
-    now = _taipei_now()
-    d = today_tw()
+    now = taipei_now()
+    d = taipei_today().isoformat()
     if is_tw_trading_day(d) and now.hour >= 15:
         return d
     return prev_trading_day(d)
@@ -199,7 +195,7 @@ def main():
     write_output("official_failed", " ".join(official_failed))
 
     # 最後一班（台北 20 點後）仍有缺 → 寄信。前兩班有缺是正常的（還有下一班會補）。
-    if still and not status_only and (_taipei_now().hour >= 20 or os.environ.get("ETF_ALERT_FORCE") == "true"):
+    if still and not status_only and (taipei_now().hour >= 20 or os.environ.get("ETF_ALERT_FORCE") == "true"):
         from notify_mail import send_mail
         rows = "".join(
             f"<tr><td style='padding:4px 10px;border:1px solid #e2e8f0'>{c}</td>"
@@ -220,11 +216,11 @@ def main():
             + (f"<p>官網爬蟲失敗：{'、'.join(official_failed)}</p>" if official_failed else "")
             + (f"<p><a href='{run_url}'>這一班的 log</a></p>" if run_url else "")
         )
-        send_mail(f"🚨 主動式 ETF 持股未補齊：{len(still)} 檔（{today_tw()}）", html)
+        send_mail(f"🚨 主動式 ETF 持股未補齊：{len(still)} 檔（{taipei_today().isoformat()}）", html)
 
     # 只有最後一班仍有缺才算失敗：16:00 有缺是常態（官網還沒發布），下一班會補。
     # 官網壞了但後面的層補上，資料沒問題，也不讓燈變紅（Job Summary 仍會列出）。
-    final = _taipei_now().hour >= 20 or os.environ.get("ETF_ALERT_FORCE") == "true"
+    final = taipei_now().hour >= 20 or os.environ.get("ETF_ALERT_FORCE") == "true"
     sys.exit(1 if still and final and not status_only else 0)
 
 

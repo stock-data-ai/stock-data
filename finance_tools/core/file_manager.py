@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
-from finance_tools.core.timezone import today_str
+from finance_tools.core.timezone import taipei_today
 from finance_tools.core.tw_codes import is_tw_stock
 import finance_tools.config as config
 
@@ -216,7 +216,7 @@ class FileManager:
         if not data:
             return False
         last_updated = data.get("lastUpdated", "")
-        return last_updated == today_str()
+        return last_updated == taipei_today().isoformat()
 
     def delete_file(self, code: str) -> bool:
         """刪除檔案"""
