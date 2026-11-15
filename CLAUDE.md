@@ -12,6 +12,16 @@ This pipeline and sibling `stock_map` are one system. For cross-repo data operat
 
 Company-topic content follows stock_map's `docs/guides/COMPANY_TOPIC_STANDARD.md`, even when initiated here. Local copies of app metadata/topic indexes are inputs, not a new app source of truth; confirm the input version before use. Financial history and ETF accumulated metadata are not assumed rebuildable from a fresh clone.
 
+## Rules with a single implementation
+
+Engineering principles (one rule one implementation, missing is not zero, `/simplify` before commit) live in stock_map's `AGENTS.md`. These rules each have exactly one home here; do not write another, guard tests reject copies:
+
+- **TW trading days / market holidays**: `finance_tools/core/trading_day.py` (calendar file `src/data/market/tw-trading-calendar.json`; typhoon closures go only in its `unscheduled`). Never fetch the TWSE holiday table or hard-code closed dates elsewhere. Rule for daily jobs: today's data present → update; absent and calendar says closed → skip as success; absent but a trading day → fail.
+- **TW individual stock vs ETF**: `finance_tools/core/tw_codes.py` `is_tw_stock` (mirrors stock_map `company.mjs`); no `len(code) == 4` / `isdigit()` checks.
+- **Missing financial items are `None`, never `0`**: `data_processor` (`_round_or_none`, `_margin`); financial companies have no gross profit / operating income.
+
+Before committing code changes run `/simplify` on the diff to catch rewritten helpers.
+
 ## Package Manager
 
 This project uses `uv` (not pip). Always use `uv run` to execute Python scripts.
