@@ -283,12 +283,26 @@ export function pythonRegion(startsWith, endsBefore, workflow = 'health-check.ym
     return region;
 }
 
+// 不直接 spawn 'python3'：Windows 上那是微軟商店的空殼（結束碼 9009）。
+// 改由 uv 找本 repo 的直譯器，只找一次；要指定時設 PYTHON（與 stock_map 的 scripts/lib/python.mjs 同一套規則）。
+let resolvedPython;
+function pythonBin() {
+    if (process.env.PYTHON) return process.env.PYTHON;
+    if (!resolvedPython) {
+        const repo = fileURLToPath(new URL('../../', import.meta.url));
+        const r = spawnSync('uv', ['python', 'find'], { cwd: repo, encoding: 'utf-8' });
+        assert.equal(r.status, 0, `找不到 Python：需要安裝 uv，或設 PYTHON 指定直譯器\n${r.error?.message ?? r.stderr}`);
+        resolvedPython = r.stdout.trim();
+    }
+    return resolvedPython;
+}
+
 /** Run a python source string with a preamble/epilogue, returning parsed JSON from stdout. */
 export function runPython(source, { preamble = '', epilogue = '' } = {}) {
     const dir = scratch('py');
     const file = path.join(dir, 'region.py');
     fs.writeFileSync(file, `${preamble}\n${source}\n${epilogue}\n`);
-    const r = spawnSync('python3', [file], { encoding: 'utf-8', cwd: dir });
+    const r = spawnSync(pythonBin(), [file], { encoding: 'utf-8', cwd: dir });
     assert.equal(r.status, 0, `python failed:\n${r.stderr}`);
     return JSON.parse(r.stdout.trim().split('\n').pop());
 }

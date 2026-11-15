@@ -16,6 +16,13 @@ set -e
 
 HOOK_DIR="$(git rev-parse --git-path hooks)"
 mkdir -p "$HOOK_DIR"
+# Windows：Git for Windows 預設 checkout 成 CRLF、symlink 變成文字檔，測試與 hook 會因此失敗。
+# 這兩個設定只寫本 repo 的 .git/config，Mac／Linux 上本來就是這個行為，設了無害。
+# 只影響之後 checkout 的檔案；Windows 新 clone 請直接帶上：
+#   git clone -c core.autocrlf=input -c core.symlinks=true <url>
+git config core.autocrlf input
+git config core.symlinks true
+
 
 cat > "$HOOK_DIR/pre-push" <<'HOOK'
 #!/bin/sh
