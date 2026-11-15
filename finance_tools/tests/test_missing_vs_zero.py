@@ -73,3 +73,30 @@ def test_zero_revenue_margin_is_none():
     _, quarterly = DataProcessor.process_financials("5555", statements(rows))
     q = quarterly[0]
     assert q["revenue"] == 0 and q["grossMargin"] is None and q["operatingMargin"] is None and q["netMargin"] is None
+
+
+def test_half_year_reporter_full_years_are_not_partial():
+    # 只申報半年報：FinMind 一年只有 06-30（上半年）與 12-31（下半年）。以前一律標「累季」
+    rows = []
+    for d, rev in [("2024-06-30", 1000.0), ("2024-12-31", 1100.0), ("2025-06-30", 1200.0), ("2025-12-31", 1300.0),
+                   ("2026-06-30", 1500.0)]:
+        rows += normal_quarter(d, revenue=rev, gross=rev / 2, op=rev / 5, net=rev / 10, eps=1.0)
+    annual, _ = DataProcessor.process_financials("1260", statements(rows))
+    by_year = {a["year"]: a for a in annual}
+    assert "note" not in by_year[2024] and "note" not in by_year[2025]
+    assert by_year[2025]["revenue"] == 2500 and by_year[2025]["eps"] == 2.0
+    assert by_year[2025]["revenueYoY"] == round((2500 - 2100) / 2100 * 100, 2)   # 整年比整年
+    # 今年只有上半年：照樣是累季，年增率拿去年上半年比
+    assert by_year[2026]["note"] == "累季"
+    assert by_year[2026]["revenueYoY"] == 25.0
+
+
+def test_quarterly_reporter_partial_year_still_partial():
+    rows = [r for d in QUARTER_ENDS for r in normal_quarter(d)] + normal_quarter("2026-03-31") + normal_quarter("2026-06-30")
+    annual, _ = DataProcessor.process_financials("2330", statements(rows))
+    by_year = {a["year"]: a for a in annual}
+    assert "note" not in by_year[2025] and by_year[2026]["note"] == "累季"
+    # 只有 Q2、Q3 這種缺頭的年度不是半年報格式，仍是累季
+    rows = normal_quarter("2025-06-30") + normal_quarter("2025-09-30")
+    annual, _ = DataProcessor.process_financials("1234", statements(rows))
+    assert annual[0]["note"] == "累季"

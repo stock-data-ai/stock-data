@@ -33,6 +33,16 @@ def _round_or_none(v: Optional[float], digits: int) -> Optional[float]:
     return None if v is None else round(v, digits)
 
 
+def _is_full_year(quarters: set) -> bool:
+    """這一年的損益期別湊得成全年嗎。
+
+    一般公司是 Q1～Q4；只申報半年報的公司 FinMind 一年只有 06-30（上半年）與 12-31（下半年）兩筆，
+    即 Q2＋Q4。以前只認「滿四季」，64 家半年報公司每一年都被標成「累季」，
+    持股健檢與選股標籤因此永遠找不到完整年度（2026-11 查證）。
+    """
+    return quarters == {1, 2, 3, 4} or quarters == {2, 4}
+
+
 def _margin(part: Optional[float], revenue: Optional[float]) -> Optional[float]:
     """利潤率（%，兩位小數）；科目缺值或營收不為正時算不出來，回 None。"""
     if part is None or revenue is None or revenue <= 0:
@@ -163,9 +173,9 @@ class DataProcessor:
                 "netMargin": _margin(net_ntd, revenue_ntd),
             }
 
-            # Add note for partial years
-            num_quarters = len(quarter_counts.get(year, set()))
-            if num_quarters < 4:
+            # Add note for partial years（完整年度的定義見 _is_full_year：含半年報公司的 Q2＋Q4）
+            full_year = _is_full_year(quarter_counts.get(year, set()))
+            if not full_year:
                 item["note"] = "累季"
 
             # Calculate YoY
@@ -176,7 +186,7 @@ class DataProcessor:
                 current_revenue = item["revenue"]
 
                 # If current year is partial, get partial revenue from previous year
-                if num_quarters < 4:
+                if not full_year:
                     quarters_to_sum = quarter_counts.get(year, set())
                     prev_revenue_partial = sum(
                         q['revenue'] for q in quarterly_data
@@ -189,8 +199,7 @@ class DataProcessor:
                 else:
                     prev_revenue_full = round(prev_year_data_map.get("revenue", 0), 0)
                     # We also need to ensure previous year was a full year
-                    prev_num_quarters = len(quarter_counts.get(year - 1, set()))
-                    if prev_revenue_full > 0 and prev_num_quarters == 4:
+                    if prev_revenue_full > 0 and _is_full_year(quarter_counts.get(year - 1, set())):
                          yoy = round(((current_revenue - prev_revenue_full) / prev_revenue_full) * 100, 2)
 
             item["revenueYoY"] = yoy
