@@ -20,25 +20,13 @@ def _sign(key: bytes, msg: str) -> bytes:
     return hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
 
 
-def send_mail(subject: str, html_body: str) -> bool:
-    key_id = os.environ.get("AWS_SES_ACCESS_KEY_ID", "")
-    secret = os.environ.get("AWS_SES_SECRET_ACCESS_KEY", "")
-    region = os.environ.get("AWS_SES_REGION") or "ap-northeast-1"
-    if not key_id or not secret:
-        print(f"[mail] 沒有 SES 憑證，不寄：{subject}")
-        return False
+def ses_headers(payload: bytes, key_id: str, secret: str, region: str, now: datetime) -> dict:
+    """SES outbound-emails POST 的 SigV4 headers。
 
+    與 stock_map 的 src/shared/lib/ses.mjs、scripts/lib/send_alert_email.py 同一算法，
+    由 stock_map 的 test_methods/market-events/ses.test.mjs 以固定輸入對帳。
+    """
     host = f"email.{region}.amazonaws.com"
-    payload = json.dumps({
-        "FromEmailAddress": FROM,
-        "Destination": {"ToAddresses": TO},
-        "Content": {"Simple": {
-            "Subject": {"Data": subject, "Charset": "UTF-8"},
-            "Body": {"Html": {"Data": html_body, "Charset": "UTF-8"}},
-        }},
-    }).encode("utf-8")
-
-    now = datetime.now(timezone.utc)
     amz_date, date_stamp = now.strftime("%Y%m%dT%H%M%SZ"), now.strftime("%Y%m%d")
     signed_headers = "content-type;host;x-amz-date"
     canonical = "\n".join([
@@ -52,15 +40,33 @@ def send_mail(subject: str, html_body: str) -> bool:
     for part in (region, "ses", "aws4_request"):
         k = _sign(k, part)
     signature = hmac.new(k, to_sign.encode("utf-8"), hashlib.sha256).hexdigest()
+    return {
+        "Content-Type": "application/json",
+        "X-Amz-Date": amz_date,
+        "Authorization": (f"AWS4-HMAC-SHA256 Credential={key_id}/{scope}, "
+                          f"SignedHeaders={signed_headers}, Signature={signature}"),
+    }
 
+
+def send_mail(subject: str, html_body: str) -> bool:
+    key_id = os.environ.get("AWS_SES_ACCESS_KEY_ID", "")
+    secret = os.environ.get("AWS_SES_SECRET_ACCESS_KEY", "")
+    region = os.environ.get("AWS_SES_REGION") or "ap-northeast-1"
+    if not key_id or not secret:
+        print(f"[mail] 沒有 SES 憑證，不寄：{subject}")
+        return False
+
+    payload = json.dumps({
+        "FromEmailAddress": FROM,
+        "Destination": {"ToAddresses": TO},
+        "Content": {"Simple": {
+            "Subject": {"Data": subject, "Charset": "UTF-8"},
+            "Body": {"Html": {"Data": html_body, "Charset": "UTF-8"}},
+        }},
+    }).encode("utf-8")
     req = urllib.request.Request(
-        f"https://{host}/v2/email/outbound-emails", data=payload, method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-Amz-Date": amz_date,
-            "Authorization": (f"AWS4-HMAC-SHA256 Credential={key_id}/{scope}, "
-                              f"SignedHeaders={signed_headers}, Signature={signature}"),
-        },
+        f"https://email.{region}.amazonaws.com/v2/email/outbound-emails", data=payload, method="POST",
+        headers=ses_headers(payload, key_id, secret, region, datetime.now(timezone.utc)),
     )
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
