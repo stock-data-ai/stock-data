@@ -210,7 +210,7 @@ def _update_one(
         if year is None:
             continue
 
-        net_income = item.get("netIncome", 0) or 0
+        net_income = item.get("netIncome")   # None＝這年沒有淨利資料：ROE／ROA 算不出來，不是 0%
         bs_q4      = bs_by_yq.get((year, 4))
         cf         = cf_by_year.get(year)
 
@@ -219,8 +219,8 @@ def _update_one(
             total_liab   = bs_q4.get("totalLiabilities")
             equity       = bs_q4.get("equity")
 
-            item["roe"] = round(net_income / equity * 100, 2)       if equity       and equity > 0       else None
-            item["roa"] = round(net_income / total_assets * 100, 2) if total_assets and total_assets > 0 else None
+            item["roe"] = round(net_income / equity * 100, 2)       if net_income is not None and equity       and equity > 0       else None
+            item["roa"] = round(net_income / total_assets * 100, 2) if net_income is not None and total_assets and total_assets > 0 else None
             # debtRatio 也放年度（Q4 快照），方便年度表格顯示
             item["debtRatio"] = round(total_liab / total_assets * 100, 2) if total_liab and total_assets and total_assets > 0 else None
 

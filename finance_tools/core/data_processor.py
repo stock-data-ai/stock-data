@@ -24,6 +24,22 @@ def normalize_item_name(name) -> str:
     return str(name).translate(_HALF_TO_FULL).strip()
 
 
+# ── 缺值一律 None，不補 0 ──────────────────────────────────────────────────
+# 0 只代表「來源真的報 0」；沒有這個科目（金融業沒有營業毛利、營業利益）或算不出來
+# （營收為 0 的利潤率）一律 None，畫面顯示「—」。補 0 會讓富邦金等 19 家金融股
+# 顯示「毛利率 0%」，並以「營業利益率 0%」送進 AI 分析（2026-11 查證）。
+
+def _round_or_none(v: Optional[float], digits: int) -> Optional[float]:
+    return None if v is None else round(v, digits)
+
+
+def _margin(part: Optional[float], revenue: Optional[float]) -> Optional[float]:
+    """利潤率（%，兩位小數）；科目缺值或營收不為正時算不出來，回 None。"""
+    if part is None or revenue is None or revenue <= 0:
+        return None
+    return round(part / revenue * 100, 2)
+
+
 class DataProcessor:
     """數據處理器 - 統一處理財務數據
 
@@ -115,11 +131,10 @@ class DataProcessor:
                     "eps": 0,
                 }
 
-            annual_map[year]["revenue"] += q.get("revenue", 0) or 0
-            annual_map[year]["grossProfit"] += q.get("grossProfit", 0) or 0
-            annual_map[year]["operatingIncome"] += q.get("operatingIncome", 0) or 0
-            annual_map[year]["netIncome"] += q.get("netIncome", 0) or 0
-            annual_map[year]["eps"] += q.get("eps", 0) or 0
+            # 任何一季缺某科目，全年該科目就是 None：不可拿其餘幾季的和充當全年
+            for field in ("revenue", "grossProfit", "operatingIncome", "netIncome", "eps"):
+                acc, v = annual_map[year][field], q.get(field)
+                annual_map[year][field] = None if acc is None or v is None else acc + v
 
         # 年度數據後處理（金額單位為元，僅做四捨五入並計算利潤率）
         annual_data = []
@@ -131,17 +146,10 @@ class DataProcessor:
         for year_data in sorted_annual_list:
             year = year_data['year']
 
-            revenue_ntd = round(year_data["revenue"], 0)
-            gross_ntd = round(year_data["grossProfit"], 0)
-            op_ntd = round(year_data["operatingIncome"], 0)
-            net_ntd = round(year_data["netIncome"], 0)
-
-            if revenue_ntd > 0:
-                gross_margin = round(gross_ntd / revenue_ntd * 100, 2)
-                op_margin = round(op_ntd / revenue_ntd * 100, 2)
-                net_margin = round(net_ntd / revenue_ntd * 100, 2)
-            else:
-                gross_margin = op_margin = net_margin = 0
+            revenue_ntd = round(year_data["revenue"], 0)   # 只加總有營收的季度，不會是 None
+            gross_ntd = _round_or_none(year_data["grossProfit"], 0)
+            op_ntd = _round_or_none(year_data["operatingIncome"], 0)
+            net_ntd = _round_or_none(year_data["netIncome"], 0)
 
             item = {
                 "year": year,
@@ -149,10 +157,10 @@ class DataProcessor:
                 "grossProfit": gross_ntd,
                 "operatingIncome": op_ntd,
                 "netIncome": net_ntd,
-                "eps": round(year_data["eps"], 2),
-                "grossMargin": gross_margin,
-                "operatingMargin": op_margin,
-                "netMargin": net_margin,
+                "eps": _round_or_none(year_data["eps"], 2),
+                "grossMargin": _margin(gross_ntd, revenue_ntd),
+                "operatingMargin": _margin(op_ntd, revenue_ntd),
+                "netMargin": _margin(net_ntd, revenue_ntd),
             }
 
             # Add note for partial years
@@ -266,8 +274,10 @@ class DataProcessor:
         quarterly_data = []
         for _, row in pivot_df.iterrows():
             q = {"year": int(row["year"]), "quarter": int(row["quarter"])}
+            # 來源沒有的科目寫 None，不補 0（理由見檔頭「缺值一律 None」）
             for src_key, out_key in KEY_MAP.items():
-                q[out_key] = float(row.get(src_key, 0) or 0)
+                v = row.get(src_key)
+                q[out_key] = None if v is None or pd.isna(v) else float(v)
             for src_key, out_key in OPTIONAL_KEY_MAP.items():
                 v = row.get(src_key)
                 q[out_key] = None if v is None or pd.isna(v) else round(float(v), 0)
@@ -280,26 +290,19 @@ class DataProcessor:
 
         # 季度數據整理（金額單位為元，僅做四捨五入並計算利潤率）
         for q in quarterly_data:
-            revenue_ntd = round(q.get("revenue", 0), 0)
-            gross_ntd = round(q.get("grossProfit", 0), 0)
-            op_ntd = round(q.get("operatingIncome", 0), 0)
-            net_ntd = round(q.get("netIncome", 0), 0)
-
-            if revenue_ntd > 0:
-                gross_margin = round(gross_ntd / revenue_ntd * 100, 2)
-                op_margin = round(op_ntd / revenue_ntd * 100, 2)
-                net_margin = round(net_ntd / revenue_ntd * 100, 2)
-            else:
-                gross_margin = op_margin = net_margin = 0
+            revenue_ntd = _round_or_none(q.get("revenue"), 0)
+            gross_ntd = _round_or_none(q.get("grossProfit"), 0)
+            op_ntd = _round_or_none(q.get("operatingIncome"), 0)
+            net_ntd = _round_or_none(q.get("netIncome"), 0)
 
             q["revenue"] = revenue_ntd
             q["grossProfit"] = gross_ntd
             q["operatingIncome"] = op_ntd
             q["netIncome"] = net_ntd
-            q["eps"] = round(q.get("eps", 0), 2)
-            q["grossMargin"] = gross_margin
-            q["operatingMargin"] = op_margin
-            q["netMargin"] = net_margin
+            q["eps"] = _round_or_none(q.get("eps"), 2)
+            q["grossMargin"] = _margin(gross_ntd, revenue_ntd)
+            q["operatingMargin"] = _margin(op_ntd, revenue_ntd)
+            q["netMargin"] = _margin(net_ntd, revenue_ntd)
 
         quarterly_data.sort(key=lambda x: (x["year"], x["quarter"]), reverse=True)
 

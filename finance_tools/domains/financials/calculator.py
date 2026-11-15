@@ -28,12 +28,13 @@ class FinancialCalculator:
         latest_block.update({
             "year": latest_quarter.get("year"),
             "quarter": latest_quarter.get("quarter"),
-            "revenue": latest_quarter.get("revenue", 0),
+            # 缺值照實傳 None（金融業沒有毛利、營業利益），不補 0：見 data_processor「缺值一律 None」
+            "revenue": latest_quarter.get("revenue"),
             "yoy": quarter_yoy,
-            "grossMargin": latest_quarter.get("grossMargin", 0),
-            "operatingMargin": latest_quarter.get("operatingMargin", 0),
-            "netMargin": latest_quarter.get("netMargin", 0),
-            "eps": latest_quarter.get("eps", 0),
+            "grossMargin": latest_quarter.get("grossMargin"),
+            "operatingMargin": latest_quarter.get("operatingMargin"),
+            "netMargin": latest_quarter.get("netMargin"),
+            "eps": latest_quarter.get("eps"),
         })
         logger.debug(f"Calculated latest block with YoY: {quarter_yoy}")
 
