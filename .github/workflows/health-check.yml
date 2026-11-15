@@ -26,13 +26,10 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           python3 << 'PYEOF'
-          import os, json, re, urllib.parse, urllib.request, sys, hmac, hashlib
+          import os, json, re, urllib.parse, urllib.request, sys
           from datetime import datetime, timedelta, timezone
 
           GH_TOKEN              = os.environ['GH_TOKEN']
-          AWS_ACCESS_KEY_ID     = os.environ.get('AWS_SES_ACCESS_KEY_ID', '')
-          AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SES_SECRET_ACCESS_KEY', '')
-          AWS_REGION            = os.environ.get('AWS_SES_REGION', 'ap-northeast-1')
           REPO                  = os.environ['REPO']
           STEP_SUMMARY_PATH     = os.environ.get('GITHUB_STEP_SUMMARY', '')
 
@@ -496,65 +493,17 @@ jobs:
           subj = (f"✅ [{tw_date}] stock_data 全部正常" if all_good
                   else f"⚠️ [{tw_date}] stock_data 異常 — {fail_n} 失敗 {miss_n} 未執行")
 
-          # ── AWS SES v2 via SigV4 ────────────────────────────────────────────────
-          def _sign(key, msg):
-              return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
-
-          def _get_signing_key(secret, date_stamp, region, service):
-              k = _sign(('AWS4' + secret).encode('utf-8'), date_stamp)
-              k = _sign(k, region)
-              k = _sign(k, service)
-              return _sign(k, 'aws4_request')
+          # ── 寄信：etf_Crawler/notify_mail.py（SES 簽章 stock-data 只有這一份）──────────
+          # 沒有憑證時只略過不寄（同原本）；有憑證卻寄不出去，最後讓這一步失敗，免得壞了沒人知道。
+          sys.path.insert(0, 'etf_Crawler')
+          from notify_mail import send_mail
+          mail_failed = False
 
           def send_ses_email(subject, html_body):
-              if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY:
-                  print('[Health Check] AWS SES credentials not set, skipping email')
-                  return
-              service  = 'ses'
-              host     = f'email.{AWS_REGION}.amazonaws.com'
-              endpoint = f'https://{host}/v2/email/outbound-emails'
-              payload  = json.dumps({
-                  'FromEmailAddress': 'noreply@aistockmap.com',
-                  'Destination': {'ToAddresses': ['rf9550106@gmail.com']},
-                  'Content': {
-                      'Simple': {
-                          'Subject': {'Data': subject, 'Charset': 'UTF-8'},
-                          'Body': {'Html': {'Data': html_body, 'Charset': 'UTF-8'}},
-                      }
-                  },
-              }).encode('utf-8')
-              now_dt     = datetime.now(timezone.utc)
-              amz_date   = now_dt.strftime('%Y%m%dT%H%M%SZ')
-              date_stamp = now_dt.strftime('%Y%m%d')
-              payload_hash = hashlib.sha256(payload).hexdigest()
-              canonical_headers = f'content-type:application/json\nhost:{host}\nx-amz-date:{amz_date}\n'
-              signed_headers = 'content-type;host;x-amz-date'
-              canonical_request = '\n'.join([
-                  'POST', '/v2/email/outbound-emails', '',
-                  canonical_headers, signed_headers, payload_hash,
-              ])
-              credential_scope = f'{date_stamp}/{AWS_REGION}/{service}/aws4_request'
-              string_to_sign = '\n'.join([
-                  'AWS4-HMAC-SHA256', amz_date, credential_scope,
-                  hashlib.sha256(canonical_request.encode('utf-8')).hexdigest(),
-              ])
-              signing_key = _get_signing_key(AWS_SECRET_ACCESS_KEY, date_stamp, AWS_REGION, service)
-              signature = hmac.new(signing_key, string_to_sign.encode('utf-8'), hashlib.sha256).hexdigest()
-              auth_header = (
-                  f'AWS4-HMAC-SHA256 Credential={AWS_ACCESS_KEY_ID}/{credential_scope}, '
-                  f'SignedHeaders={signed_headers}, Signature={signature}'
-              )
-              req = urllib.request.Request(
-                  endpoint, data=payload,
-                  headers={
-                      'Content-Type': 'application/json',
-                      'X-Amz-Date': amz_date,
-                      'Authorization': auth_header,
-                  },
-                  method='POST',
-              )
-              with urllib.request.urlopen(req) as resp:
-                  print(f'SES response: {resp.status}')
+              global mail_failed
+              has_creds = os.environ.get('AWS_SES_ACCESS_KEY_ID') and os.environ.get('AWS_SES_SECRET_ACCESS_KEY')
+              if not send_mail(subject, html_body) and has_creds:
+                  mail_failed = True
 
           send_ses_email(subj, html)
 
@@ -637,6 +586,6 @@ jobs:
                   f'的「Run ETF dividend update」步驟 log。</p>')
               all_good = False
 
-          if not all_good:
+          if not all_good or mail_failed:
               sys.exit(1)
           PYEOF

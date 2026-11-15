@@ -21,6 +21,7 @@ Engineering principles (one rule one implementation, missing is not zero, `/simp
 - **Missing financial items are `None`, never `0`**: `data_processor` (`_round_or_none`, `_margin`); financial companies have no gross profit / operating income.
 - **ROC (民國) dates**: internal data is always Gregorian `YYYY-MM-DD`; convert only at the boundary (reading TWSE/TPEx/MOPS data, building ROC query params) with `finance_tools/core/roc_date.py` (same rules as stock_map `scripts/lib/roc_date.py` / `roc-date.mjs`, cross-checked by stock_map's `roc-date.test.mjs`). Never write `± 1911`, and never write ROC dates into our own outputs (`punishments.json` is Gregorian).
 - **Taipei date / time**: `finance_tools/core/timezone.py` (`taipei_now`, `taipei_today`, `TAIPEI`; same names as stock_map `scripts/lib/taipei_time.py`). CI runs in UTC, so never `date.today()`, a bare `datetime.now()`, `timedelta(hours=8)` or `ZoneInfo('Asia/Taipei')`. The cron Worker keeps its own `TAIWAN_OFFSET_MS` (it cannot import Python).
+- **SES email (SigV4)**: `etf_Crawler/notify_mail.py` (`send_mail`, signing in `ses_headers`); workflow alert mail (health-check etc.) does `sys.path.insert(0, 'etf_Crawler')` and imports it. The only other copy is the cron Worker (`cron/src/index.ts`, cannot import Python); both are cross-checked against stock_map `src/shared/lib/ses.mjs` by stock_map's `ses.test.mjs`. Never write `AWS4-HMAC-SHA256` anywhere else (`finance_tools/tests/test_ses_mail.py`).
 
 Before committing code changes run `/simplify` on the diff to catch rewritten helpers.
 
