@@ -5,9 +5,9 @@
   "managementFee": 1.04,
   "dividendFrequency": "不配息",
   "inceptionDate": "2014-10-31",
-  "fundSize": 3112.79,
+  "fundSize": 2232.82,
   "issuer": "元大投信",
-  "beneficiaryCount": 393565,
+  "beneficiaryCount": 418507,
   "description": "元大台灣50正2 (00631L) 是追蹤特定指數或產業的 ETF，提供投資人參與市場表現的管道。",
   "references": [
     "https://www.moneydj.com/ETF/X/Basic/Basic0004.xdjhtm?etfid=00631L.TW"
@@ -15,63 +15,36 @@
   "topHoldings": [
     {
       "name": "臺股期貨",
-      "weight": 137.01,
-      "shares": 48525,
-      "foreignCode": "202611TX",
-      "previousWeight": 159.23,
-      "weightChange": -22.22,
-      "previousShares": 51515,
-      "sharesChange": -2990
+      "weight": 155.13,
+      "shares": 50077,
+      "foreignCode": "202612TX",
+      "previousWeight": 21.64,
+      "weightChange": 133.49,
+      "previousShares": 7650,
+      "sharesChange": 42427
     },
     {
       "name": "台積電",
-      "weight": 38.26,
-      "shares": 50555000,
+      "weight": 39.59,
+      "shares": 45755000,
       "code": "2330",
-      "previousWeight": 37.93,
-      "weightChange": 0.33,
-      "previousShares": 45587000,
-      "sharesChange": 4968000
-    },
-    {
-      "name": "臺股期貨",
-      "weight": 21.64,
-      "shares": 7650,
-      "foreignCode": "202612TX",
-      "previousWeight": 0,
-      "weightChange": 21.64,
-      "previousShares": 0,
-      "sharesChange": 7650
+      "previousWeight": 38.26,
+      "weightChange": 1.33,
+      "previousShares": 50555000,
+      "sharesChange": -4800000
     },
     {
       "name": "台灣50ETF股票期貨",
-      "weight": 3.23,
-      "shares": 9800,
-      "foreignCode": "202611NYF",
-      "previousWeight": 2.81,
-      "weightChange": 0.42,
-      "previousShares": 7800,
-      "sharesChange": 2000
-    },
-    {
-      "name": "台灣50ETF股票期貨",
-      "weight": 0.1,
-      "shares": 300,
+      "weight": 4.02,
+      "shares": 11000,
       "foreignCode": "202612NYF",
-      "previousWeight": 0,
-      "weightChange": 0.1,
-      "previousShares": 0,
-      "sharesChange": 300
+      "previousWeight": 0.1,
+      "weightChange": 3.92,
+      "previousShares": 300,
+      "sharesChange": 10700
     }
   ],
   "holdingsHistory": {
-    "2026-05-07": [
-      {
-        "name": "臺股期貨",
-        "weight": 199.91,
-        "shares": 32050
-      }
-    ],
     "2026-05-08": [
       {
         "name": "臺股期貨",
@@ -575,8 +548,26 @@
         "weight": 0.1,
         "shares": 300
       }
+    ],
+    "2026-11-20": [
+      {
+        "name": "臺股期貨",
+        "weight": 155.13,
+        "shares": 50077
+      },
+      {
+        "name": "台積電",
+        "weight": 39.59,
+        "shares": 45755000,
+        "code": "2330"
+      },
+      {
+        "name": "台灣50ETF股票期貨",
+        "weight": 4.02,
+        "shares": 11000
+      }
     ]
   },
-  "lastUpdated": "2026-11-13",
+  "lastUpdated": "2026-11-20",
   "trailingYield": 0.0
 }

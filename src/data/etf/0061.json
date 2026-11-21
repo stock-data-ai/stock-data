@@ -7,45 +7,33 @@
   "managementFee": 0.4,
   "dividendFrequency": "不配息",
   "inceptionDate": "2009-08-17",
-  "fundSize": 20.38,
+  "fundSize": 19.54,
   "issuer": "元大投信",
-  "beneficiaryCount": 5920,
+  "beneficiaryCount": 5905,
   "description": null,
   "topHoldings": [
     {
       "name": "BOCI-PRUDENTIAL-W.I.S.E -HKD",
-      "weight": 95.51,
-      "shares": 11206800,
+      "weight": 95.4,
+      "shares": 11076800,
       "foreignCode": "2827 HK",
-      "previousWeight": 95.59,
-      "weightChange": -0.08,
-      "previousShares": 11271800,
-      "sharesChange": -65000
+      "previousWeight": 95.51,
+      "weightChange": -0.11,
+      "previousShares": 11206800,
+      "sharesChange": -130000
     },
     {
       "name": "富時中國A50指數期貨",
-      "weight": 4.1,
+      "weight": 4.18,
       "shares": 200,
       "foreignCode": "202611CN",
-      "previousWeight": 4.03,
-      "weightChange": 0.07,
+      "previousWeight": 4.1,
+      "weightChange": 0.08,
       "previousShares": 200,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-05-07": [
-      {
-        "name": "標智滬深３００",
-        "weight": 95.08,
-        "shares": 12635800
-      },
-      {
-        "name": "富時中國A50指數期貨",
-        "weight": 4.73,
-        "shares": 250
-      }
-    ],
     "2026-05-08": [
       {
         "name": "標智滬深３００",
@@ -393,8 +381,20 @@
         "weight": 4.1,
         "shares": 200
       }
+    ],
+    "2026-11-20": [
+      {
+        "name": "BOCI-PRUDENTIAL-W.I.S.E -HKD",
+        "weight": 95.4,
+        "shares": 11076800
+      },
+      {
+        "name": "富時中國A50指數期貨",
+        "weight": 4.18,
+        "shares": 200
+      }
     ]
   },
-  "lastUpdated": "2026-11-13",
+  "lastUpdated": "2026-11-20",
   "trailingYield": 0.0
 }
