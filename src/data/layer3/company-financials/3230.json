@@ -17,7 +17,7 @@
     "shortBalance": 41,
     "sblBalance": 2050
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2025-09-11": {
@@ -17034,7 +17034,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17066,8 +17066,8 @@
         "person": "簡豪廷",
         "elected": 2115813,
         "shares": 2115813,
-        "pledged": 800000,
-        "pledgePct": 37.81
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -17174,14 +17174,14 @@
     "totals": {
       "people": 13,
       "shares": 18891967,
-      "pledged": 800000,
-      "pledgePct": 4.23
+      "pledged": 0,
+      "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
       "shares": 18709873,
-      "pledged": 800000,
-      "pledgePct": 4.28
+      "pledged": 0,
+      "pledgePct": 0.0
     }
   },
   "insiderHoldingsHistory": {
@@ -17226,12 +17226,43 @@
         "pledged": 800000,
         "pledgePct": 4.28
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 18891967,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 18709873,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "簡豪廷",
+          "roles": [
+            "副董事長本人",
+            "總經理本人",
+            "其他"
+          ],
+          "from": 2115813,
+          "to": 2115813,
+          "pledgedFrom": 800000,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

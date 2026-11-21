@@ -12654,7 +12654,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -16992,7 +16992,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17270,16 +17270,6 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "孫鈴明",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "獨立董事本人"
         ],
         "person": "李明憲",
@@ -17450,7 +17440,7 @@
       }
     ],
     "totals": {
-      "people": 45,
+      "people": 44,
       "shares": 509420418,
       "pledged": 20000000,
       "pledgePct": 3.93
@@ -17504,12 +17494,41 @@
         "pledged": 20000000,
         "pledgePct": 3.93
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 44,
+        "shares": 509420418,
+        "pledged": 20000000,
+        "pledgePct": 3.93
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 509201691,
+        "pledged": 20000000,
+        "pledgePct": 3.93
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "孫鈴明",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

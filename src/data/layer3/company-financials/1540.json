@@ -12574,7 +12574,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -18394,7 +18394,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18424,7 +18424,7 @@
         ],
         "person": "詹正淦",
         "elected": 1407218,
-        "shares": 1430218,
+        "shares": 1450218,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18444,7 +18444,7 @@
         ],
         "person": "蔡錦祥",
         "elected": 138000,
-        "shares": 138000,
+        "shares": 158000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18522,13 +18522,13 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 17330056,
+      "shares": 17370056,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 17292490,
+      "shares": 17332490,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -18575,12 +18575,52 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 17370056,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 17332490,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "詹正淦",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 1430218,
+          "to": 1450218,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "蔡錦祥",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": 138000,
+          "to": 158000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

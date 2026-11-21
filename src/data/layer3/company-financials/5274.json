@@ -17,7 +17,7 @@
     "shortBalance": 2,
     "sblBalance": 208
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18443,7 +18443,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18472,8 +18472,8 @@
         "person": "賢華投資股份有限公司",
         "elected": 592508,
         "shares": 651758,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 20000,
+        "pledgePct": 3.07
       },
       {
         "roles": [
@@ -18504,8 +18504,8 @@
         "person": "余明長",
         "elected": 0,
         "shares": 112000,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 30000,
+        "pledgePct": 26.79
       },
       {
         "roles": [
@@ -18662,14 +18662,14 @@
     "totals": {
       "people": 21,
       "shares": 8753479,
-      "pledged": 631000,
-      "pledgePct": 7.21
+      "pledged": 681000,
+      "pledgePct": 7.78
     },
     "boardTotals": {
       "people": 9,
       "shares": 8479158,
-      "pledged": 610000,
-      "pledgePct": 7.19
+      "pledged": 630000,
+      "pledgePct": 7.43
     }
   },
   "insiderHoldingsHistory": {
@@ -18713,6 +18713,20 @@
         "shares": 8479158,
         "pledged": 610000,
         "pledgePct": 7.19
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 8753479,
+        "pledged": 681000,
+        "pledgePct": 7.78
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 8479158,
+        "pledged": 630000,
+        "pledgePct": 7.43
       }
     }
   },
@@ -18769,6 +18783,31 @@
           "to": 331189,
           "pledgedFrom": 30000,
           "pledgedTo": 60000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "賢華投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 651758,
+          "to": 651758,
+          "pledgedFrom": 0,
+          "pledgedTo": 20000
+        },
+        {
+          "person": "余明長",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 112000,
+          "to": 112000,
+          "pledgedFrom": 0,
+          "pledgedTo": 30000
         }
       ]
     }

@@ -11007,7 +11007,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -15345,7 +15345,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -15404,7 +15404,7 @@
         ],
         "person": "王元星",
         "elected": 341556,
-        "shares": 443056,
+        "shares": 408056,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -15416,7 +15416,7 @@
         ],
         "person": "陳永忠",
         "elected": 0,
-        "shares": 368859,
+        "shares": 343859,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -15426,17 +15426,7 @@
         ],
         "person": "莊膳逢",
         "elected": 0,
-        "shares": 361110,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "經理本人"
-        ],
-        "person": "余昌和",
-        "elected": 0,
-        "shares": 30000,
+        "shares": 336110,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -15509,17 +15499,27 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "余昌和",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 16,
-      "shares": 16254703,
+      "shares": 16139703,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 9,
-      "shares": 6832366,
+      "shares": 6797366,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -15566,6 +15566,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 16139703,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 6797366,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -15581,6 +15595,54 @@
           ],
           "from": 374859,
           "to": 368859,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王元星",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 443056,
+          "to": 408056,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "余昌和",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 30000,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳永忠",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人",
+            "其他"
+          ],
+          "from": 368859,
+          "to": 343859,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "莊膳逢",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 361110,
+          "to": 336110,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

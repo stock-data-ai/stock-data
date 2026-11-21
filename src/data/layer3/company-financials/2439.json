@@ -12630,7 +12630,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16968,7 +16968,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16996,9 +16996,9 @@
         ],
         "person": "呈昇投資股份有限公司",
         "elected": 2407502,
-        "shares": 4864502,
+        "shares": 4874502,
         "pledged": 2512502,
-        "pledgePct": 51.65
+        "pledgePct": 51.54
       },
       {
         "roles": [
@@ -17086,21 +17086,21 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "廖崇熙",
-        "elected": 0,
-        "shares": 88740,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "經理本人"
         ],
         "person": "江詠樂",
         "elected": 0,
         "shares": 73952,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人"
+        ],
+        "person": "廖崇熙",
+        "elected": 0,
+        "shares": 73740,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17177,15 +17177,15 @@
     ],
     "totals": {
       "people": 20,
-      "shares": 27332307,
+      "shares": 27327307,
       "pledged": 2512502,
       "pledgePct": 9.19
     },
     "boardTotals": {
       "people": 8,
-      "shares": 25080134,
+      "shares": 25090134,
       "pledged": 2512502,
-      "pledgePct": 10.02
+      "pledgePct": 10.01
     }
   },
   "insiderHoldingsHistory": {
@@ -17230,6 +17230,20 @@
         "pledged": 2512502,
         "pledgePct": 10.02
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 27327307,
+        "pledged": 2512502,
+        "pledgePct": 9.19
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 25090134,
+        "pledged": 2512502,
+        "pledgePct": 10.01
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17255,6 +17269,31 @@
           "to": 88740,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "廖崇熙",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 88740,
+          "to": 73740,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "呈昇投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4864502,
+          "to": 4874502,
+          "pledgedFrom": 2512502,
+          "pledgedTo": 2512502
         }
       ]
     }

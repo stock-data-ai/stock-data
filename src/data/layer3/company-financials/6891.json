@@ -5437,7 +5437,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9774,7 +9774,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9859,6 +9859,16 @@
         "person": "王志誠",
         "elected": 25000,
         "shares": 25000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "闕儀玟",
+        "elected": 0,
+        "shares": 20350,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9965,9 +9975,29 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "李卓銘",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "倪永發",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "李孟和",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -9986,8 +10016,8 @@
       }
     ],
     "totals": {
-      "people": 20,
-      "shares": 101586000,
+      "people": 23,
+      "shares": 101606350,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -10040,6 +10070,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 23,
+        "shares": 101606350,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 101086000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -10068,6 +10112,41 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "闕儀玟",
+          "roles": [
+            "經理本人"
+          ],
+          "from": null,
+          "to": 20350,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李卓銘",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李孟和",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
         }
       ]
     }

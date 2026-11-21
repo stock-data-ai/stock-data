@@ -12610,7 +12610,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18316,7 +18316,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18326,8 +18326,8 @@
         "person": "信音企業股份有限公司",
         "elected": 14006000,
         "shares": 14006000,
-        "pledged": 13956000,
-        "pledgePct": 99.64
+        "pledged": 11000000,
+        "pledgePct": 78.54
       },
       {
         "roles": [
@@ -18535,14 +18535,14 @@
     "totals": {
       "people": 21,
       "shares": 17173610,
-      "pledged": 13956000,
-      "pledgePct": 81.26
+      "pledged": 11000000,
+      "pledgePct": 64.05
     },
     "boardTotals": {
       "people": 9,
       "shares": 17112276,
-      "pledged": 13956000,
-      "pledgePct": 81.56
+      "pledged": 11000000,
+      "pledgePct": 64.28
     }
   },
   "insiderHoldingsHistory": {
@@ -18587,12 +18587,42 @@
         "pledged": 13956000,
         "pledgePct": 81.56
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 17173610,
+        "pledged": 11000000,
+        "pledgePct": 64.05
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 17112276,
+        "pledged": 11000000,
+        "pledgePct": 64.28
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "信音企業股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 14006000,
+          "to": 14006000,
+          "pledgedFrom": 13956000,
+          "pledgedTo": 11000000
+        }
+      ]
     }
   }
 }

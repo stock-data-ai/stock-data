@@ -12437,7 +12437,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18485,7 +18485,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18507,18 +18507,6 @@
         "person": "吳田玉",
         "elected": 0,
         "shares": 8277473,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長之法人代表人",
-          "大股東本人",
-          "其他"
-        ],
-        "person": "張虔生",
-        "elected": 0,
-        "shares": 6247647,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18565,6 +18553,16 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "張淑琴",
+        "elected": 0,
+        "shares": 996238,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "副總經理本人",
           "會計部門主管本人"
         ],
@@ -18576,21 +18574,11 @@
       },
       {
         "roles": [
-          "副總經理本人"
-        ],
-        "person": "張淑琴",
-        "elected": 0,
-        "shares": 900238,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "其他"
         ],
         "person": "汪渡村",
         "elected": 0,
-        "shares": 841000,
+        "shares": 838000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18610,9 +18598,9 @@
         ],
         "person": "張聲華",
         "elected": 0,
-        "shares": 630506,
-        "pledged": 65000,
-        "pledgePct": 10.31
+        "shares": 610506,
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -18644,6 +18632,18 @@
         "shares": 109000,
         "pledged": 0,
         "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長之法人代表人",
+          "大股東本人",
+          "其他"
+        ],
+        "person": "張虔生",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       },
       {
         "roles": [
@@ -18688,8 +18688,8 @@
     ],
     "totals": {
       "people": 19,
-      "shares": 715902642,
-      "pledged": 3965000,
+      "shares": 709727995,
+      "pledged": 3900000,
       "pledgePct": 0.55
     },
     "boardTotals": {
@@ -18733,6 +18733,20 @@
         "people": 19,
         "shares": 715902642,
         "pledged": 3965000,
+        "pledgePct": 0.55
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 684327886,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 709727995,
+        "pledged": 3900000,
         "pledgePct": 0.55
       },
       "boardTotals": {
@@ -18878,6 +18892,53 @@
           ],
           "from": 1075015,
           "to": 1066015,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張虔生",
+          "roles": [
+            "董事長之法人代表人",
+            "大股東本人",
+            "其他"
+          ],
+          "from": 6247647,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張淑琴",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 900238,
+          "to": 996238,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張聲華",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 630506,
+          "to": 610506,
+          "pledgedFrom": 65000,
+          "pledgedTo": 0
+        },
+        {
+          "person": "汪渡村",
+          "roles": [
+            "其他"
+          ],
+          "from": 841000,
+          "to": 838000,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

@@ -12696,7 +12696,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17034,7 +17034,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17053,7 +17053,7 @@
         ],
         "person": "群環科技股份有限公司",
         "elected": 3254524,
-        "shares": 3585066,
+        "shares": 3535066,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17104,7 +17104,7 @@
         ],
         "person": "周正忠",
         "elected": 0,
-        "shares": 45688,
+        "shares": 40688,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17192,15 +17192,15 @@
     ],
     "totals": {
       "people": 15,
-      "shares": 10982968,
+      "shares": 10927968,
       "pledged": 1800000,
-      "pledgePct": 16.39
+      "pledgePct": 16.47
     },
     "boardTotals": {
       "people": 7,
-      "shares": 10122928,
+      "shares": 10072928,
       "pledged": 1800000,
-      "pledgePct": 17.78
+      "pledgePct": 17.87
     }
   },
   "insiderHoldingsHistory": {
@@ -17245,12 +17245,51 @@
         "pledged": 1800000,
         "pledgePct": 17.78
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 10927968,
+        "pledged": 1800000,
+        "pledgePct": 16.47
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 10072928,
+        "pledged": 1800000,
+        "pledgePct": 17.87
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "群環科技股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 3585066,
+          "to": 3535066,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周正忠",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 45688,
+          "to": 40688,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

@@ -12621,7 +12621,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16959,7 +16959,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16980,8 +16980,8 @@
         "person": "保勝投資股份有限公司",
         "elected": 58279000,
         "shares": 58279000,
-        "pledged": 20000000,
-        "pledgePct": 34.32
+        "pledged": 24999000,
+        "pledgePct": 42.9
       },
       {
         "roles": [
@@ -17010,16 +17010,6 @@
         "person": "湯順甄",
         "elected": 0,
         "shares": 200000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "總經理本人"
-        ],
-        "person": "游敏賢",
-        "elected": 0,
-        "shares": 102045,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17125,39 +17115,19 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "施如妍",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "沈怡君",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 18,
-      "shares": 253903045,
-      "pledged": 163092000,
-      "pledgePct": 64.23
+      "people": 15,
+      "shares": 253801000,
+      "pledged": 168091000,
+      "pledgePct": 66.23
     },
     "boardTotals": {
       "people": 4,
       "shares": 58279000,
-      "pledged": 20000000,
-      "pledgePct": 34.32
+      "pledged": 24999000,
+      "pledgePct": 42.9
     }
   },
   "insiderHoldingsHistory": {
@@ -17202,12 +17172,73 @@
         "pledged": 20000000,
         "pledgePct": 34.32
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 253801000,
+        "pledged": 168091000,
+        "pledgePct": 66.23
+      },
+      "boardTotals": {
+        "people": 4,
+        "shares": 58279000,
+        "pledged": 24999000,
+        "pledgePct": 42.9
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "游敏賢",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": 102045,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "保勝投資股份有限公司",
+          "roles": [
+            "董事長本人",
+            "副董事長本人",
+            "董事本人"
+          ],
+          "from": 58279000,
+          "to": 58279000,
+          "pledgedFrom": 20000000,
+          "pledgedTo": 24999000
+        },
+        {
+          "person": "施如妍",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "沈怡君",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

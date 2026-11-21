@@ -12579,7 +12579,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -18305,7 +18305,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18314,9 +18314,9 @@
         ],
         "person": "永德投資股份有限公司",
         "elected": 56000000,
-        "shares": 67000000,
-        "pledged": 21900000,
-        "pledgePct": 32.69
+        "shares": 72000000,
+        "pledged": 23900000,
+        "pledgePct": 33.19
       },
       {
         "roles": [
@@ -18324,7 +18324,7 @@
         ],
         "person": "陳定吉",
         "elected": 13395254,
-        "shares": 10373254,
+        "shares": 10232254,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18335,8 +18335,8 @@
         "person": "陳建信",
         "elected": 0,
         "shares": 6745000,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 760000,
+        "pledgePct": 11.27
       },
       {
         "roles": [
@@ -18391,21 +18391,21 @@
       },
       {
         "roles": [
-          "協理本人"
-        ],
-        "person": "朱傑生",
-        "elected": 0,
-        "shares": 102924,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "董事本人"
         ],
         "person": "林昭文",
         "elected": 71691,
         "shares": 71691,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "朱傑生",
+        "elected": 0,
+        "shares": 66924,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18673,15 +18673,15 @@
     ],
     "totals": {
       "people": 36,
-      "shares": 105815104,
-      "pledged": 21900000,
-      "pledgePct": 20.7
+      "shares": 110638104,
+      "pledged": 24660000,
+      "pledgePct": 22.29
     },
     "boardTotals": {
       "people": 11,
-      "shares": 98870260,
-      "pledged": 21900000,
-      "pledgePct": 22.15
+      "shares": 103729260,
+      "pledged": 23900000,
+      "pledgePct": 23.04
     }
   },
   "insiderHoldingsHistory": {
@@ -18726,6 +18726,20 @@
         "pledged": 21900000,
         "pledgePct": 22.15
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 36,
+        "shares": 110638104,
+        "pledged": 24660000,
+        "pledgePct": 22.29
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 103729260,
+        "pledged": 23900000,
+        "pledgePct": 23.04
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18741,6 +18755,52 @@
           "to": 10373254,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "永德投資股份有限公司",
+          "roles": [
+            "董事長本人",
+            "大股東本人"
+          ],
+          "from": 67000000,
+          "to": 72000000,
+          "pledgedFrom": 21900000,
+          "pledgedTo": 23900000
+        },
+        {
+          "person": "陳定吉",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 10373254,
+          "to": 10232254,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "朱傑生",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 102924,
+          "to": 66924,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳建信",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 6745000,
+          "to": 6745000,
+          "pledgedFrom": 0,
+          "pledgedTo": 760000
         }
       ]
     }

@@ -12560,7 +12560,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16898,7 +16898,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16929,7 +16929,7 @@
         ],
         "person": "陳海尼",
         "elected": 0,
-        "shares": 693120,
+        "shares": 492297,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16940,7 +16940,7 @@
         ],
         "person": "林淑惠",
         "elected": 0,
-        "shares": 367811,
+        "shares": 166988,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16998,9 +16998,9 @@
     ],
     "totals": {
       "people": 9,
-      "shares": 41252467,
+      "shares": 40850821,
       "pledged": 14000000,
-      "pledgePct": 33.94
+      "pledgePct": 34.27
     },
     "boardTotals": {
       "people": 5,
@@ -17051,12 +17051,52 @@
         "pledged": 14000000,
         "pledgePct": 46.06
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 9,
+        "shares": 40850821,
+        "pledged": 14000000,
+        "pledgePct": 34.27
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 30395908,
+        "pledged": 14000000,
+        "pledgePct": 46.06
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳海尼",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 693120,
+          "to": 492297,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林淑惠",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": 367811,
+          "to": 166988,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

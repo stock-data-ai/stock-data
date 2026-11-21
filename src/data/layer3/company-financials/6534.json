@@ -12390,7 +12390,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16728,7 +16728,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16747,9 +16747,9 @@
         ],
         "person": "兆淞投資有限公司",
         "elected": 18230810,
-        "shares": 16736810,
+        "shares": 15736810,
         "pledged": 7209000,
-        "pledgePct": 43.07
+        "pledgePct": 45.81
       },
       {
         "roles": [
@@ -16759,8 +16759,8 @@
         "person": "吳正邦",
         "elected": 2962374,
         "shares": 5861374,
-        "pledged": 3200000,
-        "pledgePct": 54.59
+        "pledged": 5050000,
+        "pledgePct": 86.16
       },
       {
         "roles": [
@@ -16828,7 +16828,7 @@
         ],
         "person": "黃卓君",
         "elected": 0,
-        "shares": 28203,
+        "shares": 18203,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16905,15 +16905,15 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 54839373,
-      "pledged": 10409000,
-      "pledgePct": 18.98
+      "shares": 53829373,
+      "pledged": 12259000,
+      "pledgePct": 22.77
     },
     "boardTotals": {
       "people": 9,
-      "shares": 52070638,
-      "pledged": 10409000,
-      "pledgePct": 19.99
+      "shares": 51070638,
+      "pledged": 12259000,
+      "pledgePct": 24.0
     }
   },
   "insiderHoldingsHistory": {
@@ -16958,12 +16958,62 @@
         "pledged": 10409000,
         "pledgePct": 19.99
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 53829373,
+        "pledged": 12259000,
+        "pledgePct": 22.77
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 51070638,
+        "pledged": 12259000,
+        "pledgePct": 24.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "兆淞投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 16736810,
+          "to": 15736810,
+          "pledgedFrom": 7209000,
+          "pledgedTo": 7209000
+        },
+        {
+          "person": "黃卓君",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 28203,
+          "to": 18203,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "吳正邦",
+          "roles": [
+            "董事長本人",
+            "大股東本人"
+          ],
+          "from": 5861374,
+          "to": 5861374,
+          "pledgedFrom": 3200000,
+          "pledgedTo": 5050000
+        }
+      ]
     }
   }
 }

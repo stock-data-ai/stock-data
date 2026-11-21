@@ -17,7 +17,7 @@
     "shortBalance": 14,
     "sblBalance": 2590
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18443,7 +18443,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18462,7 +18462,7 @@
         ],
         "person": "王志高",
         "elected": 2172140,
-        "shares": 1981936,
+        "shares": 1770936,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18539,7 +18539,6 @@
       },
       {
         "roles": [
-          "財務部門主管本人",
           "會計部門主管本人"
         ],
         "person": "徐心吾",
@@ -18687,17 +18686,27 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "財務部門主管本人"
+        ],
+        "person": "董威廷",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 24,
-      "shares": 11745754,
+      "people": 25,
+      "shares": 11534754,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 11,
-      "shares": 11309873,
+      "shares": 11098873,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -18744,12 +18753,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 25,
+        "shares": 11534754,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 11098873,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王志高",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 1981936,
+          "to": 1770936,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "董威廷",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

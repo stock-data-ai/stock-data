@@ -12724,7 +12724,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251128": [
@@ -18430,7 +18430,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18470,16 +18470,6 @@
         "person": "蘇政仁",
         "elected": 0,
         "shares": 147000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "李春貴",
-        "elected": 0,
-        "shares": 59000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18576,8 +18566,8 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 14167352,
+      "people": 13,
+      "shares": 14108352,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18630,12 +18620,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 14108352,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 13928952,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李春貴",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 59000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

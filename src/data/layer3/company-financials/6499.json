@@ -12644,7 +12644,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16982,7 +16982,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16991,9 +16991,9 @@
         ],
         "person": "晟德大藥廠股份有限公司",
         "elected": 27411028,
-        "shares": 23479028,
+        "shares": 21479028,
         "pledged": 9800000,
-        "pledgePct": 41.74
+        "pledgePct": 45.63
       },
       {
         "roles": [
@@ -17012,7 +17012,7 @@
         ],
         "person": "翁育詩",
         "elected": 0,
-        "shares": 397881,
+        "shares": 247881,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17132,15 +17132,15 @@
     ],
     "totals": {
       "people": 14,
-      "shares": 34596378,
+      "shares": 32446378,
       "pledged": 9800000,
-      "pledgePct": 28.33
+      "pledgePct": 30.2
     },
     "boardTotals": {
       "people": 6,
-      "shares": 33902939,
+      "shares": 31902939,
       "pledged": 9800000,
-      "pledgePct": 28.91
+      "pledgePct": 30.72
     }
   },
   "insiderHoldingsHistory": {
@@ -17185,12 +17185,52 @@
         "pledged": 9800000,
         "pledgePct": 28.91
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 32446378,
+        "pledged": 9800000,
+        "pledgePct": 30.2
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 31902939,
+        "pledged": 9800000,
+        "pledgePct": 30.72
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "晟德大藥廠股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 23479028,
+          "to": 21479028,
+          "pledgedFrom": 9800000,
+          "pledgedTo": 9800000
+        },
+        {
+          "person": "翁育詩",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 397881,
+          "to": 247881,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

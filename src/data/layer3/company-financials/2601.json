@@ -12383,7 +12383,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -18089,7 +18089,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18097,7 +18097,7 @@
         ],
         "person": "恆華投資股份有限公司",
         "elected": 57065945,
-        "shares": 57065945,
+        "shares": 47767063,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18107,8 +18107,8 @@
         ],
         "person": "永恒暉投資股份有限公司",
         "elected": 23791000,
-        "shares": 23791000,
-        "pledged": 23700000,
+        "shares": 19914262,
+        "pledged": 19838091,
         "pledgePct": 99.62
       },
       {
@@ -18117,9 +18117,9 @@
         ],
         "person": "郭人豪",
         "elected": 0,
-        "shares": 1057006,
-        "pledged": 1000000,
-        "pledgePct": 94.61
+        "shares": 934984,
+        "pledged": 837050,
+        "pledgePct": 89.53
       },
       {
         "roles": [
@@ -18128,7 +18128,7 @@
         ],
         "person": "莊仟萬",
         "elected": 0,
-        "shares": 21800,
+        "shares": 18247,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18138,7 +18138,7 @@
         ],
         "person": "劉臻芳",
         "elected": 0,
-        "shares": 2000,
+        "shares": 1674,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18192,28 +18192,18 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "朱科樺",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 11,
-      "shares": 81937751,
-      "pledged": 24700000,
-      "pledgePct": 30.14
+      "people": 10,
+      "shares": 68636230,
+      "pledged": 20675141,
+      "pledgePct": 30.12
     },
     "boardTotals": {
       "people": 5,
-      "shares": 80856945,
-      "pledged": 23700000,
+      "shares": 67681325,
+      "pledged": 19838091,
       "pledgePct": 29.31
     }
   },
@@ -18259,12 +18249,92 @@
         "pledged": 23700000,
         "pledgePct": 29.31
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 10,
+        "shares": 68636230,
+        "pledged": 20675141,
+        "pledgePct": 30.12
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 67681325,
+        "pledged": 19838091,
+        "pledgePct": 29.31
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "恆華投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 57065945,
+          "to": 47767063,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "永恒暉投資股份有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 23791000,
+          "to": 19914262,
+          "pledgedFrom": 23700000,
+          "pledgedTo": 19838091
+        },
+        {
+          "person": "郭人豪",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 1057006,
+          "to": 934984,
+          "pledgedFrom": 1000000,
+          "pledgedTo": 837050
+        },
+        {
+          "person": "莊仟萬",
+          "roles": [
+            "董事之法人代表人",
+            "總經理本人"
+          ],
+          "from": 21800,
+          "to": 18247,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "劉臻芳",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 2000,
+          "to": 1674,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "朱科樺",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

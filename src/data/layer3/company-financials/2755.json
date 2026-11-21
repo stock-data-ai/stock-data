@@ -12442,7 +12442,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16780,18 +16780,8 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "元裕投資有限公司",
-        "elected": 3014000,
-        "shares": 4498350,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
       {
         "roles": [
           "董事長本人"
@@ -16819,16 +16809,6 @@
         "person": "卓元裕",
         "elected": 0,
         "shares": 1842816,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "卓家嬅",
-        "elected": 0,
-        "shares": 1433946,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16917,16 +16897,16 @@
       }
     ],
     "totals": {
-      "people": 13,
-      "shares": 15783567,
+      "people": 11,
+      "shares": 9851271,
       "pledged": 162000,
-      "pledgePct": 1.03
+      "pledgePct": 1.64
     },
     "boardTotals": {
-      "people": 7,
-      "shares": 10089538,
+      "people": 6,
+      "shares": 5591188,
       "pledged": 162000,
-      "pledgePct": 1.61
+      "pledgePct": 2.9
     }
   },
   "insiderHoldingsHistory": {
@@ -16971,6 +16951,20 @@
         "pledged": 162000,
         "pledgePct": 1.61
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 9851271,
+        "pledged": 162000,
+        "pledgePct": 1.64
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 5591188,
+        "pledged": 162000,
+        "pledgePct": 2.9
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -16987,6 +16981,31 @@
           "to": 2000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "元裕投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4498350,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "卓家嬅",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 1433946,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

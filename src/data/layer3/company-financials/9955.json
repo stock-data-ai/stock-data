@@ -12578,7 +12578,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16915,7 +16915,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16931,11 +16931,12 @@
       {
         "roles": [
           "董事長本人",
-          "總經理本人"
+          "總經理本人",
+          "大股東本人"
         ],
         "person": "吳界欣",
         "elected": 4349125,
-        "shares": 4430725,
+        "shares": 11194377,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16971,11 +16972,12 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
+          "財務部門主管本人",
+          "會計部門主管本人"
         ],
-        "person": "周康記",
+        "person": "陳澤輝",
         "elected": 0,
-        "shares": 102900,
+        "shares": 194386,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16985,18 +16987,17 @@
         ],
         "person": "詹益淇",
         "elected": 0,
-        "shares": 101000,
+        "shares": 169961,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "財務部門主管本人",
-          "會計部門主管本人"
+          "董事之法人代表人"
         ],
-        "person": "陳澤輝",
+        "person": "周康記",
         "elected": 0,
-        "shares": 96000,
+        "shares": 114724,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17006,7 +17007,7 @@
         ],
         "person": "褚家靖",
         "elected": 0,
-        "shares": 6000,
+        "shares": 27149,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17053,13 +17054,13 @@
     ],
     "totals": {
       "people": 13,
-      "shares": 43841788,
+      "shares": 50805760,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 40499240,
+      "shares": 47262892,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17106,12 +17107,84 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 50805760,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 47262892,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "吳界欣",
+          "roles": [
+            "董事長本人",
+            "總經理本人",
+            "大股東本人"
+          ],
+          "from": 4430725,
+          "to": 11194377,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳澤輝",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 96000,
+          "to": 194386,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "詹益淇",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 101000,
+          "to": 169961,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "褚家靖",
+          "roles": [
+            "其他"
+          ],
+          "from": 6000,
+          "to": 27149,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周康記",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 102900,
+          "to": 114724,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

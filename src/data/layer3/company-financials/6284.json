@@ -17,7 +17,7 @@
     "shortBalance": 9,
     "sblBalance": 3930
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18419,7 +18419,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18445,12 +18445,11 @@
       },
       {
         "roles": [
-          "董事之法人代表人",
-          "總經理本人"
+          "董事之法人代表人"
         ],
         "person": "陳培真",
         "elected": 0,
-        "shares": 403059,
+        "shares": 399059,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18574,11 +18573,21 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "總經理本人"
+        ],
+        "person": "張瑞宗",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 15,
-      "shares": 57486296,
+      "people": 16,
+      "shares": 57482296,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18631,12 +18640,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 57482296,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 56475658,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳培真",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 403059,
+          "to": 399059,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張瑞宗",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

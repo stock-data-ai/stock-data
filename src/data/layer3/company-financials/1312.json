@@ -12579,7 +12579,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -18399,7 +18399,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18428,8 +18428,8 @@
         "person": "超峰投資有限公司",
         "elected": 9819000,
         "shares": 10603000,
-        "pledged": 7892000,
-        "pledgePct": 74.43
+        "pledged": 6826000,
+        "pledgePct": 64.38
       },
       {
         "roles": [
@@ -18479,7 +18479,7 @@
         ],
         "person": "沈美佑",
         "elected": 0,
-        "shares": 120000,
+        "shares": 111000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18490,16 +18490,6 @@
         "person": "李怡芳",
         "elected": 0,
         "shares": 80000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "張聰明",
-        "elected": 0,
-        "shares": 55000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18520,6 +18510,16 @@
         "person": "洪坤鈺",
         "elected": 0,
         "shares": 35000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "張聰明",
+        "elected": 0,
+        "shares": 28000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18596,15 +18596,15 @@
     ],
     "totals": {
       "people": 19,
-      "shares": 144696560,
-      "pledged": 30064000,
-      "pledgePct": 20.78
+      "shares": 144660560,
+      "pledged": 28998000,
+      "pledgePct": 20.05
     },
     "boardTotals": {
       "people": 7,
       "shares": 141106281,
-      "pledged": 30064000,
-      "pledgePct": 21.31
+      "pledged": 28998000,
+      "pledgePct": 20.55
     }
   },
   "insiderHoldingsHistory": {
@@ -18649,6 +18649,20 @@
         "pledged": 30064000,
         "pledgePct": 21.31
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 144660560,
+        "pledged": 28998000,
+        "pledgePct": 20.05
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 141106281,
+        "pledged": 28998000,
+        "pledgePct": 20.55
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18684,6 +18698,41 @@
           "to": 10603000,
           "pledgedFrom": 9571000,
           "pledgedTo": 7892000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張聰明",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 55000,
+          "to": 28000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "沈美佑",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 120000,
+          "to": 111000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "超峰投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 10603000,
+          "to": 10603000,
+          "pledgedFrom": 7892000,
+          "pledgedTo": 6826000
         }
       ]
     }

@@ -12141,7 +12141,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16479,7 +16479,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16488,8 +16488,8 @@
         "person": "鴻偉投資股份有限公司",
         "elected": 4212400,
         "shares": 4212400,
-        "pledged": 1760392,
-        "pledgePct": 41.79
+        "pledged": 622000,
+        "pledgePct": 14.77
       },
       {
         "roles": [
@@ -16657,14 +16657,14 @@
     "totals": {
       "people": 17,
       "shares": 10690221,
-      "pledged": 3360392,
-      "pledgePct": 31.43
+      "pledged": 2222000,
+      "pledgePct": 20.79
     },
     "boardTotals": {
       "people": 7,
       "shares": 6670400,
-      "pledged": 1760392,
-      "pledgePct": 26.39
+      "pledged": 622000,
+      "pledgePct": 9.32
     }
   },
   "insiderHoldingsHistory": {
@@ -16709,12 +16709,41 @@
         "pledged": 1760392,
         "pledgePct": 26.39
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 10690221,
+        "pledged": 2222000,
+        "pledgePct": 20.79
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 6670400,
+        "pledged": 622000,
+        "pledgePct": 9.32
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "鴻偉投資股份有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 4212400,
+          "to": 4212400,
+          "pledgedFrom": 1760392,
+          "pledgedTo": 622000
+        }
+      ]
     }
   }
 }

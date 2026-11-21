@@ -5793,7 +5793,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -10130,7 +10130,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -10150,6 +10150,16 @@
         "person": "陳偉誌",
         "elected": 0,
         "shares": 4699000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "曾心潔",
+        "elected": 0,
+        "shares": 45000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10226,8 +10236,8 @@
       }
     ],
     "totals": {
-      "people": 9,
-      "shares": 9722506,
+      "people": 10,
+      "shares": 9767506,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -10280,12 +10290,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 10,
+        "shares": 9767506,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 4,
+        "shares": 5023506,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "曾心潔",
+          "roles": [
+            "其他"
+          ],
+          "from": null,
+          "to": 45000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

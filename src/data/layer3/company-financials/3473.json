@@ -504,7 +504,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -4841,7 +4841,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -4903,7 +4903,7 @@
         ],
         "person": "駱景璋",
         "elected": 0,
-        "shares": 309135,
+        "shares": 351135,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -4930,21 +4930,21 @@
       },
       {
         "roles": [
-          "獨立董事本人"
+          "協理本人"
         ],
-        "person": "張新永",
-        "elected": 30167,
-        "shares": 30167,
+        "person": "倪明泉",
+        "elected": 0,
+        "shares": 35072,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "協理本人"
+          "獨立董事本人"
         ],
-        "person": "倪明泉",
-        "elected": 0,
-        "shares": 20072,
+        "person": "張新永",
+        "elected": 30167,
+        "shares": 30167,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5022,7 +5022,7 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 14428677,
+      "shares": 14485677,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -5075,12 +5075,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 14485677,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 12449129,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "駱景璋",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 309135,
+          "to": 351135,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "倪明泉",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 20072,
+          "to": 35072,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

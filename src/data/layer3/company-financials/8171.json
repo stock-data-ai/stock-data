@@ -12651,7 +12651,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17445,7 +17445,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17465,9 +17465,9 @@
         ],
         "person": "天振投資有限公司",
         "elected": 4725509,
-        "shares": 4726509,
+        "shares": 4654509,
         "pledged": 2360000,
-        "pledgePct": 49.93
+        "pledgePct": 50.7
       },
       {
         "roles": [
@@ -17625,15 +17625,15 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 44113518,
+      "shares": 44041518,
       "pledged": 4160000,
-      "pledgePct": 9.43
+      "pledgePct": 9.45
     },
     "boardTotals": {
       "people": 7,
-      "shares": 43886994,
+      "shares": 43814994,
       "pledged": 4160000,
-      "pledgePct": 9.48
+      "pledgePct": 9.49
     }
   },
   "insiderHoldingsHistory": {
@@ -17678,12 +17678,41 @@
         "pledged": 4160000,
         "pledgePct": 9.48
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 44041518,
+        "pledged": 4160000,
+        "pledgePct": 9.45
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 43814994,
+        "pledged": 4160000,
+        "pledgePct": 9.49
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "天振投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4726509,
+          "to": 4654509,
+          "pledgedFrom": 2360000,
+          "pledgedTo": 2360000
+        }
+      ]
     }
   }
 }

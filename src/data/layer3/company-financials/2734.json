@@ -12615,7 +12615,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16952,7 +16952,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16993,8 +16993,8 @@
         "person": "周昀生",
         "elected": 1285280,
         "shares": 1285280,
-        "pledged": 600000,
-        "pledgePct": 46.68
+        "pledged": 1240000,
+        "pledgePct": 96.48
       },
       {
         "roles": [
@@ -17110,6 +17110,16 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "張瑞琳",
+        "elected": 0,
+        "shares": 52,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "董事之法人代表人"
         ],
         "person": "劉羽琪",
@@ -17180,16 +17190,6 @@
       },
       {
         "roles": [
-          "副總經理本人"
-        ],
-        "person": "張瑞琳",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "協理本人"
         ],
         "person": "曲振芳",
@@ -17211,15 +17211,15 @@
     ],
     "totals": {
       "people": 25,
-      "shares": 15709477,
-      "pledged": 2380000,
-      "pledgePct": 15.15
+      "shares": 15709529,
+      "pledged": 3020000,
+      "pledgePct": 19.22
     },
     "boardTotals": {
       "people": 8,
       "shares": 15452445,
-      "pledged": 2380000,
-      "pledgePct": 15.4
+      "pledged": 3020000,
+      "pledgePct": 19.54
     }
   },
   "insiderHoldingsHistory": {
@@ -17264,12 +17264,52 @@
         "pledged": 2380000,
         "pledgePct": 15.4
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 25,
+        "shares": 15709529,
+        "pledged": 3020000,
+        "pledgePct": 19.22
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 15452445,
+        "pledged": 3020000,
+        "pledgePct": 19.54
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張瑞琳",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": 52,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周昀生",
+          "roles": [
+            "董事長本人",
+            "總經理本人"
+          ],
+          "from": 1285280,
+          "to": 1285280,
+          "pledgedFrom": 600000,
+          "pledgedTo": 1240000
+        }
+      ]
     }
   }
 }

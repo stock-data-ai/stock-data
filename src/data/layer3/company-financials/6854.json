@@ -12065,7 +12065,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17771,7 +17771,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17860,7 +17860,7 @@
         ],
         "person": "林京亮",
         "elected": 0,
-        "shares": 274845,
+        "shares": 257845,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17880,7 +17880,27 @@
         ],
         "person": "吳俊德",
         "elected": 0,
-        "shares": 165102,
+        "shares": 133102,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "許世弘",
+        "elected": 0,
+        "shares": 100666,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "陳培欣",
+        "elected": 0,
+        "shares": 27000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17988,8 +18008,8 @@
       }
     ],
     "totals": {
-      "people": 21,
-      "shares": 45067857,
+      "people": 23,
+      "shares": 45146523,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18042,6 +18062,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 23,
+        "shares": 45146523,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 31123177,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18075,6 +18109,51 @@
           ],
           "from": 171102,
           "to": 165102,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "許世弘",
+          "roles": [
+            "其他"
+          ],
+          "from": null,
+          "to": 100666,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "吳俊德",
+          "roles": [
+            "其他"
+          ],
+          "from": 165102,
+          "to": 133102,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳培欣",
+          "roles": [
+            "其他"
+          ],
+          "from": null,
+          "to": 27000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林京亮",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 274845,
+          "to": 257845,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

@@ -6345,7 +6345,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -10682,7 +10682,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -10692,9 +10692,9 @@
         ],
         "person": "連展投資控股股份有限公司",
         "elected": 13731061,
-        "shares": 13323061,
+        "shares": 13052061,
         "pledged": 5400000,
-        "pledgePct": 40.53
+        "pledgePct": 41.37
       },
       {
         "roles": [
@@ -10712,7 +10712,7 @@
         ],
         "person": "陳鴻儀",
         "elected": 0,
-        "shares": 229000,
+        "shares": 215000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10744,17 +10744,7 @@
         ],
         "person": "陳信儒",
         "elected": 0,
-        "shares": 46886,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "陳龍章",
-        "elected": 0,
-        "shares": 28000,
+        "shares": 41886,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10765,6 +10755,16 @@
         "person": "林肇聰",
         "elected": 0,
         "shares": 25000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "陳龍章",
+        "elected": 0,
+        "shares": 20000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10821,15 +10821,15 @@
     ],
     "totals": {
       "people": 13,
-      "shares": 15391957,
+      "shares": 15093957,
       "pledged": 5400000,
-      "pledgePct": 35.08
+      "pledgePct": 35.78
     },
     "boardTotals": {
       "people": 5,
-      "shares": 14893061,
+      "shares": 14622061,
       "pledged": 5400000,
-      "pledgePct": 36.26
+      "pledgePct": 36.93
     }
   },
   "insiderHoldingsHistory": {
@@ -10874,6 +10874,20 @@
         "pledged": 5400000,
         "pledgePct": 36.26
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 15093957,
+        "pledged": 5400000,
+        "pledgePct": 35.78
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 14622061,
+        "pledged": 5400000,
+        "pledgePct": 36.93
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -10899,6 +10913,54 @@
           ],
           "from": 267000,
           "to": 229000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "連展投資控股股份有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 13323061,
+          "to": 13052061,
+          "pledgedFrom": 5400000,
+          "pledgedTo": 5400000
+        },
+        {
+          "person": "陳鴻儀",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 229000,
+          "to": 215000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳龍章",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 28000,
+          "to": 20000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳信儒",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 46886,
+          "to": 41886,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

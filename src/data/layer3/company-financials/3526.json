@@ -12737,7 +12737,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18785,7 +18785,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18854,7 +18854,7 @@
         ],
         "person": "康雅妘",
         "elected": 0,
-        "shares": 56996,
+        "shares": 61300,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18864,7 +18864,7 @@
         ],
         "person": "陳靜宜",
         "elected": 0,
-        "shares": 55574,
+        "shares": 59830,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18875,7 +18875,7 @@
         ],
         "person": "張一偉",
         "elected": 0,
-        "shares": 42740,
+        "shares": 47155,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18896,7 +18896,7 @@
         ],
         "person": "陳忠毅",
         "elected": 0,
-        "shares": 27860,
+        "shares": 32116,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18906,7 +18906,7 @@
         ],
         "person": "佟人彥",
         "elected": 0,
-        "shares": 19978,
+        "shares": 24273,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18916,7 +18916,7 @@
         ],
         "person": "黃子凡",
         "elected": 0,
-        "shares": 15051,
+        "shares": 19506,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18926,7 +18926,17 @@
         ],
         "person": "范煥采",
         "elected": 0,
-        "shares": 7285,
+        "shares": 17437,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "財務部門主管本人"
+        ],
+        "person": "簡子淵",
+        "elected": 0,
+        "shares": 4256,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18979,23 +18989,13 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "財務部門主管本人"
-        ],
-        "person": "簡子淵",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 20,
-      "shares": 16732839,
+      "shares": 16773228,
       "pledged": 745031,
-      "pledgePct": 4.45
+      "pledgePct": 4.44
     },
     "boardTotals": {
       "people": 8,
@@ -19046,12 +19046,113 @@
         "pledged": 745031,
         "pledgePct": 4.62
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 16773228,
+        "pledged": 745031,
+        "pledgePct": 4.44
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 16127018,
+        "pledged": 745031,
+        "pledgePct": 4.62
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "范煥采",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 7285,
+          "to": 17437,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "黃子凡",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 15051,
+          "to": 19506,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張一偉",
+          "roles": [
+            "董事之法人代表人",
+            "總經理本人"
+          ],
+          "from": 42740,
+          "to": 47155,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "康雅妘",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 56996,
+          "to": 61300,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "佟人彥",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 19978,
+          "to": 24273,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳靜宜",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 55574,
+          "to": 59830,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳忠毅",
+          "roles": [
+            "經理本人",
+            "其他"
+          ],
+          "from": 27860,
+          "to": 32116,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "簡子淵",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": 0,
+          "to": 4256,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

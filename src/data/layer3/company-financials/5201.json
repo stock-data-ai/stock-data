@@ -17035,11 +17035,11 @@
       "ratio_pct": 0.0
     }
   ],
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17095,9 +17095,9 @@
         "roles": [
           "董事之法人代表人"
         ],
-        "person": "謝明哲",
+        "person": "薛名喻",
         "elected": 0,
-        "shares": 170000,
+        "shares": 200000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17108,16 +17108,6 @@
         "person": "極簡投資有限公司",
         "elected": 60000,
         "shares": 160000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "鄭賢義",
-        "elected": 0,
-        "shares": 80000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17225,10 +17215,10 @@
       }
     ],
     "totals": {
-      "people": 18,
-      "shares": 6100807,
+      "people": 17,
+      "shares": 6050807,
       "pledged": 880000,
-      "pledgePct": 14.42
+      "pledgePct": 14.54
     },
     "boardTotals": {
       "people": 11,
@@ -17279,12 +17269,61 @@
         "pledged": 880000,
         "pledgePct": 15.11
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 6050807,
+        "pledged": 880000,
+        "pledgePct": 14.54
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 5824807,
+        "pledged": 880000,
+        "pledgePct": 15.11
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "薛名喻",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 200000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "謝明哲",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 170000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "鄭賢義",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 80000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

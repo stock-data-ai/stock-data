@@ -12610,7 +12610,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18316,7 +18316,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18342,7 +18342,7 @@
       {
         "roles": [
           "董事本人",
-          "副總經理本人"
+          "總經理本人"
         ],
         "person": "蘇宏文",
         "elected": 257854,
@@ -18367,16 +18367,6 @@
         "person": "王榮春",
         "elected": 0,
         "shares": 40651,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "花梓馨",
-        "elected": 0,
-        "shares": 24433,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18432,11 +18422,21 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "花梓馨",
+        "elected": 0,
+        "shares": 14433,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "江錦樺",
         "elected": 0,
-        "shares": 14711,
+        "shares": 13711,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18447,16 +18447,6 @@
         "person": "張幼祺",
         "elected": 0,
         "shares": 13204,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "吳麗雪",
-        "elected": 0,
-        "shares": 12212,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18575,16 +18565,6 @@
         "roles": [
           "協理本人"
         ],
-        "person": "王之璘",
-        "elected": 0,
-        "shares": 3810,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
         "person": "劉名建",
         "elected": 0,
         "shares": 3703,
@@ -18595,9 +18575,19 @@
         "roles": [
           "協理本人"
         ],
-        "person": "曾煜仁",
+        "person": "王之璘",
         "elected": 0,
-        "shares": 1000,
+        "shares": 1213,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "吳麗雪",
+        "elected": 0,
+        "shares": 212,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18630,11 +18620,21 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "曾煜仁",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 31,
-      "shares": 9680905,
+      "shares": 9654308,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18687,6 +18687,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 31,
+        "shares": 9654308,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 4891945,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18710,6 +18724,61 @@
           ],
           "from": 2210,
           "to": 1000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "吳麗雪",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 12212,
+          "to": 212,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "花梓馨",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 24433,
+          "to": 14433,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "王之璘",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 3810,
+          "to": 1213,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "江錦樺",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 14711,
+          "to": 13711,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "曾煜仁",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 1000,
+          "to": 0,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

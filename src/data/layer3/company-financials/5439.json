@@ -12716,7 +12716,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17054,7 +17054,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17154,19 +17154,17 @@
         ],
         "person": "湯坤道",
         "elected": 0,
-        "shares": 159228,
+        "shares": 160228,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "財務部門主管本人",
-          "會計部門主管本人",
-          "其他"
+          "會計部門主管本人"
         ],
-        "person": "張秋雄",
+        "person": "范慧芳",
         "elected": 0,
-        "shares": 144673,
+        "shares": 8147,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17209,13 +17207,24 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "財務部門主管本人",
+          "其他"
+        ],
+        "person": "林秀芳",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 15,
-      "shares": 11844613,
+      "people": 16,
+      "shares": 11709087,
       "pledged": 500000,
-      "pledgePct": 4.22
+      "pledgePct": 4.27
     },
     "boardTotals": {
       "people": 10,
@@ -17259,6 +17268,20 @@
         "shares": 11844613,
         "pledged": 500000,
         "pledgePct": 4.22
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 9996687,
+        "pledged": 500000,
+        "pledgePct": 5.0
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 11709087,
+        "pledged": 500000,
+        "pledgePct": 4.27
       },
       "boardTotals": {
         "people": 10,
@@ -17311,6 +17334,55 @@
           "from": 1032000,
           "to": 1032000,
           "pledgedFrom": 500000,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張秋雄",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人",
+            "其他"
+          ],
+          "from": 144673,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "范慧芳",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": null,
+          "to": 8147,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "湯坤道",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": 159228,
+          "to": 160228,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林秀芳",
+          "roles": [
+            "財務部門主管本人",
+            "其他"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

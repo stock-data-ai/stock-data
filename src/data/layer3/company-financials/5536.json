@@ -12788,7 +12788,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18836,7 +18836,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18960,21 +18960,21 @@
       },
       {
         "roles": [
-          "獨立董事本人"
-        ],
-        "person": "黃姿裴",
-        "elected": 0,
-        "shares": 6000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "協理本人"
         ],
         "person": "曾輝雄",
         "elected": 0,
         "shares": 5082,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "獨立董事本人"
+        ],
+        "person": "黃姿裴",
+        "elected": 0,
+        "shares": 4000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -19042,13 +19042,13 @@
     ],
     "totals": {
       "people": 20,
-      "shares": 13435104,
+      "shares": 13433104,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 11318688,
+      "shares": 11316688,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -19095,12 +19095,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 13433104,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 11316688,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "黃姿裴",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": 6000,
+          "to": 4000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

@@ -17,7 +17,7 @@
     "shortBalance": 57,
     "sblBalance": 3527
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2025-01-02": {
@@ -18586,7 +18586,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18595,8 +18595,8 @@
         "person": "漢勝投資股份有限公司",
         "elected": 3652288,
         "shares": 4123251,
-        "pledged": 2710000,
-        "pledgePct": 65.72
+        "pledged": 2870000,
+        "pledgePct": 69.61
       },
       {
         "roles": [
@@ -18676,16 +18676,6 @@
         "person": "曾劭鈞",
         "elected": 0,
         "shares": 104653,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "經理本人"
-        ],
-        "person": "崔革文",
-        "elected": 0,
-        "shares": 78361,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18872,16 +18862,16 @@
       }
     ],
     "totals": {
-      "people": 28,
-      "shares": 9313453,
-      "pledged": 2890000,
-      "pledgePct": 31.03
+      "people": 27,
+      "shares": 9235092,
+      "pledged": 3050000,
+      "pledgePct": 33.03
     },
     "boardTotals": {
       "people": 11,
       "shares": 8504421,
-      "pledged": 2710000,
-      "pledgePct": 31.87
+      "pledged": 2870000,
+      "pledgePct": 33.75
     }
   },
   "insiderHoldingsHistory": {
@@ -18926,12 +18916,51 @@
         "pledged": 2710000,
         "pledgePct": 31.87
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 27,
+        "shares": 9235092,
+        "pledged": 3050000,
+        "pledgePct": 33.03
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 8504421,
+        "pledged": 2870000,
+        "pledgePct": 33.75
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "崔革文",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 78361,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "漢勝投資股份有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 4123251,
+          "to": 4123251,
+          "pledgedFrom": 2710000,
+          "pledgedTo": 2870000
+        }
+      ]
     }
   }
 }

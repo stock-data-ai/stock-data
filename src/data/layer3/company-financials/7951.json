@@ -10,7 +10,7 @@
     "netMargin": 12.67,
     "eps": 15.47
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2026-10-12": {
@@ -1185,7 +1185,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -1273,7 +1273,7 @@
         ],
         "person": "笲登管理顧問有限公司",
         "elected": 1293000,
-        "shares": 311750,
+        "shares": 377750,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -1414,6 +1414,17 @@
       {
         "roles": [
           "董事之法人代表人",
+          "大股東本人"
+        ],
+        "person": "吳達仁",
+        "elected": 0,
+        "shares": 2000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人",
           "協理本人"
         ],
         "person": "杜慶璋",
@@ -1455,17 +1466,6 @@
       },
       {
         "roles": [
-          "董事之法人代表人",
-          "大股東本人"
-        ],
-        "person": "吳達仁",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "監察人之法人代表人"
         ],
         "person": "游玲瑛",
@@ -1497,15 +1497,15 @@
     ],
     "totals": {
       "people": 30,
-      "shares": 9873350,
+      "shares": 9941350,
       "pledged": 1707500,
-      "pledgePct": 17.29
+      "pledgePct": 17.18
     },
     "boardTotals": {
       "people": 9,
-      "shares": 8395550,
+      "shares": 8461550,
       "pledged": 1472000,
-      "pledgePct": 17.53
+      "pledgePct": 17.4
     }
   },
   "insiderHoldingsHistory": {
@@ -1522,9 +1522,51 @@
         "pledged": 1472000,
         "pledgePct": 17.53
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 30,
+        "shares": 9941350,
+        "pledged": 1707500,
+        "pledgePct": 17.18
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 8461550,
+        "pledged": 1472000,
+        "pledgePct": 17.4
+      }
     }
   },
   "companyCode": "7951",
   "companyName": "大易橙科技股份有限公司",
-  "dataQuality": "high"
+  "dataQuality": "high",
+  "insiderHoldingsChanges": {
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "笲登管理顧問有限公司",
+          "roles": [
+            "監察人本人"
+          ],
+          "from": 311750,
+          "to": 377750,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "吳達仁",
+          "roles": [
+            "董事之法人代表人",
+            "大股東本人"
+          ],
+          "from": 0,
+          "to": 2000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    }
+  }
 }

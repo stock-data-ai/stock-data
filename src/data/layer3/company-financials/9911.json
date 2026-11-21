@@ -12630,7 +12630,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16968,7 +16968,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17028,17 +17028,7 @@
         ],
         "person": "張靜雯",
         "elected": 0,
-        "shares": 93439,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "張永政",
-        "elected": 0,
-        "shares": 67853,
+        "shares": 77439,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17049,6 +17039,16 @@
         "person": "羅光斐",
         "elected": 0,
         "shares": 57242,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "張永政",
+        "elected": 0,
+        "shares": 54853,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17229,9 +17229,9 @@
     ],
     "totals": {
       "people": 25,
-      "shares": 22632197,
+      "shares": 22603197,
       "pledged": 1546664,
-      "pledgePct": 6.83
+      "pledgePct": 6.84
     },
     "boardTotals": {
       "people": 6,
@@ -17282,12 +17282,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 25,
+        "shares": 22603197,
+        "pledged": 1546664,
+        "pledgePct": 6.84
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 20282108,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張靜雯",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 93439,
+          "to": 77439,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張永政",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 67853,
+          "to": 54853,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

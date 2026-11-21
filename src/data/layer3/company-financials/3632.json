@@ -6103,7 +6103,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-19",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -10326,7 +10326,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -10335,7 +10335,7 @@
         ],
         "person": "簡良益",
         "elected": 2823925,
-        "shares": 2591925,
+        "shares": 2329539,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10346,7 +10346,7 @@
         ],
         "person": "陳俊福",
         "elected": 1230050,
-        "shares": 1230050,
+        "shares": 1311806,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10359,7 +10359,7 @@
         ],
         "person": "陳柏任",
         "elected": 1186453,
-        "shares": 1186453,
+        "shares": 1288350,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10369,7 +10369,7 @@
         ],
         "person": "王能超",
         "elected": 191713,
-        "shares": 191713,
+        "shares": 103147,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10406,13 +10406,13 @@
     ],
     "totals": {
       "people": 7,
-      "shares": 5200141,
+      "shares": 5032842,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 5200141,
+      "shares": 5032842,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -10459,12 +10459,76 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 7,
+        "shares": 5032842,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 5032842,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "簡良益",
+          "roles": [
+            "董事長本人",
+            "副總經理本人"
+          ],
+          "from": 2591925,
+          "to": 2329539,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳柏任",
+          "roles": [
+            "董事本人",
+            "財務部門主管本人",
+            "會計部門主管本人",
+            "其他"
+          ],
+          "from": 1186453,
+          "to": 1288350,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "王能超",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 191713,
+          "to": 103147,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳俊福",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 1230050,
+          "to": 1311806,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

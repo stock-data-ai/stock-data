@@ -12646,7 +12646,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -17212,7 +17212,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17391,6 +17391,16 @@
         "roles": [
           "協理本人"
         ],
+        "person": "白宗逢",
+        "elected": 0,
+        "shares": 7956,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
         "person": "王志偉",
         "elected": 0,
         "shares": 7000,
@@ -17414,16 +17424,6 @@
         "person": "陳昱良",
         "elected": 0,
         "shares": 5257,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "白宗逢",
-        "elected": 0,
-        "shares": 4956,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17591,16 +17591,6 @@
       },
       {
         "roles": [
-          "經理本人"
-        ],
-        "person": "敬新",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "協理本人"
         ],
         "person": "鄭吉良",
@@ -17691,8 +17681,8 @@
       }
     ],
     "totals": {
-      "people": 47,
-      "shares": 10129657,
+      "people": 46,
+      "shares": 10132657,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17745,6 +17735,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 46,
+        "shares": 10132657,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 7382904,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17760,6 +17764,31 @@
           "to": 7000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "白宗逢",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 4956,
+          "to": 7956,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "敬新",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

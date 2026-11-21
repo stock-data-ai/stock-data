@@ -10069,7 +10069,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -14407,7 +14407,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -14503,16 +14503,6 @@
       },
       {
         "roles": [
-          "董事本人"
-        ],
-        "person": "李宇娟",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "獨立董事本人"
         ],
         "person": "陳水聰",
@@ -14564,13 +14554,13 @@
       }
     ],
     "totals": {
-      "people": 15,
+      "people": 14,
       "shares": 4768655,
       "pledged": 1000000,
       "pledgePct": 20.97
     },
     "boardTotals": {
-      "people": 9,
+      "people": 8,
       "shares": 3901855,
       "pledged": 1000000,
       "pledgePct": 25.63
@@ -14618,12 +14608,41 @@
         "pledged": 1000000,
         "pledgePct": 25.63
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 4768655,
+        "pledged": 1000000,
+        "pledgePct": 20.97
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 3901855,
+        "pledged": 1000000,
+        "pledgePct": 25.63
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李宇娟",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

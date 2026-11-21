@@ -12634,7 +12634,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -16992,7 +16992,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17190,16 +17190,6 @@
         "roles": [
           "副總經理本人"
         ],
-        "person": "林德偉",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
         "person": "詹兆源",
         "elected": 0,
         "shares": 0,
@@ -17321,16 +17311,6 @@
         "roles": [
           "副總經理本人"
         ],
-        "person": "鄭偉柏",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
         "person": "陳嘉琪",
         "elected": 0,
         "shares": 0,
@@ -17349,7 +17329,7 @@
       }
     ],
     "totals": {
-      "people": 35,
+      "people": 33,
       "shares": 706456929,
       "pledged": 42466302,
       "pledgePct": 6.01
@@ -17403,12 +17383,51 @@
         "pledged": 42466302,
         "pledgePct": 31.27
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 33,
+        "shares": 706456929,
+        "pledged": 42466302,
+        "pledgePct": 6.01
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 135804621,
+        "pledged": 42466302,
+        "pledgePct": 31.27
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "林德偉",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "鄭偉柏",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

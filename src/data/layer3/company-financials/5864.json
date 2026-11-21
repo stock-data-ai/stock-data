@@ -12514,7 +12514,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16852,7 +16852,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16892,9 +16892,9 @@
         ],
         "person": "夏美琪",
         "elected": 2501027,
-        "shares": 2998230,
+        "shares": 2989230,
         "pledged": 2700000,
-        "pledgePct": 90.05
+        "pledgePct": 90.32
       },
       {
         "roles": [
@@ -17242,13 +17242,13 @@
     ],
     "totals": {
       "people": 38,
-      "shares": 104252102,
+      "shares": 104243102,
       "pledged": 53870000,
-      "pledgePct": 51.67
+      "pledgePct": 51.68
     },
     "boardTotals": {
       "people": 13,
-      "shares": 103159083,
+      "shares": 103150083,
       "pledged": 53870000,
       "pledgePct": 52.22
     }
@@ -17295,12 +17295,41 @@
         "pledged": 53870000,
         "pledgePct": 52.22
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 38,
+        "shares": 104243102,
+        "pledged": 53870000,
+        "pledgePct": 51.68
+      },
+      "boardTotals": {
+        "people": 13,
+        "shares": 103150083,
+        "pledged": 53870000,
+        "pledgePct": 52.22
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "夏美琪",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 2998230,
+          "to": 2989230,
+          "pledgedFrom": 2700000,
+          "pledgedTo": 2700000
+        }
+      ]
     }
   }
 }

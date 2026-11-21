@@ -12365,7 +12365,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16703,7 +16703,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16780,23 +16780,23 @@
       },
       {
         "roles": [
+          "總經理本人"
+        ],
+        "person": "陳博鈞",
+        "elected": 0,
+        "shares": 45000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "副總經理本人",
           "財務部門主管本人",
           "會計部門主管本人"
         ],
         "person": "郭彥甫",
         "elected": 0,
-        "shares": 45550,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "總經理本人"
-        ],
-        "person": "陳博鈞",
-        "elected": 0,
-        "shares": 45000,
+        "shares": 42550,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16873,7 +16873,7 @@
     ],
     "totals": {
       "people": 16,
-      "shares": 24486885,
+      "shares": 24483885,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -16926,12 +16926,43 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 24483885,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 24101135,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "郭彥甫",
+          "roles": [
+            "副總經理本人",
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 45550,
+          "to": 42550,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

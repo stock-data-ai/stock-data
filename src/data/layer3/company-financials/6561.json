@@ -12678,7 +12678,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17016,7 +17016,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17037,9 +17037,19 @@
         ],
         "person": "劉耀元",
         "elected": 0,
-        "shares": 269000,
+        "shares": 279000,
         "pledged": 120000,
-        "pledgePct": 44.61
+        "pledgePct": 43.01
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "張霖棟",
+        "elected": 0,
+        "shares": 136780,
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -17048,16 +17058,6 @@
         "person": "邰中和",
         "elected": 0,
         "shares": 135703,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "張霖棟",
-        "elected": 0,
-        "shares": 126780,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17077,9 +17077,9 @@
         ],
         "person": "江文漢",
         "elected": 0,
-        "shares": 116000,
+        "shares": 118000,
         "pledged": 70000,
-        "pledgePct": 60.34
+        "pledgePct": 59.32
       },
       {
         "roles": [
@@ -17259,7 +17259,7 @@
     ],
     "totals": {
       "people": 23,
-      "shares": 44416557,
+      "shares": 44438557,
       "pledged": 190000,
       "pledgePct": 0.43
     },
@@ -17312,6 +17312,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 23,
+        "shares": 44438557,
+        "pledged": 190000,
+        "pledgePct": 0.43
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 43488283,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17326,6 +17340,42 @@
           "from": 94500,
           "to": 116000,
           "pledgedFrom": 0,
+          "pledgedTo": 70000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "劉耀元",
+          "roles": [
+            "總經理本人",
+            "其他"
+          ],
+          "from": 269000,
+          "to": 279000,
+          "pledgedFrom": 120000,
+          "pledgedTo": 120000
+        },
+        {
+          "person": "張霖棟",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 126780,
+          "to": 136780,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "江文漢",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 116000,
+          "to": 118000,
+          "pledgedFrom": 70000,
           "pledgedTo": 70000
         }
       ]

@@ -3381,7 +3381,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -7718,7 +7718,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -7749,7 +7749,7 @@
         ],
         "person": "陳俊志",
         "elected": 0,
-        "shares": 395823,
+        "shares": 430823,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7760,7 +7760,7 @@
         ],
         "person": "陳治均",
         "elected": 0,
-        "shares": 341023,
+        "shares": 351023,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7770,7 +7770,17 @@
         ],
         "person": "李如意",
         "elected": 0,
-        "shares": 326924,
+        "shares": 341924,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "總經理本人"
+        ],
+        "person": "蘇文彬",
+        "elected": 0,
+        "shares": 223559,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7806,6 +7816,16 @@
       },
       {
         "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "宋建融",
+        "elected": 0,
+        "shares": 39873,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "王士榮",
@@ -7816,21 +7836,11 @@
       },
       {
         "roles": [
-          "會計部門主管本人"
+          "協理本人"
         ],
-        "person": "宋建融",
+        "person": "卓長謀",
         "elected": 0,
-        "shares": 19873,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "總經理本人"
-        ],
-        "person": "蘇文彬",
-        "elected": 0,
-        "shares": 14559,
+        "shares": 20000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7913,21 +7923,11 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "卓長謀",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 20,
-      "shares": 18782065,
+      "shares": 19091065,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -7980,6 +7980,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 19091065,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 17287361,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "dividendsUpdated": "2026-11-14",
@@ -7987,6 +8001,72 @@
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "蘇文彬",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": 14559,
+          "to": 223559,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳俊志",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 395823,
+          "to": 430823,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "宋建融",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 19873,
+          "to": 39873,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "卓長謀",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": 20000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李如意",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 326924,
+          "to": 341924,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳治均",
+          "roles": [
+            "副總經理本人",
+            "財務部門主管本人"
+          ],
+          "from": 341023,
+          "to": 351023,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

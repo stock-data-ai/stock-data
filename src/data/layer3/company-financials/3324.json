@@ -17,7 +17,7 @@
     "shortBalance": 132,
     "sblBalance": 3380
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2025-01-02": {
@@ -18443,7 +18443,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18464,8 +18464,8 @@
         "person": "鄭和彬",
         "elected": 4432094,
         "shares": 4324094,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 400000,
+        "pledgePct": 9.25
       },
       {
         "roles": [
@@ -18652,14 +18652,14 @@
     "totals": {
       "people": 20,
       "shares": 17913003,
-      "pledged": 741000,
-      "pledgePct": 4.14
+      "pledged": 1141000,
+      "pledgePct": 6.37
     },
     "boardTotals": {
       "people": 7,
       "shares": 17717834,
-      "pledged": 741000,
-      "pledgePct": 4.18
+      "pledged": 1141000,
+      "pledgePct": 6.44
     }
   },
   "insiderHoldingsHistory": {
@@ -18704,6 +18704,20 @@
         "pledged": 741000,
         "pledgePct": 4.18
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 17913003,
+        "pledged": 1141000,
+        "pledgePct": 6.37
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 17717834,
+        "pledged": 1141000,
+        "pledgePct": 6.44
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18740,6 +18754,21 @@
           "to": 10005,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "鄭和彬",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4324094,
+          "to": 4324094,
+          "pledgedFrom": 0,
+          "pledgedTo": 400000
         }
       ]
     }

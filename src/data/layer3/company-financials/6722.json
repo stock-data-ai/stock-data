@@ -7489,7 +7489,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -11827,7 +11827,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -11836,8 +11836,8 @@
         "person": "健豐投資股份有限公司",
         "elected": 0,
         "shares": 15282056,
-        "pledged": 3800000,
-        "pledgePct": 24.87
+        "pledged": 7641000,
+        "pledgePct": 50.0
       },
       {
         "roles": [
@@ -11967,8 +11967,8 @@
     "totals": {
       "people": 13,
       "shares": 37893923,
-      "pledged": 3800000,
-      "pledgePct": 10.03
+      "pledged": 7641000,
+      "pledgePct": 20.16
     },
     "boardTotals": {
       "people": 8,
@@ -12019,12 +12019,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 37893923,
+        "pledged": 7641000,
+        "pledgePct": 20.16
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 22574867,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "健豐投資股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 15282056,
+          "to": 15282056,
+          "pledgedFrom": 3800000,
+          "pledgedTo": 7641000
+        }
+      ]
     }
   }
 }

@@ -15,7 +15,7 @@
     "dividendYield": 1.67,
     "sblBalance": 5
   },
-  "lastUpdated": "2026-11-19",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -8980,7 +8980,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9057,7 +9057,8 @@
       },
       {
         "roles": [
-          "會計部門主管本人"
+          "會計部門主管本人",
+          "其他"
         ],
         "person": "陳柏融",
         "elected": 0,
@@ -9072,16 +9073,6 @@
         "person": "張書嫻",
         "elected": 10272,
         "shares": 11299,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "其他"
-        ],
-        "person": "曹玉英",
-        "elected": 0,
-        "shares": 2000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9127,8 +9118,8 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 20606826,
+      "people": 13,
+      "shares": 20604826,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -9181,12 +9172,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 20604826,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 14281359,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "曹玉英",
+          "roles": [
+            "其他"
+          ],
+          "from": 2000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

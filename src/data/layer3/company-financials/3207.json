@@ -12706,7 +12706,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18754,7 +18754,7 @@
   },
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18762,9 +18762,9 @@
         ],
         "person": "蘇浩熙",
         "elected": 2752745,
-        "shares": 2994745,
+        "shares": 3058745,
         "pledged": 2250000,
-        "pledgePct": 75.13
+        "pledgePct": 73.56
       },
       {
         "roles": [
@@ -18772,9 +18772,9 @@
         ],
         "person": "周榮華",
         "elected": 1994082,
-        "shares": 1994082,
+        "shares": 2001082,
         "pledged": 1950000,
-        "pledgePct": 97.79
+        "pledgePct": 97.45
       },
       {
         "roles": [
@@ -18793,8 +18793,8 @@
         "person": "何建儀",
         "elected": 0,
         "shares": 1318287,
-        "pledged": 1318000,
-        "pledgePct": 99.98
+        "pledged": 1118000,
+        "pledgePct": 84.81
       },
       {
         "roles": [
@@ -18802,9 +18802,9 @@
         ],
         "person": "張慶輝",
         "elected": 0,
-        "shares": 838798,
-        "pledged": 832000,
-        "pledgePct": 99.19
+        "shares": 791798,
+        "pledged": 791000,
+        "pledgePct": 99.9
       },
       {
         "roles": [
@@ -18839,6 +18839,7 @@
       {
         "roles": [
           "協理本人",
+          "財務部門主管本人",
           "會計部門主管本人"
         ],
         "person": "蘇小慧",
@@ -18896,29 +18897,19 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "財務部門主管本人"
-        ],
-        "person": "鄒鞬隆",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 15,
-      "shares": 10189048,
-      "pledged": 7850000,
-      "pledgePct": 77.04
+      "people": 14,
+      "shares": 10213048,
+      "pledged": 7609000,
+      "pledgePct": 74.5
     },
     "boardTotals": {
       "people": 7,
-      "shares": 6576626,
+      "shares": 6647626,
       "pledged": 5700000,
-      "pledgePct": 86.67
+      "pledgePct": 85.74
     }
   },
   "insiderHoldingsHistory": {
@@ -18963,6 +18954,20 @@
         "pledged": 5700000,
         "pledgePct": 86.67
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 10213048,
+        "pledged": 7609000,
+        "pledgePct": 74.5
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 6647626,
+        "pledged": 5700000,
+        "pledgePct": 85.74
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18988,6 +18993,61 @@
           "to": 838798,
           "pledgedFrom": 832000,
           "pledgedTo": 832000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "蘇浩熙",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 2994745,
+          "to": 3058745,
+          "pledgedFrom": 2250000,
+          "pledgedTo": 2250000
+        },
+        {
+          "person": "張慶輝",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 838798,
+          "to": 791798,
+          "pledgedFrom": 832000,
+          "pledgedTo": 791000
+        },
+        {
+          "person": "周榮華",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1994082,
+          "to": 2001082,
+          "pledgedFrom": 1950000,
+          "pledgedTo": 1950000
+        },
+        {
+          "person": "何建儀",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 1318287,
+          "to": 1318287,
+          "pledgedFrom": 1318000,
+          "pledgedTo": 1118000
+        },
+        {
+          "person": "鄒鞬隆",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

@@ -2278,7 +2278,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -6615,7 +6615,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -6623,9 +6623,9 @@
         ],
         "person": "信太投資股份有限公司",
         "elected": 1270539,
-        "shares": 1524646,
+        "shares": 1481646,
         "pledged": 826000,
-        "pledgePct": 54.18
+        "pledgePct": 55.75
       },
       {
         "roles": [
@@ -6641,7 +6641,7 @@
         "roles": [
           "董事長本人"
         ],
-        "person": "創(清爭)節能有限公司",
+        "person": "創節能有限公司",
         "elected": 629876,
         "shares": 755851,
         "pledged": 0,
@@ -6803,15 +6803,15 @@
     ],
     "totals": {
       "people": 18,
-      "shares": 4300041,
+      "shares": 4257041,
       "pledged": 826000,
-      "pledgePct": 19.21
+      "pledgePct": 19.4
     },
     "boardTotals": {
       "people": 8,
-      "shares": 3786820,
+      "shares": 3743820,
       "pledged": 826000,
-      "pledgePct": 21.81
+      "pledgePct": 22.06
     }
   },
   "insiderHoldingsHistory": {
@@ -6856,6 +6856,20 @@
         "pledged": 826000,
         "pledgePct": 21.81
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 18,
+        "shares": 4257041,
+        "pledged": 826000,
+        "pledgePct": 19.4
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 3743820,
+        "pledged": 826000,
+        "pledgePct": 22.06
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -6884,6 +6898,41 @@
           "to": 155000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "創節能有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": null,
+          "to": 755851,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "創(清爭)節能有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 755851,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "信太投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1524646,
+          "to": 1481646,
+          "pledgedFrom": 826000,
+          "pledgedTo": 826000
         }
       ]
     }

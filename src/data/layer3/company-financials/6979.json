@@ -1095,7 +1095,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -5432,7 +5432,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -5511,6 +5511,16 @@
       },
       {
         "roles": [
+          "董事本人"
+        ],
+        "person": "簡俐菁",
+        "elected": 0,
+        "shares": 1000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "獨立董事本人"
         ],
         "person": "蔡昀玲",
@@ -5518,16 +5528,6 @@
         "shares": 1000,
         "pledged": 0,
         "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "簡俐菁",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       },
       {
         "roles": [
@@ -5573,13 +5573,13 @@
     ],
     "totals": {
       "people": 13,
-      "shares": 6781005,
+      "shares": 6782005,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 9,
-      "shares": 5956005,
+      "shares": 5957005,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -5626,6 +5626,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 6782005,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 5957005,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -5641,6 +5655,21 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "簡俐菁",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 0,
+          "to": 1000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

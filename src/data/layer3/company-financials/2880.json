@@ -12565,7 +12565,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -18385,7 +18385,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18499,6 +18499,16 @@
         "person": "曹俊恆",
         "elected": 0,
         "shares": 148,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "王世達",
+        "elected": 0,
+        "shares": 34,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18674,7 +18684,7 @@
       },
       {
         "roles": [
-          "經理本人"
+          "副總經理本人"
         ],
         "person": "陳晞涵",
         "elected": 0,
@@ -18701,11 +18711,21 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "蘇國華",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 31,
-      "shares": 3476126775,
+      "people": 33,
+      "shares": 3476126809,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18758,6 +18778,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 33,
+        "shares": 3476126809,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 3475370151,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18773,6 +18807,31 @@
           "from": 567500,
           "to": 588999,
           "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王世達",
+          "roles": [
+            "經理本人"
+          ],
+          "from": null,
+          "to": 34,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "蘇國華",
+          "roles": [
+            "經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

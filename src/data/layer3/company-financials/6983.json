@@ -5443,7 +5443,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9781,7 +9781,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9832,7 +9832,7 @@
         ],
         "person": "黃春香",
         "elected": 0,
-        "shares": 148000,
+        "shares": 145000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9842,17 +9842,7 @@
         ],
         "person": "林昌民",
         "elected": 0,
-        "shares": 138000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "經理本人"
-        ],
-        "person": "王宣復",
-        "elected": 0,
-        "shares": 109000,
+        "shares": 128000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9863,6 +9853,16 @@
         "person": "賴富信",
         "elected": 0,
         "shares": 104480,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "王宣復",
+        "elected": 0,
+        "shares": 100000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9892,7 +9892,7 @@
         ],
         "person": "王國倫",
         "elected": 0,
-        "shares": 37000,
+        "shares": 44000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9902,7 +9902,7 @@
         ],
         "person": "林孟儒",
         "elected": 0,
-        "shares": 27962,
+        "shares": 26962,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9971,7 +9971,7 @@
     ],
     "totals": {
       "people": 18,
-      "shares": 4721643,
+      "shares": 4705643,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -10024,6 +10024,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 18,
+        "shares": 4705643,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 3974517,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -10067,6 +10081,61 @@
           ],
           "from": 36000,
           "to": 37000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "林昌民",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 138000,
+          "to": 128000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "王宣復",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 109000,
+          "to": 100000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "王國倫",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 37000,
+          "to": 44000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "黃春香",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 148000,
+          "to": 145000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林孟儒",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 27962,
+          "to": 26962,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

@@ -12586,7 +12586,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18292,7 +18292,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18363,16 +18363,6 @@
         "person": "宋培宜",
         "elected": 0,
         "shares": 51693,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "邱令凱",
-        "elected": 0,
-        "shares": 45000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18468,6 +18458,16 @@
       },
       {
         "roles": [
+          "協理本人"
+        ],
+        "person": "邱令凱",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
           "協理本人",
           "財務部門主管本人",
           "會計部門主管本人"
@@ -18481,7 +18481,7 @@
     ],
     "totals": {
       "people": 18,
-      "shares": 12606765,
+      "shares": 12561765,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18534,12 +18534,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 18,
+        "shares": 12561765,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 12428868,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "邱令凱",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 45000,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

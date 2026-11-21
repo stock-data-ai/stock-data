@@ -5099,7 +5099,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9436,7 +9436,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9455,7 +9455,7 @@
         ],
         "person": "泰博科技股份有限公司",
         "elected": 2500000,
-        "shares": 2803119,
+        "shares": 2769119,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9506,17 +9506,6 @@
         "person": "楊平政",
         "elected": 133420,
         "shares": 107000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "財務部門主管本人",
-          "會計部門主管本人"
-        ],
-        "person": "王敏和",
-        "elected": 0,
-        "shares": 68000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9629,17 +9618,27 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "周俊宏",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 19,
-      "shares": 11158835,
+      "shares": 11056835,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 10,
-      "shares": 10708601,
+      "shares": 10674601,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -9686,6 +9685,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 11056835,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 10674601,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -9710,6 +9723,42 @@
           "from": 124000,
           "to": 107000,
           "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王敏和",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 68000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "泰博科技股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 2803119,
+          "to": 2769119,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周俊宏",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

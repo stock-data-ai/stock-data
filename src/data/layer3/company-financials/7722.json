@@ -11968,7 +11968,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17674,7 +17674,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17726,17 +17726,7 @@
         ],
         "person": "李達中",
         "elected": 0,
-        "shares": 41448,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "戴佳暄",
-        "elected": 0,
-        "shares": 39348,
+        "shares": 39000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17748,7 +17738,17 @@
         ],
         "person": "洪宇萱",
         "elected": 0,
-        "shares": 39348,
+        "shares": 36000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "戴佳暄",
+        "elected": 0,
+        "shares": 35348,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17876,7 +17876,7 @@
     ],
     "totals": {
       "people": 19,
-      "shares": 54070420,
+      "shares": 54060624,
       "pledged": 44000,
       "pledgePct": 0.08
     },
@@ -17929,6 +17929,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 54060624,
+        "pledged": 44000,
+        "pledgePct": 0.08
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 53776473,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17944,6 +17958,43 @@
           "to": 11000,
           "pledgedFrom": 35000,
           "pledgedTo": 11000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "戴佳暄",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 39348,
+          "to": 35348,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "洪宇萱",
+          "roles": [
+            "副總經理本人",
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 39348,
+          "to": 36000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李達中",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 41448,
+          "to": 39000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

@@ -12461,7 +12461,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16799,7 +16799,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16808,9 +16808,9 @@
         ],
         "person": "聚奕投資有限公司",
         "elected": 135631757,
-        "shares": 129443757,
+        "shares": 116256757,
         "pledged": 61500000,
-        "pledgePct": 47.51
+        "pledgePct": 52.9
       },
       {
         "roles": [
@@ -16828,7 +16828,18 @@
         ],
         "person": "向富棋",
         "elected": 9250000,
-        "shares": 9250000,
+        "shares": 12250000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事本人",
+          "總經理本人"
+        ],
+        "person": "濮家銓",
+        "elected": 0,
+        "shares": 100000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16857,17 +16868,6 @@
           "董事之法人代表人"
         ],
         "person": "李秋雲",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "董事本人",
-          "總經理本人"
-        ],
-        "person": "濮家銓",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -16968,15 +16968,15 @@
     ],
     "totals": {
       "people": 16,
-      "shares": 183717769,
+      "shares": 173630769,
       "pledged": 61500000,
-      "pledgePct": 33.48
+      "pledgePct": 35.42
     },
     "boardTotals": {
       "people": 6,
-      "shares": 138693757,
+      "shares": 128606757,
       "pledged": 61500000,
-      "pledgePct": 44.34
+      "pledgePct": 47.82
     }
   },
   "insiderHoldingsHistory": {
@@ -17021,6 +17021,20 @@
         "pledged": 61500000,
         "pledgePct": 44.34
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 173630769,
+        "pledged": 61500000,
+        "pledgePct": 35.42
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 128606757,
+        "pledged": 61500000,
+        "pledgePct": 47.82
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17037,6 +17051,43 @@
           "to": 129443757,
           "pledgedFrom": 61500000,
           "pledgedTo": 61500000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "聚奕投資有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 129443757,
+          "to": 116256757,
+          "pledgedFrom": 61500000,
+          "pledgedTo": 61500000
+        },
+        {
+          "person": "向富棋",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 9250000,
+          "to": 12250000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "濮家銓",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 0,
+          "to": 100000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

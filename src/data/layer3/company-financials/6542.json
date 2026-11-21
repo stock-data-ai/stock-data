@@ -10315,7 +10315,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -14653,7 +14653,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -14674,7 +14674,7 @@
         ],
         "person": "英屬維京群島商時富企業有限公司",
         "elected": 5449311,
-        "shares": 5449311,
+        "shares": 5440311,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -14784,13 +14784,13 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 22715680,
+      "shares": 22706680,
       "pledged": 1500000,
-      "pledgePct": 6.6
+      "pledgePct": 6.61
     },
     "boardTotals": {
       "people": 7,
-      "shares": 12169311,
+      "shares": 12160311,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -14837,12 +14837,42 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 22706680,
+        "pledged": 1500000,
+        "pledgePct": 6.61
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 12160311,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "英屬維京群島商時富企業有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 5449311,
+          "to": 5440311,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

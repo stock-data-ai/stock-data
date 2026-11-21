@@ -12641,7 +12641,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -16979,7 +16979,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16989,7 +16989,7 @@
         ],
         "person": "大江生醫股份有限公司",
         "elected": 20304762,
-        "shares": 27976762,
+        "shares": 27993762,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17019,7 +17019,7 @@
         ],
         "person": "林詠翔",
         "elected": 0,
-        "shares": 560000,
+        "shares": 588000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17139,13 +17139,13 @@
     ],
     "totals": {
       "people": 15,
-      "shares": 38847889,
+      "shares": 38892889,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 6,
-      "shares": 38055490,
+      "shares": 38072490,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17192,12 +17192,53 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 38892889,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 38072490,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "林詠翔",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 560000,
+          "to": 588000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "大江生醫股份有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 27976762,
+          "to": 27993762,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

@@ -12377,7 +12377,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17171,7 +17171,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17180,7 +17180,7 @@
         ],
         "person": "譚明珠",
         "elected": 3304066,
-        "shares": 3330066,
+        "shares": 3208066,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17201,7 +17201,7 @@
         ],
         "person": "閻立利",
         "elected": 0,
-        "shares": 363119,
+        "shares": 313119,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17212,7 +17212,7 @@
         ],
         "person": "譚偉傑",
         "elected": 290871,
-        "shares": 351371,
+        "shares": 288871,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17259,13 +17259,13 @@
     ],
     "totals": {
       "people": 8,
-      "shares": 6277246,
+      "shares": 6042746,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 5914127,
+      "shares": 5729627,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17312,12 +17312,64 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 8,
+        "shares": 6042746,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 5729627,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "譚明珠",
+          "roles": [
+            "董事長本人",
+            "大股東本人"
+          ],
+          "from": 3330066,
+          "to": 3208066,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "譚偉傑",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 351371,
+          "to": 288871,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "閻立利",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 363119,
+          "to": 313119,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

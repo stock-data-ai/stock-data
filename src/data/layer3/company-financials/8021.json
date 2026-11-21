@@ -12586,7 +12586,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18292,7 +18292,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18339,9 +18339,9 @@
         "roles": [
           "副總經理本人"
         ],
-        "person": "陳招陽",
+        "person": "翁勝洲",
         "elected": 0,
-        "shares": 83840,
+        "shares": 75898,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18349,9 +18349,9 @@
         "roles": [
           "副總經理本人"
         ],
-        "person": "翁勝洲",
+        "person": "陳招陽",
         "elected": 0,
-        "shares": 75898,
+        "shares": 74840,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18369,16 +18369,6 @@
         "roles": [
           "協理本人"
         ],
-        "person": "李婉萍",
-        "elected": 0,
-        "shares": 31438,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
         "person": "張家齊",
         "elected": 0,
         "shares": 30790,
@@ -18387,12 +18377,11 @@
       },
       {
         "roles": [
-          "財務部門主管本人",
-          "會計部門主管本人"
+          "協理本人"
         ],
-        "person": "柯梨青",
+        "person": "李婉萍",
         "elected": 0,
-        "shares": 20570,
+        "shares": 25438,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18445,11 +18434,22 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "財務部門主管本人",
+          "會計部門主管本人"
+        ],
+        "person": "柯梨青",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 15,
-      "shares": 12659613,
+      "shares": 12624043,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18502,12 +18502,62 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 12624043,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 12258852,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "柯梨青",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 20570,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳招陽",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 83840,
+          "to": 74840,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李婉萍",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 31438,
+          "to": 25438,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

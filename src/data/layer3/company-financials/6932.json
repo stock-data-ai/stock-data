@@ -4817,7 +4817,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9154,7 +9154,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9172,17 +9172,7 @@
         ],
         "person": "莊琇真",
         "elected": 0,
-        "shares": 53256736,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長本人"
-        ],
-        "person": "林玉龍",
-        "elected": 24033940,
-        "shares": 25268123,
+        "shares": 50656736,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9193,7 +9183,17 @@
         ],
         "person": "梁耀仁",
         "elected": 22203904,
-        "shares": 23020464,
+        "shares": 25620464,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長本人"
+        ],
+        "person": "林玉龍",
+        "elected": 24033940,
+        "shares": 25269123,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9293,13 +9293,13 @@
     ],
     "totals": {
       "people": 13,
-      "shares": 188884673,
+      "shares": 188885673,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 49906317,
+      "shares": 52507317,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -9346,6 +9346,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 188885673,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 52507317,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -9369,6 +9383,42 @@
           ],
           "from": 25247123,
           "to": 25268123,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "莊琇真",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 53256736,
+          "to": 50656736,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "梁耀仁",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 23020464,
+          "to": 25620464,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林玉龍",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 25268123,
+          "to": 25269123,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

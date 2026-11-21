@@ -17,7 +17,7 @@
     "shortBalance": 0,
     "sblBalance": 56
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -15774,7 +15774,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -15813,7 +15813,7 @@
         ],
         "person": "王怡堯",
         "elected": 133118,
-        "shares": 133118,
+        "shares": 106118,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -15909,6 +15909,16 @@
       },
       {
         "roles": [
+          "協理本人"
+        ],
+        "person": "張智宏",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
           "財務部門主管本人",
           "會計部門主管本人"
         ],
@@ -15920,14 +15930,14 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 18546933,
+      "people": 15,
+      "shares": 18519933,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 8,
-      "shares": 17293968,
+      "shares": 17266968,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -15974,12 +15984,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 18519933,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 17266968,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王怡堯",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 133118,
+          "to": 106118,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張智宏",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

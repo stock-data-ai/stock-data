@@ -12569,7 +12569,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -16927,7 +16927,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16956,7 +16956,7 @@
         ],
         "person": "高永華",
         "elected": 12098622,
-        "shares": 11864622,
+        "shares": 11624622,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17043,6 +17043,16 @@
       },
       {
         "roles": [
+          "協理本人"
+        ],
+        "person": "周鴻儒",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
           "會計部門主管本人"
         ],
         "person": "李秀婷",
@@ -17063,14 +17073,14 @@
       }
     ],
     "totals": {
-      "people": 13,
-      "shares": 55974394,
+      "people": 14,
+      "shares": 55734394,
       "pledged": 765000,
       "pledgePct": 1.37
     },
     "boardTotals": {
       "people": 7,
-      "shares": 55902394,
+      "shares": 55662394,
       "pledged": 765000,
       "pledgePct": 1.37
     }
@@ -17117,12 +17127,51 @@
         "pledged": 765000,
         "pledgePct": 1.37
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 55734394,
+        "pledged": 765000,
+        "pledgePct": 1.37
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 55662394,
+        "pledged": 765000,
+        "pledgePct": 1.37
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "高永華",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 11864622,
+          "to": 11624622,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周鴻儒",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

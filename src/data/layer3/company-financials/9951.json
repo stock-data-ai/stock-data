@@ -12700,7 +12700,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17038,8 +17038,18 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
+      {
+        "roles": [
+          "大股東本人"
+        ],
+        "person": "青山嶼投資股份有限公司籌備處代表人林孟雨",
+        "elected": 0,
+        "shares": 10263920,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
       {
         "roles": [
           "董事本人",
@@ -17053,45 +17063,12 @@
       },
       {
         "roles": [
-          "董事之法人代表人",
-          "副總經理本人"
-        ],
-        "person": "林永清",
-        "elected": 0,
-        "shares": 5697350,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長之法人代表人",
-          "總經理本人"
-        ],
-        "person": "周幼珊",
-        "elected": 0,
-        "shares": 3163920,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "董事長本人",
           "董事本人"
         ],
         "person": "萊康投資股份有限公司",
         "elected": 1152400,
         "shares": 1152400,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事之法人代表人",
-          "副總經理本人"
-        ],
-        "person": "林孟雨",
-        "elected": 0,
-        "shares": 846802,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17107,11 +17084,44 @@
       },
       {
         "roles": [
+          "董事長之法人代表人",
+          "總經理本人"
+        ],
+        "person": "周幼珊",
+        "elected": 0,
+        "shares": 77000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "垣沼健一郎",
         "elected": 0,
         "shares": 65802,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人",
+          "副總經理本人"
+        ],
+        "person": "林永清",
+        "elected": 0,
+        "shares": 62010,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人",
+          "副總經理本人"
+        ],
+        "person": "林孟雨",
+        "elected": 0,
+        "shares": 54002,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17249,10 +17259,10 @@
       }
     ],
     "totals": {
-      "people": 20,
-      "shares": 20754058,
+      "people": 21,
+      "shares": 21502918,
       "pledged": 2000000,
-      "pledgePct": 9.64
+      "pledgePct": 9.3
     },
     "boardTotals": {
       "people": 8,
@@ -17303,6 +17313,20 @@
         "pledged": 2000000,
         "pledgePct": 18.44
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 21502918,
+        "pledged": 2000000,
+        "pledgePct": 9.3
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 10843543,
+        "pledged": 2000000,
+        "pledgePct": 18.44
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17328,6 +17352,54 @@
           ],
           "from": 2163920,
           "to": 3163920,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "青山嶼投資股份有限公司籌備處代表人林孟雨",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": null,
+          "to": 10263920,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林永清",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": 5697350,
+          "to": 62010,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周幼珊",
+          "roles": [
+            "董事長之法人代表人",
+            "總經理本人"
+          ],
+          "from": 3163920,
+          "to": 77000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林孟雨",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": 846802,
+          "to": 54002,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

@@ -1232,7 +1232,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -5569,7 +5569,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -5577,7 +5577,7 @@
         ],
         "person": "帝愷投資有限公司",
         "elected": 4729416,
-        "shares": 4965886,
+        "shares": 4966886,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5587,7 +5587,7 @@
         ],
         "person": "吉百利投資有限公司",
         "elected": 4719640,
-        "shares": 4955622,
+        "shares": 4855622,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5628,7 +5628,7 @@
         ],
         "person": "方致融",
         "elected": 0,
-        "shares": 259449,
+        "shares": 269449,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5650,16 +5650,6 @@
         "person": "邱櫟芩",
         "elected": 0,
         "shares": 44592,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "黃宇彤",
-        "elected": 0,
-        "shares": 36405,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5698,16 +5688,6 @@
           "獨立董事本人"
         ],
         "person": "李鴻猷",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "陳銘志",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -5756,14 +5736,14 @@
       }
     ],
     "totals": {
-      "people": 18,
-      "shares": 11818803,
+      "people": 16,
+      "shares": 11693398,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 10146701,
+      "shares": 10047701,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -5810,6 +5790,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 11693398,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 10047701,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "dividendsUpdated": "2026-11-14",
@@ -5817,6 +5811,61 @@
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "吉百利投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4955622,
+          "to": 4855622,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "黃宇彤",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 36405,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "方致融",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 259449,
+          "to": 269449,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "帝愷投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4965886,
+          "to": 4966886,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳銘志",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

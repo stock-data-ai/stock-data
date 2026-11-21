@@ -10765,7 +10765,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -15102,18 +15102,8 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "胡定中",
-        "elected": 364212,
-        "shares": 358212,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
       {
         "roles": [
           "財務部門主管本人",
@@ -15127,8 +15117,18 @@
       },
       {
         "roles": [
-          "董事長本人",
           "總經理本人"
+        ],
+        "person": "陳岳君",
+        "elected": 0,
+        "shares": 18455,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長本人",
+          "其他"
         ],
         "person": "曹洪彰",
         "elected": 0,
@@ -15189,15 +15189,15 @@
     ],
     "totals": {
       "people": 8,
-      "shares": 420297,
+      "shares": 80540,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
-      "people": 6,
-      "shares": 358212,
+      "people": 5,
+      "shares": 0,
       "pledged": 0,
-      "pledgePct": 0.0
+      "pledgePct": null
     }
   },
   "insiderHoldingsHistory": {
@@ -15242,12 +15242,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 8,
+        "shares": 80540,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "胡定中",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 358212,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "陳岳君",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": null,
+          "to": 18455,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

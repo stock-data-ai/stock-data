@@ -11667,7 +11667,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16005,8 +16005,18 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
+      {
+        "roles": [
+          "董事本人"
+        ],
+        "person": "麗珅國際開發股份有限公司",
+        "elected": 1160004,
+        "shares": 1665004,
+        "pledged": 1160000,
+        "pledgePct": 69.67
+      },
       {
         "roles": [
           "董事本人"
@@ -16016,16 +16026,6 @@
         "shares": 1510738,
         "pledged": 0,
         "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "麗珅國際開發股份有限公司",
-        "elected": 1160004,
-        "shares": 1460004,
-        "pledged": 1160000,
-        "pledgePct": 79.45
       },
       {
         "roles": [
@@ -16153,15 +16153,15 @@
     ],
     "totals": {
       "people": 14,
-      "shares": 4124486,
+      "shares": 4329486,
       "pledged": 1160000,
-      "pledgePct": 28.12
+      "pledgePct": 26.79
     },
     "boardTotals": {
       "people": 7,
-      "shares": 3396642,
+      "shares": 3601642,
       "pledged": 1160000,
-      "pledgePct": 34.15
+      "pledgePct": 32.21
     }
   },
   "insiderHoldingsHistory": {
@@ -16206,6 +16206,20 @@
         "pledged": 1160000,
         "pledgePct": 34.15
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 4329486,
+        "pledged": 1160000,
+        "pledgePct": 26.79
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 3601642,
+        "pledged": 1160000,
+        "pledgePct": 32.21
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -16221,6 +16235,21 @@
           "to": 52800,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "麗珅國際開發股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1460004,
+          "to": 1665004,
+          "pledgedFrom": 1160000,
+          "pledgedTo": 1160000
         }
       ]
     }

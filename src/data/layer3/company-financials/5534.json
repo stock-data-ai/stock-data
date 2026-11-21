@@ -12646,7 +12646,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16984,7 +16984,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17019,21 +17019,21 @@
       },
       {
         "roles": [
-          "董事本人"
+          "董事長之法人代表人"
         ],
-        "person": "蔡玥晨",
-        "elected": 2231829,
-        "shares": 2375960,
+        "person": "李文造",
+        "elected": 0,
+        "shares": 3070697,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "董事長之法人代表人"
+          "董事本人"
         ],
-        "person": "李文造",
-        "elected": 0,
-        "shares": 2340697,
+        "person": "蔡玥晨",
+        "elected": 2231829,
+        "shares": 2375960,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17202,7 +17202,7 @@
     ],
     "totals": {
       "people": 21,
-      "shares": 74165983,
+      "shares": 74895983,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17255,12 +17255,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 74895983,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 29511263,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李文造",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 2340697,
+          "to": 3070697,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

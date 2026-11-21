@@ -12377,7 +12377,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -18197,7 +18197,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18352,20 +18352,10 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "徐允允",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 16,
+      "people": 15,
       "shares": 362473819,
       "pledged": 124520812,
       "pledgePct": 34.35
@@ -18419,12 +18409,41 @@
         "pledged": 80567000,
         "pledgePct": 83.64
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 362473819,
+        "pledged": 124520812,
+        "pledgePct": 34.35
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 96323167,
+        "pledged": 80567000,
+        "pledgePct": 83.64
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "徐允允",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

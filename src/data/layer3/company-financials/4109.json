@@ -12678,7 +12678,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17016,7 +17016,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17032,9 +17032,30 @@
         "roles": [
           "董事本人"
         ],
+        "person": "榮剛投資有限公司",
+        "elected": 137000,
+        "shares": 5137000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事本人"
+        ],
         "person": "謝金坤",
         "elected": 1520000,
         "shares": 1520000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長本人",
+          "董事本人"
+        ],
+        "person": "台鋼民生控股股份有限公司",
+        "elected": 5000,
+        "shares": 1505000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17045,16 +17066,6 @@
         "person": "張博勝",
         "elected": 0,
         "shares": 384000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "榮剛投資有限公司",
-        "elected": 137000,
-        "shares": 137000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17106,17 +17117,6 @@
         "person": "曾茗絹",
         "elected": 0,
         "shares": 6000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長本人",
-          "董事本人"
-        ],
-        "person": "台鋼民生控股股份有限公司",
-        "elected": 5000,
-        "shares": 5000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17212,27 +17212,17 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "李媛惠",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 20,
-      "shares": 15806710,
+      "people": 19,
+      "shares": 22306710,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 1667000,
+      "shares": 8167000,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17279,6 +17269,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 22306710,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 8167000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17294,6 +17298,42 @@
           "to": 13500000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "榮剛投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 137000,
+          "to": 5137000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "台鋼民生控股股份有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人"
+          ],
+          "from": 5000,
+          "to": 1505000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李媛惠",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

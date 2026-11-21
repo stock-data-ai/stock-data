@@ -12748,7 +12748,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -17314,7 +17314,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17393,22 +17393,22 @@
       },
       {
         "roles": [
+          "協理本人"
+        ],
+        "person": "戴榮宏",
+        "elected": 0,
+        "shares": 19000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "財務部門主管本人",
           "會計部門主管本人"
         ],
         "person": "潘鳳雯",
         "elected": 0,
         "shares": 18000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "戴榮宏",
-        "elected": 0,
-        "shares": 10000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17505,29 +17505,9 @@
       },
       {
         "roles": [
-          "副總經理本人"
-        ],
-        "person": "陳家萱",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "協理本人"
         ],
         "person": "呂怡強",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "王聖文",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -17555,8 +17535,8 @@
       }
     ],
     "totals": {
-      "people": 23,
-      "shares": 31206615,
+      "people": 21,
+      "shares": 31215615,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17609,6 +17589,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 31215615,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 29682263,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17647,6 +17641,41 @@
           "to": 10000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "戴榮宏",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 10000,
+          "to": 19000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳家萱",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "王聖文",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

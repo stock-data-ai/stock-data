@@ -453,7 +453,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -4790,7 +4790,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -4810,16 +4810,6 @@
         "person": "黃懸德",
         "elected": 0,
         "shares": 59368,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "張育真",
-        "elected": 0,
-        "shares": 25000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -4850,16 +4840,6 @@
         "person": "莊仁川",
         "elected": 0,
         "shares": 6500,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "陳彥甫",
-        "elected": 0,
-        "shares": 5000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -4957,8 +4937,8 @@
       }
     ],
     "totals": {
-      "people": 16,
-      "shares": 7537823,
+      "people": 14,
+      "shares": 7507823,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -5011,6 +4991,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 7507823,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 7416955,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -5043,6 +5037,31 @@
             "副總經理本人"
           ],
           "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張育真",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 25000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "陳彥甫",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 5000,
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null

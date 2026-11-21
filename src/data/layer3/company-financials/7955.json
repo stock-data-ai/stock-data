@@ -10,7 +10,7 @@
     "netMargin": 8.67,
     "eps": 4.08
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2026-10-19": {
@@ -620,7 +620,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -630,7 +630,7 @@
         ],
         "person": "卓豐閔",
         "elected": 4464000,
-        "shares": 4464000,
+        "shares": 4015000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -642,7 +642,7 @@
         ],
         "person": "陳春福",
         "elected": 2457000,
-        "shares": 2457000,
+        "shares": 2372000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -668,19 +668,19 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "顧宗翰",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "董事本人"
         ],
         "person": "高英隆",
+        "elected": 0,
+        "shares": 1000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人"
+        ],
+        "person": "顧宗翰",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -750,13 +750,13 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 9360000,
+      "shares": 8827000,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 9360000,
+      "shares": 8827000,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -775,6 +775,61 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 8827000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 8827000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
+    }
+  },
+  "insiderHoldingsChanges": {
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "卓豐閔",
+          "roles": [
+            "董事長本人",
+            "總經理本人",
+            "大股東本人"
+          ],
+          "from": 4464000,
+          "to": 4015000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳春福",
+          "roles": [
+            "董事本人",
+            "大股東本人",
+            "其他"
+          ],
+          "from": 2457000,
+          "to": 2372000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "高英隆",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 0,
+          "to": 1000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

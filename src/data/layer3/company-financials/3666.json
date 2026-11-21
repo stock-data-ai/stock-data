@@ -11662,7 +11662,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -15999,7 +15999,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16048,7 +16048,7 @@
         ],
         "person": "陳建富",
         "elected": 0,
-        "shares": 2941541,
+        "shares": 2851541,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16077,7 +16077,7 @@
         "roles": [
           "董事之法人代表人"
         ],
-        "person": "簡韻純",
+        "person": "曾盈瑄",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -16133,21 +16133,11 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "其他"
-        ],
-        "person": "袁廣麟",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 56963752,
+      "people": 13,
+      "shares": 56873752,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -16200,12 +16190,71 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 56873752,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 46018211,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳建富",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 2941541,
+          "to": 2851541,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "曾盈瑄",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "簡韻純",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "袁廣麟",
+          "roles": [
+            "其他"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

@@ -12631,7 +12631,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18337,7 +18337,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18356,9 +18356,9 @@
         ],
         "person": "梁又文",
         "elected": 283000,
-        "shares": 333000,
-        "pledged": 220000,
-        "pledgePct": 66.07
+        "shares": 358000,
+        "pledged": 333000,
+        "pledgePct": 93.02
       },
       {
         "roles": [
@@ -18397,7 +18397,7 @@
         ],
         "person": "陳美玲",
         "elected": 0,
-        "shares": 9750,
+        "shares": 13500,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18465,15 +18465,15 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 17088500,
-      "pledged": 270000,
-      "pledgePct": 1.58
+      "shares": 17117250,
+      "pledged": 383000,
+      "pledgePct": 2.24
     },
     "boardTotals": {
       "people": 8,
-      "shares": 16860750,
-      "pledged": 220000,
-      "pledgePct": 1.3
+      "shares": 16885750,
+      "pledged": 333000,
+      "pledgePct": 1.97
     }
   },
   "insiderHoldingsHistory": {
@@ -18518,12 +18518,51 @@
         "pledged": 220000,
         "pledgePct": 1.3
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 17117250,
+        "pledged": 383000,
+        "pledgePct": 2.24
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 16885750,
+        "pledged": 333000,
+        "pledgePct": 1.97
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "梁又文",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 333000,
+          "to": 358000,
+          "pledgedFrom": 220000,
+          "pledgedTo": 333000
+        },
+        {
+          "person": "陳美玲",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 9750,
+          "to": 13500,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

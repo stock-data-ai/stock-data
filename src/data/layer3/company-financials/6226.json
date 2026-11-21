@@ -17,7 +17,7 @@
     "dividendYield": 0.0,
     "sblBalance": 2146
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -16904,7 +16904,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16951,30 +16951,9 @@
         "roles": [
           "副總經理本人"
         ],
-        "person": "張宏德",
-        "elected": 0,
-        "shares": 26113,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
         "person": "馬明珺",
         "elected": 0,
         "shares": 19491,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "財務部門主管本人",
-          "其他"
-        ],
-        "person": "蘇櫻檸",
-        "elected": 0,
-        "shares": 12788,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16985,6 +16964,16 @@
         "person": "林惠作",
         "elected": 0,
         "shares": 888,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "張宏德",
+        "elected": 0,
+        "shares": 113,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17050,8 +17039,8 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 13144695,
+      "people": 13,
+      "shares": 13105907,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17104,6 +17093,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 13105907,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 13085415,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17120,6 +17123,32 @@
           "to": 12788,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張宏德",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 26113,
+          "to": 113,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "蘇櫻檸",
+          "roles": [
+            "財務部門主管本人",
+            "其他"
+          ],
+          "from": 12788,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

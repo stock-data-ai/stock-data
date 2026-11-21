@@ -12630,7 +12630,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16968,8 +16968,20 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
+      {
+        "roles": [
+          "董事長本人",
+          "董事本人",
+          "大股東本人"
+        ],
+        "person": "雲川興業股份有限公司",
+        "elected": 31153147,
+        "shares": 31153147,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
       {
         "roles": [
           "董事本人"
@@ -17011,18 +17023,6 @@
         "shares": 10198,
         "pledged": 0,
         "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長本人",
-          "董事本人",
-          "大股東本人"
-        ],
-        "person": "雲川興業股份有限公司",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       },
       {
         "roles": [
@@ -17131,16 +17131,6 @@
         "roles": [
           "其他"
         ],
-        "person": "顏佳怡",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "其他"
-        ],
         "person": "劉惠青",
         "elected": 0,
         "shares": 0,
@@ -17159,14 +17149,14 @@
       }
     ],
     "totals": {
-      "people": 18,
-      "shares": 1910740,
+      "people": 17,
+      "shares": 33063887,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 6,
-      "shares": 1680266,
+      "shares": 32833413,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17213,6 +17203,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 33063887,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 32833413,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17248,6 +17252,33 @@
           "to": 0,
           "pledgedFrom": null,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "雲川興業股份有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 0,
+          "to": 31153147,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "顏佳怡",
+          "roles": [
+            "其他"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

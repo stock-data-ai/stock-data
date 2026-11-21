@@ -12714,7 +12714,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17052,11 +17052,10 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
-          "董事長本人",
           "董事本人",
           "大股東本人"
         ],
@@ -17068,6 +17067,7 @@
       },
       {
         "roles": [
+          "董事長本人",
           "董事本人",
           "大股東本人"
         ],
@@ -17079,7 +17079,6 @@
       },
       {
         "roles": [
-          "董事長之法人代表人",
           "大股東本人"
         ],
         "person": "呂金發",
@@ -17111,8 +17110,7 @@
       },
       {
         "roles": [
-          "董事之法人代表人",
-          "副總經理本人",
+          "董事長之法人代表人",
           "財務部門主管本人"
         ],
         "person": "呂品學",
@@ -17165,6 +17163,16 @@
         "roles": [
           "董事之法人代表人"
         ],
+        "person": "曾君",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "董事之法人代表人"
+        ],
         "person": "林芳岑",
         "elected": 0,
         "shares": 0,
@@ -17203,7 +17211,7 @@
       }
     ],
     "totals": {
-      "people": 14,
+      "people": 15,
       "shares": 43953825,
       "pledged": 0,
       "pledgePct": 0.0
@@ -17257,12 +17265,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 43953825,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 33384532,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "曾君",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

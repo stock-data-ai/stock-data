@@ -12566,7 +12566,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -18292,7 +18292,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18404,8 +18404,8 @@
         "person": "張智能",
         "elected": 0,
         "shares": 35045,
-        "pledged": 35000,
-        "pledgePct": 99.87
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -18521,8 +18521,8 @@
     "totals": {
       "people": 22,
       "shares": 19245735,
-      "pledged": 3703035,
-      "pledgePct": 19.24
+      "pledged": 3668035,
+      "pledgePct": 19.06
     },
     "boardTotals": {
       "people": 8,
@@ -18573,12 +18573,41 @@
         "pledged": 3668035,
         "pledgePct": 22.21
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 22,
+        "shares": 19245735,
+        "pledged": 3668035,
+        "pledgePct": 19.06
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 16517326,
+        "pledged": 3668035,
+        "pledgePct": 22.21
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張智能",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 35045,
+          "to": 35045,
+          "pledgedFrom": 35000,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

@@ -12129,7 +12129,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16467,7 +16467,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16535,16 +16535,6 @@
       },
       {
         "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "范靜怡",
-        "elected": 0,
-        "shares": 7799,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "獨立董事本人"
         ],
         "person": "張銘杰",
@@ -16585,7 +16575,8 @@
       },
       {
         "roles": [
-          "財務部門主管本人"
+          "財務部門主管本人",
+          "會計部門主管本人"
         ],
         "person": "陳永振",
         "elected": 0,
@@ -16595,10 +16586,10 @@
       }
     ],
     "totals": {
-      "people": 12,
-      "shares": 14430325,
+      "people": 11,
+      "shares": 14422526,
       "pledged": 3240000,
-      "pledgePct": 22.45
+      "pledgePct": 22.46
     },
     "boardTotals": {
       "people": 8,
@@ -16649,12 +16640,41 @@
         "pledged": 3240000,
         "pledgePct": 37.35
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 14422526,
+        "pledged": 3240000,
+        "pledgePct": 22.46
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 8675200,
+        "pledged": 3240000,
+        "pledgePct": 37.35
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "范靜怡",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 7799,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

@@ -17,7 +17,7 @@
     "shortBalance": 41,
     "sblBalance": 642
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18316,7 +18316,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18428,8 +18428,8 @@
         "person": "周瑞麟",
         "elected": 0,
         "shares": 110000,
-        "pledged": 110000,
-        "pledgePct": 100.0
+        "pledged": 50000,
+        "pledgePct": 45.45
       },
       {
         "roles": [
@@ -18465,6 +18465,17 @@
       },
       {
         "roles": [
+          "董事之法人代表人",
+          "副總經理本人"
+        ],
+        "person": "洪福益",
+        "elected": 0,
+        "shares": 53000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "蔡季桐",
@@ -18489,18 +18500,7 @@
         ],
         "person": "柳南煌",
         "elected": 0,
-        "shares": 10000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事之法人代表人",
-          "副總經理本人"
-        ],
-        "person": "洪福益",
-        "elected": 0,
-        "shares": 8000,
+        "shares": 15000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18557,9 +18557,9 @@
     ],
     "totals": {
       "people": 23,
-      "shares": 28761387,
-      "pledged": 110000,
-      "pledgePct": 0.38
+      "shares": 28811387,
+      "pledged": 50000,
+      "pledgePct": 0.17
     },
     "boardTotals": {
       "people": 7,
@@ -18603,6 +18603,20 @@
         "shares": 28761387,
         "pledged": 110000,
         "pledgePct": 0.38
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 21277010,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 23,
+        "shares": 28811387,
+        "pledged": 50000,
+        "pledgePct": 0.17
       },
       "boardTotals": {
         "people": 7,
@@ -18656,6 +18670,42 @@
           "to": 5000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "洪福益",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": 8000,
+          "to": 53000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "柳南煌",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 10000,
+          "to": 15000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周瑞麟",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 110000,
+          "to": 110000,
+          "pledgedFrom": 110000,
+          "pledgedTo": 50000
         }
       ]
     }

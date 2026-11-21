@@ -17,7 +17,7 @@
     "shortBalance": 4,
     "sblBalance": 3637
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2025-01-02": {
@@ -18417,7 +18417,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18484,12 +18484,11 @@
       },
       {
         "roles": [
-          "董事本人",
           "副總經理本人"
         ],
         "person": "陳金億",
-        "elected": 201980,
-        "shares": 131980,
+        "elected": 0,
+        "shares": 51980,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18500,16 +18499,6 @@
         "person": "羅文炎",
         "elected": 0,
         "shares": 45120,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "徐士&#23791;",
-        "elected": 0,
-        "shares": 25000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18582,19 +18571,29 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "徐士&#23791;",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 16,
-      "shares": 19967313,
+      "shares": 19862313,
       "pledged": 900000,
-      "pledgePct": 4.51
+      "pledgePct": 4.53
     },
     "boardTotals": {
-      "people": 9,
-      "shares": 19357076,
+      "people": 8,
+      "shares": 19225096,
       "pledged": 900000,
-      "pledgePct": 4.65
+      "pledgePct": 4.68
     }
   },
   "insiderHoldingsHistory": {
@@ -18639,12 +18638,51 @@
         "pledged": 900000,
         "pledgePct": 4.65
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 19862313,
+        "pledged": 900000,
+        "pledgePct": 4.53
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 19225096,
+        "pledged": 900000,
+        "pledgePct": 4.68
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳金億",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 131980,
+          "to": 51980,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "徐士&#23791;",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 25000,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

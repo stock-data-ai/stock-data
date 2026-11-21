@@ -12682,7 +12682,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17020,7 +17020,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17030,8 +17030,8 @@
         "person": "聯景投資股份有限公司",
         "elected": 31507053,
         "shares": 31507053,
-        "pledged": 28530000,
-        "pledgePct": 90.55
+        "pledged": 18900000,
+        "pledgePct": 59.99
       },
       {
         "roles": [
@@ -17053,8 +17053,8 @@
         "person": "蘇永義",
         "elected": 0,
         "shares": 6983341,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 6900000,
+        "pledgePct": 98.81
       },
       {
         "roles": [
@@ -17164,14 +17164,14 @@
     "totals": {
       "people": 13,
       "shares": 67410001,
-      "pledged": 38930000,
-      "pledgePct": 57.75
+      "pledged": 36200000,
+      "pledgePct": 53.7
     },
     "boardTotals": {
       "people": 6,
       "shares": 60144675,
-      "pledged": 38930000,
-      "pledgePct": 64.73
+      "pledged": 29300000,
+      "pledgePct": 48.72
     }
   },
   "insiderHoldingsHistory": {
@@ -17216,12 +17216,53 @@
         "pledged": 38930000,
         "pledgePct": 64.73
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 67410001,
+        "pledged": 36200000,
+        "pledgePct": 53.7
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 60144675,
+        "pledged": 29300000,
+        "pledgePct": 48.72
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "聯景投資股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 31507053,
+          "to": 31507053,
+          "pledgedFrom": 28530000,
+          "pledgedTo": 18900000
+        },
+        {
+          "person": "蘇永義",
+          "roles": [
+            "董事長之法人代表人",
+            "總經理本人"
+          ],
+          "from": 6983341,
+          "to": 6983341,
+          "pledgedFrom": 0,
+          "pledgedTo": 6900000
+        }
+      ]
     }
   }
 }

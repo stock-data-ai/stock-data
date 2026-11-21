@@ -4370,7 +4370,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -8707,7 +8707,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -8716,7 +8716,7 @@
         ],
         "person": "友禾投資股份有限公司",
         "elected": 49064012,
-        "shares": 49064012,
+        "shares": 56626572,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -8726,7 +8726,7 @@
         ],
         "person": "唐錦榮",
         "elected": 4689616,
-        "shares": 4689616,
+        "shares": 5412457,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -8805,13 +8805,13 @@
     ],
     "totals": {
       "people": 9,
-      "shares": 54707732,
+      "shares": 62993133,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 6,
-      "shares": 54478532,
+      "shares": 62763933,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -8858,12 +8858,52 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 9,
+        "shares": 62993133,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 62763933,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "友禾投資股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 49064012,
+          "to": 56626572,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "唐錦榮",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 4689616,
+          "to": 5412457,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

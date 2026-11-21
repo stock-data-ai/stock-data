@@ -12640,7 +12640,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16978,7 +16978,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16988,8 +16988,8 @@
         "person": "和築投資有限公司",
         "elected": 160767798,
         "shares": 184882967,
-        "pledged": 136699000,
-        "pledgePct": 73.94
+        "pledged": 145199000,
+        "pledgePct": 78.54
       },
       {
         "roles": [
@@ -16998,8 +16998,8 @@
         "person": "遠安投資股份有限公司",
         "elected": 23277454,
         "shares": 26769072,
-        "pledged": 17700000,
-        "pledgePct": 66.12
+        "pledged": 16200000,
+        "pledgePct": 60.52
       },
       {
         "roles": [
@@ -17008,7 +17008,7 @@
         ],
         "person": "蘇永平",
         "elected": 0,
-        "shares": 5111925,
+        "shares": 5170925,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17020,29 +17020,9 @@
         ],
         "person": "許連晉",
         "elected": 105000,
-        "shares": 180750,
+        "shares": 120750,
         "pledged": 100000,
-        "pledgePct": 55.33
-      },
-      {
-        "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "張雅卿",
-        "elected": 0,
-        "shares": 18000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "財務部門主管本人"
-        ],
-        "person": "陳玠吟",
-        "elected": 0,
-        "shares": 14000,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledgePct": 82.82
       },
       {
         "roles": [
@@ -17103,19 +17083,39 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "財務部門主管本人"
+        ],
+        "person": "陳玠吟",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "張雅卿",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 12,
-      "shares": 216976714,
-      "pledged": 154499000,
-      "pledgePct": 71.21
+      "shares": 216943714,
+      "pledged": 161499000,
+      "pledgePct": 74.44
     },
     "boardTotals": {
       "people": 7,
-      "shares": 211832789,
-      "pledged": 154499000,
-      "pledgePct": 72.93
+      "shares": 211772789,
+      "pledged": 161499000,
+      "pledgePct": 76.26
     }
   },
   "insiderHoldingsHistory": {
@@ -17160,6 +17160,20 @@
         "pledged": 154499000,
         "pledgePct": 72.93
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 216943714,
+        "pledged": 161499000,
+        "pledgePct": 74.44
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 211772789,
+        "pledged": 161499000,
+        "pledgePct": 76.26
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17186,6 +17200,75 @@
           "to": 26769072,
           "pledgedFrom": 19200000,
           "pledgedTo": 17700000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "許連晉",
+          "roles": [
+            "董事本人",
+            "副總經理本人",
+            "其他"
+          ],
+          "from": 180750,
+          "to": 120750,
+          "pledgedFrom": 100000,
+          "pledgedTo": 100000
+        },
+        {
+          "person": "蘇永平",
+          "roles": [
+            "董事長之法人代表人",
+            "總經理本人"
+          ],
+          "from": 5111925,
+          "to": 5170925,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張雅卿",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 18000,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳玠吟",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": 14000,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "和築投資有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 184882967,
+          "to": 184882967,
+          "pledgedFrom": 136699000,
+          "pledgedTo": 145199000
+        },
+        {
+          "person": "遠安投資股份有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 26769072,
+          "to": 26769072,
+          "pledgedFrom": 17700000,
+          "pledgedTo": 16200000
         }
       ]
     }

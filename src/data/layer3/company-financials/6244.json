@@ -17,7 +17,7 @@
     "shortBalance": 53,
     "sblBalance": 19022
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18419,7 +18419,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18427,7 +18427,7 @@
         ],
         "person": "曾永輝",
         "elected": 10972717,
-        "shares": 10972717,
+        "shares": 10572717,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18448,16 +18448,6 @@
         "person": "呂明孝",
         "elected": 2679827,
         "shares": 2679827,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "李智貴",
-        "elected": 4312770,
-        "shares": 2512770,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18565,14 +18555,14 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 23854909,
+      "people": 13,
+      "shares": 20942139,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
-      "people": 8,
-      "shares": 23617762,
+      "people": 7,
+      "shares": 20704992,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -18619,6 +18609,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 20942139,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 20704992,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18632,6 +18636,31 @@
           ],
           "from": 3312770,
           "to": 2512770,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李智貴",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 2512770,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "曾永輝",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 10972717,
+          "to": 10572717,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

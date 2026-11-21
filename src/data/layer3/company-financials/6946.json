@@ -493,7 +493,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -4830,7 +4830,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -4840,7 +4840,7 @@
         ],
         "person": "北基國際股份有限公司",
         "elected": 221000000,
-        "shares": 221000000,
+        "shares": 251000000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5017,9 +5017,11 @@
       },
       {
         "roles": [
-          "協理本人"
+          "經理本人",
+          "財務部門主管本人",
+          "會計部門主管本人"
         ],
-        "person": "郭宏洋",
+        "person": "趙容仙",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -5027,11 +5029,9 @@
       },
       {
         "roles": [
-          "協理本人",
-          "財務部門主管本人",
-          "會計部門主管本人"
+          "協理本人"
         ],
-        "person": "廖珮妤",
+        "person": "郭宏洋",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -5050,13 +5050,13 @@
     ],
     "totals": {
       "people": 21,
-      "shares": 235120525,
+      "shares": 265120525,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 233950000,
+      "shares": 263950000,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -5103,12 +5103,67 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 265120525,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 263950000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "北基國際股份有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 221000000,
+          "to": 251000000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "趙容仙",
+          "roles": [
+            "經理本人",
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "廖珮妤",
+          "roles": [
+            "協理本人",
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

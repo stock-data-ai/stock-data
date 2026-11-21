@@ -12647,7 +12647,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16985,7 +16985,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17035,7 +17035,7 @@
         ],
         "person": "洪文誕",
         "elected": 1277490,
-        "shares": 1277490,
+        "shares": 1283490,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17075,7 +17075,7 @@
         ],
         "person": "許俊堂",
         "elected": 0,
-        "shares": 370353,
+        "shares": 359353,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17162,13 +17162,13 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 16093982,
+      "shares": 16088982,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 4668424,
+      "shares": 4674424,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17215,12 +17215,52 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 16088982,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 4674424,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "許俊堂",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 370353,
+          "to": 359353,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "洪文誕",
+          "roles": [
+            "董事長本人",
+            "副總經理本人"
+          ],
+          "from": 1277490,
+          "to": 1283490,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

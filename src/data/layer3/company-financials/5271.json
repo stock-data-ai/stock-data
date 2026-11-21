@@ -5569,7 +5569,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -11275,11 +11275,12 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
           "董事長本人",
+          "總經理本人",
           "大股東本人"
         ],
         "person": "李東興",
@@ -11320,7 +11321,6 @@
       },
       {
         "roles": [
-          "財務部門主管本人",
           "會計部門主管本人"
         ],
         "person": "鄭安妤",
@@ -11361,9 +11361,9 @@
       },
       {
         "roles": [
-          "副總經理本人"
+          "財務部門主管本人"
         ],
-        "person": "顏吉亮",
+        "person": "李宗嶽",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -11413,6 +11413,20 @@
       }
     },
     "2026-09": {
+      "totals": {
+        "people": 9,
+        "shares": 6170185,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 6159656,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
+    },
+    "2026-10": {
       "totals": {
         "people": 9,
         "shares": 6170185,
@@ -11492,6 +11506,31 @@
           "to": 91,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李宗嶽",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "顏吉亮",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

@@ -12602,7 +12602,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18650,7 +18650,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18670,8 +18670,8 @@
         "person": "天合興業股份有限公司",
         "elected": 0,
         "shares": 43034591,
-        "pledged": 43034000,
-        "pledgePct": 100.0
+        "pledged": 21034000,
+        "pledgePct": 48.88
       },
       {
         "roles": [
@@ -18809,8 +18809,8 @@
     "totals": {
       "people": 15,
       "shares": 115704555,
-      "pledged": 43034000,
-      "pledgePct": 37.19
+      "pledged": 21034000,
+      "pledgePct": 18.18
     },
     "boardTotals": {
       "people": 8,
@@ -18861,6 +18861,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 115704555,
+        "pledged": 21034000,
+        "pledgePct": 18.18
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 72542536,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18876,6 +18890,21 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "天合興業股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 43034591,
+          "to": 43034591,
+          "pledgedFrom": 43034000,
+          "pledgedTo": 21034000
         }
       ]
     }

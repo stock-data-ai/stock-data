@@ -12220,7 +12220,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16557,7 +16557,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16597,8 +16597,8 @@
         "person": "張元賓",
         "elected": 14238647,
         "shares": 15284130,
-        "pledged": 14127200,
-        "pledgePct": 92.43
+        "pledged": 15284130,
+        "pledgePct": 100.0
       },
       {
         "roles": [
@@ -16757,14 +16757,14 @@
     "totals": {
       "people": 19,
       "shares": 111685792,
-      "pledged": 14127200,
-      "pledgePct": 12.65
+      "pledged": 15284130,
+      "pledgePct": 13.68
     },
     "boardTotals": {
       "people": 6,
       "shares": 38647092,
-      "pledged": 14127200,
-      "pledgePct": 36.55
+      "pledged": 15284130,
+      "pledgePct": 39.55
     }
   },
   "insiderHoldingsHistory": {
@@ -16809,12 +16809,42 @@
         "pledged": 14127200,
         "pledgePct": 36.55
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 111685792,
+        "pledged": 15284130,
+        "pledgePct": 13.68
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 38647092,
+        "pledged": 15284130,
+        "pledgePct": 39.55
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張元賓",
+          "roles": [
+            "董事長本人",
+            "其他"
+          ],
+          "from": 15284130,
+          "to": 15284130,
+          "pledgedFrom": 14127200,
+          "pledgedTo": 15284130
+        }
+      ]
     }
   }
 }

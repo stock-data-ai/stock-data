@@ -5463,7 +5463,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9800,7 +9800,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9850,7 +9850,27 @@
         ],
         "person": "曾莞如",
         "elected": 0,
-        "shares": 111000,
+        "shares": 72000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "涂起強",
+        "elected": 0,
+        "shares": 41000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "欒君儀",
+        "elected": 0,
+        "shares": 7000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9871,16 +9891,6 @@
         "person": "歐奕宏",
         "elected": 0,
         "shares": 3000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "涂起強",
-        "elected": 0,
-        "shares": 1000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9945,21 +9955,11 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "欒君儀",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 15,
-      "shares": 27614147,
+      "shares": 27622147,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -10012,6 +10012,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 27622147,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 27110573,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -10036,6 +10050,41 @@
           "from": null,
           "to": 0,
           "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "涂起強",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 1000,
+          "to": 41000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "曾莞如",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 111000,
+          "to": 72000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "欒君儀",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": 7000,
+          "pledgedFrom": 0,
           "pledgedTo": 0
         }
       ]

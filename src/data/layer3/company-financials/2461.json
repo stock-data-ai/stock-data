@@ -12649,7 +12649,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -16987,7 +16987,7 @@
   ],
   "dividendsUpdated": "2026-06-20",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16996,8 +16996,8 @@
         "person": "郭維武",
         "elected": 14609756,
         "shares": 14944756,
-        "pledged": 9969000,
-        "pledgePct": 66.71
+        "pledged": 9669000,
+        "pledgePct": 64.7
       },
       {
         "roles": [
@@ -17011,6 +17011,26 @@
       },
       {
         "roles": [
+          "總經理本人"
+        ],
+        "person": "陳宥霖",
+        "elected": 0,
+        "shares": 555500,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事本人"
+        ],
+        "person": "光儀投資股份有限公司",
+        "elected": 108504,
+        "shares": 521504,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "董事之法人代表人"
         ],
         "person": "郭維斌",
@@ -17021,31 +17041,11 @@
       },
       {
         "roles": [
-          "總經理本人"
-        ],
-        "person": "陳宥霖",
-        "elected": 0,
-        "shares": 270500,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "副董事長本人"
         ],
         "person": "童佳容",
         "elected": 0,
         "shares": 221000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "光儀投資股份有限公司",
-        "elected": 108504,
-        "shares": 108504,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17134,15 +17134,15 @@
     ],
     "totals": {
       "people": 14,
-      "shares": 17302892,
-      "pledged": 10723000,
-      "pledgePct": 61.97
+      "shares": 18000892,
+      "pledged": 10423000,
+      "pledgePct": 57.9
     },
     "boardTotals": {
       "people": 7,
-      "shares": 16373454,
-      "pledged": 10286000,
-      "pledgePct": 62.82
+      "shares": 16786454,
+      "pledged": 9986000,
+      "pledgePct": 59.49
     }
   },
   "insiderHoldingsHistory": {
@@ -17187,6 +17187,20 @@
         "pledged": 10286000,
         "pledgePct": 62.82
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 18000892,
+        "pledged": 10423000,
+        "pledgePct": 57.9
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 16786454,
+        "pledged": 9986000,
+        "pledgePct": 59.49
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17202,6 +17216,41 @@
           "to": 14944756,
           "pledgedFrom": 10669000,
           "pledgedTo": 9969000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "光儀投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 108504,
+          "to": 521504,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳宥霖",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": 270500,
+          "to": 555500,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "郭維武",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 14944756,
+          "to": 14944756,
+          "pledgedFrom": 9969000,
+          "pledgedTo": 9669000
         }
       ]
     }

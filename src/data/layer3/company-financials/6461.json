@@ -12438,7 +12438,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16661,7 +16661,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16707,11 +16707,22 @@
       },
       {
         "roles": [
+          "總經理本人",
+          "其他"
+        ],
+        "person": "CHAWLA MANISH",
+        "elected": 0,
+        "shares": 261857,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "皮先智",
         "elected": 0,
-        "shares": 202276,
+        "shares": 232276,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16727,12 +16738,12 @@
       },
       {
         "roles": [
-          "總經理本人",
+          "會計部門主管本人",
           "其他"
         ],
-        "person": "CHAWLA MANISH",
+        "person": "陳淑慧",
         "elected": 0,
-        "shares": 61857,
+        "shares": 13422,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16743,17 +16754,6 @@
         "person": "廖尤里",
         "elected": 0,
         "shares": 8423,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "會計部門主管本人",
-          "其他"
-        ],
-        "person": "陳淑慧",
-        "elected": 0,
-        "shares": 7422,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16816,11 +16816,31 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "財務部門主管本人"
+        ],
+        "person": "高國霖",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "薄榮萍",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 15,
-      "shares": 52976744,
+      "people": 17,
+      "shares": 53212744,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -16864,6 +16884,20 @@
       "totals": {
         "people": 15,
         "shares": 52976744,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 51957172,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 53212744,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16981,6 +17015,63 @@
           "from": 10000,
           "to": 6185,
           "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "CHAWLA MANISH",
+          "roles": [
+            "總經理本人",
+            "其他"
+          ],
+          "from": 61857,
+          "to": 261857,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "皮先智",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 202276,
+          "to": 232276,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳淑慧",
+          "roles": [
+            "會計部門主管本人",
+            "其他"
+          ],
+          "from": 7422,
+          "to": 13422,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "高國霖",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "薄榮萍",
+          "roles": [
+            "其他"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

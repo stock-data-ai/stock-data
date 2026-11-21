@@ -12713,7 +12713,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17279,7 +17279,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17336,7 +17336,7 @@
         "roles": [
           "董事之法人代表人"
         ],
-        "person": "周煌燦",
+        "person": "張志杰",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -17489,12 +17489,51 @@
         "pledged": 3600000,
         "pledgePct": 24.06
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 15015485,
+        "pledged": 3600000,
+        "pledgePct": 23.98
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 14960224,
+        "pledged": 3600000,
+        "pledgePct": 24.06
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張志杰",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "周煌燦",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

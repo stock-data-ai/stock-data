@@ -4609,7 +4609,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-19",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -10315,7 +10315,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -10394,9 +10394,9 @@
       },
       {
         "roles": [
-          "協理本人"
+          "董事長之法人代表人"
         ],
-        "person": "郭仁傑",
+        "person": "井琪",
         "elected": 0,
         "shares": 10000,
         "pledged": 0,
@@ -10419,16 +10419,6 @@
         "person": "曾詩淵",
         "elected": 0,
         "shares": 5000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長之法人代表人"
-        ],
-        "person": "井琪",
-        "elected": 0,
-        "shares": 2000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10514,8 +10504,8 @@
       }
     ],
     "totals": {
-      "people": 19,
-      "shares": 17485553,
+      "people": 18,
+      "shares": 17483553,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -10568,6 +10558,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 18,
+        "shares": 17483553,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 17181000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -10582,6 +10586,31 @@
           "from": null,
           "to": 0,
           "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "郭仁傑",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 10000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "井琪",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 2000,
+          "to": 10000,
+          "pledgedFrom": 0,
           "pledgedTo": 0
         }
       ]

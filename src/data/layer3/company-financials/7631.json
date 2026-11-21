@@ -9574,7 +9574,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -13912,7 +13912,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -13932,7 +13932,7 @@
         ],
         "person": "曾國強",
         "elected": 1439221,
-        "shares": 1355221,
+        "shares": 1324221,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -13984,7 +13984,7 @@
         ],
         "person": "王佩瑜",
         "elected": 0,
-        "shares": 41000,
+        "shares": 51350,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -13994,7 +13994,7 @@
         ],
         "person": "林佳瑩",
         "elected": 0,
-        "shares": 34000,
+        "shares": 44350,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -14006,6 +14006,16 @@
         "person": "徐（王武）宗",
         "elected": 0,
         "shares": 20000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "鮮漢雲",
+        "elected": 0,
+        "shares": 10350,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -14058,27 +14068,17 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "經理本人"
-        ],
-        "person": "鮮漢雲",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 15,
-      "shares": 9096476,
+      "shares": 9096526,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 9,
-      "shares": 8880276,
+      "shares": 8849276,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -14125,6 +14125,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 9096526,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 8849276,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -14161,6 +14175,52 @@
           "from": null,
           "to": 0,
           "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "曾國強",
+          "roles": [
+            "董事長本人",
+            "大股東本人"
+          ],
+          "from": 1355221,
+          "to": 1324221,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "王佩瑜",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 41000,
+          "to": 51350,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林佳瑩",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 34000,
+          "to": 44350,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "鮮漢雲",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 0,
+          "to": 10350,
+          "pledgedFrom": 0,
           "pledgedTo": 0
         }
       ]

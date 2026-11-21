@@ -12578,7 +12578,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -18398,7 +18398,7 @@
   ],
   "dividendsUpdated": "2026-06-20",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18477,7 +18477,7 @@
         ],
         "person": "孫永祿",
         "elected": 0,
-        "shares": 1094726,
+        "shares": 1131683,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18535,21 +18535,11 @@
       },
       {
         "roles": [
-          "協理本人"
+          "總經理本人"
         ],
         "person": "孫承志",
         "elected": 0,
         "shares": 11782,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "李員吉",
-        "elected": 0,
-        "shares": 6000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18642,13 +18632,23 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "張伊馨",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 24,
-      "shares": 47655757,
+      "shares": 47686714,
       "pledged": 17608000,
-      "pledgePct": 36.95
+      "pledgePct": 36.92
     },
     "boardTotals": {
       "people": 11,
@@ -18699,6 +18699,20 @@
         "pledged": 17608000,
         "pledgePct": 39.38
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 24,
+        "shares": 47686714,
+        "pledged": 17608000,
+        "pledgePct": 36.92
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 44715909,
+        "pledged": 17608000,
+        "pledgePct": 39.38
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18713,6 +18727,41 @@
           "from": 33165,
           "to": 165,
           "pledgedFrom": 33000,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "孫永祿",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 1094726,
+          "to": 1131683,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李員吉",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 6000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "張伊馨",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

@@ -10,7 +10,7 @@
     "netMargin": 39.39,
     "eps": 2.77
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260904": [
       {
@@ -1268,7 +1268,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -1327,6 +1327,16 @@
         "roles": [
           "協理本人"
         ],
+        "person": "羅今隆",
+        "elected": 0,
+        "shares": 658000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
         "person": "張俊宜",
         "elected": 0,
         "shares": 648000,
@@ -1345,8 +1355,7 @@
       },
       {
         "roles": [
-          "總經理本人",
-          "其他"
+          "總經理本人"
         ],
         "person": "林建州",
         "elected": 0,
@@ -1414,11 +1423,31 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "DEOCAMPO ROBBY ARRANCHADO",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "陳姝朱",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 20937193,
+      "people": 17,
+      "shares": 21595193,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -1462,6 +1491,20 @@
       "totals": {
         "people": 14,
         "shares": 20937193,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 9011774,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 21595193,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -2122,6 +2165,41 @@
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "羅今隆",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 658000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "DEOCAMPO ROBBY ARRANCHADO",
+          "roles": [
+            "經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳姝朱",
+          "roles": [
+            "其他"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

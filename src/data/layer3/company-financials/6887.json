@@ -10735,7 +10735,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -15073,7 +15073,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -15120,11 +15120,12 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
+          "董事之法人代表人",
+          "副總經理本人"
         ],
         "person": "歐柏豪",
         "elected": 0,
-        "shares": 146000,
+        "shares": 151000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -15220,6 +15221,16 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "孫國宸",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
           "財務部門主管本人",
           "會計部門主管本人",
           "其他"
@@ -15242,8 +15253,8 @@
       }
     ],
     "totals": {
-      "people": 16,
-      "shares": 49039188,
+      "people": 17,
+      "shares": 49044188,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -15296,12 +15307,52 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 49044188,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 48714188,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "歐柏豪",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": 146000,
+          "to": 151000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "孫國宸",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

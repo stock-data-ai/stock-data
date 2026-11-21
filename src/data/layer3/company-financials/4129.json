@@ -12682,7 +12682,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17020,7 +17020,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17039,9 +17039,9 @@
         ],
         "person": "林德堅",
         "elected": 1913461,
-        "shares": 2520461,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "shares": 2670461,
+        "pledged": 800000,
+        "pledgePct": 29.96
       },
       {
         "roles": [
@@ -17049,9 +17049,9 @@
         ],
         "person": "林延生",
         "elected": 2181441,
-        "shares": 1821441,
-        "pledged": 500000,
-        "pledgePct": 27.45
+        "shares": 1935441,
+        "pledged": 800000,
+        "pledgePct": 41.33
       },
       {
         "roles": [
@@ -17197,15 +17197,15 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 10040608,
-      "pledged": 500000,
-      "pledgePct": 4.98
+      "shares": 10304608,
+      "pledged": 1600000,
+      "pledgePct": 15.53
     },
     "boardTotals": {
       "people": 9,
-      "shares": 9883795,
-      "pledged": 500000,
-      "pledgePct": 5.06
+      "shares": 10147795,
+      "pledged": 1600000,
+      "pledgePct": 15.77
     }
   },
   "insiderHoldingsHistory": {
@@ -17250,6 +17250,20 @@
         "pledged": 500000,
         "pledgePct": 5.06
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 10304608,
+        "pledged": 1600000,
+        "pledgePct": 15.53
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 10147795,
+        "pledged": 1600000,
+        "pledgePct": 15.77
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17265,6 +17279,32 @@
           "to": 1821441,
           "pledgedFrom": 0,
           "pledgedTo": 500000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "林德堅",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 2520461,
+          "to": 2670461,
+          "pledgedFrom": 0,
+          "pledgedTo": 800000
+        },
+        {
+          "person": "林延生",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 1821441,
+          "to": 1935441,
+          "pledgedFrom": 500000,
+          "pledgedTo": 800000
         }
       ]
     }

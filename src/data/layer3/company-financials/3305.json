@@ -17,7 +17,7 @@
     "shortBalance": 46,
     "sblBalance": 5249
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "historical": {
     "institutionalInvestors": {
       "2025-01-02": {
@@ -18316,7 +18316,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18324,9 +18324,9 @@
         ],
         "person": "嘉貿投資股份有限公司",
         "elected": 0,
-        "shares": 15447073,
+        "shares": 15877073,
         "pledged": 8500000,
-        "pledgePct": 55.03
+        "pledgePct": 53.54
       },
       {
         "roles": [
@@ -18334,9 +18334,9 @@
         ],
         "person": "弘大事業有限公司",
         "elected": 0,
-        "shares": 13326746,
+        "shares": 13366746,
         "pledged": 10000000,
-        "pledgePct": 75.04
+        "pledgePct": 74.81
       },
       {
         "roles": [
@@ -18484,9 +18484,9 @@
     ],
     "totals": {
       "people": 16,
-      "shares": 40903101,
+      "shares": 41373101,
       "pledged": 18500000,
-      "pledgePct": 45.23
+      "pledgePct": 44.72
     },
     "boardTotals": {
       "people": 9,
@@ -18537,12 +18537,51 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 41373101,
+        "pledged": 18500000,
+        "pledgePct": 44.72
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 12114282,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "嘉貿投資股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 15447073,
+          "to": 15877073,
+          "pledgedFrom": 8500000,
+          "pledgedTo": 8500000
+        },
+        {
+          "person": "弘大事業有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 13326746,
+          "to": 13366746,
+          "pledgedFrom": 10000000,
+          "pledgedTo": 10000000
+        }
+      ]
     }
   }
 }

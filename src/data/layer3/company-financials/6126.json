@@ -17,7 +17,7 @@
     "shortBalance": 85,
     "sblBalance": 2627
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18430,7 +18430,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18480,8 +18480,8 @@
         "person": "東易企管顧問有限公司",
         "elected": 1200000,
         "shares": 1350000,
-        "pledged": 685000,
-        "pledgePct": 50.74
+        "pledged": 285000,
+        "pledgePct": 21.11
       },
       {
         "roles": [
@@ -18568,14 +18568,14 @@
     "totals": {
       "people": 13,
       "shares": 19288615,
-      "pledged": 15283000,
-      "pledgePct": 79.23
+      "pledged": 14883000,
+      "pledgePct": 77.16
     },
     "boardTotals": {
       "people": 7,
       "shares": 12358287,
-      "pledged": 10685000,
-      "pledgePct": 86.46
+      "pledged": 10285000,
+      "pledgePct": 83.22
     }
   },
   "insiderHoldingsHistory": {
@@ -18620,12 +18620,41 @@
         "pledged": 10685000,
         "pledgePct": 86.46
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 19288615,
+        "pledged": 14883000,
+        "pledgePct": 77.16
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 12358287,
+        "pledged": 10285000,
+        "pledgePct": 83.22
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "東易企管顧問有限公司",
+          "roles": [
+            "副董事長本人"
+          ],
+          "from": 1350000,
+          "to": 1350000,
+          "pledgedFrom": 685000,
+          "pledgedTo": 285000
+        }
+      ]
     }
   }
 }

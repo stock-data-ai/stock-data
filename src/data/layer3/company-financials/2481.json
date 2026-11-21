@@ -18516,11 +18516,11 @@
       "ratio_pct": 0.0
     }
   ],
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18560,7 +18560,7 @@
         ],
         "person": "鍾運輝",
         "elected": 2225319,
-        "shares": 1965319,
+        "shares": 1956319,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18591,6 +18591,17 @@
         "person": "楊兆全",
         "elected": 0,
         "shares": 15475,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "會計部門主管本人",
+          "其他"
+        ],
+        "person": "謝百成",
+        "elected": 0,
+        "shares": 14690,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18684,28 +18695,17 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "會計部門主管本人",
-          "其他"
-        ],
-        "person": "謝百成",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 17,
-      "shares": 74226500,
+      "shares": 74232190,
       "pledged": 10500000,
-      "pledgePct": 14.15
+      "pledgePct": 14.14
     },
     "boardTotals": {
       "people": 8,
-      "shares": 74012521,
+      "shares": 74003521,
       "pledged": 10500000,
       "pledgePct": 14.19
     }
@@ -18752,6 +18752,20 @@
         "pledged": 10500000,
         "pledgePct": 14.19
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 74232190,
+        "pledged": 10500000,
+        "pledgePct": 14.14
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 74003521,
+        "pledged": 10500000,
+        "pledgePct": 14.19
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18765,6 +18779,32 @@
           ],
           "from": 2065319,
           "to": 1965319,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "謝百成",
+          "roles": [
+            "會計部門主管本人",
+            "其他"
+          ],
+          "from": 0,
+          "to": 14690,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "鍾運輝",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1965319,
+          "to": 1956319,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

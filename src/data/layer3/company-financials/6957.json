@@ -11788,7 +11788,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16126,7 +16126,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16136,7 +16136,7 @@
         ],
         "person": "廖昭宜",
         "elected": 6502671,
-        "shares": 6502671,
+        "shares": 6602671,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16153,6 +16153,17 @@
       },
       {
         "roles": [
+          "財務部門主管本人",
+          "會計部門主管本人"
+        ],
+        "person": "林義唐",
+        "elected": 0,
+        "shares": 337000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "副總經理本人"
         ],
         "person": "莊孟芳",
@@ -16160,17 +16171,6 @@
         "shares": 330000,
         "pledged": 330000,
         "pledgePct": 100.0
-      },
-      {
-        "roles": [
-          "財務部門主管本人",
-          "會計部門主管本人"
-        ],
-        "person": "林義唐",
-        "elected": 0,
-        "shares": 300000,
-        "pledged": 0,
-        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -16189,6 +16189,16 @@
         "person": "周雍強",
         "elected": 11000,
         "shares": 11000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "簡佳平",
+        "elected": 0,
+        "shares": 2000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16241,27 +16251,17 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "經理本人"
-        ],
-        "person": "簡佳平",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 12,
-      "shares": 8631571,
+      "shares": 8770571,
       "pledged": 330000,
-      "pledgePct": 3.82
+      "pledgePct": 3.76
     },
     "boardTotals": {
       "people": 8,
-      "shares": 7931571,
+      "shares": 8031571,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -16308,12 +16308,64 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 8770571,
+        "pledged": 330000,
+        "pledgePct": 3.76
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 8031571,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "廖昭宜",
+          "roles": [
+            "董事長本人",
+            "總經理本人",
+            "大股東本人"
+          ],
+          "from": 6502671,
+          "to": 6602671,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林義唐",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 300000,
+          "to": 337000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "簡佳平",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 0,
+          "to": 2000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

@@ -12711,7 +12711,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17049,7 +17049,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17109,16 +17109,6 @@
         "person": "李麗秋",
         "elected": 0,
         "shares": 180017,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "陳政原",
-        "elected": 0,
-        "shares": 168076,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17231,21 +17221,11 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "其他"
-        ],
-        "person": "胡江燕",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 19,
-      "shares": 57755482,
+      "people": 17,
+      "shares": 57587406,
       "pledged": 230000,
       "pledgePct": 0.4
     },
@@ -17298,12 +17278,51 @@
         "pledged": 230000,
         "pledgePct": 0.68
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 57587406,
+        "pledged": 230000,
+        "pledgePct": 0.4
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 33886686,
+        "pledged": 230000,
+        "pledgePct": 0.68
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳政原",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 168076,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "胡江燕",
+          "roles": [
+            "其他"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

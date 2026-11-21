@@ -12654,7 +12654,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16992,7 +16992,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17161,6 +17161,16 @@
         "roles": [
           "協理本人"
         ],
+        "person": "光耀輝",
+        "elected": 10001,
+        "shares": 10001,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
         "person": "張偉鈞",
         "elected": 20000,
         "shares": 7900,
@@ -17174,6 +17184,16 @@
         "person": "林芳戎",
         "elected": 0,
         "shares": 3560,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "鄭翼雲",
+        "elected": 1000,
+        "shares": 1000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17279,8 +17299,8 @@
       }
     ],
     "totals": {
-      "people": 28,
-      "shares": 222718862,
+      "people": 30,
+      "shares": 222729863,
       "pledged": 71825600,
       "pledgePct": 32.25
     },
@@ -17333,12 +17353,51 @@
         "pledged": 13918800,
         "pledgePct": 22.58
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 30,
+        "shares": 222729863,
+        "pledged": 71825600,
+        "pledgePct": 32.25
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 61640904,
+        "pledged": 13918800,
+        "pledgePct": 22.58
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "光耀輝",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 10001,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "鄭翼雲",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 1000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

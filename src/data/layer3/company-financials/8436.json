@@ -12713,7 +12713,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17051,7 +17051,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17060,8 +17060,8 @@
         "person": "詠江投資股份有限公司",
         "elected": 6789248,
         "shares": 6789248,
-        "pledged": 6355000,
-        "pledgePct": 93.6
+        "pledged": 5715000,
+        "pledgePct": 84.18
       },
       {
         "roles": [
@@ -17091,8 +17091,8 @@
         "person": "林詠翔",
         "elected": 0,
         "shares": 1382405,
-        "pledged": 60000,
-        "pledgePct": 4.34
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -17240,14 +17240,14 @@
     "totals": {
       "people": 18,
       "shares": 14682537,
-      "pledged": 6415000,
-      "pledgePct": 43.69
+      "pledged": 5715000,
+      "pledgePct": 38.92
     },
     "boardTotals": {
       "people": 7,
       "shares": 13172301,
-      "pledged": 6355000,
-      "pledgePct": 48.25
+      "pledged": 5715000,
+      "pledgePct": 43.39
     }
   },
   "insiderHoldingsHistory": {
@@ -17292,6 +17292,20 @@
         "pledged": 6355000,
         "pledgePct": 48.25
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 18,
+        "shares": 14682537,
+        "pledged": 5715000,
+        "pledgePct": 38.92
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 13172301,
+        "pledged": 5715000,
+        "pledgePct": 43.39
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17318,6 +17332,32 @@
           "to": 1382405,
           "pledgedFrom": 600000,
           "pledgedTo": 60000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "詠江投資股份有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 6789248,
+          "to": 6789248,
+          "pledgedFrom": 6355000,
+          "pledgedTo": 5715000
+        },
+        {
+          "person": "林詠翔",
+          "roles": [
+            "董事長之法人代表人",
+            "總經理本人"
+          ],
+          "from": 1382405,
+          "to": 1382405,
+          "pledgedFrom": 60000,
+          "pledgedTo": 0
         }
       ]
     }

@@ -12716,7 +12716,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18764,7 +18764,7 @@
   },
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18773,8 +18773,8 @@
         "person": "林松福",
         "elected": 5124102,
         "shares": 5494910,
-        "pledged": 1900000,
-        "pledgePct": 34.58
+        "pledged": 1250000,
+        "pledgePct": 22.75
       },
       {
         "roles": [
@@ -18844,19 +18844,9 @@
         ],
         "person": "游雅芳",
         "elected": 0,
-        "shares": 40000,
+        "shares": 32000,
         "pledged": 26000,
-        "pledgePct": 65.0
-      },
-      {
-        "roles": [
-          "其他"
-        ],
-        "person": "李勇達",
-        "elected": 0,
-        "shares": 27700,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledgePct": 81.25
       },
       {
         "roles": [
@@ -18865,6 +18855,16 @@
         "person": "林尚璋",
         "elected": 0,
         "shares": 24000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "李勇達",
+        "elected": 0,
+        "shares": 19000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18921,15 +18921,15 @@
     ],
     "totals": {
       "people": 15,
-      "shares": 11413726,
-      "pledged": 2449000,
-      "pledgePct": 21.46
+      "shares": 11397026,
+      "pledged": 1799000,
+      "pledgePct": 15.78
     },
     "boardTotals": {
       "people": 7,
       "shares": 10613482,
-      "pledged": 2378000,
-      "pledgePct": 22.41
+      "pledged": 1728000,
+      "pledgePct": 16.28
     }
   },
   "insiderHoldingsHistory": {
@@ -18973,6 +18973,20 @@
         "shares": 10613482,
         "pledged": 2378000,
         "pledgePct": 22.41
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 11397026,
+        "pledged": 1799000,
+        "pledgePct": 15.78
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 10613482,
+        "pledged": 1728000,
+        "pledgePct": 16.28
       }
     }
   },
@@ -19040,6 +19054,42 @@
           "to": 24000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李勇達",
+          "roles": [
+            "其他"
+          ],
+          "from": 27700,
+          "to": 19000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "游雅芳",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 40000,
+          "to": 32000,
+          "pledgedFrom": 26000,
+          "pledgedTo": 26000
+        },
+        {
+          "person": "林松福",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 5494910,
+          "to": 5494910,
+          "pledgedFrom": 1900000,
+          "pledgedTo": 1250000
         }
       ]
     }

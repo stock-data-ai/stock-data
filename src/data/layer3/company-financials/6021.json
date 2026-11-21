@@ -12450,7 +12450,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16788,7 +16788,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16829,8 +16829,8 @@
         "person": "沈育德",
         "elected": 0,
         "shares": 496000,
-        "pledged": 300000,
-        "pledgePct": 60.48
+        "pledged": 436000,
+        "pledgePct": 87.9
       },
       {
         "roles": [
@@ -16868,6 +16868,16 @@
         ],
         "person": "洪佩琪",
         "elected": 0,
+        "shares": 150000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "方婉琪",
+        "elected": 0,
         "shares": 135000,
         "pledged": 0,
         "pledgePct": 0.0
@@ -16885,31 +16895,11 @@
       },
       {
         "roles": [
-          "副總經理本人"
-        ],
-        "person": "萬富良",
-        "elected": 0,
-        "shares": 110000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "總經理本人"
         ],
         "person": "莊達修",
         "elected": 0,
         "shares": 109152,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "方婉琪",
-        "elected": 0,
-        "shares": 105000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16929,16 +16919,6 @@
           "財務部門主管本人"
         ],
         "person": "陳以白",
-        "elected": 0,
-        "shares": 90000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "林孜穗",
         "elected": 0,
         "shares": 90000,
         "pledged": 0,
@@ -16986,9 +16966,9 @@
       },
       {
         "roles": [
-          "經理本人"
+          "副總經理本人"
         ],
-        "person": "楊奇勳",
+        "person": "萬富良",
         "elected": 0,
         "shares": 15000,
         "pledged": 0,
@@ -16998,9 +16978,9 @@
         "roles": [
           "經理本人"
         ],
-        "person": "陳夏萍",
+        "person": "楊奇勳",
         "elected": 0,
-        "shares": 4000,
+        "shares": 15000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17021,6 +17001,16 @@
         "person": "鍾淑敏",
         "elected": 0,
         "shares": 2024,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "陳夏萍",
+        "elected": 0,
+        "shares": 2000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17226,10 +17216,10 @@
       }
     ],
     "totals": {
-      "people": 43,
-      "shares": 160541709,
-      "pledged": 46800000,
-      "pledgePct": 29.15
+      "people": 42,
+      "shares": 160399709,
+      "pledged": 46936000,
+      "pledgePct": 29.26
     },
     "boardTotals": {
       "people": 7,
@@ -17273,6 +17263,20 @@
         "shares": 160541709,
         "pledged": 46800000,
         "pledgePct": 29.15
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 157665202,
+        "pledged": 46500000,
+        "pledgePct": 29.49
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 42,
+        "shares": 160399709,
+        "pledged": 46936000,
+        "pledgePct": 29.26
       },
       "boardTotals": {
         "people": 7,
@@ -17386,6 +17390,71 @@
           "to": 496000,
           "pledgedFrom": 328000,
           "pledgedTo": 300000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "萬富良",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 110000,
+          "to": 15000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林孜穗",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 90000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "方婉琪",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 105000,
+          "to": 135000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "洪佩琪",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 135000,
+          "to": 150000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳夏萍",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 4000,
+          "to": 2000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "沈育德",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 496000,
+          "to": 496000,
+          "pledgedFrom": 300000,
+          "pledgedTo": 436000
         }
       ]
     }

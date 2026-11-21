@@ -17,7 +17,7 @@
     "shortBalance": 55,
     "sblBalance": 13995
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18316,7 +18316,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18351,16 +18351,6 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "張偉荃",
-        "elected": 0,
-        "shares": 306121,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "會計部門主管本人"
         ],
         "person": "吳淑真",
@@ -18371,6 +18361,7 @@
       },
       {
         "roles": [
+          "董事之法人代表人",
           "副總經理本人"
         ],
         "person": "林慶忠",
@@ -18413,17 +18404,17 @@
         "roles": [
           "董事之法人代表人"
         ],
-        "person": "沈頌欽",
+        "person": "鄭沛昱",
         "elected": 0,
-        "shares": 0,
+        "shares": 21,
         "pledged": 0,
-        "pledgePct": null
+        "pledgePct": 0.0
       },
       {
         "roles": [
           "董事之法人代表人"
         ],
-        "person": "林弘人",
+        "person": "沈頌欽",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -18482,10 +18473,10 @@
       }
     ],
     "totals": {
-      "people": 16,
-      "shares": 54141054,
+      "people": 15,
+      "shares": 53834954,
       "pledged": 12191250,
-      "pledgePct": 22.52
+      "pledgePct": 22.65
     },
     "boardTotals": {
       "people": 6,
@@ -18536,12 +18527,61 @@
         "pledged": 12191250,
         "pledgePct": 22.91
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 53834954,
+        "pledged": 12191250,
+        "pledgePct": 22.65
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 53211790,
+        "pledged": 12191250,
+        "pledgePct": 22.91
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張偉荃",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 306121,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "鄭沛昱",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 21,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林弘人",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

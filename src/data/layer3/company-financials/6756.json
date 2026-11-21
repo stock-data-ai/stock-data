@@ -12399,7 +12399,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18105,7 +18105,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18182,21 +18182,21 @@
       },
       {
         "roles": [
-          "副總經理本人"
-        ],
-        "person": "黃義家",
-        "elected": 0,
-        "shares": 61000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "董事之法人代表人"
         ],
         "person": "林子牧",
         "elected": 0,
         "shares": 52873,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "黃義家",
+        "elected": 0,
+        "shares": 52000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18263,7 +18263,7 @@
     ],
     "totals": {
       "people": 15,
-      "shares": 41769442,
+      "shares": 41760442,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18316,6 +18316,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 41760442,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 39929569,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18340,6 +18354,21 @@
           ],
           "from": 63000,
           "to": 61000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "黃義家",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 61000,
+          "to": 52000,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

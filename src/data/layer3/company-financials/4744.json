@@ -12634,7 +12634,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16972,7 +16972,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16990,13 +16990,14 @@
         ],
         "person": "德鑫投資股份有限公司",
         "elected": 2027481,
-        "shares": 1924481,
+        "shares": 1675481,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "副董事長本人"
+          "副董事長本人",
+          "總經理本人"
         ],
         "person": "蔡明宏",
         "elected": 1560000,
@@ -17006,12 +17007,11 @@
       },
       {
         "roles": [
-          "董事長之法人代表人",
-          "總經理本人"
+          "董事長之法人代表人"
         ],
         "person": "林益裕",
         "elected": 0,
-        "shares": 553000,
+        "shares": 558000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17074,17 +17074,37 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "林麗芬",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "黃得綱",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 10,
-      "shares": 6553936,
+      "people": 12,
+      "shares": 6309936,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 5,
-      "shares": 5798481,
+      "shares": 5549481,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17131,6 +17151,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 6309936,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 5549481,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17166,6 +17200,51 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "德鑫投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1924481,
+          "to": 1675481,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林益裕",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 553000,
+          "to": 558000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林麗芬",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "黃得綱",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
         }
       ]
     }

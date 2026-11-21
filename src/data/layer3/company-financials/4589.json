@@ -2298,7 +2298,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -6635,7 +6635,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -6666,7 +6666,7 @@
         ],
         "person": "林明昌",
         "elected": 258531,
-        "shares": 314687,
+        "shares": 315708,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -6699,7 +6699,7 @@
         ],
         "person": "張世賢",
         "elected": 45745,
-        "shares": 56745,
+        "shares": 63745,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -6720,6 +6720,16 @@
         "person": "謝旻諺",
         "elected": 0,
         "shares": 48365,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "許訓嘗",
+        "elected": 0,
+        "shares": 5000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -6762,17 +6772,27 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "傅幼斌",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 12,
-      "shares": 13894326,
+      "people": 14,
+      "shares": 13907347,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 12773947,
+      "shares": 12781968,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -6819,6 +6839,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 13907347,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 12781968,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -6834,6 +6868,52 @@
           "from": 11779515,
           "to": 12402515,
           "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張世賢",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 56745,
+          "to": 63745,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "許訓嘗",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 5000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林明昌",
+          "roles": [
+            "董事長本人",
+            "總經理本人"
+          ],
+          "from": 314687,
+          "to": 315708,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "傅幼斌",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

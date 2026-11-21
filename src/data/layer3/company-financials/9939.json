@@ -12630,7 +12630,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16968,7 +16968,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16988,6 +16988,16 @@
         "person": "戴宏一",
         "elected": 4007111,
         "shares": 4007111,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長本人"
+        ],
+        "person": "鄭雅文",
+        "elected": 585743,
+        "shares": 2934628,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17018,16 +17028,6 @@
         "person": "劉允彰",
         "elected": 0,
         "shares": 704632,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長本人"
-        ],
-        "person": "鄭雅文",
-        "elected": 585743,
-        "shares": 585743,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17367,15 +17367,15 @@
     ],
     "totals": {
       "people": 39,
-      "shares": 16136753,
+      "shares": 18485638,
       "pledged": 3613000,
-      "pledgePct": 22.39
+      "pledgePct": 19.54
     },
     "boardTotals": {
       "people": 9,
-      "shares": 15084930,
+      "shares": 17433815,
       "pledged": 3613000,
-      "pledgePct": 23.95
+      "pledgePct": 20.72
     }
   },
   "insiderHoldingsHistory": {
@@ -17420,12 +17420,41 @@
         "pledged": 3613000,
         "pledgePct": 23.95
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 39,
+        "shares": 18485638,
+        "pledged": 3613000,
+        "pledgePct": 19.54
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 17433815,
+        "pledged": 3613000,
+        "pledgePct": 20.72
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "鄭雅文",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 585743,
+          "to": 2934628,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

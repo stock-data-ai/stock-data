@@ -12203,7 +12203,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -16561,7 +16561,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16570,8 +16570,8 @@
         "person": "杜泰源",
         "elected": 3243000,
         "shares": 3465000,
-        "pledged": 1282000,
-        "pledgePct": 37.0
+        "pledged": 1402000,
+        "pledgePct": 40.46
       },
       {
         "roles": [
@@ -16681,14 +16681,14 @@
     "totals": {
       "people": 11,
       "shares": 5174224,
-      "pledged": 1282000,
-      "pledgePct": 24.78
+      "pledged": 1402000,
+      "pledgePct": 27.1
     },
     "boardTotals": {
       "people": 7,
       "shares": 4990702,
-      "pledged": 1282000,
-      "pledgePct": 25.69
+      "pledged": 1402000,
+      "pledgePct": 28.09
     }
   },
   "insiderHoldingsHistory": {
@@ -16733,12 +16733,41 @@
         "pledged": 1282000,
         "pledgePct": 25.69
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 5174224,
+        "pledged": 1402000,
+        "pledgePct": 27.1
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 4990702,
+        "pledged": 1402000,
+        "pledgePct": 28.09
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "杜泰源",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 3465000,
+          "to": 3465000,
+          "pledgedFrom": 1282000,
+          "pledgedTo": 1402000
+        }
+      ]
     }
   }
 }

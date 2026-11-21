@@ -17,7 +17,7 @@
     "shortBalance": 368,
     "sblBalance": 79874
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18292,7 +18292,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18459,21 +18459,21 @@
       },
       {
         "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "方瓊瑩",
-        "elected": 0,
-        "shares": 11000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "副總經理本人"
         ],
         "person": "詹朝熙",
         "elected": 0,
         "shares": 9006,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "方瓊瑩",
+        "elected": 0,
+        "shares": 9000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18500,7 +18500,7 @@
     ],
     "totals": {
       "people": 20,
-      "shares": 131317376,
+      "shares": 131315376,
       "pledged": 2700000,
       "pledgePct": 2.06
     },
@@ -18553,12 +18553,41 @@
         "pledged": 1750000,
         "pledgePct": 2.66
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 131315376,
+        "pledged": 2700000,
+        "pledgePct": 2.06
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 65685936,
+        "pledged": 1750000,
+        "pledgePct": 2.66
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "方瓊瑩",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 11000,
+          "to": 9000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

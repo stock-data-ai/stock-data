@@ -12656,7 +12656,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16994,7 +16994,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17004,8 +17004,8 @@
         "person": "大緯投資企業股份有限公司",
         "elected": 18429332,
         "shares": 18429332,
-        "pledged": 9500000,
-        "pledgePct": 51.55
+        "pledged": 6500000,
+        "pledgePct": 35.27
       },
       {
         "roles": [
@@ -17173,14 +17173,14 @@
     "totals": {
       "people": 17,
       "shares": 20691705,
-      "pledged": 9500000,
-      "pledgePct": 45.91
+      "pledged": 6500000,
+      "pledgePct": 31.41
     },
     "boardTotals": {
       "people": 7,
       "shares": 20489748,
-      "pledged": 9500000,
-      "pledgePct": 46.36
+      "pledged": 6500000,
+      "pledgePct": 31.72
     }
   },
   "insiderHoldingsHistory": {
@@ -17225,12 +17225,42 @@
         "pledged": 9500000,
         "pledgePct": 46.36
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 20691705,
+        "pledged": 6500000,
+        "pledgePct": 31.41
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 20489748,
+        "pledged": 6500000,
+        "pledgePct": 31.72
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "大緯投資企業股份有限公司",
+          "roles": [
+            "董事長本人",
+            "大股東本人"
+          ],
+          "from": 18429332,
+          "to": 18429332,
+          "pledgedFrom": 9500000,
+          "pledgedTo": 6500000
+        }
+      ]
     }
   }
 }

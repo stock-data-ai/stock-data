@@ -17,7 +17,7 @@
     "shortBalance": 173,
     "sblBalance": 97549
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -18303,7 +18303,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18311,7 +18311,7 @@
         ],
         "person": "嘉新水泥股份有限公司",
         "elected": 239629776,
-        "shares": 274237776,
+        "shares": 279426776,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18622,6 +18622,16 @@
       },
       {
         "roles": [
+          "經理本人"
+        ],
+        "person": "林彥廷",
+        "elected": 0,
+        "shares": 32700,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "副理本人"
         ],
         "person": "蔡定良",
@@ -18779,29 +18789,19 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "鍾逸青",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
       "people": 48,
-      "shares": 650184569,
+      "shares": 655406269,
       "pledged": 4100000,
       "pledgePct": 0.63
     },
     "boardTotals": {
       "people": 14,
-      "shares": 634646495,
+      "shares": 639835495,
       "pledged": 4100000,
-      "pledgePct": 0.65
+      "pledgePct": 0.64
     }
   },
   "insiderHoldingsHistory": {
@@ -18846,12 +18846,61 @@
         "pledged": 4100000,
         "pledgePct": 0.65
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 48,
+        "shares": 655406269,
+        "pledged": 4100000,
+        "pledgePct": 0.63
+      },
+      "boardTotals": {
+        "people": 14,
+        "shares": 639835495,
+        "pledged": 4100000,
+        "pledgePct": 0.64
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "嘉新水泥股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 274237776,
+          "to": 279426776,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林彥廷",
+          "roles": [
+            "經理本人"
+          ],
+          "from": null,
+          "to": 32700,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "鍾逸青",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

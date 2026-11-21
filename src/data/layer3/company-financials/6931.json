@@ -11995,7 +11995,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16333,7 +16333,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16372,8 +16372,8 @@
         "person": "陳謀",
         "elected": 0,
         "shares": 1243949,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 1200000,
+        "pledgePct": 96.47
       },
       {
         "roles": [
@@ -16412,8 +16412,8 @@
         "person": "黃彥溥",
         "elected": 0,
         "shares": 545907,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 230000,
+        "pledgePct": 42.13
       },
       {
         "roles": [
@@ -16472,7 +16472,7 @@
         ],
         "person": "賴添福",
         "elected": 6000,
-        "shares": 20000,
+        "shares": 25000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16483,7 +16483,7 @@
         ],
         "person": "陳昭棠",
         "elected": 0,
-        "shares": 15000,
+        "shares": 10000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16511,14 +16511,14 @@
     "totals": {
       "people": 17,
       "shares": 12745444,
-      "pledged": 2900000,
-      "pledgePct": 22.75
+      "pledged": 4330000,
+      "pledgePct": 33.97
     },
     "boardTotals": {
       "people": 7,
-      "shares": 6530078,
+      "shares": 6535078,
       "pledged": 2900000,
-      "pledgePct": 44.41
+      "pledgePct": 44.38
     }
   },
   "insiderHoldingsHistory": {
@@ -16563,6 +16563,20 @@
         "pledged": 2900000,
         "pledgePct": 44.41
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 12745444,
+        "pledged": 4330000,
+        "pledgePct": 33.97
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 6535078,
+        "pledged": 2900000,
+        "pledgePct": 44.38
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -16589,6 +16603,52 @@
           "to": 15000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "賴添福",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": 20000,
+          "to": 25000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳昭棠",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 15000,
+          "to": 10000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳謀",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 1243949,
+          "to": 1243949,
+          "pledgedFrom": 0,
+          "pledgedTo": 1200000
+        },
+        {
+          "person": "黃彥溥",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 545907,
+          "to": 545907,
+          "pledgedFrom": 0,
+          "pledgedTo": 230000
         }
       ]
     }

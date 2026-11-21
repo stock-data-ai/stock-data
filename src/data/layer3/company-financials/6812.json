@@ -5342,7 +5342,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9679,8 +9679,18 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
+      {
+        "roles": [
+          "大股東本人"
+        ],
+        "person": "印能科技股份有限公司",
+        "elected": 0,
+        "shares": 6000000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
       {
         "roles": [
           "董事長本人"
@@ -9740,7 +9750,7 @@
         ],
         "person": "連金傳",
         "elected": 0,
-        "shares": 145673,
+        "shares": 142673,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9786,8 +9796,8 @@
       }
     ],
     "totals": {
-      "people": 10,
-      "shares": 6902403,
+      "people": 11,
+      "shares": 12899403,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -9840,6 +9850,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 12899403,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 4235381,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -9866,6 +9890,31 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "印能科技股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": null,
+          "to": 6000000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "連金傳",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 145673,
+          "to": 142673,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

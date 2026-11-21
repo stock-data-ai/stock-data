@@ -11865,7 +11865,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16202,7 +16202,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16211,7 +16211,7 @@
         ],
         "person": "綺騰股份有限公司",
         "elected": 9899000,
-        "shares": 9349000,
+        "shares": 9299000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16244,8 +16244,8 @@
         "person": "蔡意文",
         "elected": 2491925,
         "shares": 2491925,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 1590000,
+        "pledgePct": 63.81
       },
       {
         "roles": [
@@ -16382,15 +16382,15 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 23515678,
-      "pledged": 0,
-      "pledgePct": 0.0
+      "shares": 23465678,
+      "pledged": 1590000,
+      "pledgePct": 6.78
     },
     "boardTotals": {
       "people": 9,
-      "shares": 22529987,
-      "pledged": 0,
-      "pledgePct": 0.0
+      "shares": 22479987,
+      "pledged": 1590000,
+      "pledgePct": 7.07
     }
   },
   "insiderHoldingsHistory": {
@@ -16435,6 +16435,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 23465678,
+        "pledged": 1590000,
+        "pledgePct": 6.78
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 22479987,
+        "pledged": 1590000,
+        "pledgePct": 7.07
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -16462,6 +16476,33 @@
           "to": 2491925,
           "pledgedFrom": 1590000,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "綺騰股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 9349000,
+          "to": 9299000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "蔡意文",
+          "roles": [
+            "董事長本人",
+            "副總經理本人"
+          ],
+          "from": 2491925,
+          "to": 2491925,
+          "pledgedFrom": 0,
+          "pledgedTo": 1590000
         }
       ]
     }

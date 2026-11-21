@@ -12341,7 +12341,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16679,7 +16679,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16725,6 +16725,7 @@
       },
       {
         "roles": [
+          "董事之法人代表人",
           "協理本人"
         ],
         "person": "戴家欣",
@@ -16774,16 +16775,6 @@
         "shares": 39948,
         "pledged": 0,
         "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "王煦棋",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       },
       {
         "roles": [
@@ -16837,7 +16828,7 @@
       }
     ],
     "totals": {
-      "people": 15,
+      "people": 14,
       "shares": 27505404,
       "pledged": 5830000,
       "pledgePct": 21.2
@@ -16891,12 +16882,41 @@
         "pledged": 130000,
         "pledgePct": 0.84
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 27505404,
+        "pledged": 5830000,
+        "pledgePct": 21.2
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 15510327,
+        "pledged": 130000,
+        "pledgePct": 0.84
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王煦棋",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

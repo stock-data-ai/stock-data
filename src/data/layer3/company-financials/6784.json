@@ -2873,7 +2873,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -7210,7 +7210,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -7218,16 +7218,6 @@
           "董事本人"
         ],
         "person": "恆睿投資股份有限公司",
-        "elected": 2919725,
-        "shares": 2919725,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事本人"
-        ],
-        "person": "恆睿投資有限公司",
         "elected": 2919725,
         "shares": 2919725,
         "pledged": 0,
@@ -7318,14 +7308,14 @@
       }
     ],
     "totals": {
-      "people": 10,
-      "shares": 6399409,
+      "people": 9,
+      "shares": 3479684,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
-      "people": 5,
-      "shares": 6372409,
+      "people": 4,
+      "shares": 3452684,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -7372,12 +7362,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 9,
+        "shares": 3479684,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 4,
+        "shares": 3452684,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "恆睿投資有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 2919725,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

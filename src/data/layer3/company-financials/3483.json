@@ -12737,7 +12737,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251128": [
@@ -18443,7 +18443,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18511,6 +18511,16 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "陳明智",
+        "elected": 0,
+        "shares": 54076,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "協理本人"
         ],
         "person": "張國輝",
@@ -18534,16 +18544,6 @@
           "副總經理本人"
         ],
         "person": "范智峰",
-        "elected": 0,
-        "shares": 29076,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "陳明智",
         "elected": 0,
         "shares": 29076,
         "pledged": 0,
@@ -18622,7 +18622,7 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 4522249,
+      "shares": 4547249,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18675,12 +18675,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 4547249,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 3594732,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳明智",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 29076,
+          "to": 54076,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

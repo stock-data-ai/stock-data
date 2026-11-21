@@ -11720,7 +11720,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17426,7 +17426,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17446,7 +17446,7 @@
         ],
         "person": "林伙利",
         "elected": 420000,
-        "shares": 2495000,
+        "shares": 2500000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17478,9 +17478,9 @@
         ],
         "person": "曹雲嫿",
         "elected": 100000,
-        "shares": 100000,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "shares": 120000,
+        "pledged": 100000,
+        "pledgePct": 83.33
       },
       {
         "roles": [
@@ -17575,15 +17575,15 @@
     ],
     "totals": {
       "people": 14,
-      "shares": 10950000,
-      "pledged": 0,
-      "pledgePct": 0.0
+      "shares": 10975000,
+      "pledged": 100000,
+      "pledgePct": 0.91
     },
     "boardTotals": {
       "people": 9,
-      "shares": 2745000,
-      "pledged": 0,
-      "pledgePct": 0.0
+      "shares": 2770000,
+      "pledged": 100000,
+      "pledgePct": 3.61
     }
   },
   "insiderHoldingsHistory": {
@@ -17628,6 +17628,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 10975000,
+        "pledged": 100000,
+        "pledgePct": 0.91
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 2770000,
+        "pledged": 100000,
+        "pledgePct": 3.61
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17655,6 +17669,35 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "曹雲嫿",
+          "roles": [
+            "董事本人",
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 100000,
+          "to": 120000,
+          "pledgedFrom": 0,
+          "pledgedTo": 100000
+        },
+        {
+          "person": "林伙利",
+          "roles": [
+            "董事長本人",
+            "總經理本人",
+            "大股東本人"
+          ],
+          "from": 2495000,
+          "to": 2500000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

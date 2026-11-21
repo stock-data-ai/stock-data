@@ -12654,7 +12654,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -16992,7 +16992,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17065,16 +17065,6 @@
         "person": "黃昶傑",
         "elected": 0,
         "shares": 39557,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "李文秀",
-        "elected": 0,
-        "shares": 8182,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17169,13 +17159,23 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "李文秀",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 17,
-      "shares": 71711407,
+      "shares": 71703225,
       "pledged": 31800000,
-      "pledgePct": 44.34
+      "pledgePct": 44.35
     },
     "boardTotals": {
       "people": 9,
@@ -17226,6 +17226,20 @@
         "pledged": 31800000,
         "pledgePct": 44.57
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 71703225,
+        "pledged": 31800000,
+        "pledgePct": 44.35
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 71355249,
+        "pledged": 31800000,
+        "pledgePct": 44.57
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17252,6 +17266,21 @@
           "to": 17547946,
           "pledgedFrom": 0,
           "pledgedTo": 8000000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李文秀",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 8182,
+          "to": 0,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

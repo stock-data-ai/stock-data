@@ -10691,7 +10691,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -15028,7 +15028,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -15059,26 +15059,6 @@
         "shares": 418144,
         "pledged": 412000,
         "pledgePct": 98.53
-      },
-      {
-        "roles": [
-          "董事長之法人代表人"
-        ],
-        "person": "巫雲光",
-        "elected": 0,
-        "shares": 200000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事長本人"
-        ],
-        "person": "福苓興業有限公司",
-        "elected": 75000,
-        "shares": 96000,
-        "pledged": 0,
-        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -15144,16 +15124,16 @@
       }
     ],
     "totals": {
-      "people": 11,
-      "shares": 4542824,
+      "people": 9,
+      "shares": 4246824,
       "pledged": 2232000,
-      "pledgePct": 49.13
+      "pledgePct": 52.56
     },
     "boardTotals": {
-      "people": 6,
-      "shares": 2450144,
+      "people": 5,
+      "shares": 2354144,
       "pledged": 412000,
-      "pledgePct": 16.82
+      "pledgePct": 17.5
     }
   },
   "insiderHoldingsHistory": {
@@ -15198,12 +15178,51 @@
         "pledged": 412000,
         "pledgePct": 16.82
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 9,
+        "shares": 4246824,
+        "pledged": 2232000,
+        "pledgePct": 52.56
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 2354144,
+        "pledged": 412000,
+        "pledgePct": 17.5
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "巫雲光",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 200000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "福苓興業有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 96000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

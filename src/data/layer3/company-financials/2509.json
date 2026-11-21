@@ -12574,7 +12574,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16911,7 +16911,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16940,8 +16940,8 @@
         "person": "全球興業股份有限公司",
         "elected": 9926897,
         "shares": 9926897,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 3000000,
+        "pledgePct": 30.22
       },
       {
         "roles": [
@@ -17089,14 +17089,14 @@
     "totals": {
       "people": 17,
       "shares": 60454677,
-      "pledged": 33800000,
-      "pledgePct": 55.91
+      "pledged": 36800000,
+      "pledgePct": 60.87
     },
     "boardTotals": {
       "people": 6,
       "shares": 19437674,
-      "pledged": 0,
-      "pledgePct": 0.0
+      "pledged": 3000000,
+      "pledgePct": 15.43
     }
   },
   "insiderHoldingsHistory": {
@@ -17141,12 +17141,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 60454677,
+        "pledged": 36800000,
+        "pledgePct": 60.87
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 19437674,
+        "pledged": 3000000,
+        "pledgePct": 15.43
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "全球興業股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 9926897,
+          "to": 9926897,
+          "pledgedFrom": 0,
+          "pledgedTo": 3000000
+        }
+      ]
     }
   }
 }

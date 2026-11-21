@@ -12669,7 +12669,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17007,7 +17007,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17046,8 +17046,8 @@
         "person": "格林山有限公司",
         "elected": 1015963,
         "shares": 1175963,
-        "pledged": 900000,
-        "pledgePct": 76.53
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -17193,14 +17193,14 @@
     "totals": {
       "people": 18,
       "shares": 10488859,
-      "pledged": 3010990,
-      "pledgePct": 28.71
+      "pledged": 2110990,
+      "pledgePct": 20.13
     },
     "boardTotals": {
       "people": 8,
       "shares": 10014885,
-      "pledged": 3010990,
-      "pledgePct": 30.07
+      "pledged": 2110990,
+      "pledgePct": 21.08
     }
   },
   "insiderHoldingsHistory": {
@@ -17245,12 +17245,41 @@
         "pledged": 3010990,
         "pledgePct": 30.07
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 18,
+        "shares": 10488859,
+        "pledged": 2110990,
+        "pledgePct": 20.13
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 10014885,
+        "pledged": 2110990,
+        "pledgePct": 21.08
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "格林山有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1175963,
+          "to": 1175963,
+          "pledgedFrom": 900000,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

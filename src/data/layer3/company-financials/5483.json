@@ -12798,7 +12798,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18846,7 +18846,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18894,7 +18894,7 @@
         ],
         "person": "姚宕梁",
         "elected": 2870395,
-        "shares": 2840395,
+        "shares": 2790395,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -19043,15 +19043,15 @@
     ],
     "totals": {
       "people": 19,
-      "shares": 30288078,
+      "shares": 30238078,
       "pledged": 12627100,
-      "pledgePct": 41.69
+      "pledgePct": 41.76
     },
     "boardTotals": {
       "people": 11,
-      "shares": 30015171,
+      "shares": 29965171,
       "pledged": 12627100,
-      "pledgePct": 42.07
+      "pledgePct": 42.14
     }
   },
   "insiderHoldingsHistory": {
@@ -19096,12 +19096,41 @@
         "pledged": 12627100,
         "pledgePct": 42.07
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 30238078,
+        "pledged": 12627100,
+        "pledgePct": 41.76
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 29965171,
+        "pledged": 12627100,
+        "pledgePct": 42.14
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "姚宕梁",
+          "roles": [
+            "副董事長本人"
+          ],
+          "from": 2840395,
+          "to": 2790395,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

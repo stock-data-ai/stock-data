@@ -10898,7 +10898,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -15236,7 +15236,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -15244,39 +15244,39 @@
           "大股東本人"
         ],
         "person": "日揚科技股份有限公司",
-        "elected": 10866353,
+        "elected": 10189353,
         "shares": 10189353,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "董事長本人",
           "大股東本人"
         ],
         "person": "寇崇善",
-        "elected": 2418866,
+        "elected": 0,
         "shares": 1515866,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "董事之法人代表人"
+          "董事長本人"
         ],
-        "person": "黃俊育",
-        "elected": 417838,
-        "shares": 417838,
+        "person": "正英投資股份有限公司",
+        "elected": 1000000,
+        "shares": 1000000,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
+          "董事長之法人代表人",
           "副總經理本人",
           "財務部門主管本人"
         ],
         "person": "洪本原",
-        "elected": 0,
+        "elected": 262681,
         "shares": 262681,
         "pledged": 0,
         "pledgePct": 0.0
@@ -15323,6 +15323,16 @@
       },
       {
         "roles": [
+          "董事之法人代表人"
+        ],
+        "person": "賀慶雄",
+        "elected": 26755,
+        "shares": 26755,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "會計部門主管本人"
         ],
         "person": "李政娟",
@@ -15335,7 +15345,7 @@
         "roles": [
           "董事本人"
         ],
-        "person": "賴正時",
+        "person": "劉子猛",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -15365,7 +15375,7 @@
         "roles": [
           "獨立董事本人"
         ],
-        "person": "劉子猛",
+        "person": "陳新",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -15375,7 +15385,7 @@
         "roles": [
           "獨立董事本人"
         ],
-        "person": "陳新",
+        "person": "林育民",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -15403,14 +15413,14 @@
       }
     ],
     "totals": {
-      "people": 16,
-      "shares": 12878867,
+      "people": 17,
+      "shares": 13487784,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 11705219,
+      "shares": 11189353,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -15457,12 +15467,81 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 13487784,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 11189353,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "正英投資股份有限公司",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": null,
+          "to": 1000000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "黃俊育",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 417838,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "賀慶雄",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 26755,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林育民",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "賴正時",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

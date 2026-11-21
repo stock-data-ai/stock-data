@@ -12565,7 +12565,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16902,7 +16902,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16912,7 +16912,7 @@
         ],
         "person": "美吾華股份有限公司",
         "elected": 37737698,
-        "shares": 38730698,
+        "shares": 38783698,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16921,16 +16921,6 @@
           "董事長之法人代表人"
         ],
         "person": "李伊俐",
-        "elected": 0,
-        "shares": 300000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "李成家",
         "elected": 0,
         "shares": 300000,
         "pledged": 0,
@@ -16986,6 +16976,16 @@
         "shares": 1711,
         "pledged": 0,
         "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人"
+        ],
+        "person": "簡明彥",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       },
       {
         "roles": [
@@ -17101,13 +17101,13 @@
     ],
     "totals": {
       "people": 19,
-      "shares": 39655254,
+      "shares": 39408254,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 9,
-      "shares": 39003543,
+      "shares": 39056543,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -17154,12 +17154,63 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 39408254,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 39056543,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李成家",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 300000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "美吾華股份有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 38730698,
+          "to": 38783698,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "簡明彥",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

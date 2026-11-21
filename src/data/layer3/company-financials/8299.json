@@ -12774,7 +12774,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18480,7 +18480,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18545,6 +18545,16 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "鄭國義",
+        "elected": 0,
+        "shares": 161169,
+        "pledged": 141000,
+        "pledgePct": 87.49
+      },
+      {
+        "roles": [
           "董事本人",
           "總經理本人"
         ],
@@ -18553,16 +18563,6 @@
         "shares": 150000,
         "pledged": 0,
         "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "鄭國義",
-        "elected": 0,
-        "shares": 141134,
-        "pledged": 100000,
-        "pledgePct": 70.85
       },
       {
         "roles": [
@@ -18659,9 +18659,9 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 35568685,
-      "pledged": 4900000,
-      "pledgePct": 13.78
+      "shares": 35588720,
+      "pledged": 4941000,
+      "pledgePct": 13.88
     },
     "boardTotals": {
       "people": 9,
@@ -18712,12 +18712,41 @@
         "pledged": 2300000,
         "pledgePct": 7.81
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 35588720,
+        "pledged": 4941000,
+        "pledgePct": 13.88
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 29431527,
+        "pledged": 2300000,
+        "pledgePct": 7.81
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "鄭國義",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 141134,
+          "to": 161169,
+          "pledgedFrom": 100000,
+          "pledgedTo": 141000
+        }
+      ]
     }
   }
 }

@@ -1028,7 +1028,7 @@
     "dividends": null,
     "institutionalInvestors": null
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -5365,7 +5365,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -5385,7 +5385,7 @@
         ],
         "person": "註德投資有限公司",
         "elected": 4562823,
-        "shares": 4724523,
+        "shares": 4746523,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5418,16 +5418,6 @@
         "person": "廉裕昌",
         "elected": 0,
         "shares": 108000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "李俊穎",
-        "elected": 0,
-        "shares": 83000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -5523,14 +5513,14 @@
       }
     ],
     "totals": {
-      "people": 15,
-      "shares": 13028965,
+      "people": 14,
+      "shares": 12967965,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 12779632,
+      "shares": 12801632,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -5577,6 +5567,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 12967965,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 12801632,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -5602,6 +5606,32 @@
           "from": 4795105,
           "to": 4795105,
           "pledgedFrom": 4000000,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李俊穎",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 83000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "註德投資有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 4724523,
+          "to": 4746523,
+          "pledgedFrom": 0,
           "pledgedTo": 0
         }
       ]

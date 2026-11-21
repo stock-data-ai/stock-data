@@ -12369,7 +12369,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18417,7 +18417,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18436,7 +18436,7 @@
         ],
         "person": "李振昆",
         "elected": 1365155,
-        "shares": 1323155,
+        "shares": 1319155,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18469,7 +18469,7 @@
         ],
         "person": "陳紹焜",
         "elected": 218053,
-        "shares": 186053,
+        "shares": 176053,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18499,7 +18499,7 @@
         ],
         "person": "盧忻杰",
         "elected": 0,
-        "shares": 21100,
+        "shares": 15000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18584,29 +18584,19 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "陳南誠",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 17,
-      "shares": 6792886,
+      "people": 16,
+      "shares": 6772786,
       "pledged": 500000,
-      "pledgePct": 7.36
+      "pledgePct": 7.38
     },
     "boardTotals": {
       "people": 9,
-      "shares": 6123729,
+      "shares": 6109729,
       "pledged": 500000,
-      "pledgePct": 8.16
+      "pledgePct": 8.18
     }
   },
   "insiderHoldingsHistory": {
@@ -18650,6 +18640,20 @@
         "shares": 6123729,
         "pledged": 500000,
         "pledgePct": 8.16
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 6772786,
+        "pledged": 500000,
+        "pledgePct": 7.38
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 6109729,
+        "pledged": 500000,
+        "pledgePct": 8.18
       }
     }
   },
@@ -18722,6 +18726,53 @@
           "to": 1000,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳紹焜",
+          "roles": [
+            "董事本人",
+            "副總經理本人"
+          ],
+          "from": 186053,
+          "to": 176053,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "盧忻杰",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 21100,
+          "to": 15000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李振昆",
+          "roles": [
+            "董事本人",
+            "副總經理本人"
+          ],
+          "from": 1323155,
+          "to": 1319155,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳南誠",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

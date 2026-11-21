@@ -17,7 +17,7 @@
     "shortBalance": 19,
     "sblBalance": 5644
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -16971,7 +16971,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16981,8 +16981,8 @@
         "person": "駿昌投資股份有限公司",
         "elected": 15681089,
         "shares": 15497089,
-        "pledged": 5900000,
-        "pledgePct": 38.07
+        "pledged": 6400000,
+        "pledgePct": 41.3
       },
       {
         "roles": [
@@ -17049,9 +17049,10 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
+          "董事之法人代表人",
+          "協理本人"
         ],
-        "person": "黃建宏",
+        "person": "張耀宇",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -17142,14 +17143,14 @@
     "totals": {
       "people": 16,
       "shares": 46610688,
-      "pledged": 5900000,
-      "pledgePct": 12.66
+      "pledged": 6400000,
+      "pledgePct": 13.73
     },
     "boardTotals": {
       "people": 9,
       "shares": 37584619,
-      "pledged": 5900000,
-      "pledgePct": 15.7
+      "pledged": 6400000,
+      "pledgePct": 17.03
     }
   },
   "insiderHoldingsHistory": {
@@ -17194,12 +17195,63 @@
         "pledged": 5900000,
         "pledgePct": 15.7
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 46610688,
+        "pledged": 6400000,
+        "pledgePct": 13.73
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 37584619,
+        "pledged": 6400000,
+        "pledgePct": 17.03
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "駿昌投資股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 15497089,
+          "to": 15497089,
+          "pledgedFrom": 5900000,
+          "pledgedTo": 6400000
+        },
+        {
+          "person": "張耀宇",
+          "roles": [
+            "董事之法人代表人",
+            "協理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "黃建宏",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

@@ -12713,7 +12713,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17051,7 +17051,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17075,16 +17075,7 @@
       },
       {
         "roles": [
-          "董事長之法人代表人"
-        ],
-        "person": "鄭錫潛",
-        "elected": 0,
-        "shares": 1499636,
-        "pledged": 1499000,
-        "pledgePct": 99.96
-      },
-      {
-        "roles": [
+          "董事長之法人代表人",
           "協理本人"
         ],
         "person": "鄭豐耀",
@@ -17260,10 +17251,10 @@
       }
     ],
     "totals": {
-      "people": 20,
-      "shares": 20434976,
-      "pledged": 2699000,
-      "pledgePct": 13.21
+      "people": 19,
+      "shares": 18935340,
+      "pledged": 1200000,
+      "pledgePct": 6.34
     },
     "boardTotals": {
       "people": 8,
@@ -17314,12 +17305,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 18935340,
+        "pledged": 1200000,
+        "pledgePct": 6.34
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 16457530,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "鄭錫潛",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 1499636,
+          "to": null,
+          "pledgedFrom": 1499000,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

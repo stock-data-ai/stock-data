@@ -2453,7 +2453,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -6790,7 +6790,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -6821,7 +6821,7 @@
         ],
         "person": "徐慈光",
         "elected": 0,
-        "shares": 2158975,
+        "shares": 2090975,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -6862,6 +6862,16 @@
         "person": "高宥翔",
         "elected": 0,
         "shares": 169292,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "徐正禹",
+        "elected": 0,
+        "shares": 105479,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7012,10 +7022,10 @@
       }
     ],
     "totals": {
-      "people": 21,
-      "shares": 20054283,
+      "people": 22,
+      "shares": 20091762,
       "pledged": 5771002,
-      "pledgePct": 28.78
+      "pledgePct": 28.72
     },
     "boardTotals": {
       "people": 8,
@@ -7066,6 +7076,20 @@
         "pledged": 5771002,
         "pledgePct": 33.74
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 22,
+        "shares": 20091762,
+        "pledged": 5771002,
+        "pledgePct": 28.72
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 17104004,
+        "pledged": 5771002,
+        "pledgePct": 33.74
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -7091,6 +7115,31 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "徐正禹",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 105479,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "徐慈光",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 2158975,
+          "to": 2090975,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

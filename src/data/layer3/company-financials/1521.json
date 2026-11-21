@@ -12488,7 +12488,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16826,11 +16826,11 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
-          "副董事長本人",
+          "董事長本人",
           "董事本人",
           "大股東本人"
         ],
@@ -16848,8 +16848,8 @@
         "person": "大緯投資企業股份有限公司",
         "elected": 20817622,
         "shares": 20817622,
-        "pledged": 20800000,
-        "pledgePct": 99.92
+        "pledged": 20500000,
+        "pledgePct": 98.47
       },
       {
         "roles": [
@@ -16873,7 +16873,7 @@
       },
       {
         "roles": [
-          "副董事長之法人代表人"
+          "董事長之法人代表人"
         ],
         "person": "岩邊惠",
         "elected": 0,
@@ -16893,9 +16893,10 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
+          "董事之法人代表人",
+          "副總經理本人"
         ],
-        "person": "山本格也",
+        "person": "黑津彰久",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -16987,14 +16988,14 @@
     "totals": {
       "people": 15,
       "shares": 46848860,
-      "pledged": 20800000,
-      "pledgePct": 44.4
+      "pledged": 20500000,
+      "pledgePct": 43.76
     },
     "boardTotals": {
       "people": 5,
       "shares": 45592372,
-      "pledged": 20800000,
-      "pledgePct": 45.62
+      "pledged": 20500000,
+      "pledgePct": 44.96
     }
   },
   "insiderHoldingsHistory": {
@@ -17039,12 +17040,63 @@
         "pledged": 20800000,
         "pledgePct": 45.62
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 46848860,
+        "pledged": 20500000,
+        "pledgePct": 43.76
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 45592372,
+        "pledged": 20500000,
+        "pledgePct": 44.96
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "大緯投資企業股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 20817622,
+          "to": 20817622,
+          "pledgedFrom": 20800000,
+          "pledgedTo": 20500000
+        },
+        {
+          "person": "黑津彰久",
+          "roles": [
+            "董事之法人代表人",
+            "副總經理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "山本格也",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

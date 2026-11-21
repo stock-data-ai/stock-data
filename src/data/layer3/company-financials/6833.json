@@ -2187,7 +2187,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -7893,7 +7893,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -8007,7 +8007,7 @@
         ],
         "person": "陳守一",
         "elected": 0,
-        "shares": 5000,
+        "shares": 4000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -8064,7 +8064,7 @@
     ],
     "totals": {
       "people": 16,
-      "shares": 45903100,
+      "shares": 45902100,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -8117,12 +8117,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 45902100,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 37518365,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳守一",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 5000,
+          "to": 4000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

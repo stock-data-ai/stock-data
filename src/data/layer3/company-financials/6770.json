@@ -12287,7 +12287,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17993,7 +17993,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18013,8 +18013,8 @@
         "person": "仁典投資股份有限公司",
         "elected": 16451676,
         "shares": 16451676,
-        "pledged": 6500000,
-        "pledgePct": 39.51
+        "pledged": 500000,
+        "pledgePct": 3.04
       },
       {
         "roles": [
@@ -18052,7 +18052,27 @@
         ],
         "person": "謝再居",
         "elected": 0,
-        "shares": 2007029,
+        "shares": 2807029,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "陳章鑑",
+        "elected": 0,
+        "shares": 2106707,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "副總經理本人"
+        ],
+        "person": "張守仁",
+        "elected": 0,
+        "shares": 1501211,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18062,7 +18082,7 @@
         ],
         "person": "簡文勝",
         "elected": 0,
-        "shares": 1489129,
+        "shares": 1469129,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18073,26 +18093,6 @@
         "person": "朱憲國",
         "elected": 0,
         "shares": 1460000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "張守仁",
-        "elected": 0,
-        "shares": 1151211,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "陳章鑑",
-        "elected": 0,
-        "shares": 1056707,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18199,6 +18199,16 @@
       },
       {
         "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "邱垂源",
+        "elected": 0,
+        "shares": 120502,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "獨立董事本人"
         ],
         "person": "葉疏",
@@ -18234,16 +18244,6 @@
         "person": "林依亮",
         "elected": 0,
         "shares": 3484,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "邱垂源",
-        "elected": 0,
-        "shares": 502,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18300,15 +18300,15 @@
     ],
     "totals": {
       "people": 30,
-      "shares": 873111999,
-      "pledged": 409500000,
-      "pledgePct": 46.9
+      "shares": 875411999,
+      "pledged": 403500000,
+      "pledgePct": 46.09
     },
     "boardTotals": {
       "people": 10,
       "shares": 856497268,
-      "pledged": 409500000,
-      "pledgePct": 47.81
+      "pledged": 403500000,
+      "pledgePct": 47.11
     }
   },
   "insiderHoldingsHistory": {
@@ -18353,6 +18353,20 @@
         "pledged": 409500000,
         "pledgePct": 47.81
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 30,
+        "shares": 875411999,
+        "pledged": 403500000,
+        "pledgePct": 46.09
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 856497268,
+        "pledged": 403500000,
+        "pledgePct": 47.11
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18388,6 +18402,71 @@
           "to": 1489129,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳章鑑",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 1056707,
+          "to": 2106707,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "謝再居",
+          "roles": [
+            "董事長之法人代表人"
+          ],
+          "from": 2007029,
+          "to": 2807029,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張守仁",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 1151211,
+          "to": 1501211,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "邱垂源",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 502,
+          "to": 120502,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "簡文勝",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 1489129,
+          "to": 1469129,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "仁典投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 16451676,
+          "to": 16451676,
+          "pledgedFrom": 6500000,
+          "pledgedTo": 500000
         }
       ]
     }

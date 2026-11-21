@@ -12610,7 +12610,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18316,7 +18316,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18348,16 +18348,6 @@
         "shares": 2302591,
         "pledged": 1000000,
         "pledgePct": 43.43
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "潘俊茗",
-        "elected": 0,
-        "shares": 88064,
-        "pledged": 0,
-        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -18407,6 +18397,16 @@
         "person": "黃俊豪",
         "elected": 0,
         "shares": 26348,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "潘俊茗",
+        "elected": 0,
+        "shares": 12064,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18536,7 +18536,7 @@
     ],
     "totals": {
       "people": 21,
-      "shares": 40178347,
+      "shares": 40102347,
       "pledged": 1000000,
       "pledgePct": 2.49
     },
@@ -18589,12 +18589,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 21,
+        "shares": 40102347,
+        "pledged": 1000000,
+        "pledgePct": 2.49
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 37647219,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "潘俊茗",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 88064,
+          "to": 12064,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

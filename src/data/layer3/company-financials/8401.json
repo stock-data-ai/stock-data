@@ -12271,7 +12271,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16609,7 +16609,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16638,7 +16638,7 @@
         ],
         "person": "吳鎮芳",
         "elected": 748000,
-        "shares": 970000,
+        "shares": 990000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16710,7 +16710,7 @@
         ],
         "person": "林光鴻",
         "elected": 0,
-        "shares": 62432,
+        "shares": 48432,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16767,15 +16767,15 @@
     ],
     "totals": {
       "people": 15,
-      "shares": 12471625,
+      "shares": 12477625,
       "pledged": 2860000,
-      "pledgePct": 22.93
+      "pledgePct": 22.92
     },
     "boardTotals": {
       "people": 7,
-      "shares": 10334657,
+      "shares": 10354657,
       "pledged": 2860000,
-      "pledgePct": 27.67
+      "pledgePct": 27.62
     }
   },
   "insiderHoldingsHistory": {
@@ -16820,12 +16820,52 @@
         "pledged": 2860000,
         "pledgePct": 27.67
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 15,
+        "shares": 12477625,
+        "pledged": 2860000,
+        "pledgePct": 22.92
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 10354657,
+        "pledged": 2860000,
+        "pledgePct": 27.62
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "吳鎮芳",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 970000,
+          "to": 990000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林光鴻",
+          "roles": [
+            "副總經理本人",
+            "其他"
+          ],
+          "from": 62432,
+          "to": 48432,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

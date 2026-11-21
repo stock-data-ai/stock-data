@@ -12613,7 +12613,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -16951,7 +16951,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16960,9 +16960,9 @@
         ],
         "person": "班友投資股份有限公司",
         "elected": 15795336,
-        "shares": 15648336,
+        "shares": 15638336,
         "pledged": 5000000,
-        "pledgePct": 31.95
+        "pledgePct": 31.97
       },
       {
         "roles": [
@@ -17179,15 +17179,15 @@
     ],
     "totals": {
       "people": 22,
-      "shares": 17761795,
+      "shares": 17751795,
       "pledged": 5000000,
-      "pledgePct": 28.15
+      "pledgePct": 28.17
     },
     "boardTotals": {
       "people": 7,
-      "shares": 15901336,
+      "shares": 15891336,
       "pledged": 5000000,
-      "pledgePct": 31.44
+      "pledgePct": 31.46
     }
   },
   "insiderHoldingsHistory": {
@@ -17232,12 +17232,42 @@
         "pledged": 5000000,
         "pledgePct": 31.44
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 22,
+        "shares": 17751795,
+        "pledged": 5000000,
+        "pledgePct": 28.17
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 15891336,
+        "pledged": 5000000,
+        "pledgePct": 31.46
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "班友投資股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 15648336,
+          "to": 15638336,
+          "pledgedFrom": 5000000,
+          "pledgedTo": 5000000
+        }
+      ]
     }
   }
 }

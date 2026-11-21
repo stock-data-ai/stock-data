@@ -12591,7 +12591,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18297,7 +18297,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18344,7 +18344,6 @@
       },
       {
         "roles": [
-          "董事之法人代表人",
           "副總經理本人"
         ],
         "person": "李政衛",
@@ -18360,8 +18359,8 @@
         "person": "游淑靜",
         "elected": 0,
         "shares": 111000,
-        "pledged": 45000,
-        "pledgePct": 40.54
+        "pledged": 0,
+        "pledgePct": 0.0
       },
       {
         "roles": [
@@ -18401,6 +18400,16 @@
         "person": "莊育民",
         "elected": 0,
         "shares": 40000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事之法人代表人"
+        ],
+        "person": "王淑容",
+        "elected": 0,
+        "shares": 36000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18486,10 +18495,10 @@
       }
     ],
     "totals": {
-      "people": 18,
-      "shares": 17275449,
-      "pledged": 2980000,
-      "pledgePct": 17.25
+      "people": 19,
+      "shares": 17311449,
+      "pledged": 2935000,
+      "pledgePct": 16.95
     },
     "boardTotals": {
       "people": 7,
@@ -18540,6 +18549,20 @@
         "pledged": 2600000,
         "pledgePct": 15.78
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 17311449,
+        "pledged": 2935000,
+        "pledgePct": 16.95
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 16481000,
+        "pledged": 2600000,
+        "pledgePct": 15.78
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18556,6 +18579,31 @@
           "to": 105000,
           "pledgedFrom": 76000,
           "pledgedTo": 61000
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王淑容",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 36000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "游淑靜",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 111000,
+          "to": 111000,
+          "pledgedFrom": 45000,
+          "pledgedTo": 0
         }
       ]
     }

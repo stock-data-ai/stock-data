@@ -5257,7 +5257,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9595,7 +9595,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9627,7 +9627,7 @@
         ],
         "person": "魏鴻文",
         "elected": 357445,
-        "shares": 427509,
+        "shares": 423509,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9710,17 +9710,27 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "楊蓓玟",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 11,
-      "shares": 17533827,
+      "people": 12,
+      "shares": 17529827,
       "pledged": 4934000,
-      "pledgePct": 28.14
+      "pledgePct": 28.15
     },
     "boardTotals": {
       "people": 7,
-      "shares": 17362041,
+      "shares": 17358041,
       "pledged": 4934000,
       "pledgePct": 28.42
     }
@@ -9767,6 +9777,20 @@
         "pledged": 4934000,
         "pledgePct": 28.42
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 17529827,
+        "pledged": 4934000,
+        "pledgePct": 28.15
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 17358041,
+        "pledged": 4934000,
+        "pledgePct": 28.42
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -9795,6 +9819,32 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "魏鴻文",
+          "roles": [
+            "董事本人",
+            "副總經理本人"
+          ],
+          "from": 427509,
+          "to": 423509,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "楊蓓玟",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
         }
       ]
     }

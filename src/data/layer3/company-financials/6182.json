@@ -12716,7 +12716,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18764,7 +18764,7 @@
   },
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18782,7 +18782,7 @@
         ],
         "person": "華榮電線電纜（股）公司",
         "elected": 5699013,
-        "shares": 5361040,
+        "shares": 5261040,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18842,7 +18842,7 @@
         ],
         "person": "鄒柏林",
         "elected": 0,
-        "shares": 134347,
+        "shares": 125347,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18955,17 +18955,27 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "會計部門主管本人"
+        ],
+        "person": "陳品璇",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 19,
-      "shares": 23478459,
+      "people": 20,
+      "shares": 23369459,
       "pledged": 250000,
-      "pledgePct": 1.06
+      "pledgePct": 1.07
     },
     "boardTotals": {
       "people": 9,
-      "shares": 21960032,
+      "shares": 21860032,
       "pledged": 250000,
       "pledgePct": 1.14
     }
@@ -19012,12 +19022,61 @@
         "pledged": 250000,
         "pledgePct": 1.14
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 23369459,
+        "pledged": 250000,
+        "pledgePct": 1.07
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 21860032,
+        "pledged": 250000,
+        "pledgePct": 1.14
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "華榮電線電纜（股）公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 5361040,
+          "to": 5261040,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "鄒柏林",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 134347,
+          "to": 125347,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳品璇",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

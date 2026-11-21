@@ -12713,7 +12713,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -17051,7 +17051,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17071,9 +17071,9 @@
         ],
         "person": "晉禾企業股份有限公司",
         "elected": 70080000,
-        "shares": 70969000,
+        "shares": 71055000,
         "pledged": 53600000,
-        "pledgePct": 75.53
+        "pledgePct": 75.43
       },
       {
         "roles": [
@@ -17091,9 +17091,9 @@
         ],
         "person": "東羿投資股份有限公司",
         "elected": 29464000,
-        "shares": 29464000,
+        "shares": 30000000,
         "pledged": 20600000,
-        "pledgePct": 69.92
+        "pledgePct": 68.67
       },
       {
         "roles": [
@@ -17111,7 +17111,7 @@
         ],
         "person": "蔡永裕",
         "elected": 0,
-        "shares": 6875000,
+        "shares": 6958000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17250,15 +17250,15 @@
     ],
     "totals": {
       "people": 19,
-      "shares": 611794079,
+      "shares": 612499079,
       "pledged": 112230000,
-      "pledgePct": 18.34
+      "pledgePct": 18.32
     },
     "boardTotals": {
       "people": 11,
-      "shares": 599073629,
+      "shares": 599695629,
       "pledged": 111200000,
-      "pledgePct": 18.56
+      "pledgePct": 18.54
     }
   },
   "insiderHoldingsHistory": {
@@ -17303,6 +17303,20 @@
         "pledged": 111200000,
         "pledgePct": 18.56
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 19,
+        "shares": 612499079,
+        "pledged": 112230000,
+        "pledgePct": 18.32
+      },
+      "boardTotals": {
+        "people": 11,
+        "shares": 599695629,
+        "pledged": 111200000,
+        "pledgePct": 18.54
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17326,6 +17340,41 @@
           ],
           "from": 6786000,
           "to": 6875000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "東羿投資股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 29464000,
+          "to": 30000000,
+          "pledgedFrom": 20600000,
+          "pledgedTo": 20600000
+        },
+        {
+          "person": "晉禾企業股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 70969000,
+          "to": 71055000,
+          "pledgedFrom": 53600000,
+          "pledgedTo": 53600000
+        },
+        {
+          "person": "蔡永裕",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 6875000,
+          "to": 6958000,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

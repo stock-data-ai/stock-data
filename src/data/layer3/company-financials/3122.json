@@ -12621,7 +12621,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16959,7 +16959,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16968,16 +16968,6 @@
         "person": "富勛投資有限公司",
         "elected": 50000,
         "shares": 2050000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "副總經理本人"
-        ],
-        "person": "廖崇榮",
-        "elected": 0,
-        "shares": 75000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17097,8 +17087,8 @@
       }
     ],
     "totals": {
-      "people": 13,
-      "shares": 2269986,
+      "people": 12,
+      "shares": 2194986,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17151,12 +17141,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 2194986,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 2105000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "廖崇榮",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 75000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

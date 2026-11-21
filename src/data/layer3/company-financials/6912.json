@@ -3564,7 +3564,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -7901,7 +7901,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -7968,21 +7968,21 @@
       },
       {
         "roles": [
-          "經理本人"
-        ],
-        "person": "陳奇偉",
-        "elected": 0,
-        "shares": 53000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "副總經理本人"
         ],
         "person": "沈國芬",
         "elected": 0,
         "shares": 30384,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "經理本人"
+        ],
+        "person": "陳奇偉",
+        "elected": 0,
+        "shares": 29000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -8029,7 +8029,7 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 85612794,
+      "shares": 85588794,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -8082,6 +8082,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 85588794,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 81641410,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -8107,6 +8121,21 @@
           ],
           "from": 16053,
           "to": 15053,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳奇偉",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 53000,
+          "to": 29000,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

@@ -6053,7 +6053,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -10390,7 +10390,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -10451,6 +10451,16 @@
         "person": "陳旦生",
         "elected": 0,
         "shares": 4000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "其他"
+        ],
+        "person": "尤斯薇",
+        "elected": 0,
+        "shares": 100,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10549,16 +10559,6 @@
         "roles": [
           "其他"
         ],
-        "person": "尤斯薇",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "其他"
-        ],
         "person": "吳詩婷",
         "elected": 0,
         "shares": 0,
@@ -10568,7 +10568,7 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 64302400,
+      "shares": 64302500,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -10621,12 +10621,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 64302500,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 33399400,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "尤斯薇",
+          "roles": [
+            "其他"
+          ],
+          "from": 0,
+          "to": 100,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

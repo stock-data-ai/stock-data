@@ -12724,7 +12724,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18772,7 +18772,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18780,9 +18780,9 @@
         ],
         "person": "張銘烈",
         "elected": 11950911,
-        "shares": 12576911,
+        "shares": 12426911,
         "pledged": 2200000,
-        "pledgePct": 17.49
+        "pledgePct": 17.7
       },
       {
         "roles": [
@@ -18869,6 +18869,16 @@
       },
       {
         "roles": [
+          "副總經理本人"
+        ],
+        "person": "朱惠禎",
+        "elected": 0,
+        "shares": 60729,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "獨立董事本人"
         ],
         "person": "黃逸嫺",
@@ -18909,16 +18919,16 @@
       }
     ],
     "totals": {
-      "people": 13,
-      "shares": 16607873,
+      "people": 14,
+      "shares": 16518602,
       "pledged": 2500000,
-      "pledgePct": 15.05
+      "pledgePct": 15.13
     },
     "boardTotals": {
       "people": 9,
-      "shares": 15887430,
+      "shares": 15737430,
       "pledged": 2500000,
-      "pledgePct": 15.74
+      "pledgePct": 15.89
     }
   },
   "insiderHoldingsHistory": {
@@ -18963,6 +18973,20 @@
         "pledged": 2500000,
         "pledgePct": 15.74
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 14,
+        "shares": 16518602,
+        "pledged": 2500000,
+        "pledgePct": 15.13
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 15737430,
+        "pledged": 2500000,
+        "pledgePct": 15.89
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18989,6 +19013,31 @@
           "from": 176000,
           "to": 143000,
           "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張銘烈",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 12576911,
+          "to": 12426911,
+          "pledgedFrom": 2200000,
+          "pledgedTo": 2200000
+        },
+        {
+          "person": "朱惠禎",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": null,
+          "to": 60729,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

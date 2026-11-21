@@ -17,7 +17,7 @@
     "shortBalance": 71,
     "sblBalance": 8884
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -16883,7 +16883,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16945,16 +16945,6 @@
         "person": "李肇修",
         "elected": 0,
         "shares": 387696,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "藍光宏",
-        "elected": 0,
-        "shares": 194956,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17033,8 +17023,8 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 175300361,
+      "people": 13,
+      "shares": 175105405,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17087,12 +17077,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 175105405,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 173253470,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "藍光宏",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 194956,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

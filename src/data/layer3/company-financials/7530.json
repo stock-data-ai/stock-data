@@ -4816,7 +4816,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -9153,7 +9153,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -9189,12 +9189,22 @@
       },
       {
         "roles": [
+          "董事本人"
+        ],
+        "person": "廣毅國際工程有限公司",
+        "elected": 10000,
+        "shares": 10000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "財務部門主管本人",
           "會計部門主管本人"
         ],
         "person": "李葆慧",
         "elected": 0,
-        "shares": 24000,
+        "shares": 8000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -9213,6 +9223,16 @@
           "董事本人"
         ],
         "person": "許明棋",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
+          "董事之法人代表人"
+        ],
+        "person": "林益盛",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -9250,14 +9270,14 @@
       }
     ],
     "totals": {
-      "people": 9,
-      "shares": 6044682,
+      "people": 11,
+      "shares": 6038682,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
-      "people": 7,
-      "shares": 6020682,
+      "people": 8,
+      "shares": 6030682,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -9304,6 +9324,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 6038682,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 6030682,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -9319,6 +9353,42 @@
           "from": 30000,
           "to": 24000,
           "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李葆慧",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 24000,
+          "to": 8000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "廣毅國際工程有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": null,
+          "to": 10000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "林益盛",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": null,
+          "to": 0,
+          "pledgedFrom": null,
           "pledgedTo": 0
         }
       ]

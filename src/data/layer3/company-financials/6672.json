@@ -12535,7 +12535,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16873,7 +16873,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16881,7 +16881,7 @@
         ],
         "person": "Alpha Victor Limited",
         "elected": 4090908,
-        "shares": 4040908,
+        "shares": 4030908,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16891,9 +16891,9 @@
         ],
         "person": "理虹資本股份有限公司",
         "elected": 1331000,
-        "shares": 2130000,
-        "pledged": 808000,
-        "pledgePct": 37.93
+        "shares": 2049000,
+        "pledged": 588000,
+        "pledgePct": 28.7
       },
       {
         "roles": [
@@ -16912,7 +16912,7 @@
         ],
         "person": "賢潤國際有限公司",
         "elected": 501239,
-        "shares": 401239,
+        "shares": 391239,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16922,7 +16922,7 @@
         ],
         "person": "曾尤玲",
         "elected": 0,
-        "shares": 20000,
+        "shares": 19000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17000,15 +17000,15 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 7968770,
-      "pledged": 808000,
-      "pledgePct": 10.14
+      "shares": 7866770,
+      "pledged": 588000,
+      "pledgePct": 7.47
     },
     "boardTotals": {
       "people": 7,
-      "shares": 7932770,
-      "pledged": 808000,
-      "pledgePct": 10.19
+      "shares": 7831770,
+      "pledged": 588000,
+      "pledgePct": 7.51
     }
   },
   "insiderHoldingsHistory": {
@@ -17053,6 +17053,20 @@
         "pledged": 808000,
         "pledgePct": 10.19
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 7866770,
+        "pledged": 588000,
+        "pledgePct": 7.47
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 7831770,
+        "pledged": 588000,
+        "pledgePct": 7.51
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17076,6 +17090,51 @@
           ],
           "from": 441239,
           "to": 401239,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "理虹資本股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 2130000,
+          "to": 2049000,
+          "pledgedFrom": 808000,
+          "pledgedTo": 588000
+        },
+        {
+          "person": "Alpha Victor Limited",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 4040908,
+          "to": 4030908,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "賢潤國際有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 401239,
+          "to": 391239,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "曾尤玲",
+          "roles": [
+            "其他"
+          ],
+          "from": 20000,
+          "to": 19000,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

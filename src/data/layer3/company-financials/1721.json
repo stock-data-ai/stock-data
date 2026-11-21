@@ -12593,7 +12593,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -17293,7 +17293,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17339,6 +17339,16 @@
       },
       {
         "roles": [
+          "其他"
+        ],
+        "person": "張天居",
+        "elected": 0,
+        "shares": 4000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "副總經理本人"
         ],
         "person": "黃聿均",
@@ -17364,16 +17374,6 @@
         "person": "黃昭維",
         "elected": 2666,
         "shares": 2666,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "其他"
-        ],
-        "person": "張天居",
-        "elected": 0,
-        "shares": 2000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17460,7 +17460,7 @@
     ],
     "totals": {
       "people": 16,
-      "shares": 18615627,
+      "shares": 18617627,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -17513,12 +17513,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 18617627,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 17313912,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張天居",
+          "roles": [
+            "其他"
+          ],
+          "from": 2000,
+          "to": 4000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

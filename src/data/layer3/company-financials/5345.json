@@ -7851,7 +7851,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -12188,7 +12188,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -12214,19 +12214,39 @@
       },
       {
         "roles": [
-          "董事長本人",
-          "董事本人"
+          "大股東本人"
         ],
-        "person": "達潤投資有限公司",
-        "elected": 3665000,
-        "shares": 4150000,
+        "person": "碩宏投資股份有限公司",
+        "elected": 0,
+        "shares": 6000000,
         "pledged": 0,
         "pledgePct": 0.0
       },
       {
         "roles": [
-          "董事長之法人代表人",
-          "總經理本人"
+          "大股東本人"
+        ],
+        "person": "廣昕投資股份有限公司",
+        "elected": 0,
+        "shares": 6000000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長本人",
+          "董事本人",
+          "大股東本人"
+        ],
+        "person": "達潤投資有限公司",
+        "elected": 3665000,
+        "shares": 5450000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長之法人代表人"
         ],
         "person": "王昭卿",
         "elected": 0,
@@ -12236,8 +12256,7 @@
       },
       {
         "roles": [
-          "董事之法人代表人",
-          "大股東本人"
+          "董事之法人代表人"
         ],
         "person": "謝岱玲",
         "elected": 0,
@@ -12257,7 +12276,8 @@
       },
       {
         "roles": [
-          "董事之法人代表人"
+          "董事之法人代表人",
+          "總經理本人"
         ],
         "person": "謝凱安",
         "elected": 0,
@@ -12309,14 +12329,14 @@
       }
     ],
     "totals": {
-      "people": 11,
-      "shares": 18550000,
+      "people": 13,
+      "shares": 31850000,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 6,
-      "shares": 18550000,
+      "shares": 19850000,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -12363,6 +12383,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 31850000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 6,
+        "shares": 19850000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -12378,6 +12412,43 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "碩宏投資股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": null,
+          "to": 6000000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "廣昕投資股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": null,
+          "to": 6000000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "達潤投資有限公司",
+          "roles": [
+            "董事長本人",
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 4150000,
+          "to": 5450000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
         }
       ]
     }

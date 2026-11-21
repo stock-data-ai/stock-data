@@ -12494,7 +12494,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -18200,7 +18200,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18248,7 +18248,7 @@
         "roles": [
           "財務部門主管本人"
         ],
-        "person": "李妍蓉",
+        "person": "李蓉",
         "elected": 0,
         "shares": 206615,
         "pledged": 0,
@@ -18272,16 +18272,6 @@
         "person": "王起明",
         "elected": 55670,
         "shares": 50209,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "會計部門主管本人"
-        ],
-        "person": "鄭雅玲",
-        "elected": 0,
-        "shares": 5594,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18347,8 +18337,8 @@
       }
     ],
     "totals": {
-      "people": 14,
-      "shares": 8189181,
+      "people": 13,
+      "shares": 8183587,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18401,6 +18391,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 8183587,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 7333289,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -18417,6 +18421,41 @@
           "to": 50209,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李蓉",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": null,
+          "to": 206615,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "李妍蓉",
+          "roles": [
+            "財務部門主管本人"
+          ],
+          "from": 206615,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "鄭雅玲",
+          "roles": [
+            "會計部門主管本人"
+          ],
+          "from": 5594,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
         }
       ]
     }

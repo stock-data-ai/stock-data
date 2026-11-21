@@ -2906,7 +2906,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -7243,7 +7243,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -7253,6 +7253,16 @@
         "person": "張雍",
         "elected": 1489500,
         "shares": 1499500,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事長本人"
+        ],
+        "person": "陳彥文",
+        "elected": 928002,
+        "shares": 1203002,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7268,22 +7278,12 @@
       },
       {
         "roles": [
-          "董事長本人"
-        ],
-        "person": "陳彥文",
-        "elected": 928002,
-        "shares": 928002,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "董事本人",
           "總經理本人"
         ],
         "person": "鍾政&#23791;",
         "elected": 756503,
-        "shares": 756503,
+        "shares": 907312,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7361,13 +7361,13 @@
     ],
     "totals": {
       "people": 11,
-      "shares": 4128005,
+      "shares": 4553814,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 9,
-      "shares": 4128005,
+      "shares": 4553814,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -7414,6 +7414,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 4553814,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 4553814,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -7427,6 +7441,32 @@
           ],
           "from": 0,
           "to": 6000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳彥文",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 928002,
+          "to": 1203002,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "鍾政&#23791;",
+          "roles": [
+            "董事本人",
+            "總經理本人"
+          ],
+          "from": 756503,
+          "to": 907312,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

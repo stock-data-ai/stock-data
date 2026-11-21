@@ -5713,7 +5713,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -10050,18 +10050,8 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
-      {
-        "roles": [
-          "總經理本人"
-        ],
-        "person": "張忠傑",
-        "elected": 0,
-        "shares": 17661074,
-        "pledged": 1000000,
-        "pledgePct": 5.66
-      },
       {
         "roles": [
           "董事本人"
@@ -10095,6 +10085,16 @@
       },
       {
         "roles": [
+          "總經理本人"
+        ],
+        "person": "錢佳華",
+        "elected": 0,
+        "shares": 481000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
           "董事本人",
           "協理本人"
         ],
@@ -10120,7 +10120,7 @@
         ],
         "person": "馬江強",
         "elected": 0,
-        "shares": 68254,
+        "shares": 32254,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10150,7 +10150,7 @@
         ],
         "person": "蘇冠綸",
         "elected": 0,
-        "shares": 1000,
+        "shares": 3000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -10230,13 +10230,13 @@
     ],
     "totals": {
       "people": 17,
-      "shares": 45377986,
-      "pledged": 1000000,
-      "pledgePct": 2.2
+      "shares": 28163912,
+      "pledged": 0,
+      "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 8,
-      "shares": 27424053,
+      "shares": 27426053,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -10283,6 +10283,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 28163912,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 27426053,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -10296,6 +10310,51 @@
           ],
           "from": 0,
           "to": 1000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張忠傑",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": 17661074,
+          "to": null,
+          "pledgedFrom": 1000000,
+          "pledgedTo": null
+        },
+        {
+          "person": "錢佳華",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": null,
+          "to": 481000,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "馬江強",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 68254,
+          "to": 32254,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "蘇冠綸",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": 1000,
+          "to": 3000,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

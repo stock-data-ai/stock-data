@@ -17,7 +17,7 @@
     "dividendYield": 0.9199999999999999,
     "sblBalance": 5765
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -16974,7 +16974,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16983,8 +16983,8 @@
         "person": "陳慶棋",
         "elected": 8630385,
         "shares": 8630385,
-        "pledged": 3000000,
-        "pledgePct": 34.76
+        "pledged": 1500000,
+        "pledgePct": 17.38
       },
       {
         "roles": [
@@ -17012,7 +17012,7 @@
         ],
         "person": "陳錦明",
         "elected": 2348829,
-        "shares": 2037829,
+        "shares": 2026829,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17201,15 +17201,15 @@
     ],
     "totals": {
       "people": 22,
-      "shares": 22214843,
-      "pledged": 3000000,
-      "pledgePct": 13.5
+      "shares": 22203843,
+      "pledged": 1500000,
+      "pledgePct": 6.76
     },
     "boardTotals": {
       "people": 10,
-      "shares": 22165543,
-      "pledged": 3000000,
-      "pledgePct": 13.53
+      "shares": 22154543,
+      "pledged": 1500000,
+      "pledgePct": 6.77
     }
   },
   "insiderHoldingsHistory": {
@@ -17254,6 +17254,20 @@
         "pledged": 3000000,
         "pledgePct": 13.53
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 22,
+        "shares": 22203843,
+        "pledged": 1500000,
+        "pledgePct": 6.76
+      },
+      "boardTotals": {
+        "people": 10,
+        "shares": 22154543,
+        "pledged": 1500000,
+        "pledgePct": 6.77
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17279,6 +17293,31 @@
           "to": 0,
           "pledgedFrom": 0,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "陳錦明",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 2037829,
+          "to": 2026829,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "陳慶棋",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 8630385,
+          "to": 8630385,
+          "pledgedFrom": 3000000,
+          "pledgedTo": 1500000
         }
       ]
     }

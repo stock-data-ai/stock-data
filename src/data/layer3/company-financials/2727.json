@@ -12620,7 +12620,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260206": [
@@ -16958,7 +16958,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17040,8 +17040,8 @@
         "person": "周佳穎",
         "elected": 0,
         "shares": 38144,
-        "pledged": 0,
-        "pledgePct": 0.0
+        "pledged": 38144,
+        "pledgePct": 100.0
       },
       {
         "roles": [
@@ -17167,8 +17167,8 @@
     "totals": {
       "people": 20,
       "shares": 8451177,
-      "pledged": 0,
-      "pledgePct": 0.0
+      "pledged": 38144,
+      "pledgePct": 0.45
     },
     "boardTotals": {
       "people": 7,
@@ -17219,6 +17219,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 8451177,
+        "pledged": 38144,
+        "pledgePct": 0.45
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 5663203,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17234,6 +17248,21 @@
           "to": null,
           "pledgedFrom": 0,
           "pledgedTo": null
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "周佳穎",
+          "roles": [
+            "總經理本人"
+          ],
+          "from": 38144,
+          "to": 38144,
+          "pledgedFrom": 0,
+          "pledgedTo": 38144
         }
       ]
     }

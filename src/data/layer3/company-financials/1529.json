@@ -12654,7 +12654,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -16992,18 +16992,8 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
-      {
-        "roles": [
-          "大股東本人"
-        ],
-        "person": "官田鋼鐵股份有限公司",
-        "elected": 0,
-        "shares": 16346970,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
       {
         "roles": [
           "董事本人"
@@ -17063,7 +17053,7 @@
         ],
         "person": "簡世昌",
         "elected": 0,
-        "shares": 66547,
+        "shares": 27547,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17073,7 +17063,7 @@
         ],
         "person": "楊文憲",
         "elected": 0,
-        "shares": 5130,
+        "shares": 4230,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17170,10 +17160,10 @@
       }
     ],
     "totals": {
-      "people": 17,
-      "shares": 40709453,
+      "people": 16,
+      "shares": 24322583,
       "pledged": 11252000,
-      "pledgePct": 27.64
+      "pledgePct": 46.26
     },
     "boardTotals": {
       "people": 9,
@@ -17217,6 +17207,20 @@
         "shares": 40709453,
         "pledged": 11252000,
         "pledgePct": 27.64
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 24290806,
+        "pledged": 11252000,
+        "pledgePct": 46.32
+      }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 24322583,
+        "pledged": 11252000,
+        "pledgePct": 46.26
       },
       "boardTotals": {
         "people": 9,
@@ -17269,6 +17273,43 @@
           ],
           "from": 0,
           "to": 5130,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "官田鋼鐵股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 16346970,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "簡世昌",
+          "roles": [
+            "副總經理本人",
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 66547,
+          "to": 27547,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "楊文憲",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 5130,
+          "to": 4230,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

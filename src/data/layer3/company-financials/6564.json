@@ -3935,7 +3935,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -8272,7 +8272,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -8322,7 +8322,7 @@
         ],
         "person": "張金全",
         "elected": 11000,
-        "shares": 34000,
+        "shares": 49000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -8411,13 +8411,13 @@
     ],
     "totals": {
       "people": 13,
-      "shares": 36821886,
+      "shares": 36836886,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 5,
-      "shares": 36288701,
+      "shares": 36303701,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -8464,12 +8464,41 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 13,
+        "shares": 36836886,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 36303701,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "張金全",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 34000,
+          "to": 49000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

@@ -17,7 +17,7 @@
     "dividendYield": 0.0,
     "sblBalance": 221
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "shareholderDataHistory": {
     "20260213": [
       {
@@ -16003,7 +16003,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-06-20",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16022,7 +16022,7 @@
         ],
         "person": "英屬維京群島商ＧＡＬＡＸＹ  ＩＮＶＥＳＴＭＥＮＴ  ＶＥＮＴＵＲＥ",
         "elected": 0,
-        "shares": 15000000,
+        "shares": 14964000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16044,8 +16044,8 @@
         "person": "許庭",
         "elected": 3906479,
         "shares": 3906479,
-        "pledged": 2828000,
-        "pledgePct": 72.39
+        "pledged": 1368000,
+        "pledgePct": 35.02
       },
       {
         "roles": [
@@ -16075,17 +16075,7 @@
         ],
         "person": "胡仁盈",
         "elected": 0,
-        "shares": 36599,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "董事之法人代表人"
-        ],
-        "person": "吳志彬",
-        "elected": 0,
-        "shares": 11040,
+        "shares": 33599,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16133,6 +16123,17 @@
       },
       {
         "roles": [
+          "董事之法人代表人",
+          "總經理本人"
+        ],
+        "person": "王傳漢",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
+      },
+      {
+        "roles": [
           "獨立董事本人"
         ],
         "person": "李孟融",
@@ -16170,29 +16171,19 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
-      },
-      {
-        "roles": [
-          "總經理本人"
-        ],
-        "person": "王傳漢",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
       }
     ],
     "totals": {
-      "people": 17,
-      "shares": 48292115,
-      "pledged": 10635000,
-      "pledgePct": 22.02
+      "people": 16,
+      "shares": 48242075,
+      "pledged": 9175000,
+      "pledgePct": 19.02
     },
     "boardTotals": {
       "people": 9,
       "shares": 33241476,
-      "pledged": 10635000,
-      "pledgePct": 31.99
+      "pledged": 9175000,
+      "pledgePct": 27.6
     }
   },
   "insiderHoldingsHistory": {
@@ -16237,6 +16228,20 @@
         "pledged": 10635000,
         "pledgePct": 31.99
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 48242075,
+        "pledged": 9175000,
+        "pledgePct": 19.02
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 33241476,
+        "pledged": 9175000,
+        "pledgePct": 27.6
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -16262,6 +16267,51 @@
           "to": 0,
           "pledgedFrom": null,
           "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "英屬維京群島商ＧＡＬＡＸＹ  ＩＮＶＥＳＴＭＥＮＴ  ＶＥＮＴＵＲＥ",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 15000000,
+          "to": 14964000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "吳志彬",
+          "roles": [
+            "董事之法人代表人"
+          ],
+          "from": 11040,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "胡仁盈",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 36599,
+          "to": 33599,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "許庭",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 3906479,
+          "to": 3906479,
+          "pledgedFrom": 2828000,
+          "pledgedTo": 1368000
         }
       ]
     }

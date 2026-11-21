@@ -12292,7 +12292,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16630,7 +16630,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16737,17 +16737,6 @@
       },
       {
         "roles": [
-          "財務部門主管本人",
-          "會計部門主管本人"
-        ],
-        "person": "蘇俊生",
-        "elected": 0,
-        "shares": 20000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "董事之法人代表人"
         ],
         "person": "李政哲",
@@ -16795,13 +16784,24 @@
         "shares": 0,
         "pledged": 0,
         "pledgePct": null
+      },
+      {
+        "roles": [
+          "財務部門主管本人",
+          "會計部門主管本人"
+        ],
+        "person": "蘇俊生",
+        "elected": 0,
+        "shares": 0,
+        "pledged": 0,
+        "pledgePct": null
       }
     ],
     "totals": {
       "people": 16,
-      "shares": 11396280,
+      "shares": 11376280,
       "pledged": 513000,
-      "pledgePct": 4.5
+      "pledgePct": 4.51
     },
     "boardTotals": {
       "people": 9,
@@ -16852,6 +16852,20 @@
         "pledged": 513000,
         "pledgePct": 5.02
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 11376280,
+        "pledged": 513000,
+        "pledgePct": 4.51
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 10214070,
+        "pledged": 513000,
+        "pledgePct": 5.02
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -16876,6 +16890,22 @@
           ],
           "from": 26000,
           "to": 20000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "蘇俊生",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 20000,
+          "to": 0,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

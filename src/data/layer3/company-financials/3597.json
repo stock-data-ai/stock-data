@@ -12570,7 +12570,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataRecent": [
     {
@@ -18618,7 +18618,7 @@
   },
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18669,7 +18669,7 @@
         ],
         "person": "李冠慶",
         "elected": 0,
-        "shares": 150048,
+        "shares": 131048,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18680,17 +18680,7 @@
         ],
         "person": "關慧貞",
         "elected": 0,
-        "shares": 34738,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "何孟儒",
-        "elected": 0,
-        "shares": 10348,
+        "shares": 31000,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18701,6 +18691,16 @@
         "person": "陳玄斐",
         "elected": 9374,
         "shares": 10000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "何孟儒",
+        "elected": 0,
+        "shares": 7348,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18787,7 +18787,7 @@
     ],
     "totals": {
       "people": 16,
-      "shares": 10931980,
+      "shares": 10906242,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -18840,12 +18840,62 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 16,
+        "shares": 10906242,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 6543477,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李冠慶",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 150048,
+          "to": 131048,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "關慧貞",
+          "roles": [
+            "財務部門主管本人",
+            "會計部門主管本人"
+          ],
+          "from": 34738,
+          "to": 31000,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "何孟儒",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 10348,
+          "to": 7348,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

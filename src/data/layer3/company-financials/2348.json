@@ -12610,7 +12610,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "latest": {
     "year": 2026,
     "quarter": 3,
@@ -16968,7 +16968,7 @@
   "dataQuality": "high",
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -17003,8 +17003,8 @@
         "person": "王俊傑",
         "elected": 0,
         "shares": 13553452,
-        "pledged": 2100000,
-        "pledgePct": 15.49
+        "pledged": 3800000,
+        "pledgePct": 28.04
       },
       {
         "roles": [
@@ -17185,8 +17185,8 @@
     "totals": {
       "people": 20,
       "shares": 79672161,
-      "pledged": 15808000,
-      "pledgePct": 19.84
+      "pledged": 17508000,
+      "pledgePct": 21.98
     },
     "boardTotals": {
       "people": 9,
@@ -17237,12 +17237,43 @@
         "pledged": 10498000,
         "pledgePct": 44.29
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 20,
+        "shares": 79672161,
+        "pledged": 17508000,
+        "pledgePct": 21.98
+      },
+      "boardTotals": {
+        "people": 9,
+        "shares": 23700246,
+        "pledged": 10498000,
+        "pledgePct": 44.29
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王俊傑",
+          "roles": [
+            "董事之法人代表人",
+            "總經理本人",
+            "大股東本人"
+          ],
+          "from": 13553452,
+          "to": 13553452,
+          "pledgedFrom": 2100000,
+          "pledgedTo": 3800000
+        }
+      ]
     }
   }
 }

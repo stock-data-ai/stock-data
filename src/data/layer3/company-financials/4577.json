@@ -12358,7 +12358,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16696,7 +16696,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16705,7 +16705,7 @@
         ],
         "person": "黃立達",
         "elected": 0,
-        "shares": 9762816,
+        "shares": 9217816,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16727,7 +16727,7 @@
         ],
         "person": "昱港投資股份有限公司",
         "elected": 0,
-        "shares": 5571159,
+        "shares": 5517159,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16770,26 +16770,6 @@
         "person": "陳星文",
         "elected": 0,
         "shares": 35000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "曾黃彬",
-        "elected": 0,
-        "shares": 12000,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "陳金珠",
-        "elected": 0,
-        "shares": 10188,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -16876,39 +16856,9 @@
       },
       {
         "roles": [
-          "經理本人"
-        ],
-        "person": "黃武雄",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
           "協理本人"
         ],
         "person": "王維倫",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "張宸銘",
-        "elected": 0,
-        "shares": 0,
-        "pledged": 0,
-        "pledgePct": null
-      },
-      {
-        "roles": [
-          "協理本人"
-        ],
-        "person": "黃中正",
         "elected": 0,
         "shares": 0,
         "pledged": 0,
@@ -16926,8 +16876,8 @@
       }
     ],
     "totals": {
-      "people": 22,
-      "shares": 22385759,
+      "people": 17,
+      "shares": 21764571,
       "pledged": 0,
       "pledgePct": 0.0
     },
@@ -16980,12 +16930,102 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 17,
+        "shares": 21764571,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 5,
+        "shares": 6670000,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "黃立達",
+          "roles": [
+            "董事之法人代表人",
+            "大股東本人"
+          ],
+          "from": 9762816,
+          "to": 9217816,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "昱港投資股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": 5571159,
+          "to": 5517159,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "曾黃彬",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 12000,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "陳金珠",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 10188,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "黃武雄",
+          "roles": [
+            "經理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "張宸銘",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        },
+        {
+          "person": "黃中正",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 0,
+          "to": null,
+          "pledgedFrom": 0,
+          "pledgedTo": null
+        }
+      ]
     }
   }
 }

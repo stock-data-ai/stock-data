@@ -12565,7 +12565,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20251121": [
@@ -18385,7 +18385,7 @@
   ],
   "dividendsUpdated": "2026-11-14",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -18475,7 +18475,7 @@
         ],
         "person": "張曉耕",
         "elected": 0,
-        "shares": 697639,
+        "shares": 700639,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -18558,6 +18558,16 @@
         "person": "侯翠花",
         "elected": 0,
         "shares": 445882,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "協理本人"
+        ],
+        "person": "李世強",
+        "elected": 0,
+        "shares": 438559,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -19018,7 +19028,7 @@
         ],
         "person": "潘和杏",
         "elected": 0,
-        "shares": 3793,
+        "shares": 3834,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -19294,10 +19304,10 @@
       }
     ],
     "totals": {
-      "people": 90,
-      "shares": 656134334,
+      "people": 91,
+      "shares": 656575934,
       "pledged": 159626000,
-      "pledgePct": 24.33
+      "pledgePct": 24.31
     },
     "boardTotals": {
       "people": 8,
@@ -19348,6 +19358,20 @@
         "pledged": 159336000,
         "pledgePct": 25.03
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 91,
+        "shares": 656575934,
+        "pledged": 159626000,
+        "pledgePct": 24.31
+      },
+      "boardTotals": {
+        "people": 8,
+        "shares": 636474631,
+        "pledged": 159336000,
+        "pledgePct": 25.03
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -19361,6 +19385,41 @@
           ],
           "from": 3751,
           "to": 3793,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "李世強",
+          "roles": [
+            "協理本人"
+          ],
+          "from": null,
+          "to": 438559,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "張曉耕",
+          "roles": [
+            "副總經理本人"
+          ],
+          "from": 697639,
+          "to": 700639,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "潘和杏",
+          "roles": [
+            "協理本人"
+          ],
+          "from": 3793,
+          "to": 3834,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

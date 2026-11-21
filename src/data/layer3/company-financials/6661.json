@@ -3399,7 +3399,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -7737,7 +7737,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -7746,7 +7746,17 @@
         ],
         "person": "漢碁股份有限公司",
         "elected": 7063333,
-        "shares": 7481333,
+        "shares": 7494333,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "大股東本人"
+        ],
+        "person": "漢津股份有限公司",
+        "elected": 4632422,
+        "shares": 4632422,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -7855,14 +7865,14 @@
       }
     ],
     "totals": {
-      "people": 11,
-      "shares": 8667324,
+      "people": 12,
+      "shares": 13312746,
       "pledged": 0,
       "pledgePct": 0.0
     },
     "boardTotals": {
       "people": 7,
-      "shares": 8588324,
+      "shares": 8601324,
       "pledged": 0,
       "pledgePct": 0.0
     }
@@ -7909,6 +7919,20 @@
         "pledged": 0,
         "pledgePct": 0.0
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 13312746,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 8601324,
+        "pledged": 0,
+        "pledgePct": 0.0
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -7923,6 +7947,32 @@
           ],
           "from": 7459333,
           "to": 7481333,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "漢津股份有限公司",
+          "roles": [
+            "大股東本人"
+          ],
+          "from": null,
+          "to": 4632422,
+          "pledgedFrom": null,
+          "pledgedTo": 0
+        },
+        {
+          "person": "漢碁股份有限公司",
+          "roles": [
+            "董事本人",
+            "大股東本人"
+          ],
+          "from": 7481333,
+          "to": 7494333,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }

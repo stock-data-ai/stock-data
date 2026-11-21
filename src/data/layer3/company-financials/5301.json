@@ -8030,7 +8030,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -12253,7 +12253,7 @@
     }
   ],
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -12261,7 +12261,7 @@
         ],
         "person": "國原營造股份有限公司",
         "elected": 3043858,
-        "shares": 1404953,
+        "shares": 1149903,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -12271,8 +12271,8 @@
         ],
         "person": "寶福欣通運股份有限公司",
         "elected": 913811,
-        "shares": 421787,
-        "pledged": 421485,
+        "shares": 345217,
+        "pledged": 344970,
         "pledgePct": 99.93
       },
       {
@@ -12281,7 +12281,7 @@
         ],
         "person": "黃武琦",
         "elected": 629113,
-        "shares": 290379,
+        "shares": 237664,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -12291,7 +12291,7 @@
         ],
         "person": "蕭仰歸",
         "elected": 229956,
-        "shares": 106140,
+        "shares": 86871,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -12301,7 +12301,7 @@
         ],
         "person": "高明哲",
         "elected": 142046,
-        "shares": 65564,
+        "shares": 53661,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -12311,7 +12311,7 @@
         ],
         "person": "寧國輝",
         "elected": 0,
-        "shares": 9922,
+        "shares": 8120,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -12379,14 +12379,14 @@
     ],
     "totals": {
       "people": 12,
-      "shares": 2298745,
-      "pledged": 421485,
+      "shares": 1881436,
+      "pledged": 344970,
       "pledgePct": 18.34
     },
     "boardTotals": {
       "people": 7,
-      "shares": 2288823,
-      "pledged": 421485,
+      "shares": 1873316,
+      "pledged": 344970,
       "pledgePct": 18.41
     }
   },
@@ -12432,12 +12432,91 @@
         "pledged": 421485,
         "pledgePct": 18.41
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 12,
+        "shares": 1881436,
+        "pledged": 344970,
+        "pledgePct": 18.34
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 1873316,
+        "pledged": 344970,
+        "pledgePct": 18.41
+      }
     }
   },
   "insiderHoldingsChanges": {
     "2026-09": {
       "prev": "2026-08",
       "changes": []
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "國原營造股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 1404953,
+          "to": 1149903,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "寶福欣通運股份有限公司",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 421787,
+          "to": 345217,
+          "pledgedFrom": 421485,
+          "pledgedTo": 344970
+        },
+        {
+          "person": "黃武琦",
+          "roles": [
+            "董事長本人"
+          ],
+          "from": 290379,
+          "to": 237664,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "蕭仰歸",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": 106140,
+          "to": 86871,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "高明哲",
+          "roles": [
+            "獨立董事本人"
+          ],
+          "from": 65564,
+          "to": 53661,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        },
+        {
+          "person": "寧國輝",
+          "roles": [
+            "其他"
+          ],
+          "from": 9922,
+          "to": 8120,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
     }
   }
 }

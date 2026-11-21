@@ -12623,7 +12623,7 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-21",
   "dataQuality": "high",
   "shareholderDataHistory": {
     "20260213": [
@@ -16961,7 +16961,7 @@
   ],
   "dividendsUpdated": "2026-05-12",
   "insiderHoldingsRecent": {
-    "month": "2026-09",
+    "month": "2026-10",
     "insiders": [
       {
         "roles": [
@@ -16975,21 +16975,21 @@
       },
       {
         "roles": [
-          "董事本人"
-        ],
-        "person": "王世宗",
-        "elected": 4691337,
-        "shares": 4556337,
-        "pledged": 0,
-        "pledgePct": 0.0
-      },
-      {
-        "roles": [
           "董事長本人"
         ],
         "person": "何鈞銜",
         "elected": 4526918,
         "shares": 4526918,
+        "pledged": 0,
+        "pledgePct": 0.0
+      },
+      {
+        "roles": [
+          "董事本人"
+        ],
+        "person": "王世宗",
+        "elected": 4691337,
+        "shares": 4421337,
         "pledged": 0,
         "pledgePct": 0.0
       },
@@ -17077,15 +17077,15 @@
     ],
     "totals": {
       "people": 11,
-      "shares": 14782316,
+      "shares": 14647316,
       "pledged": 4714000,
-      "pledgePct": 31.89
+      "pledgePct": 32.18
     },
     "boardTotals": {
       "people": 7,
-      "shares": 14676586,
+      "shares": 14541586,
       "pledged": 4714000,
-      "pledgePct": 32.12
+      "pledgePct": 32.42
     }
   },
   "insiderHoldingsHistory": {
@@ -17130,6 +17130,20 @@
         "pledged": 4714000,
         "pledgePct": 32.12
       }
+    },
+    "2026-10": {
+      "totals": {
+        "people": 11,
+        "shares": 14647316,
+        "pledged": 4714000,
+        "pledgePct": 32.18
+      },
+      "boardTotals": {
+        "people": 7,
+        "shares": 14541586,
+        "pledged": 4714000,
+        "pledgePct": 32.42
+      }
     }
   },
   "insiderHoldingsChanges": {
@@ -17143,6 +17157,21 @@
           ],
           "from": 4691337,
           "to": 4556337,
+          "pledgedFrom": 0,
+          "pledgedTo": 0
+        }
+      ]
+    },
+    "2026-10": {
+      "prev": "2026-09",
+      "changes": [
+        {
+          "person": "王世宗",
+          "roles": [
+            "董事本人"
+          ],
+          "from": 4556337,
+          "to": 4421337,
           "pledgedFrom": 0,
           "pledgedTo": 0
         }
