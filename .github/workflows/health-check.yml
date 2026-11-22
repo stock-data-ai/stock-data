@@ -67,11 +67,8 @@ jobs:
               {'label': '週六 08:00 ETF Holdings Update (Weekly)',   'workflow_name': 'ETF Holdings Update (Weekly)｜ETF持股（週更）',                'hour': 8,  'minute': 0,  'days': [6]},
               # backup：cron worker 在本週已成功時刻意不 dispatch，所以「沒跑」不等於故障。
               # 只有本週（台灣週六 00:00 起）同 workflow 確實已有成功 run 時才判為 skipped；
-              # 前面都沒成功卻沒跑，照樣是「未執行」紅燈。
-              {'label': '週六 09:00 Weekly Shareholder Update',      'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 9,  'minute': 0,  'days': [6]},
-              {'label': '週六 12:00 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 12, 'minute': 0,  'days': [6], 'backup': True},
-              {'label': '週六 16:00 Weekly Shareholder Update（備援）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',        'hour': 16, 'minute': 0,  'days': [6], 'backup': True},
-              {'label': '週日 08:30 Weekly Shareholder Update（最後一班）', 'workflow_name': 'Weekly Shareholder Update (Saturday)｜股東結構（週六）',     'hour': 8,  'minute': 30, 'days': [0], 'backup': True},
+              # 前面都沒成功卻沒              # 股權分散（TDCC）2026-11-22 起改由本機 launchd 抓（GitHub runner 連不到 smart.tdcc.com.tw），
+              # 沒有 workflow run 可查，改由下方 check_shareholder_freshness() 看資料日期。
               {'label': '週六 10:00 Weekly Insider Holdings',        'workflow_name': 'Weekly Insider Holdings｜內部人持股（週六）',                  'hour': 10, 'minute': 0,  'days': [6]},
               {'label': '週日 10:20 Weekly Insider Holdings（備援）', 'workflow_name': 'Weekly Insider Holdings｜內部人持股（週六）',                  'hour': 10, 'minute': 20, 'days': [0], 'backup': True},
               {'label': '週六 11:00 Weekly Dividend Update',         'workflow_name': 'Weekly Dividend Update (Saturday)｜股利資料（週六）',           'hour': 11, 'minute': 0,  'days': [6]},
@@ -339,6 +336,28 @@ jobs:
               })
 
           check_live_freshness()
+
+          # ── 股權分散表（TDCC）新鮮度 ──────────────────────────────────────
+          # 2026-11-22 起由本機 launchd 排程抓（stock_map scripts/cron/local/jobs.sh 的 tdcc）：
+          # TDCC 擋 GitHub runner，Actions 沒有 run 可查，Mac 關機時本機也寄不出失敗信，
+          # 所以直接看資料。TDCC 週五為資料日、週六發布、本機最後一班週日 08:30，
+          # 正常週日晚上距今 2 天；超過 8 天＝這週沒抓到（週六晚上還有週日那班，不算）。
+          def check_shareholder_freshness():
+              try:
+                  with open('src/data/layer3/company-financials/2330.json', encoding='utf-8') as f:
+                      latest = max(json.load(f).get('shareholderDataHistory') or {'': None})
+                  age = (taiwan_now.date() - datetime.strptime(latest, '%Y%m%d').date()).days
+                  status = 'ok' if age <= 8 else 'failed'
+                  detail = f'資料日 {latest}，距今 {age} 天' + ('' if status == 'ok' else '——本機排程這週沒抓到')
+              except Exception as e:
+                  status, detail = 'failed', f'檢查失效：{e}'
+              results.append({
+                  'label': f'股權分散（本機排程）新鮮度（{detail}）', 'sched': '週六／週日', 'status': status,
+                  'workflow_name': None, 'lenient': False,
+                  'run_time': '—', 'duration': '—', 'url': None, 'run_id': None,
+              })
+
+          check_shareholder_freshness()
 
           # ── 端到端檢查：每日題材焦點有沒有真的發布 ──────────────────────────
           # 為什麼要這條：每日焦點的失敗是**靜默降級**，不是紅燈。產報告的 Claude 雲端

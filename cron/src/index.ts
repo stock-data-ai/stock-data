@@ -28,13 +28,9 @@ const range = (from: number, to: number) => Array.from({ length: to - from + 1 }
 
 const CRON_MAP: Record<string, CronJob> = {
   '0 0 * * 7':            { workflow: 'etf-holdings-update.yml' },                                  // 台灣 08:00 週六
-  // 股權分散／大戶加碼排行：主班＋三班備援。備援班本週已成功就跳過（不花 Actions 分鐘數），
-  // 最後一班帶 final=true，仍失敗由 workflow 立刻寄信。
-  // 2026-10-03 前只有 09:00／09:30 兩班、相隔 30 分鐘，兩班都失敗後整個週末沒有補救機會。
-  '0 1 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' } }, // 台灣 09:00 週六（主班）
-  '0 4 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' }, skipIfWeekSucceeded: true }, // 台灣 12:00 週六（備援）
-  '0 8 * * 7':            { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true' }, skipIfWeekSucceeded: true }, // 台灣 16:00 週六（備援）
-  '30 0 * * 1':           { workflow: 'weekly-shareholder-update.yml', inputs: { force: 'true', final: 'true' }, skipIfWeekSucceeded: true }, // 台灣 08:30 週日（最後一班，避開 09:01 財報）
+  // 股權分散／大戶加碼排行 2026-11-22 移到本機 launchd（stock_map scripts/cron/local/jobs.sh 的 tdcc）：
+  // TDCC 擋 GitHub runner（Errno 101 Network is unreachable），11/14、11/21 兩週全滅。
+  // weekly-shareholder-update.yml 只留手動觸發。
   // 內部人持股（月頻資料、每週看一次有沒有換月），2026-10-03 從上面那支拆出來
   '0 2 * * 7':            { workflow: 'weekly-insider-holdings.yml' },                              // 台灣 10:00 週六（主班）
   '20 2 * * 1':           { workflow: 'weekly-insider-holdings.yml', inputs: { final: 'true' }, skipIfWeekSucceeded: true }, // 台灣 10:20 週日（備援；10:00 已被美股財報占用）

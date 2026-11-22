@@ -1,5 +1,11 @@
 name: Weekly Shareholder Update (Saturday)｜股東結構（週六）
 
+# 2026-11-22 起不再排程：TDCC（smart.tdcc.com.tw）擋 GitHub runner，連線直接 Errno 101，
+# 11/14、11/21 兩週每班都失敗。改由 Mac 本機 launchd 跑同一套步驟
+# （stock_map scripts/cron/local/jobs.sh 的 tdcc → 本 repo scripts/local/tdcc-weekly.sh），
+# 新鮮度由 health-check.yml 的 check_shareholder_freshness() 盯。
+# 這支只留手動觸發，等 TDCC 哪天重新開放海外 IP 時可以直接用。
+
 on:
   workflow_dispatch:
     inputs:
@@ -83,7 +89,8 @@ jobs:
           RESULT=$(grep -oP 'OK 完成: \K\d+/\d+(?= 間)' "$LOG" 2>/dev/null | tail -1 || echo "—")
           STATUS=$( [ "${{ job.status }}" = "success" ] && echo "✅ 成功" || echo "❌ 失敗" )
           DATA_DATE=$(grep -oP 'TDCC 資料日期: \K\d{8}' "$LOG" 2>/dev/null | tail -1 || echo "—")
-          WARN_COUNT=$(grep -c "⚠" "$LOG" 2>/dev/null || echo "0")
+          # grep -c 沒命中時印 0 且 exit 1；寫成 `|| echo 0` 會變成 "0\n0"，下面的 -gt 直接報錯
+          WARN_COUNT=$(grep -c "⚠" "$LOG" 2>/dev/null) || WARN_COUNT=0
           {
             echo "## 股東結構更新 — $(date -u +%Y-%m-%d)"
             echo ""
