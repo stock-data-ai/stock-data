@@ -3,19 +3,38 @@
   "companyName": "Tetra Tech, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 1308555000,
-    "yoy": -4.5,
-    "grossMargin": 18.59,
-    "operatingMargin": 12.07,
-    "netMargin": 8.37,
-    "eps": 0.42,
-    "pe": 22.98,
-    "pb": 5.22,
-    "marketCap": 9835018240
+    "quarter": 4,
+    "revenue": 1337363000,
+    "yoy": 0.5,
+    "grossMargin": 19.88,
+    "operatingMargin": 13.57,
+    "netMargin": 9.85,
+    "eps": 0.51,
+    "pe": 21.86,
+    "pb": 4.97,
+    "marketCap": 9358849024
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 5076737000,
+        "grossProfit": 943553000,
+        "operatingIncome": 604461000,
+        "netIncome": 439958000,
+        "eps": 1.69,
+        "grossMargin": 18.59,
+        "operatingMargin": 11.91,
+        "netMargin": 8.67,
+        "native": {
+          "revenue": 5076737000,
+          "grossProfit": 943553000,
+          "operatingIncome": 604461000,
+          "netIncome": 439958000
+        },
+        "revenueYoY": -6.7
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 1337363000,
+        "grossProfit": 265887000,
+        "operatingIncome": 181448000,
+        "netIncome": 131723000,
+        "eps": 0.51,
+        "grossMargin": 19.88,
+        "operatingMargin": 13.57,
+        "netMargin": 9.85,
+        "native": {
+          "revenue": 1337363000,
+          "grossProfit": 265887000,
+          "operatingIncome": 181448000,
+          "netIncome": 131723000
+        },
+        "revenueYoY": 0.5
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

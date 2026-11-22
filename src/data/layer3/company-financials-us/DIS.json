@@ -3,19 +3,38 @@
   "companyName": "The Walt Disney Company",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 25248000000,
-    "yoy": 6.8,
-    "grossMargin": 40.17,
-    "operatingMargin": 18.85,
-    "netMargin": 10.45,
+    "quarter": 4,
+    "revenue": 25947000000,
+    "yoy": 15.5,
+    "grossMargin": 39.28,
+    "operatingMargin": 15.7,
+    "netMargin": 10.07,
     "eps": 1.51,
-    "pe": 24.53,
-    "pb": 1.87,
-    "marketCap": 205423935488
+    "pe": 20.96,
+    "pb": 1.83,
+    "marketCap": 201513353216
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 102344000000,
+        "grossProfit": 38914000000,
+        "operatingIncome": 16497000000,
+        "netIncome": 9899000000,
+        "eps": 5.63,
+        "grossMargin": 38.02,
+        "operatingMargin": 16.12,
+        "netMargin": 9.67,
+        "native": {
+          "revenue": 102344000000,
+          "grossProfit": 38914000000,
+          "operatingIncome": 16497000000,
+          "netIncome": 9899000000
+        },
+        "revenueYoY": 8.4
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 25947000000,
+        "grossProfit": 10193000000,
+        "operatingIncome": 4073000000,
+        "netIncome": 2612000000,
+        "eps": 1.51,
+        "grossMargin": 39.28,
+        "operatingMargin": 15.7,
+        "netMargin": 10.07,
+        "native": {
+          "revenue": 25947000000,
+          "grossProfit": 10193000000,
+          "operatingIncome": 4073000000,
+          "netIncome": 2612000000
+        },
+        "revenueYoY": 15.5
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

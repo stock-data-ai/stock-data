@@ -3,19 +3,38 @@
   "companyName": "Adient plc",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 3929000000,
-    "yoy": 5.0,
-    "grossMargin": 5.98,
-    "operatingMargin": 2.52,
-    "netMargin": 0.64,
-    "eps": 0.32,
+    "quarter": 4,
+    "revenue": 3730000000,
+    "yoy": 1.1,
+    "grossMargin": 6.68,
+    "operatingMargin": 2.63,
+    "netMargin": -1.26,
+    "eps": -0.62,
     "pe": null,
-    "pb": 0.73,
-    "marketCap": 1196800000
+    "pb": 0.66,
+    "marketCap": 1082970368
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 15168000000,
+        "grossProfit": 958000000,
+        "operatingIncome": 403000000,
+        "netIncome": -17000000,
+        "eps": -0.22,
+        "grossMargin": 6.32,
+        "operatingMargin": 2.66,
+        "netMargin": -0.11,
+        "native": {
+          "revenue": 15168000000,
+          "grossProfit": 958000000,
+          "operatingIncome": 403000000,
+          "netIncome": -17000000
+        },
+        "revenueYoY": 4.4
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 3730000000,
+        "grossProfit": 249000000,
+        "operatingIncome": 98000000,
+        "netIncome": -47000000,
+        "eps": -0.62,
+        "grossMargin": 6.68,
+        "operatingMargin": 2.63,
+        "netMargin": -1.26,
+        "native": {
+          "revenue": 3730000000,
+          "grossProfit": 249000000,
+          "operatingIncome": 98000000,
+          "netIncome": -47000000
+        },
+        "revenueYoY": 1.1
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "periodBasis": "fiscal",

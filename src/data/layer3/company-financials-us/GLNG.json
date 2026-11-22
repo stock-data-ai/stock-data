@@ -3,16 +3,16 @@
   "companyName": "Golar LNG Limited",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 130479000,
-    "yoy": -5.1,
-    "grossMargin": 56.76,
-    "operatingMargin": 49.98,
-    "netMargin": 29.33,
-    "eps": 0.37,
-    "pe": 29.47,
-    "pb": 2.26,
-    "marketCap": 4392212992
+    "quarter": 3,
+    "revenue": 83728000,
+    "yoy": null,
+    "grossMargin": 48.36,
+    "operatingMargin": 40.27,
+    "netMargin": 27.01,
+    "eps": 0.22,
+    "pe": 28.32,
+    "pb": 2.05,
+    "marketCap": 3989950976
   },
   "historical": {
     "annual": [
@@ -23,7 +23,7 @@
         "grossProfit": 184373000,
         "operatingIncome": 129934000,
         "netIncome": 65676000,
-        "eps": 0.65,
+        "eps": 0.6,
         "grossMargin": 46.85,
         "operatingMargin": 33.02,
         "netMargin": 16.69,
@@ -95,6 +95,25 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 83728000,
+        "grossProfit": 40489000,
+        "operatingIncome": 33716000,
+        "netIncome": 22615000,
+        "eps": 0.22,
+        "grossMargin": 48.36,
+        "operatingMargin": 40.27,
+        "netMargin": 27.01,
+        "native": {
+          "revenue": 83728000,
+          "grossProfit": 40489000,
+          "operatingIncome": 33716000,
+          "netIncome": 22615000
+        }
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 130479000,
@@ -158,16 +177,16 @@
         "periodEnd": "2025-06-30",
         "revenue": 137554000,
         "grossProfit": 82517000,
-        "operatingIncome": 69325000,
+        "operatingIncome": null,
         "netIncome": 83578000,
         "eps": 0.82,
         "grossMargin": 59.99,
-        "operatingMargin": 50.4,
+        "operatingMargin": null,
         "netMargin": 60.76,
         "native": {
           "revenue": 137554000,
           "grossProfit": 82517000,
-          "operatingIncome": 69325000,
+          "operatingIncome": null,
           "netIncome": 83578000
         }
       },
@@ -192,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

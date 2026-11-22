@@ -3,19 +3,38 @@
   "companyName": "Sanmina Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 3464016000,
-    "yoy": 69.7,
-    "grossMargin": 10.49,
-    "operatingMargin": 7.04,
-    "netMargin": 3.38,
-    "eps": 2.12,
-    "pe": 23.11,
-    "pb": 3.04,
-    "marketCap": 8484997120
+    "quarter": 4,
+    "revenue": 3858022000,
+    "yoy": 84.0,
+    "grossMargin": 11.28,
+    "operatingMargin": 8.21,
+    "netMargin": 3.06,
+    "eps": 2.14,
+    "pe": 20.4,
+    "pb": 2.85,
+    "marketCap": 7376910336
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 14525002000,
+        "grossProfit": 1394768000,
+        "operatingIncome": 908601000,
+        "netIncome": 378021000,
+        "eps": 6.85,
+        "grossMargin": 9.6,
+        "operatingMargin": 6.26,
+        "netMargin": 2.6,
+        "native": {
+          "revenue": 14525002000,
+          "grossProfit": 1394768000,
+          "operatingIncome": 908601000,
+          "netIncome": 378021000
+        },
+        "revenueYoY": 78.7
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 3858022000,
+        "grossProfit": 435310000,
+        "operatingIncome": 316708000,
+        "netIncome": 117960000,
+        "eps": 2.14,
+        "grossMargin": 11.28,
+        "operatingMargin": 8.21,
+        "netMargin": 3.06,
+        "native": {
+          "revenue": 3858022000,
+          "grossProfit": 435310000,
+          "operatingIncome": 316708000,
+          "netIncome": 117960000
+        },
+        "revenueYoY": 84.0
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

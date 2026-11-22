@@ -3,16 +3,16 @@
   "companyName": "USA Rare Earth, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 5821000,
+    "quarter": 3,
+    "revenue": 3002000,
     "yoy": null,
-    "grossMargin": -27.19,
-    "operatingMargin": -791.51,
-    "netMargin": -177.51,
-    "eps": -0.05,
+    "grossMargin": -662.29,
+    "operatingMargin": -4704.7,
+    "netMargin": 389.94,
+    "eps": -0.02,
     "pe": null,
-    "pb": 0.64,
-    "marketCap": 3062610688
+    "pb": 0.49,
+    "marketCap": 2353255936
   },
   "historical": {
     "annual": [
@@ -92,6 +92,25 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 3002000,
+        "grossProfit": -19882000,
+        "operatingIncome": -141235000,
+        "netIncome": 11706000,
+        "eps": -0.02,
+        "grossMargin": -662.29,
+        "operatingMargin": -4704.7,
+        "netMargin": 389.94,
+        "native": {
+          "revenue": 3002000,
+          "grossProfit": -19882000,
+          "operatingIncome": -141235000,
+          "netIncome": 11706000
+        }
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 5821000,
@@ -152,7 +171,7 @@
         "quarter": 3,
         "periodEnd": "2025-09-30",
         "revenue": 0,
-        "grossProfit": null,
+        "grossProfit": 0,
         "operatingIncome": -15861000,
         "netIncome": -156680000,
         "eps": -1.64,
@@ -161,7 +180,7 @@
         "netMargin": null,
         "native": {
           "revenue": 0,
-          "grossProfit": null,
+          "grossProfit": 0,
           "operatingIncome": -15861000,
           "netIncome": -156680000
         }
@@ -187,7 +206,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

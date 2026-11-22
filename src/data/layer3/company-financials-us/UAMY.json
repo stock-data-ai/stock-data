@@ -3,16 +3,16 @@
   "companyName": "United States Antimony Corporation",
   "latest": {
     "year": 2026,
-    "quarter": 2,
-    "revenue": 7925601,
-    "yoy": -24.7,
-    "grossMargin": 7.36,
-    "operatingMargin": -88.08,
-    "netMargin": 1.39,
-    "eps": 0.0,
+    "quarter": 3,
+    "revenue": 10133437,
+    "yoy": 16.5,
+    "grossMargin": 42.38,
+    "operatingMargin": -59.05,
+    "netMargin": -94.01,
+    "eps": -0.06,
     "pe": null,
-    "pb": 2.68,
-    "marketCap": 461427968
+    "pb": 1.94,
+    "marketCap": 333004640
   },
   "historical": {
     "annual": [
@@ -95,6 +95,26 @@
     "quarterly": [
       {
         "year": 2026,
+        "quarter": 3,
+        "periodEnd": "2026-09-30",
+        "revenue": 10133437,
+        "grossProfit": 4294142,
+        "operatingIncome": -5983345,
+        "netIncome": -9526056,
+        "eps": -0.06,
+        "grossMargin": 42.38,
+        "operatingMargin": -59.05,
+        "netMargin": -94.01,
+        "native": {
+          "revenue": 10133437,
+          "grossProfit": 4294142,
+          "operatingIncome": -5983345,
+          "netIncome": -9526056
+        },
+        "revenueYoY": 16.5
+      },
+      {
+        "year": 2026,
         "quarter": 2,
         "periodEnd": "2026-06-30",
         "revenue": 7925601,
@@ -119,16 +139,16 @@
         "periodEnd": "2026-03-31",
         "revenue": 6784069,
         "grossProfit": 1109467,
-        "operatingIncome": -7519095,
+        "operatingIncome": null,
         "netIncome": -11294490,
         "eps": -0.08,
         "grossMargin": 16.35,
-        "operatingMargin": -110.83,
+        "operatingMargin": null,
         "netMargin": -166.49,
         "native": {
           "revenue": 6784069,
           "grossProfit": 1109467,
-          "operatingIncome": -7519095,
+          "operatingIncome": null,
           "netIncome": -11294490
         }
       },
@@ -191,7 +211,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",

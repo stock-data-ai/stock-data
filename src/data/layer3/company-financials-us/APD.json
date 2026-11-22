@@ -3,19 +3,38 @@
   "companyName": "Air Products and Chemicals, Inc.",
   "latest": {
     "year": 2026,
-    "quarter": 3,
-    "revenue": 3161000000,
-    "yoy": 4.6,
-    "grossMargin": 32.77,
-    "operatingMargin": 25.63,
-    "netMargin": -45.58,
-    "eps": -6.47,
-    "pe": 132.44,
-    "pb": 4.94,
-    "marketCap": 70486654976
+    "quarter": 4,
+    "revenue": 3555600000,
+    "yoy": 12.3,
+    "grossMargin": 30.51,
+    "operatingMargin": 24.07,
+    "netMargin": 16.43,
+    "eps": 2.62,
+    "pe": 124.31,
+    "pb": 4.63,
+    "marketCap": 66159984640
   },
   "historical": {
     "annual": [
+      {
+        "year": 2026,
+        "periodEnd": "2026-09-30",
+        "revenue": 12990900000,
+        "grossProfit": 4103100000,
+        "operatingIncome": 3175200000,
+        "netIncome": 532100000,
+        "eps": 2.39,
+        "grossMargin": 31.58,
+        "operatingMargin": 24.44,
+        "netMargin": 4.1,
+        "native": {
+          "revenue": 12990900000,
+          "grossProfit": 4103100000,
+          "operatingIncome": 3175200000,
+          "netIncome": 532100000
+        },
+        "revenueYoY": 7.9
+      },
       {
         "year": 2025,
         "periodEnd": "2025-09-30",
@@ -93,6 +112,26 @@
       }
     ],
     "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 4,
+        "periodEnd": "2026-09-30",
+        "revenue": 3555600000,
+        "grossProfit": 1084700000,
+        "operatingIncome": 855700000,
+        "netIncome": 584300000,
+        "eps": 2.62,
+        "grossMargin": 30.51,
+        "operatingMargin": 24.07,
+        "netMargin": 16.43,
+        "native": {
+          "revenue": 3555600000,
+          "grossProfit": 1084700000,
+          "operatingIncome": 855700000,
+          "netIncome": 584300000
+        },
+        "revenueYoY": 12.3
+      },
       {
         "year": 2026,
         "quarter": 3,
@@ -191,7 +230,7 @@
       }
     ]
   },
-  "lastUpdated": "2026-11-15",
+  "lastUpdated": "2026-11-22",
   "dataQuality": "medium",
   "dataSource": "yahoo-finance",
   "financialCurrency": "USD",
