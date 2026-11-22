@@ -1,12 +1,49 @@
 {
   "latest": {
-    "marketCap": 356265000.0
+    "marketCap": 356265000.0,
+    "year": 2026,
+    "quarter": 2,
+    "revenue": 200504000.0,
+    "yoy": null,
+    "grossMargin": 27.35,
+    "operatingMargin": 12.07,
+    "netMargin": 9.7,
+    "eps": 1.44
   },
   "companyCode": "7971",
   "companyName": "視博網訊股份有限公司",
   "historical": {
-    "annual": [],
-    "quarterly": [],
+    "annual": [
+      {
+        "year": 2026,
+        "revenue": 200504000.0,
+        "grossProfit": 54836000.0,
+        "operatingIncome": 24201000.0,
+        "netIncome": 19445000.0,
+        "eps": 1.44,
+        "grossMargin": 27.35,
+        "operatingMargin": 12.07,
+        "netMargin": 9.7,
+        "note": "累季",
+        "revenueYoY": null
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2026,
+        "quarter": 2,
+        "revenue": 200504000.0,
+        "grossProfit": 54836000.0,
+        "operatingIncome": 24201000.0,
+        "netIncome": 19445000.0,
+        "eps": 1.44,
+        "preTaxIncome": 24466000.0,
+        "incomeTax": 5021000.0,
+        "grossMargin": 27.35,
+        "operatingMargin": 12.07,
+        "netMargin": 9.7
+      }
+    ],
     "monthlyRevenue": [
       {
         "year": 2026,
@@ -61,6 +98,6 @@
       }
     }
   },
-  "lastUpdated": "2026-11-20",
-  "dataQuality": "low"
+  "lastUpdated": "2026-11-22",
+  "dataQuality": "high"
 }
