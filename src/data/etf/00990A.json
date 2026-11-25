@@ -14,42 +14,52 @@
   "topHoldings": [
     {
       "name": "MICROSOFT CORP",
-      "weight": 7.24,
+      "weight": 7.19,
       "shares": 116560,
       "foreignCode": "MSFT US",
-      "previousWeight": 6.34,
-      "weightChange": 0.9,
-      "previousShares": 100680,
-      "sharesChange": 15880
+      "previousWeight": 7.24,
+      "weightChange": -0.05,
+      "previousShares": 116560,
+      "sharesChange": 0
     },
     {
       "name": "ALPHABET INC-CL A",
-      "weight": 5.67,
+      "weight": 5.53,
       "shares": 159480,
       "foreignCode": "GOOGL US",
-      "previousWeight": 4.5,
-      "weightChange": 1.17,
-      "previousShares": 130520,
-      "sharesChange": 28960
+      "previousWeight": 5.67,
+      "weightChange": -0.14,
+      "previousShares": 159480,
+      "sharesChange": 0
     },
     {
       "name": "AMAZON.COM INC",
-      "weight": 4.89,
+      "weight": 4.76,
       "shares": 151860,
       "foreignCode": "AMZN US",
-      "previousWeight": 4.88,
-      "weightChange": 0.01,
+      "previousWeight": 4.89,
+      "weightChange": -0.13,
       "previousShares": 151860,
       "sharesChange": 0
     },
     {
       "name": "META PLATFORMS INC-CLASS A",
-      "weight": 4.87,
+      "weight": 4.74,
       "shares": 64600,
       "foreignCode": "META US",
-      "previousWeight": 4.71,
-      "weightChange": 0.16,
+      "previousWeight": 4.87,
+      "weightChange": -0.13,
       "previousShares": 64600,
+      "sharesChange": 0
+    },
+    {
+      "name": "台積電",
+      "weight": 4.36,
+      "shares": 518000,
+      "code": "2330",
+      "previousWeight": 4.03,
+      "weightChange": 0.33,
+      "previousShares": 518000,
       "sharesChange": 0
     },
     {
@@ -57,119 +67,99 @@
       "weight": 4.11,
       "shares": 93320,
       "foreignCode": "AAPL US",
-      "previousWeight": 3.16,
-      "weightChange": 0.95,
-      "previousShares": 70840,
-      "sharesChange": 22480
-    },
-    {
-      "name": "台積電",
-      "weight": 4.03,
-      "shares": 518000,
-      "code": "2330",
-      "previousWeight": 4.09,
-      "weightChange": -0.06,
-      "previousShares": 518000,
-      "sharesChange": 0
-    },
-    {
-      "name": "BLOOM ENERGY CORP- A",
-      "weight": 3.33,
-      "shares": 157053,
-      "foreignCode": "BE US",
-      "previousWeight": 2.91,
-      "weightChange": 0.42,
-      "previousShares": 157053,
+      "previousWeight": 4.11,
+      "weightChange": 0.0,
+      "previousShares": 93320,
       "sharesChange": 0
     },
     {
       "name": "ELI LILLY & CO",
-      "weight": 3.33,
+      "weight": 3.39,
       "shares": 19380,
       "foreignCode": "LLY US",
-      "previousWeight": 3.4,
-      "weightChange": -0.07,
+      "previousWeight": 3.33,
+      "weightChange": 0.06,
       "previousShares": 19380,
       "sharesChange": 0
     },
     {
-      "name": "GENERAL ELECTRIC",
-      "weight": 3.07,
-      "shares": 75800,
-      "foreignCode": "GE US",
-      "previousWeight": 3.05,
-      "weightChange": 0.02,
-      "previousShares": 75800,
+      "name": "BLOOM ENERGY CORP- A",
+      "weight": 3.05,
+      "shares": 157053,
+      "foreignCode": "BE US",
+      "previousWeight": 3.33,
+      "weightChange": -0.28,
+      "previousShares": 157053,
       "sharesChange": 0
     },
     {
       "name": "CROWDSTRIKE HOLDINGS INC - A",
-      "weight": 3.04,
+      "weight": 3.02,
       "shares": 115363,
       "foreignCode": "CRWD US",
-      "previousWeight": 3.44,
-      "weightChange": -0.4,
+      "previousWeight": 3.04,
+      "weightChange": -0.02,
       "previousShares": 115363,
       "sharesChange": 0
     },
     {
-      "name": "PALO ALTO NETWORKS INC",
-      "weight": 2.98,
-      "shares": 67000,
-      "foreignCode": "PANW US",
-      "previousWeight": 1.89,
-      "weightChange": 1.09,
-      "previousShares": 42320,
-      "sharesChange": 24680
+      "name": "GENERAL ELECTRIC",
+      "weight": 3.0,
+      "shares": 75800,
+      "foreignCode": "GE US",
+      "previousWeight": 3.07,
+      "weightChange": -0.07,
+      "previousShares": 75800,
+      "sharesChange": 0
     },
     {
       "name": "APPLOVIN CORP-CLASS A",
-      "weight": 2.94,
+      "weight": 2.96,
       "shares": 62440,
       "foreignCode": "APP US",
-      "previousWeight": 2.83,
-      "weightChange": 0.11,
+      "previousWeight": 2.94,
+      "weightChange": 0.02,
       "previousShares": 62440,
       "sharesChange": 0
     },
     {
-      "name": "CLOUDFLARE INC - CLASS A",
-      "weight": 2.91,
-      "shares": 79260,
-      "foreignCode": "NET US",
-      "previousWeight": 2.83,
-      "weightChange": 0.08,
-      "previousShares": 79260,
+      "name": "聯發科",
+      "weight": 2.95,
+      "shares": 193000,
+      "code": "2454",
+      "previousWeight": 2.73,
+      "weightChange": 0.22,
+      "previousShares": 193000,
+      "sharesChange": 0
+    },
+    {
+      "name": "PALO ALTO NETWORKS INC",
+      "weight": 2.94,
+      "shares": 67000,
+      "foreignCode": "PANW US",
+      "previousWeight": 2.98,
+      "weightChange": -0.04,
+      "previousShares": 67000,
       "sharesChange": 0
     },
     {
       "name": "SNOWFLAKE INC",
-      "weight": 2.9,
+      "weight": 2.86,
       "shares": 84880,
       "foreignCode": "SNOW US",
-      "previousWeight": 2.81,
-      "weightChange": 0.09,
+      "previousWeight": 2.9,
+      "weightChange": -0.04,
       "previousShares": 84880,
       "sharesChange": 0
     },
     {
-      "name": "ARISTA NETWORKS INC",
+      "name": "CLOUDFLARE INC - CLASS A",
       "weight": 2.83,
-      "shares": 125800,
-      "foreignCode": "ANET US",
-      "previousWeight": 2.74,
-      "weightChange": 0.09,
-      "previousShares": 125800,
-      "sharesChange": 0
-    },
-    {
-      "name": "聯發科",
-      "weight": 2.73,
-      "shares": 193000,
-      "code": "2454",
-      "previousWeight": 2.55,
-      "weightChange": 0.18,
-      "previousShares": 193000,
+      "shares": 79260,
+      "foreignCode": "NET US",
+      "previousWeight": 2.91,
+      "weightChange": -0.08,
+      "previousShares": 79260,
       "sharesChange": 0
     },
     {
@@ -177,423 +167,203 @@
       "weight": 2.66,
       "shares": 132642,
       "foreignCode": "PLTR US",
-      "previousWeight": 2.48,
-      "weightChange": 0.18,
+      "previousWeight": 2.66,
+      "weightChange": 0.0,
       "previousShares": 132642,
       "sharesChange": 0
     },
     {
-      "name": "BROADCOM INC",
-      "weight": 2.4,
-      "shares": 60760,
-      "foreignCode": "AVGO US",
-      "previousWeight": 2.41,
-      "weightChange": -0.01,
-      "previousShares": 60760,
+      "name": "ARISTA NETWORKS INC",
+      "weight": 2.64,
+      "shares": 125800,
+      "foreignCode": "ANET US",
+      "previousWeight": 2.83,
+      "weightChange": -0.19,
+      "previousShares": 125800,
       "sharesChange": 0
     },
     {
       "name": "SHOPIFY INC - CLASS A",
-      "weight": 2.4,
+      "weight": 2.33,
       "shares": 141600,
       "foreignCode": "SHOP US",
-      "previousWeight": 2.28,
-      "weightChange": 0.12,
+      "previousWeight": 2.4,
+      "weightChange": -0.07,
       "previousShares": 141600,
       "sharesChange": 0
     },
     {
+      "name": "BROADCOM INC",
+      "weight": 2.27,
+      "shares": 60760,
+      "foreignCode": "AVGO US",
+      "previousWeight": 2.4,
+      "weightChange": -0.13,
+      "previousShares": 60760,
+      "sharesChange": 0
+    },
+    {
       "name": "JFROG LTD",
-      "weight": 2.29,
+      "weight": 2.21,
       "shares": 170308,
       "foreignCode": "FROG US",
-      "previousWeight": 2.24,
-      "weightChange": 0.05,
+      "previousWeight": 2.29,
+      "weightChange": -0.08,
       "previousShares": 170308,
       "sharesChange": 0
     },
     {
       "name": "UNITY SOFTWARE INC",
-      "weight": 2.1,
+      "weight": 2.11,
       "shares": 351600,
       "foreignCode": "U US",
-      "previousWeight": 1.75,
-      "weightChange": 0.35,
-      "previousShares": 300000,
-      "sharesChange": 51600
-    },
-    {
-      "name": "ADVANCED MICRO DEVICES",
-      "weight": 1.89,
-      "shares": 33099,
-      "foreignCode": "AMD US",
-      "previousWeight": 1.83,
-      "weightChange": 0.06,
-      "previousShares": 33099,
-      "sharesChange": 0
-    },
-    {
-      "name": "HOWMET AEROSPACE INC",
-      "weight": 1.78,
-      "shares": 65100,
-      "foreignCode": "HWM US",
-      "previousWeight": 1.77,
+      "previousWeight": 2.1,
       "weightChange": 0.01,
-      "previousShares": 65100,
+      "previousShares": 351600,
       "sharesChange": 0
     },
     {
       "name": "奇鋐",
-      "weight": 1.72,
+      "weight": 1.87,
       "shares": 190000,
       "code": "3017",
-      "previousWeight": 1.65,
-      "weightChange": 0.07,
+      "previousWeight": 1.72,
+      "weightChange": 0.15,
       "previousShares": 190000,
       "sharesChange": 0
     },
     {
+      "name": "HOWMET AEROSPACE INC",
+      "weight": 1.71,
+      "shares": 65100,
+      "foreignCode": "HWM US",
+      "previousWeight": 1.78,
+      "weightChange": -0.07,
+      "previousShares": 65100,
+      "sharesChange": 0
+    },
+    {
+      "name": "ADVANCED MICRO DEVICES",
+      "weight": 1.7,
+      "shares": 33099,
+      "foreignCode": "AMD US",
+      "previousWeight": 1.89,
+      "weightChange": -0.19,
+      "previousShares": 33099,
+      "sharesChange": 0
+    },
+    {
       "name": "TAKE-TWO INTERACTIVE SOFTWRE",
-      "weight": 1.59,
+      "weight": 1.65,
       "shares": 60200,
       "foreignCode": "TTWO US",
-      "previousWeight": 1.64,
-      "weightChange": -0.05,
+      "previousWeight": 1.59,
+      "weightChange": 0.06,
       "previousShares": 60200,
       "sharesChange": 0
     },
     {
+      "name": "ADVANTEST CORP",
+      "weight": 1.46,
+      "shares": 68500,
+      "foreignCode": "6857 JP",
+      "previousWeight": 0,
+      "weightChange": 1.46,
+      "previousShares": 0,
+      "sharesChange": 68500
+    },
+    {
       "name": "RECRUIT HOLDINGS CO LTD",
-      "weight": 1.34,
+      "weight": 1.36,
       "shares": 100200,
       "foreignCode": "6098 JP",
-      "previousWeight": 1.38,
-      "weightChange": -0.04,
+      "previousWeight": 1.34,
+      "weightChange": 0.02,
       "previousShares": 100200,
       "sharesChange": 0
     },
     {
+      "name": "MICRON TECHNOLOGY INC",
+      "weight": 1.29,
+      "shares": 16425,
+      "foreignCode": "MU US",
+      "previousWeight": 0.97,
+      "weightChange": 0.32,
+      "previousShares": 10825,
+      "sharesChange": 5600
+    },
+    {
       "name": "創意",
-      "weight": 1.12,
+      "weight": 1.21,
       "shares": 57000,
       "code": "3443",
-      "previousWeight": 2.32,
-      "weightChange": -1.2,
-      "previousShares": 109000,
-      "sharesChange": -52000
+      "previousWeight": 1.12,
+      "weightChange": 0.09,
+      "previousShares": 57000,
+      "sharesChange": 0
     },
     {
       "name": "台光電",
-      "weight": 0.98,
+      "weight": 1.06,
       "shares": 83000,
       "code": "2383",
-      "previousWeight": 0.92,
-      "weightChange": 0.06,
+      "previousWeight": 0.98,
+      "weightChange": 0.08,
       "previousShares": 83000,
       "sharesChange": 0
     },
     {
-      "name": "MICRON TECHNOLOGY INC",
-      "weight": 0.97,
-      "shares": 10825,
-      "foreignCode": "MU US",
-      "previousWeight": 0.84,
-      "weightChange": 0.13,
-      "previousShares": 10825,
-      "sharesChange": 0
-    },
-    {
       "name": "欣興",
-      "weight": 0.95,
+      "weight": 1.03,
       "shares": 444000,
       "code": "3037",
-      "previousWeight": 0.94,
-      "weightChange": 0.01,
+      "previousWeight": 0.95,
+      "weightChange": 0.08,
       "previousShares": 444000,
       "sharesChange": 0
     },
     {
-      "name": "NINTENDO CO LTD",
-      "weight": 0.56,
-      "shares": 80400,
-      "foreignCode": "7974 JP",
-      "previousWeight": 0.58,
-      "weightChange": -0.02,
-      "previousShares": 80400,
-      "sharesChange": 0
+      "name": "COHERENT CORP",
+      "weight": 0.76,
+      "shares": 31240,
+      "foreignCode": "COHR US",
+      "previousWeight": 0,
+      "weightChange": 0.76,
+      "previousShares": 0,
+      "sharesChange": 31240
     },
     {
-      "name": "TOHO CO LTD",
-      "weight": 0.44,
-      "shares": 304900,
-      "foreignCode": "9602 JP",
-      "previousWeight": 0.45,
-      "weightChange": -0.01,
-      "previousShares": 304900,
+      "name": "RESONAC HOLDINGS CORP",
+      "weight": 0.75,
+      "shares": 78600,
+      "foreignCode": "4004 JP",
+      "previousWeight": 0,
+      "weightChange": 0.75,
+      "previousShares": 0,
+      "sharesChange": 78600
+    },
+    {
+      "name": "SEMTECH CORP",
+      "weight": 0.65,
+      "shares": 60900,
+      "foreignCode": "SMTC US",
+      "previousWeight": 0,
+      "weightChange": 0.65,
+      "previousShares": 0,
+      "sharesChange": 60900
+    },
+    {
+      "name": "NINTENDO CO LTD",
+      "weight": 0.54,
+      "shares": 80400,
+      "foreignCode": "7974 JP",
+      "previousWeight": 0.56,
+      "weightChange": -0.02,
+      "previousShares": 80400,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-10-13": [
-      {
-        "name": "LUMENTUM HOLDINGS INC",
-        "weight": 7.88,
-        "shares": 91359,
-        "foreignCode": "LITE US"
-      },
-      {
-        "name": "BLOOM ENERGY CORP- A",
-        "weight": 5.66,
-        "shares": 249100,
-        "foreignCode": "BE US"
-      },
-      {
-        "name": "META PLATFORMS INC-CLASS A",
-        "weight": 5.24,
-        "shares": 81400,
-        "foreignCode": "META US"
-      },
-      {
-        "name": "NVIDIA CORP",
-        "weight": 4.57,
-        "shares": 233100,
-        "foreignCode": "NVDA US"
-      },
-      {
-        "name": "ADVANCED MICRO DEVICES",
-        "weight": 4.19,
-        "shares": 81379,
-        "foreignCode": "AMD US"
-      },
-      {
-        "name": "SPACE EXPLORATION TECHN-CL A",
-        "weight": 3.63,
-        "shares": 256528,
-        "foreignCode": "SPCX US"
-      },
-      {
-        "name": "PALANTIR TECHNOLOGIES INC-A",
-        "weight": 3.39,
-        "shares": 187342,
-        "foreignCode": "PLTR US"
-      },
-      {
-        "name": "MICROSOFT CORP",
-        "weight": 3.3,
-        "shares": 70360,
-        "foreignCode": "MSFT US"
-      },
-      {
-        "name": "台達電",
-        "weight": 3.27,
-        "shares": 633000,
-        "code": "2308"
-      },
-      {
-        "name": "SHOPIFY INC - CLASS A",
-        "weight": 3.17,
-        "shares": 204100,
-        "foreignCode": "SHOP US"
-      },
-      {
-        "name": "SNOWFLAKE INC",
-        "weight": 3.16,
-        "shares": 101200,
-        "foreignCode": "SNOW US"
-      },
-      {
-        "name": "台積電",
-        "weight": 2.8,
-        "shares": 406000,
-        "code": "2330"
-      },
-      {
-        "name": "DATADOG INC - CLASS A",
-        "weight": 2.44,
-        "shares": 98000,
-        "foreignCode": "DDOG US"
-      },
-      {
-        "name": "MARVELL TECHNOLOGY INC",
-        "weight": 2.39,
-        "shares": 103800,
-        "foreignCode": "MRVL US"
-      },
-      {
-        "name": "ADVANTEST CORP",
-        "weight": 2.35,
-        "shares": 103200,
-        "foreignCode": "6857 JP"
-      },
-      {
-        "name": "MICRON TECHNOLOGY INC",
-        "weight": 2.33,
-        "shares": 27125,
-        "foreignCode": "MU US"
-      },
-      {
-        "name": "欣興",
-        "weight": 2.27,
-        "shares": 667000,
-        "code": "3037"
-      },
-      {
-        "name": "台光電",
-        "weight": 2.24,
-        "shares": 134000,
-        "code": "2383"
-      },
-      {
-        "name": "CLOUDFLARE INC - CLASS A",
-        "weight": 2.21,
-        "shares": 72800,
-        "foreignCode": "NET US"
-      },
-      {
-        "name": "SEMTECH CORP",
-        "weight": 2.08,
-        "shares": 142700,
-        "foreignCode": "SMTC US"
-      },
-      {
-        "name": "聯發科",
-        "weight": 2.07,
-        "shares": 165000,
-        "code": "2454"
-      },
-      {
-        "name": "MURATA MANUFACTURING CO LTD",
-        "weight": 1.82,
-        "shares": 418400,
-        "foreignCode": "6981 JP"
-      },
-      {
-        "name": "CROWDSTRIKE HOLDINGS INC - A",
-        "weight": 1.69,
-        "shares": 74263,
-        "foreignCode": "CRWD US"
-      },
-      {
-        "name": "HEWLETT PACKARD ENTERPRISE",
-        "weight": 1.69,
-        "shares": 277100,
-        "foreignCode": "HPE US"
-      },
-      {
-        "name": "PALO ALTO NETWORKS INC",
-        "weight": 1.68,
-        "shares": 47955,
-        "foreignCode": "PANW US"
-      },
-      {
-        "name": "LASERTEC CORP",
-        "weight": 1.65,
-        "shares": 62100,
-        "foreignCode": "6920 JP"
-      },
-      {
-        "name": "OKTA INC",
-        "weight": 1.63,
-        "shares": 82600,
-        "foreignCode": "OKTA US"
-      },
-      {
-        "name": "IBIDEN CO LTD",
-        "weight": 1.49,
-        "shares": 236200,
-        "foreignCode": "4062 JP"
-      },
-      {
-        "name": "奇鋐",
-        "weight": 1.45,
-        "shares": 158000,
-        "code": "3017"
-      },
-      {
-        "name": "TWIST BIOSCIENCE CORP",
-        "weight": 1.37,
-        "shares": 103936,
-        "foreignCode": "TWST US"
-      },
-      {
-        "name": "南電",
-        "weight": 1.36,
-        "shares": 348000,
-        "code": "8046"
-      },
-      {
-        "name": "CELESTICA INC",
-        "weight": 1.36,
-        "shares": 45160,
-        "foreignCode": "CLS US"
-      },
-      {
-        "name": "TTM TECHNOLOGIES",
-        "weight": 1.23,
-        "shares": 129000,
-        "foreignCode": "TTMI US"
-      },
-      {
-        "name": "智邦",
-        "weight": 1.12,
-        "shares": 193000,
-        "code": "2345"
-      },
-      {
-        "name": "INTEL CORP",
-        "weight": 1.02,
-        "shares": 115600,
-        "foreignCode": "INTC US"
-      },
-      {
-        "name": "RUBRIK INC-A",
-        "weight": 1.0,
-        "shares": 96200,
-        "foreignCode": "RBRK US"
-      },
-      {
-        "name": "致茂",
-        "weight": 0.83,
-        "shares": 130000,
-        "code": "2360"
-      },
-      {
-        "name": "京元電子",
-        "weight": 0.79,
-        "shares": 967000,
-        "code": "2449"
-      },
-      {
-        "name": "MAXLINEAR INC",
-        "weight": 0.62,
-        "shares": 80300,
-        "foreignCode": "MXL US"
-      },
-      {
-        "name": "臻鼎-KY",
-        "weight": 0.57,
-        "shares": 364000,
-        "code": "4958"
-      },
-      {
-        "name": "ZETA GLOBAL HOLDINGS CORP-A",
-        "weight": 0.54,
-        "shares": 186100,
-        "foreignCode": "ZETA US"
-      },
-      {
-        "name": "金像電",
-        "weight": 0.52,
-        "shares": 156000,
-        "code": "2368"
-      },
-      {
-        "name": "創意",
-        "weight": 0.51,
-        "shares": 23000,
-        "code": "3443"
-      }
-    ],
     "2026-10-14": [
       {
         "name": "LUMENTUM HOLDINGS INC",
@@ -7257,7 +7027,219 @@
         "shares": 304900,
         "foreignCode": "9602 JP"
       }
+    ],
+    "2026-11-25": [
+      {
+        "name": "MICROSOFT CORP",
+        "weight": 7.19,
+        "shares": 116560,
+        "foreignCode": "MSFT US"
+      },
+      {
+        "name": "ALPHABET INC-CL A",
+        "weight": 5.53,
+        "shares": 159480,
+        "foreignCode": "GOOGL US"
+      },
+      {
+        "name": "AMAZON.COM INC",
+        "weight": 4.76,
+        "shares": 151860,
+        "foreignCode": "AMZN US"
+      },
+      {
+        "name": "META PLATFORMS INC-CLASS A",
+        "weight": 4.74,
+        "shares": 64600,
+        "foreignCode": "META US"
+      },
+      {
+        "name": "台積電",
+        "weight": 4.36,
+        "shares": 518000,
+        "code": "2330"
+      },
+      {
+        "name": "APPLE INC",
+        "weight": 4.11,
+        "shares": 93320,
+        "foreignCode": "AAPL US"
+      },
+      {
+        "name": "ELI LILLY & CO",
+        "weight": 3.39,
+        "shares": 19380,
+        "foreignCode": "LLY US"
+      },
+      {
+        "name": "BLOOM ENERGY CORP- A",
+        "weight": 3.05,
+        "shares": 157053,
+        "foreignCode": "BE US"
+      },
+      {
+        "name": "CROWDSTRIKE HOLDINGS INC - A",
+        "weight": 3.02,
+        "shares": 115363,
+        "foreignCode": "CRWD US"
+      },
+      {
+        "name": "GENERAL ELECTRIC",
+        "weight": 3.0,
+        "shares": 75800,
+        "foreignCode": "GE US"
+      },
+      {
+        "name": "APPLOVIN CORP-CLASS A",
+        "weight": 2.96,
+        "shares": 62440,
+        "foreignCode": "APP US"
+      },
+      {
+        "name": "聯發科",
+        "weight": 2.95,
+        "shares": 193000,
+        "code": "2454"
+      },
+      {
+        "name": "PALO ALTO NETWORKS INC",
+        "weight": 2.94,
+        "shares": 67000,
+        "foreignCode": "PANW US"
+      },
+      {
+        "name": "SNOWFLAKE INC",
+        "weight": 2.86,
+        "shares": 84880,
+        "foreignCode": "SNOW US"
+      },
+      {
+        "name": "CLOUDFLARE INC - CLASS A",
+        "weight": 2.83,
+        "shares": 79260,
+        "foreignCode": "NET US"
+      },
+      {
+        "name": "PALANTIR TECHNOLOGIES INC-A",
+        "weight": 2.66,
+        "shares": 132642,
+        "foreignCode": "PLTR US"
+      },
+      {
+        "name": "ARISTA NETWORKS INC",
+        "weight": 2.64,
+        "shares": 125800,
+        "foreignCode": "ANET US"
+      },
+      {
+        "name": "SHOPIFY INC - CLASS A",
+        "weight": 2.33,
+        "shares": 141600,
+        "foreignCode": "SHOP US"
+      },
+      {
+        "name": "BROADCOM INC",
+        "weight": 2.27,
+        "shares": 60760,
+        "foreignCode": "AVGO US"
+      },
+      {
+        "name": "JFROG LTD",
+        "weight": 2.21,
+        "shares": 170308,
+        "foreignCode": "FROG US"
+      },
+      {
+        "name": "UNITY SOFTWARE INC",
+        "weight": 2.11,
+        "shares": 351600,
+        "foreignCode": "U US"
+      },
+      {
+        "name": "奇鋐",
+        "weight": 1.87,
+        "shares": 190000,
+        "code": "3017"
+      },
+      {
+        "name": "HOWMET AEROSPACE INC",
+        "weight": 1.71,
+        "shares": 65100,
+        "foreignCode": "HWM US"
+      },
+      {
+        "name": "ADVANCED MICRO DEVICES",
+        "weight": 1.7,
+        "shares": 33099,
+        "foreignCode": "AMD US"
+      },
+      {
+        "name": "TAKE-TWO INTERACTIVE SOFTWRE",
+        "weight": 1.65,
+        "shares": 60200,
+        "foreignCode": "TTWO US"
+      },
+      {
+        "name": "ADVANTEST CORP",
+        "weight": 1.46,
+        "shares": 68500,
+        "foreignCode": "6857 JP"
+      },
+      {
+        "name": "RECRUIT HOLDINGS CO LTD",
+        "weight": 1.36,
+        "shares": 100200,
+        "foreignCode": "6098 JP"
+      },
+      {
+        "name": "MICRON TECHNOLOGY INC",
+        "weight": 1.29,
+        "shares": 16425,
+        "foreignCode": "MU US"
+      },
+      {
+        "name": "創意",
+        "weight": 1.21,
+        "shares": 57000,
+        "code": "3443"
+      },
+      {
+        "name": "台光電",
+        "weight": 1.06,
+        "shares": 83000,
+        "code": "2383"
+      },
+      {
+        "name": "欣興",
+        "weight": 1.03,
+        "shares": 444000,
+        "code": "3037"
+      },
+      {
+        "name": "COHERENT CORP",
+        "weight": 0.76,
+        "shares": 31240,
+        "foreignCode": "COHR US"
+      },
+      {
+        "name": "RESONAC HOLDINGS CORP",
+        "weight": 0.75,
+        "shares": 78600,
+        "foreignCode": "4004 JP"
+      },
+      {
+        "name": "SEMTECH CORP",
+        "weight": 0.65,
+        "shares": 60900,
+        "foreignCode": "SMTC US"
+      },
+      {
+        "name": "NINTENDO CO LTD",
+        "weight": 0.54,
+        "shares": 80400,
+        "foreignCode": "7974 JP"
+      }
     ]
   },
-  "lastUpdated": "2026-11-24"
+  "lastUpdated": "2026-11-25"
 }
