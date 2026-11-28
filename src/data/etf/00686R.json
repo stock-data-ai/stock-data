@@ -7,33 +7,23 @@
   "managementFee": 0.34,
   "dividendFrequency": "不配息",
   "inceptionDate": "2017-03-30",
-  "fundSize": 2.87,
+  "fundSize": 2.7,
   "issuer": "群益投信",
-  "beneficiaryCount": 1684,
+  "beneficiaryCount": 1854,
   "description": null,
   "topHoldings": [
     {
       "name": "小台指期",
-      "weight": 100.06,
-      "shares": -160,
+      "weight": 99.88,
+      "shares": -136,
       "foreignCode": "202612MTX",
-      "previousWeight": 99.7,
-      "weightChange": 0.36,
-      "previousShares": -119,
-      "sharesChange": -41
+      "previousWeight": 100.06,
+      "weightChange": -0.18,
+      "previousShares": -160,
+      "sharesChange": 24
     }
   ],
   "holdingsHistory": {
-    "2026-05-08": [
-      {
-        "name": "台指期202605",
-        "weight": 55.22
-      },
-      {
-        "name": "小台指期202605",
-        "weight": 44.6
-      }
-    ],
     "2026-05-12": [
       {
         "name": "台指期202605",
@@ -238,8 +228,15 @@
         "weight": 100.06,
         "shares": -160
       }
+    ],
+    "2026-11-27": [
+      {
+        "name": "小台指期",
+        "weight": 99.88,
+        "shares": -136
+      }
     ]
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-27",
   "trailingYield": 0.0
 }

@@ -7,18 +7,18 @@
   "managementFee": 0.37,
   "dividendFrequency": null,
   "inceptionDate": "2025-09-18",
-  "fundSize": 11.02,
+  "fundSize": 11.36,
   "issuer": "野村投信",
-  "beneficiaryCount": 5672,
+  "beneficiaryCount": 5612,
   "description": null,
   "topHoldings": [
     {
       "name": "NEXT FUNDS東證股價指數交易所",
-      "weight": 97.83,
+      "weight": 97.84,
       "shares": 13435520,
       "foreignCode": "1306 JP",
       "previousWeight": 97.83,
-      "weightChange": 0.0,
+      "weightChange": 0.01,
       "previousShares": 13435520,
       "sharesChange": 0
     },
@@ -27,20 +27,13 @@
       "weight": 2.08,
       "shares": 3,
       "foreignCode": "202612TP",
-      "previousWeight": 2.07,
-      "weightChange": 0.01,
+      "previousWeight": 2.08,
+      "weightChange": 0.0,
       "previousShares": 3,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-05-08": [
-      {
-        "name": "NEXT FUNDS TOPIX ETF",
-        "weight": 96.55,
-        "shares": 16157570
-      }
-    ],
     "2026-05-12": [
       {
         "name": "NEXT FUNDS TOPIX ETF",
@@ -358,8 +351,20 @@
         "weight": 2.08,
         "shares": 3
       }
+    ],
+    "2026-11-27": [
+      {
+        "name": "NEXT FUNDS東證股價指數交易所",
+        "weight": 97.84,
+        "shares": 13435520
+      },
+      {
+        "name": "Tokyo Stock Price Index",
+        "weight": 2.08,
+        "shares": 3
+      }
     ]
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-27",
   "trailingYield": 0.0
 }

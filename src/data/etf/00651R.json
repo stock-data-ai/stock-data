@@ -7,40 +7,40 @@
   "managementFee": 1.12,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-01-27",
-  "fundSize": 1.87,
+  "fundSize": 1.84,
   "issuer": "復華投信",
-  "beneficiaryCount": 344,
+  "beneficiaryCount": 333,
   "description": null,
   "topHoldings": [
     {
       "name": "MARGIN",
-      "weight": 47.17,
+      "weight": 47.72,
       "shares": 88979081,
       "foreignCode": "M_NTD",
-      "previousWeight": 49.57,
-      "weightChange": -2.4,
+      "previousWeight": 47.17,
+      "weightChange": 0.55,
       "previousShares": 88979081,
       "sharesChange": 0
     },
     {
       "name": "MARGIN",
-      "weight": 30.86,
-      "shares": 13841740,
+      "weight": 30.09,
+      "shares": 13338100,
       "foreignCode": "M_HKD",
-      "previousWeight": 27.33,
-      "weightChange": 3.53,
-      "previousShares": 11704060,
-      "sharesChange": 2137680
+      "previousWeight": 30.86,
+      "weightChange": -0.77,
+      "previousShares": 13841740,
+      "sharesChange": -503640
     },
     {
       "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
-      "weight": 21.94,
+      "weight": 22.2,
       "shares": 41389609,
       "foreignCode": "DA_NTD",
-      "previousWeight": 23.08,
-      "weightChange": -1.14,
-      "previousShares": 41435109,
-      "sharesChange": -45500
+      "previousWeight": 21.94,
+      "weightChange": 0.26,
+      "previousShares": 41389609,
+      "sharesChange": 0
     }
   ],
   "holdingsHistory": {
@@ -434,8 +434,25 @@
         "weight": 21.94,
         "shares": 41389609
       }
+    ],
+    "2026-11-27": [
+      {
+        "name": "MARGIN",
+        "weight": 47.72,
+        "shares": 88979081
+      },
+      {
+        "name": "MARGIN",
+        "weight": 30.09,
+        "shares": 13338100
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 22.2,
+        "shares": 41389609
+      }
     ]
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-27",
   "trailingYield": 0.0
 }

@@ -7,59 +7,53 @@
   "managementFee": 1.12,
   "dividendFrequency": "不配息",
   "inceptionDate": "2016-01-27",
-  "fundSize": 13.37,
+  "fundSize": 13.81,
   "issuer": "復華投信",
-  "beneficiaryCount": 2171,
+  "beneficiaryCount": 2229,
   "description": null,
   "topHoldings": [
     {
       "name": "恆生指數期貨",
-      "weight": 199.75,
-      "shares": 572,
-      "foreignCode": "202611HSI",
-      "previousWeight": 200.24,
-      "weightChange": -0.49,
-      "previousShares": 604,
-      "sharesChange": -32
+      "weight": 199.8,
+      "shares": 577,
+      "foreignCode": "202612HSI",
+      "previousWeight": 199.75,
+      "weightChange": 0.05,
+      "previousShares": 572,
+      "sharesChange": 5
     },
     {
       "name": "MARGIN",
-      "weight": 67.35,
-      "shares": 216353682,
+      "weight": 68.0,
+      "shares": 222659712,
       "foreignCode": "M_HKD",
-      "previousWeight": 70.38,
-      "weightChange": -3.03,
-      "previousShares": 250283742,
-      "sharesChange": -33930060
+      "previousWeight": 67.35,
+      "weightChange": 0.65,
+      "previousShares": 216353682,
+      "sharesChange": 6306030
     },
     {
       "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
-      "weight": 32.33,
+      "weight": 31.71,
       "shares": 436817823,
       "foreignCode": "DA_NTD",
-      "previousWeight": 30.94,
-      "weightChange": 1.39,
-      "previousShares": 461126330,
-      "sharesChange": -24308507
+      "previousWeight": 32.33,
+      "weightChange": -0.62,
+      "previousShares": 436817823,
+      "sharesChange": 0
     },
     {
       "name": "MARGIN",
-      "weight": 0.31,
+      "weight": 0.3,
       "shares": 4161662,
       "foreignCode": "M_NTD",
-      "previousWeight": 0.28,
-      "weightChange": 0.03,
+      "previousWeight": 0.31,
+      "weightChange": -0.01,
       "previousShares": 4161662,
       "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-05-08": [
-      {
-        "name": "202605 恆生指數期貨",
-        "weight": 200.0
-      }
-    ],
     "2026-05-12": [
       {
         "name": "202605 恆生指數期貨",
@@ -611,8 +605,30 @@
         "weight": 0.31,
         "shares": 4161662
       }
+    ],
+    "2026-11-27": [
+      {
+        "name": "恆生指數期貨",
+        "weight": 199.8,
+        "shares": 577
+      },
+      {
+        "name": "MARGIN",
+        "weight": 68.0,
+        "shares": 222659712
+      },
+      {
+        "name": "AFTER DEDUCTING SECURITIES PURCHASES AMOUNT",
+        "weight": 31.71,
+        "shares": 436817823
+      },
+      {
+        "name": "MARGIN",
+        "weight": 0.3,
+        "shares": 4161662
+      }
     ]
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-27",
   "trailingYield": 0.0
 }

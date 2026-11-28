@@ -7,38 +7,38 @@
   "managementFee": 1.22,
   "dividendFrequency": "不配息",
   "inceptionDate": "2014-11-25",
-  "fundSize": 48.89,
+  "fundSize": 53.58,
   "issuer": "富邦投信",
-  "beneficiaryCount": 3869,
+  "beneficiaryCount": 3833,
   "description": null,
   "topHoldings": [
     {
       "name": "富時中國A50指數",
-      "weight": 188.89,
-      "shares": 22747,
-      "foreignCode": "202611SFCX6F",
-      "previousWeight": 189.03,
-      "weightChange": -0.14,
-      "previousShares": 23397,
-      "sharesChange": -650
+      "weight": 189.34,
+      "shares": 24097,
+      "foreignCode": "202612SFCZ6F",
+      "previousWeight": 188.89,
+      "weightChange": 0.45,
+      "previousShares": 22747,
+      "sharesChange": 1350
     },
     {
       "name": "富邦上証",
-      "weight": 6.4,
+      "weight": 6.05,
       "shares": 8500000,
       "code": "006205",
-      "previousWeight": 6.32,
-      "weightChange": 0.08,
+      "previousWeight": 6.4,
+      "weightChange": -0.35,
       "previousShares": 8500000,
       "sharesChange": 0
     },
     {
       "name": "富邦上証ETF期貨",
-      "weight": 4.84,
+      "weight": 4.54,
       "shares": 640,
       "foreignCode": "202612WOAFZ6F",
-      "previousWeight": 4.77,
-      "weightChange": 0.07,
+      "previousWeight": 4.84,
+      "weightChange": -0.3,
       "previousShares": 640,
       "sharesChange": 0
     },
@@ -54,27 +54,6 @@
     }
   ],
   "holdingsHistory": {
-    "2026-05-08": [
-      {
-        "name": "2026/05富時中國A50指數",
-        "weight": 191.47
-      },
-      {
-        "name": "富邦上証",
-        "weight": 5.06,
-        "shares": 9300000,
-        "code": "006205"
-      },
-      {
-        "name": "2026/05富邦上証ETF期貨",
-        "weight": 3.48
-      },
-      {
-        "name": "富邦吉祥貨幣市場",
-        "weight": 0.05,
-        "shares": 213878
-      }
-    ],
     "2026-05-12": [
       {
         "name": "2026/05富時中國A50指數",
@@ -729,8 +708,31 @@
         "weight": 0.07,
         "shares": 213878
       }
+    ],
+    "2026-11-27": [
+      {
+        "name": "富時中國A50指數",
+        "weight": 189.34,
+        "shares": 24097
+      },
+      {
+        "name": "富邦上証",
+        "weight": 6.05,
+        "shares": 8500000,
+        "code": "006205"
+      },
+      {
+        "name": "富邦上証ETF期貨",
+        "weight": 4.54,
+        "shares": 640
+      },
+      {
+        "name": "富邦吉祥貨幣市場",
+        "weight": 0.07,
+        "shares": 213878
+      }
     ]
   },
-  "lastUpdated": "2026-11-20",
+  "lastUpdated": "2026-11-27",
   "trailingYield": 0.0
 }

@@ -7,30 +7,23 @@
   "managementFee": 0.95,
   "dividendFrequency": "不配息",
   "inceptionDate": "2017-03-14",
-  "fundSize": 1.4,
+  "fundSize": 1.41,
   "issuer": "元大投信",
-  "beneficiaryCount": 172,
+  "beneficiaryCount": 169,
   "description": null,
   "topHoldings": [
     {
       "name": "美元指數期貨",
-      "weight": 99.35,
+      "weight": 99.54,
       "shares": -41,
       "foreignCode": "202612DX",
-      "previousWeight": 100.36,
-      "weightChange": -1.01,
-      "previousShares": -42,
-      "sharesChange": 1
+      "previousWeight": 99.35,
+      "weightChange": 0.19,
+      "previousShares": -41,
+      "sharesChange": 0
     }
   ],
   "holdingsHistory": {
-    "2026-05-07": [
-      {
-        "name": "美元指數期貨",
-        "weight": 99.99,
-        "shares": -49
-      }
-    ],
     "2026-05-11": [
       {
         "name": "美元指數期貨",
@@ -233,8 +226,15 @@
         "weight": 99.35,
         "shares": -41
       }
+    ],
+    "2026-11-26": [
+      {
+        "name": "美元指數期貨",
+        "weight": 99.54,
+        "shares": -41
+      }
     ]
   },
-  "lastUpdated": "2026-11-19",
+  "lastUpdated": "2026-11-26",
   "trailingYield": 0.0
 }
